@@ -68,7 +68,7 @@ We are already working on the following connectors for export channels:
 - Documentation for developers is available [here](docs/).
 
 ### Installation
-1. Install [TreoCore](https://github.com/treolabs/treopim#installation)
+1. Install [TreoCore](https://github.com/treolabs/treocore#installation)
 2. Install Pim module by ModuleManager
 
 ### License
