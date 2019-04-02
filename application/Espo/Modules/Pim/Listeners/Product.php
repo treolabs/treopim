@@ -110,6 +110,11 @@ class Product extends \Treo\Listeners\AbstractListener
             }
 
             $result['attributes']['became'][$fieldName] = $post['value'];
+
+            if (isset($post['data'])) {
+                $result['attributes']['was'][$fieldName . 'Unit'] = $attributeValue->get('data')->unit;
+                $result['attributes']['became'][$fieldName . 'Unit'] = $post['data']['unit'];
+            }
         }
 
         // for multilang value

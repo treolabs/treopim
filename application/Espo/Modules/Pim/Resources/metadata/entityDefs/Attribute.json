@@ -67,6 +67,7 @@
         "int",
         "multiEnum",
         "text",
+        "unit",
         "url",
         "varchar",
         "varcharMultiLang",

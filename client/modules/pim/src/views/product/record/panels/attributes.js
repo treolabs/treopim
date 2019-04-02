@@ -140,6 +140,9 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
                     view.listenTo(this.model, 'overview-filters-applied', () => {
                         this.checkGroupNamesVisibility();
                     });
+                    this.listenTo(this.model, 'updateAttributes', () => {
+                        this.updateGrid();
+                    });
                     this.listenTo(model, 'updateAttributes', () => {
                         this.updateGrid();
                     });
@@ -196,6 +199,10 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
                         data[attribute.attributeId] = attribute.value;
                         translates[attribute.attributeId] = attribute.name;
 
+                        if (Espo.Utils.isObject(attribute.data)) {
+                            Object.keys(attribute.data).forEach(param => data[`${attribute.attributeId}${Espo.Utils.upperCaseFirst(param)}`] = attribute.data[param]);
+                        }
+
                         defs.fields[attribute.attributeId] = {
                             type: attribute.type,
                             required: attribute.isRequired,
@@ -203,6 +210,10 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
                             readOnly: !attribute.editable,
                             isMultilang: ['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(attribute.type)
                         };
+
+                        if (attribute.type === 'unit') {
+                            defs.fields[attribute.attributeId].measure = (attribute.typeValue || [])[0];
+                        }
 
                         if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(attribute.type)) {
                             if (Array.isArray(inputLanguageList) && inputLanguageList.length) {

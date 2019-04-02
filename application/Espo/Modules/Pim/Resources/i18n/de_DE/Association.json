@@ -1,13 +1,13 @@
 {
   "fields": {
-    "associatedProducts": "Zugehörige Produkte",
-    "backwardAssociation": "Rückwärts Assoziation",
+    "associatedProducts": "Assoziierte Produkte",
+    "backwardAssociation": "Umgekehrte Assoziation",
     "description": "Beschreibung",
     "descriptionDeDe": "Beschreibung DeDe",
     "descriptionEnUs": "Beschreibung EnUs",
     "descriptionEsEs": "Beschreibung EsEs",
     "descriptionFrFr": "Beschreibung FrFr",
-    "isActive": "Ist aktiv",
+    "isActive": "Aktiv",
     "modifiedAt": "geändert am",
     "createdAt": "erstellt am",
     "createdBy": "erstellt von",
@@ -18,8 +18,8 @@
     "nameFrFr": "Name FrFr"
   },
   "links": {
-    "associatedProducts": "Zugehörige Produkte",
-    "backwardAssociation": "Rückwärts Assoziation",
+    "associatedProducts": "Assoziierte Produkte",
+    "backwardAssociation": "Umgekehrte Assoziation",
     "createdBy": "erstellt von",
     "modifiedBy": "geändert von"
   },

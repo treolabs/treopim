@@ -130,6 +130,11 @@ Espo.define('pim:views/channel-product-attribute-value/modals/grouped-edit', 'vi
                 newData[Espo.utils.lowerCaseFirst(key.replace('attribute', ''))] = data[key];
             }
 
+            let additionalData = this.getAdditionalFieldData(this.getView('attributeValue'), data);
+            if (additionalData) {
+                newData.data = additionalData;
+            }
+
             this.ajaxPatchRequest(`ChannelProductAttributeValue/${this.model.id}`, newData)
                 .then(response => {
                     this.notify('Saved', 'success');
@@ -140,6 +145,21 @@ Espo.define('pim:views/channel-product-attribute-value/modals/grouped-edit', 'vi
                 }, reason => {
                     $buttons.removeClass('disabled').removeAttr('disabled');
                 });
+        },
+
+        getAdditionalFieldData(view, data) {
+            let additionalData = false;
+            if (view.type === 'unit') {
+                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
+                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
+                actualFieldDefs.forEach((field, i) => {
+                    if (field) {
+                        additionalData = additionalData || {};
+                        additionalData[field] = data[actualFieldValues[i]];
+                    }
+                });
+            }
+            return additionalData;
         },
 
         validate () {

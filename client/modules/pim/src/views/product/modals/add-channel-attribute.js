@@ -130,12 +130,14 @@ Espo.define('pim:views/product/modals/add-channel-attribute', 'views/modals/edit
                                 value: {
                                     type: first.type,
                                     options: first.typeValue,
+                                    measure: first.typeValue
                                 }
                             };
 
                             let data = {
                                 attributeId: first.attributeId,
-                                value: first.value
+                                value: first.value,
+                                data: first.data
                             };
 
                             if (this.inputLanguageListKeys) {
@@ -156,9 +158,13 @@ Espo.define('pim:views/product/modals/add-channel-attribute', 'views/modals/edit
                                     model.defs.fields.value = {
                                         type: current.type,
                                         options: current.typeValue,
+                                        measure: current.typeValue
                                     };
 
-                                    let data = {value: current.value};
+                                    let data = {
+                                        value: current.value,
+                                        data: current.data
+                                    };
                                     if (this.inputLanguageListKeys) {
                                         this.inputLanguageListKeys.forEach(item => {
                                             data[`value${item}`] = current[`value${item}`];
@@ -234,6 +240,11 @@ Espo.define('pim:views/product/modals/add-channel-attribute', 'views/modals/edit
                     channelId: this.options.channelId
                 };
 
+                let additionalData = this.getAdditionalFieldData(this.getView('edit').getFieldView('value'), data);
+                if (additionalData) {
+                    data.data = additionalData;
+                }
+
                 ['ownerUser', 'assignedUser'].forEach(field => {
                     if (model.hasField(field)) {
                         data[`${field}Id`] = this.getUser().id;
@@ -248,6 +259,21 @@ Espo.define('pim:views/product/modals/add-channel-attribute', 'views/modals/edit
                     this.getParentView().actionRefresh();
                 });
             });
+        },
+
+        getAdditionalFieldData(view, data) {
+            let additionalData = false;
+            if (view.type === 'unit') {
+                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
+                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
+                actualFieldDefs.forEach((field, i) => {
+                    if (field) {
+                        additionalData = additionalData || {};
+                        additionalData[field] = data[actualFieldValues[i]];
+                    }
+                });
+            }
+            return additionalData;
         },
 
     })

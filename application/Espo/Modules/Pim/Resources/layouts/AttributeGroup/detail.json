@@ -5,18 +5,18 @@
         "rows": [
             [
                 {
-                    "name": "isActive"
-                },
-                {
-                    "name": "sortOrder"
-                }
-            ],
-            [
-                {
                     "name": "name"
                 },
                 {
                     "name": "code"
+                }
+            ],
+            [
+                {
+                    "name": "sortOrder"
+                },
+                {
+
                 }
             ],
             [

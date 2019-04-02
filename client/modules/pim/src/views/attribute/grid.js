@@ -22,6 +22,8 @@ Espo.define('pim:views/attribute/grid', 'views/base',
 
         template: 'pim:attribute/grid',
 
+        attributeValueModalView: 'pim:views/attribute/modals/attribute-value',
+
         gridLayout: null,
 
         mode: 'detail',
@@ -72,7 +74,7 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                     row.forEach(cell => {
                         let fieldDefs = cell.defs;
                         let viewName = fieldDefs.type !== 'bool' ? this.getFieldManager().getViewName(fieldDefs.type) : 'pim:views/fields/bool-required';
-                        this.createView(cell.name, viewName, {
+                        let options = {
                             mode: mode,
                             inlineEditDisabled: true,
                             model: this.model,
@@ -87,7 +89,9 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                             params: {
                                 required: fieldDefs.required
                             }
-                        }, (view) => {
+                        };
+                        this.prepareCellViewOptions(options, cell);
+                        this.createView(cell.name, viewName, options, (view) => {
                             view.listenToOnce(view, 'after:render', this.initInlineActions, view);
 
                             view.listenTo(view, 'edit', function () {
@@ -111,6 +115,8 @@ Espo.define('pim:views/attribute/grid', 'views/base',
             }, this)
         },
 
+        prepareCellViewOptions(options, cell) {},
+
         actionRemoveAttribute(id) {
             if (!id) {
                 return;
@@ -120,16 +126,16 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                 confirmText: this.translate('Unlink')
             }, function () {
                 this.notify('Unlinking...');
-                let productId = this.getParentView().model.id;
+                let productId = this.options.parentModel.id;
                 $.ajax({
                     url: `Product/${productId}/attributes`,
                     data: JSON.stringify({id: id}),
                     type: 'DELETE',
                     contentType: 'application/json',
                     success: function () {
-                        this.getParentView().updateGrid();
+                        this.model.trigger('updateAttributes');
                         this.notify('Unlinked', 'success');
-                        this.getParentView().model.trigger('after:unrelate', 'attributes');
+                        this.options.parentModel.trigger('after:unrelate', 'attributes');
                     }.bind(this),
                     error: function () {
                         this.notify('Error occurred', 'error');
@@ -190,7 +196,22 @@ Espo.define('pim:views/attribute/grid', 'views/base',
             });
         },
 
-        inlineEditSave(view) {
+        getAdditionalFieldData(view, data) {
+            let additionalData = false;
+            if (view.type === 'unit') {
+                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
+                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
+                actualFieldDefs.forEach((field, i) => {
+                    if (field) {
+                        additionalData = additionalData || {};
+                        additionalData[field] = data[actualFieldValues[i]];
+                    }
+                });
+            }
+            return additionalData;
+        },
+
+        inlineEditSave: function (view) {
             let data = view.fetch();
             let prev = view.initialAttributes;
 
@@ -203,6 +224,10 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                 value: data[view.name],
             };
             inputLanguageList.forEach(lang => item[`value${lang}`] = data[`${view.name}${lang}`] || null);
+            let additionalData = this.getAdditionalFieldData(view, data);
+            if (additionalData) {
+                item.data = additionalData;
+            }
             dataToSave.push(item);
 
             let attrs = false;
@@ -227,13 +252,13 @@ Espo.define('pim:views/attribute/grid', 'views/base',
             }
 
             this.notify('Saving...');
-            this.ajaxPutRequest(`Markets/Product/${this.getParentView().model.id}/attributes`, dataToSave)
+            this.ajaxPutRequest(`Markets/Product/${this.options.parentModel.id}/attributes`, dataToSave)
                 .then(response => {
-                    this.getParentView().updateGrid();
-                    this.getParentView().model.trigger('after:attributesSave');
+                    this.model.trigger('updateAttributes');
+                    this.options.parentModel.trigger('after:attributesSave');
                     this.notify('Saved', 'success');
+                    this.inlineCancelEdit(view, true);
                 });
-            this.inlineCancelEdit(view, true);
         },
 
         inlineCancelEdit(view, dontReset) {
@@ -276,10 +301,8 @@ Espo.define('pim:views/attribute/grid', 'views/base',
         },
 
         actionShowAttributeValueModal(name) {
-            let view = 'pim:views/attribute/modals/attribute-value';
-
             let attributeValueData = Espo.Utils.cloneDeep(this.initialData || []).find(item => item.attributeId === name);
-            this.createView('productAttributeValueModal', view, {
+            let options = {
                 name: name,
                 model: this.model,
                 attributeValueData: {
@@ -290,13 +313,15 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                     teamsIds: attributeValueData.teamsIds,
                     teamsNames: attributeValueData.teamsNames
                 },
-                productId: this.getParentView().model.id
-            }, view => {
-                this.listenTo(view, 'updateGrid', () => {
-                    this.getParentView().updateGrid();
-                });
+                parentModel: this.options.parentModel
+            };
+            this.prepareAttributeValueModalOptions(options, attributeValueData);
+            this.createView('productAttributeValueModal', this.attributeValueModalView, options, view => {
                 view.render();
             });
-        }
+        },
+
+        prepareAttributeValueModalOptions(options, attributeValueData) {}
+
     })
 );

@@ -125,7 +125,8 @@ Espo.define('pim:views/attribute/modals/attribute-value', 'views/modal',
             let inputLanguageList = (this.getConfig().get('inputLanguageList') || [])
             .map(lang => lang.split('_').reduce((prev, curr) => prev + Espo.utils.upperCaseFirst(curr.toLowerCase()), ''));
 
-            let data = this.getView(this.name).fetch();
+            let view = this.getView(this.name);
+            let data = view.fetch();
             if (data[this.name] === '') {
                 data[this.name] = null;
             }
@@ -134,13 +135,34 @@ Espo.define('pim:views/attribute/modals/attribute-value', 'views/modal',
                 value: data[this.name],
                 ...this.fetchSideFields()
             };
+
+            let additionalData = this.getAdditionalFieldData(view, data);
+            if (additionalData) {
+                item.data = additionalData;
+            }
+
             inputLanguageList.forEach(lang => item[`value${lang}`] = data[`${this.name}${lang}`] || null);
-            this.ajaxPutRequest(`Markets/Product/${this.options.productId}/attributes`, [item])
+            this.ajaxPutRequest(`Markets/Product/${this.options.parentModel.id}/attributes`, [item])
             .then(response => {
-                this.model.trigger('after:attributesSave');
-                this.trigger('updateGrid');
+                this.model.trigger('updateAttributes');
+                this.options.parentModel.trigger('after:attributesSave');
                 this.notify('Saved', 'success');
             });
+        },
+
+        getAdditionalFieldData(view, data) {
+            let additionalData = false;
+            if (view.type === 'unit') {
+                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
+                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
+                actualFieldDefs.forEach((field, i) => {
+                    if (field) {
+                        additionalData = additionalData || {};
+                        additionalData[field] = data[actualFieldValues[i]];
+                    }
+                });
+            }
+            return additionalData;
         },
 
         fetchSideFields() {

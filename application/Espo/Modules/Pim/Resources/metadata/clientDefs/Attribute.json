@@ -47,6 +47,24 @@
                 }
             },
             "typeValue": {
+                "readOnly": {
+                    "conditionGroup": [
+                        {
+                            "type": "and",
+                            "value": [
+                                {
+                                    "type": "isNotEmpty",
+                                    "attribute": "id"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "unit"
+                                }
+                            ]
+                        }
+                    ]
+                },
                 "visible": {
                     "conditionGroup": [
                         {
@@ -71,6 +89,11 @@
                                     "type": "equals",
                                     "attribute": "type",
                                     "value": "multiEnumMultiLang"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "unit"
                                 }
                             ]
                         }

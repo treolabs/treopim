@@ -9,7 +9,7 @@
         "product": "Produkt"
     },
     "labels": {
-        "Create ProductTypeBundle": "Produkttyp Bündel erstellen",
-        "Bundle Item": "Bundle-Artikel"
+        "Create ProductTypeBundle": "Produkttyp Bundle erstellen",
+        "Bundle Item": "Bündelartikel"
     }
 }

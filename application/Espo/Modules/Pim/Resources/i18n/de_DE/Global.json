@@ -2,8 +2,8 @@
   "scopeNames": {
     "ProductAttributeValue": "Produktattributwert",
     "ChannelProductAttributeValue": "Produktattributwert (kanalspezifisch)",
-    "Product": "Artikel",
-    "ProductFamily": "Artikel-Familien",
+    "Product": "Produkt",
+    "ProductFamily": "Produktfamilie",
     "Category": "Kategorie",
     "Packaging": "Verpackung",
     "Channel": "Kanal",
@@ -16,16 +16,17 @@
     "Settings": "Administration",
     "CategoryImage": "Kategoriebild",
     "AttributeGroup": "Attributgruppe",
-    "AssociatedProduct": "Zugehörige Produkte",
-    "Attribute": "Attribut",
+    "AssociatedProduct": "Assoziierte Produkte",
+    "Attribute": "Attribute",
     "Currency": "Währung",
-    "ProductSerie": "Product Serie"
+    "ProductSerie": "Product Serie",
+    "Catalog": "Katalog"
   },
   "scopeNamesPlural": {
     "ProductAttributeValue": "Produktattributwert",
     "ChannelProductAttributeValue": "Produktattributwert (kanalspezifisch)",
-    "Product": "Artikel",
-    "ProductFamily": "Artikel-Familien",
+    "Product": "Produkte",
+    "ProductFamily": "Produktfamilien",
     "Category": "Kategorien",
     "Packaging": "Verpackungen",
     "Channel": "Kanäle",
@@ -39,12 +40,13 @@
     "Settings": "Administration",
     "CategoryImage": "Kategoriebilder",
     "ActionHistoryRecord": "Aktionsgeschichte",
-    "Attribute": "Attribut",
+    "Attribute": "Attribute",
     "Currency": "Währung",
     "Dashboard": "Instrumententafel",
     "EmailAddress": "E-Mail Addresse",
     "ProductSerie": "Product Series",
-    "AssociatedProduct": "Zugehöriges Produkt"
+    "AssociatedProduct": "Assoziierte Produkt",
+    "Catalog": "Kataloge"
   },
   "fields": {
     "productFamily": "Artikel-Familien",
@@ -85,7 +87,7 @@
     "Channels": "Kanäle",
     "ProductsByStatus": "Produkte nach Status",
     "ProductsByTag": "Produkte nach Tag",
-    "ProductTypes": "Produkt typen",
+    "ProductTypes": "Produkttypen",
     "ProductStatusOverview": "Produktstatus Übersicht"
   },
   "exceptions": {
@@ -102,6 +104,8 @@
     "saving": "Sparen..."
   },
   "navMenuDelimiters": {
-    "_delimiter_393f8383": "Artikel"
+    "_delimiter_393f8383": "Artikel",
+    "Attribute": "Attribute",
+    "Product": "Produkte"
   }
 }

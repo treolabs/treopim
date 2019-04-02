@@ -6,7 +6,7 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="cell col-sm-6 form-group" data-name="attributeValue">
+                                <div class="cell col-sm-12 form-group" data-name="attributeValue">
                                     <label class="control-label" data-name="attributeValue">
                                         <span class="label-text">{{translate attributeName}}</span>
                                     </label>

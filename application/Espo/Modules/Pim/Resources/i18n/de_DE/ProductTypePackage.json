@@ -6,7 +6,8 @@
         "priceUnit": "Preiseinheit",
         "packingUnit": "Verpackungseinheit",
         "content": "Inhalt",
-        "packageProduct": "Produktpaket"
+        "packageProduct": "Produktpaket",
+        "measuringUnit": "Messeinheit"
     },
     "links": {
         "unit": "Einheit",

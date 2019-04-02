@@ -1,10 +1,10 @@
 {
     "fields": {
         "association": "Assoziation",
-        "relatedProduct": "Verwandtes Produkt",
+        "relatedProduct": "Assoziiertes Produkt",
         "bothDirections": "Beide Richtungen",
-        "backwardAssociation": "Rückwärts Assoziation",
-        "relatedProductImage": "Verwandte Produktbild",
+        "backwardAssociation": "Umgekehrte Assoziation",
+        "relatedProductImage": "Assoziiertes Produktbild",
         "mainProduct": "Hauptprodukt",
         "mainProductImage": "Hauptproduktbild"
     },
@@ -12,8 +12,8 @@
         "association": "Assoziation",
         "mainProduct": "Hauptprodukt",
         "mainProductImage": "Hauptproduktbild",
-        "relatedProduct": "Verwandtes Produkt",
-        "relatedProductImage": "Verwandte Produktbild"
+        "relatedProduct": "Assoziiertes Produkt",
+        "relatedProductImage": "Assoziiertes Produktbild"
     },
     "labels": {
         "Create AssociatedProduct": "Zugehöriges Produkt erstellen"

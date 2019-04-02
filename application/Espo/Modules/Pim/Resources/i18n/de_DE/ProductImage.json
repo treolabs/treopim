@@ -13,18 +13,18 @@
     "imagesMultiple": "mehrere Bilder",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
-    "name": "Name",
+    "name": "Code",
     "products": "Produkt",
     "scope": "Umfang",
     "sortOrder": "Reihenfolge der Sortierung",
-    "state": "Zustand",
+    "state": "Status",
     "alt": "alt"
   },
   "options": {
     "type": {
-      "File": "Typ. Datei",
-      "Link": "Typ. Link",
-      "Files": "Typ. Dateien"
+      "File": "Datei",
+      "Link": "Link",
+      "Files": "Dateien"
     },
     "state": {
       "uploaded": "hochgeladen",

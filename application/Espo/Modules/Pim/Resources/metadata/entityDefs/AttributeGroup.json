@@ -28,11 +28,17 @@
     "isActive": {
       "notNull": true,
       "type": "bool",
-      "default": false,
+      "default": true,
       "audited": false,
-      "readOnly": false,
+      "readOnly": true,
       "tooltip": false,
-      "isCustom": false
+      "isCustom": false,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutFiltersDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true
     },
     "createdAt": {
       "type": "datetime",

@@ -32,6 +32,14 @@ Espo.define('pim:views/attribute/fields/type-value', 'multilang:views/fields/arr
 
         editTemplate: 'pim:attribute/fields/type-value/edit',
 
+        typeTemplates: {
+            'unit': {
+                listTemplate: 'fields/enum/list',
+                detailTemplate: 'fields/enum/detail',
+                editTemplate: 'fields/enum/edit',
+            }
+        },
+
         events: _.extend({
             'click [data-action="addNewValue"]': function (e) {
                 e.stopPropagation();
@@ -66,6 +74,7 @@ Espo.define('pim:views/attribute/fields/type-value', 'multilang:views/fields/arr
                     this.resetValue();
                 }
                 this.setDisableMultiLang();
+                this.setMode(this.mode);
                 this.reRender();
             });
 
@@ -95,6 +104,14 @@ Espo.define('pim:views/attribute/fields/type-value', 'multilang:views/fields/arr
             });
         },
 
+        setMode: function (mode) {
+            this.mode = mode;
+            let property = mode + 'Template';
+            let type = this.model.get('type');
+            let templates = (type && type in this.typeTemplates) ? this.typeTemplates[type] : {};
+            this.template = templates[property] || this[property] || 'fields/' + Espo.Utils.camelCaseToHyphen(this.type) + '/' + this.mode;
+        },
+
         data() {
             let data = Dep.prototype.data.call(this);
             data.scope = this.model.name;
@@ -119,6 +136,28 @@ Espo.define('pim:views/attribute/fields/type-value', 'multilang:views/fields/arr
                 });
                 return group;
             });
+            data = this.modifyDataByType(data);
+            return data;
+        },
+
+        modifyDataByType(data) {
+            if (this.model.get('type') === 'unit') {
+                let options = Object.keys(this.getConfig().get('unitsOfMeasure') || {});
+                data.params.options = options;
+                let translatedOptions = {};
+                options.forEach(item => translatedOptions[item] = this.getLanguage().get('Global', 'measure', item));
+                data.translatedOptions = translatedOptions;
+                let value = this.model.get(this.name);
+                if (
+                    value !== null
+                    &&
+                    value !== ''
+                    ||
+                    value === '' && (value in (translatedOptions || {}) && (translatedOptions || {})[value] !== '')
+                ) {
+                    data.isNotEmpty = true;
+                }
+            }
             return data;
         },
 
@@ -175,7 +214,17 @@ Espo.define('pim:views/attribute/fields/type-value', 'multilang:views/fields/arr
                     data[name][index] = value;
                 });
             });
+            data = this.modifyFetchByType(data);
             return data;
+        },
+
+        modifyFetchByType(data) {
+            let fetchedData = data;
+            if (this.model.get('type') === 'unit') {
+                fetchedData = {};
+                fetchedData[this.name] = [this.$el.find(`[name="${this.name}"]`).val()];
+            }
+            return fetchedData;
         },
 
         validateRequired() {

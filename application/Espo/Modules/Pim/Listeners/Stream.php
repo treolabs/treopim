@@ -38,6 +38,7 @@ class Stream extends AbstractListener
      */
     public function afterActionList(array $data): array
     {
+        $data = $this->prepareDataForUserStream($data);
         $data = $this->injectAttributeType($data);
 
         return $data;
@@ -66,6 +67,45 @@ class Stream extends AbstractListener
                 foreach ($data['result']['list'] as $key => $item) {
                     if (isset($attributes[$item['attributeId']])) {
                         $data['result']['list'][$key]['attributeType'] = $attributes[$item['attributeId']];
+                    }
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Prepare data for user stream panel in dashlet
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function prepareDataForUserStream(array $data): array
+    {
+        if (!empty($data['result']['list']) && $data['params']['scope'] == 'User') {
+            // prepare notes ids
+            $noteIds = array_column($data['result']['list'], 'id');
+
+            if (!empty($noteIds)) {
+                // get notes attributeId field
+                $items = $this
+                    ->getEntityManager()
+                    ->getRepository('Note')
+                    ->select(['id', 'attributeId'])
+                    ->where(['id' => $noteIds])
+                    ->find()
+                    ->toArray();
+
+                if (!empty($items)) {
+                    $items = array_column($items, 'attributeId', 'id');
+
+                    // set attributeId field where needed in result
+                    foreach ($data['result']['list'] as $key => $value) {
+                        if (isset($items[$value['id']])) {
+                            $data['result']['list'][$key]['attributeId'] = $items[$value['id']];
+                        }
                     }
                 }
             }

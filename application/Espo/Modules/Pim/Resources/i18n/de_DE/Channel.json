@@ -2,7 +2,7 @@
   "fields": {
     "categories": "Kategorien",
     "description": "Beschreibung",
-    "currencies": "Währungen",
+    "currencies": "Währung",
     "category": "Kategorie",
     "catalog": "Katalog",
     "code": "Code",
@@ -13,7 +13,7 @@
     "descriptionEnUs": "Beschreibung EnUs",
     "descriptionEsEs": "Beschreibung EsEs",
     "descriptionFrFr": "Beschreibung FrFr",
-    "isActive": "Ist aktiv",
+    "isActive": "Aktiv",
     "nameDeDe": "Name DeDe",
     "nameEnUs": "Name EnUs",
     "nameEsEs": "Name EsEs",
@@ -22,7 +22,8 @@
     "createdBy": "erstellt von",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
-    "locales": "Lokale"
+    "locales": "Sprache"
+
   },
   "links": {
     "categories": "Kategorien",

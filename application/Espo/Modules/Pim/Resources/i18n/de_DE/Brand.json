@@ -8,7 +8,7 @@
         "descriptionEnUs": "Beschreibung EnUs",
         "descriptionEsEs": "Beschreibung EsEs",
         "descriptionFrFr": "Beschreibung FrFr",
-        "isActive": "Ist aktiv",
+        "isActive": "Aktiv",
         "modifiedAt": "geändert am",
         "modifiedBy": "geändert von",
         "nameDeDe": "Name DeDe",
@@ -17,6 +17,7 @@
         "nameFrFr": "Name FrFr",
         "products": "Produkte",
         "textTest": "Text Test"
+
     },
     "links": {
         "createdBy": "erstellt von",

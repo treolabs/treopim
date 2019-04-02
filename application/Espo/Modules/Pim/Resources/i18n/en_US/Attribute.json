@@ -25,6 +25,7 @@
       "int": "Int",
       "multiEnum": "Multi-Enum",
       "text": "Text",
+      "unit": "Unit",
       "url": "Url",
       "varchar": "Varchar",
       "varcharMultiLang": "Varchar Multi Lang",

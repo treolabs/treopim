@@ -25,6 +25,9 @@
       "type": "linkMultiple",
       "noLoad": true
     },
+    "data": {
+      "type": "jsonObject"
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true

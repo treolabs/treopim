@@ -25,6 +25,9 @@
     "teams": {
       "type": "linkMultiple",
       "view": "views/fields/teams"
+    },
+    "data": {
+      "type": "jsonObject"
     }
   },
   "links": {

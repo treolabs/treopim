@@ -102,7 +102,8 @@ Espo.define('pim:views/product/record/panels/channel-product-attribute-values', 
                                             type: attribute.attributeType,
                                             required: false,
                                             options: attribute.attributeTypeValue,
-                                            hiddenLocales: hiddenLocales
+                                            hiddenLocales: hiddenLocales,
+                                            measure: attribute.attributeType === 'unit' ? (attribute.attributeTypeValue || [])[0] : null
                                         },
                                         attributeIsMultiChannel: {
                                             type: 'bool',
@@ -122,6 +123,10 @@ Espo.define('pim:views/product/record/panels/channel-product-attribute-values', 
                                     };
 
                                     let data = Espo.Utils.cloneDeep(attribute);
+
+                                    if (Espo.Utils.isObject(attribute.attributeData)) {
+                                        Object.keys(attribute.attributeData).forEach(param => data[`attributeValue${Espo.Utils.upperCaseFirst(param)}`] = attribute.attributeData[param]);
+                                    }
 
                                     if (inputLanguageListKeys) {
                                         if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang'].indexOf(attribute.attributeType) > -1) {

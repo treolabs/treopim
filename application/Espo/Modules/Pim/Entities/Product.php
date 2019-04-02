@@ -138,7 +138,27 @@ class Product extends Base
             $locale = 'default';
         }
 
-        $this->productAttribute[$attributeId][$locale] = $value;
+        $this->productAttribute[$attributeId]['locales'][$locale] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set product attribute data
+     *
+     * @param string $attributeId
+     * @param string $field
+     * @param string $data
+     *
+     * @return Product
+     */
+    public function setProductAttributeData(string $attributeId, string $field, string $data): Product
+    {
+        if (!isset($this->productAttribute[$attributeId])) {
+            $this->productAttribute[$attributeId] = [];
+        }
+
+        $this->productAttribute[$attributeId]['data'][$field] = $data;
 
         return $this;
     }
@@ -166,6 +186,27 @@ class Product extends Base
 
             // global value
             $value = $attribute->get($key);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Get product attribute data
+     *
+     * @param string $attributeId
+     *
+     * @param string $field
+     * @return mixed
+     *
+     * @throws Error
+     */
+    public function getProductAttributeData(string $attributeId, string $field)
+    {
+        $value = null;
+
+        if (!empty($attribute = $this->getProductAttribute($attributeId)) && $attribute->hasField($field)) {
+            $value = $attribute->get($field);
         }
 
         return $value;

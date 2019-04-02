@@ -60,7 +60,7 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
             Dep.prototype.afterRender.call(this);
 
             if (this.mode === 'list') {
-                this.$el.find('img').css({'max-height': '120px'});
+                this.$el.find('img').css({'max-height': '120px', 'max-width': '100%'});
             }
         },
 

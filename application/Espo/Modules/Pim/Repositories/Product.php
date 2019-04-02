@@ -366,7 +366,7 @@ class Product extends \Espo\Core\Templates\Repositories\Base
                 continue;
             }
 
-            foreach ($values as $locale => $value) {
+            foreach ($values['locales'] as $locale => $value) {
                 if ($locale == 'default') {
                     $attributeValue->set('value', $value);
                 } else {
@@ -376,6 +376,13 @@ class Product extends \Espo\Core\Templates\Repositories\Base
                     $attributeValue->set("value$locale", $value);
                 }
             }
+
+            if (isset($values['data']) && !empty($values['data'])) {
+                foreach ($values['data'] as $field => $item) {
+                    $attributeValue->set($field, $item);
+                }
+            }
+
 
             $this->getEntityManager()->saveEntity($attributeValue, ['force' => true]);
         }

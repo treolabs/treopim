@@ -16,7 +16,7 @@
     "descriptionEnUs": "Beschreibung EnUs",
     "descriptionEsEs": "Beschreibung EsEs",
     "descriptionFrFr": "Beschreibung FrFr",
-    "isActive": "Ist aktiv",
+    "isActive": "Aktiv",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
     "nameDeDe": "NameDeDe",
@@ -25,7 +25,7 @@
     "nameFrFr": "Name FrFr",
     "products": "Produkte",
     "rootCategories": "Stammkategorien",
-    "scope": "Scope",
+    "scope": "Umfang",
     "teams": "Teams",
     "markupType": "Typ",
     "markupValue": "Wert"

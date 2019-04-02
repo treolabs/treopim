@@ -115,7 +115,8 @@ Espo.define('pim:views/product/modals/select-channel-attributes', 'views/modals/
                                     let data ={
                                         name: attribute.name,
                                         type: this.translate(attribute.type, this.scope, 'fields'),
-                                        value: attribute.value
+                                        value: attribute.value,
+                                        data: attribute.data
                                     };
 
                                     if (this.inputLanguageListKeys) {
@@ -186,6 +187,7 @@ Espo.define('pim:views/product/modals/select-channel-attributes', 'views/modals/
                             channelId: this.options.channelId,
                             productAttributeId: model.id,
                             value: model.get('value'),
+                            data: model.get('data'),
                         };
                         if (this.inputLanguageListKeys) {
                             this.inputLanguageListKeys.forEach(item => {

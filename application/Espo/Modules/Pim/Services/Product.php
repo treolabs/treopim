@@ -378,6 +378,7 @@ class Product extends AbstractService
                     'assignedUserName'        => $attributeValue->get('assignedUserName'),
                     'teamsIds'                => array_column($teamsData, 'id'),
                     'teamsNames'              => array_column($teamsData, 'name', 'id'),
+                    'data'                    => $attributeValue->get('data')
                 ];
 
                 // for multilang
@@ -466,6 +467,7 @@ class Product extends AbstractService
                     'attributeId'                    => $productAttribute->get('attributeId'),
                     'attributeName'                  => $productAttribute->get('attributeName'),
                     'attributeType'                  => $attribute->get('type'),
+                    'attributeData'                  => $item->get('data'),
                     'attributeIsRequired'            => $attributeIsRequired,
                     'attributeIsMultiChannel'        => $attributeIsMultiChannel,
                     'attributeGroupId'               => $attribute->get('attributeGroupId'),
@@ -545,6 +547,12 @@ class Product extends AbstractService
 
                     // set
                     $product->set($key, $value);
+                } elseif ($field != 'attributeId') {
+                    if (is_array($value) || is_object($value)) {
+                        $value = Json::encode($value);
+                    }
+
+                    $product->setProductAttributeData($row->attributeId, $field, $value);
                 }
             }
 
