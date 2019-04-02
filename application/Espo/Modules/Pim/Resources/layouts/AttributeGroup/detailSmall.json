@@ -1,0 +1,30 @@
+[
+    {
+        "label": "",
+        "style": "default",
+        "rows": [
+            [
+                {
+                    "name": "isActive"
+                },
+                {
+                    "name": "sortOrder"
+                }
+            ],
+            [
+                {
+                    "name": "name"
+                },
+                {
+                    "name": "code"
+                }
+            ],
+            [
+                {
+                    "name": "description",
+                    "fullWidth": true
+                }
+            ]
+        ]
+    }
+]

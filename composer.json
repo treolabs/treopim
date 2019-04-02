@@ -1,0 +1,32 @@
+{
+  "name": "treo-module/pim",
+  "authors": [
+    {
+      "name": "Roman Ratsun",
+      "email": "r.ratsun@treolabs.com"
+    },
+    {
+      "name": "Yuri Kondratskyi",
+      "email": "y.kondratskyi@treolabs.com"
+    },
+    {
+      "name": "Valeriy Shamota",
+      "email": "v.shamota@treolabs.com"
+    }
+  ],
+  "require": {
+    "treo/treopim": "^3.9.0",
+    "treo-module/treo-crm": "*",
+    "treo-module/coloredfields": "^1.5.1",
+    "treo-module/multilang": "^1.11.1"
+  },
+  "extra": {
+    "treoId": "Pim",
+    "name": {
+      "default": "PIM"
+    },
+    "description": {
+      "default": "PIM module for Treo Core."
+    }
+  }
+}

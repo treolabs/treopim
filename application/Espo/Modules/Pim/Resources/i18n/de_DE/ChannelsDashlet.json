@@ -1,0 +1,10 @@
+{
+  "fields": {
+    "catalog": "Katalog",
+    "products": "Produkte",
+    "active": "Aktiv",
+    "notActive": "Nicht aktiv",
+    "category": "Kategorie",
+    "name": "Name"
+  }
+}

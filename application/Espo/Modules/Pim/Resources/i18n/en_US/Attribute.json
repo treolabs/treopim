@@ -1,0 +1,65 @@
+{
+  "fields": {
+    "attributeGroup": "Attribute Group",
+    "productAttributes": "Product attributes",
+    "typeValue": "Values",
+    "isSystem": "Is system",
+    "type": "Attribute Type",
+    "code": "Code",
+    "name": "Attribute Name",
+    "products": "Products",
+    "productAttributeValues": "Product Attribute Values",
+    "productFamilyAttributes": "Product family attributes",
+    "channelProductAttributeValues": "Channel Product Attribute Values",
+    "isRequired": "Required",
+    "isMultiChannel": "Required for Channels"
+  },
+  "options": {
+    "type": {
+      "array": "Array",
+      "bool": "Boolean",
+      "date": "Date",
+      "datetime": "DateTime",
+      "enum": "Enum",
+      "float": "Float",
+      "int": "Int",
+      "multiEnum": "Multi-Enum",
+      "text": "Text",
+      "url": "Url",
+      "varchar": "Varchar",
+      "varcharMultiLang": "Varchar Multi Lang",
+      "textMultiLang": "Text Multi Lang",
+      "enumMultiLang": "Enum Multi Lang",
+      "multiEnumMultiLang": "Multi-Enum Multi Lang",
+      "arrayMultiLang": "Array Multi Lang",
+      "wysiwyg": "Wysiwyg",
+      "wysiwygMultiLang": "Wysiwyg Multi Lang"
+    }
+  },
+  "links": {
+    "attributeGroup": "Attribute Group",
+    "productAttributes": "Product attributes",
+    "products": "Products",
+    "productAttributeValues": "Product Attribute Values",
+    "productFamilyAttributes": "Product family attributes",
+    "channelProductAttributeValues": "Channel Product Attribute Values",
+    "productFamilies": "Product families"
+  },
+  "labels": {
+    "Create Attribute": "Create Attribute",
+    "productFamily": "Product Family",
+    "addNewValue": "Add new value"
+  },
+  "messages": {
+    "sameNumberOptions": "You must set the same number of options"
+  },
+  "filterLabels": {
+    "All": "All"
+  },
+  "exceptions": {
+    "You can not unlink product family attribute": "You can not unlink product family attribute",
+    "Attribute with such CODE already exist": "Attribute with such CODE already exist",
+    "Attribute is used in product families. Please, update product families first": "Attribute is used in product families. Please, update product families first",
+    "Attribute is used in products. Please, update products first": "Attribute is used in products. Please, update products first"
+  }
+}

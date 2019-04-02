@@ -1,0 +1,50 @@
+{
+    "controller": "controllers/record",
+    "iconClass": "fas fa-sitemap",
+    "boolFilterList": [
+        "onlyMy"
+    ],
+    "disabledMassActions": [
+        "merge"
+    ],
+    "views": {
+        "list": "pim:views/list",
+        "detail": "pim:views/product-family/detail"
+    },
+    "recordViews": {
+        "detail": "pim:views/product-family/record/detail",
+        "list": "pim:views/product-family/record/list"
+    },
+    "relationshipPanels": {
+        "attributes": {
+            "view": "pim:views/product-family/record/panels/attributes",
+            "selectAction": "selectRelatedEntity",
+            "selectBoolFilterList": ["notLinkedWithProductFamily"],
+            "layout": "listInProductFamily",
+            "rowActionsView": "pim:views/attribute/record/row-actions/relationship-no-view",
+            "sortBy": "attributeGroup",
+            "asc": true
+        },
+        "products": {
+            "view": "pim:views/product-family/record/panels/products",
+            "selectBoolFilterList": ["notLinkedWithProductFamily"],
+            "selectAction": "selectRelatedEntity",
+            "createAction": "createRelatedConfigured",
+            "rowActionsView": "views/record/row-actions/relationship-no-unlink"
+        }
+    },
+    "dynamicLogic": {
+        "fields": {
+            "productFamilyTemplate": {
+                "visible": {
+                    "conditionGroup": [
+                        {
+                            "type": "isEmpty",
+                            "attribute": "id"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

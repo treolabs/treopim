@@ -1,0 +1,38 @@
+[
+  {
+    "label": "",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "isActive"
+        },
+        {
+          "name": "code"
+        }
+      ],
+      [
+        {
+          "name": "catalog"
+        },
+        {
+          "name": "locales"
+        }
+      ],
+      [
+        {
+          "name": "name"
+        },
+        {
+          "name": "currencies"
+        }
+      ],
+      [
+        {
+          "name": "description",
+          "fullWidth": true
+        }
+      ]
+    ]
+  }
+]

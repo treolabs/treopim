@@ -1,0 +1,35 @@
+{
+    "fields": {
+        "packageProduct": {
+            "required": true,
+            "type": "link"
+        },
+        "measuringUnit": {
+            "type": "link",
+            "required": true
+        },
+        "content": {
+            "type": "float",
+            "required": true
+        },
+        "basicUnit": {
+            "type": "float",
+            "required": true
+        },
+        "packingUnit": {
+            "type": "varchar",
+            "required": false
+        }
+    },
+    "links": {
+        "packageProduct": {
+            "type": "belongsTo",
+            "foreign": "productTypePackages",
+            "entity": "Product"
+        },
+        "measuringUnit": {
+            "type": "belongsTo",
+            "entity": "MeasuringUnit"
+        }
+    }
+}

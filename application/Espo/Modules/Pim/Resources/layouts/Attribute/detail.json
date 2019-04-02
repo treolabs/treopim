@@ -1,0 +1,29 @@
+[
+    {
+        "label": "Overview",
+        "style": "default",
+        "rows": [
+            [
+                {
+                    "name": "type"
+                },
+                {
+                    "name": "code"
+                }
+            ],
+            [
+                {
+                    "name": "name"
+                },
+                {
+                    "name": "typeValue"
+                }
+            ],
+            [
+                {
+                    "name": "attributeGroup"
+                }
+            ]
+        ]
+    }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "name": "name",
+    "link": true
+  },
+  {
+    "name": "code"
+  },
+  {
+    "name": "catalog"
+  },
+  {
+    "name": "locales"
+  },
+  {
+    "name": "isActive"
+  }
+]

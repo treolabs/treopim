@@ -1,0 +1,35 @@
+{
+  "fields": {
+    "categories": "Categories",
+    "channelProductAttributeValues": "Channel product attribute values",
+    "description": "Description",
+    "isActive": "Active",
+    "channelProducts": "Product Channels",
+    "currencies": "Currencies",
+    "category": "Category",
+    "catalog": "Catalog",
+    "locales": "Locales",
+    "code": "Code",
+    "accounts": "Accounts"
+  },
+  "links": {
+    "categories": "Categories",
+    "channelProductAttributeValues": "Channel product attribute values",
+    "channelProducts": "Product Channels",
+    "accounts": "Accounts"
+  },
+  "labels": {
+    "Create Channel": "Create Channel"
+  },
+  "options": {
+    "type": {
+      "base": "Base",
+      "amazon": "Amazon",
+      "afterbuy": "Afterbuy"
+    }
+  },
+  "exceptions": {
+    "Category is required": "Category is required",
+    "Channel with such CODE already exist": "Channel with such CODE already exist"
+  }
+}

@@ -1,0 +1,68 @@
+[
+    {
+        "label": "",
+        "style": "default",
+        "rows": [
+            [
+                {
+                    "name": "name"
+                },
+                {
+                    "name": "type"
+                }
+            ],
+            [
+                {
+                    "name": "sku"
+                },
+                {
+                    "name": "configurableProduct"
+                }
+            ],
+            [
+                {
+                    "name": "isActive"
+                },
+                {
+                    "name": "productStatus"
+                }
+            ],
+            [
+                {
+                    "name": "mpn"
+                },
+                {
+                    "name": "ean"
+                }
+            ],
+            [
+                {
+                    "name": "productFamily"
+                },
+                false
+            ],
+            [
+                {
+                    "name": "tax"
+                },
+                {
+                    "name": "packaging"
+                }
+            ],
+            [
+                {
+                    "name": "amount"
+                },
+                {
+                    "name": "tag"
+                }
+            ],
+            [
+                {
+                    "name": "brand"
+                },
+                false
+            ]
+        ]
+    }
+]

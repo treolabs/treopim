@@ -1,0 +1,11 @@
+{
+  "simpleProduct": {
+    "name": "Simple Product"
+  },
+  "bundleProduct": {
+    "name": "Bundle Product"
+  },
+  "packageProduct": {
+    "name": "Package Product"
+  }
+}

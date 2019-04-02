@@ -1,0 +1,9 @@
+{
+    "fields": {
+        "value": "Value",
+        "isActive": "Active"
+    },
+    "labels": {
+        "Create Tax": "Create Tax"
+    }
+}

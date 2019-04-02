@@ -1,0 +1,49 @@
+[
+    {
+        "label": "",
+        "style": "default",
+        "rows": [
+            [
+                {
+                    "name": "type",
+                    "fullWidth": true
+                }
+            ],
+            [
+                {
+                    "name": "image",
+                    "fullWidth": true
+                }
+            ],
+            [
+                {
+                    "name": "imagesMultiple",
+                    "fullWidth": true
+                }
+            ],
+            [
+                {
+                    "name": "imageLink",
+                    "fullWidth": true
+                }
+            ],
+            [
+                {
+                    "name": "name"
+                },
+                {
+                    "name": "alt"
+                }
+            ],
+            [
+                {
+                    "name": "scope"
+                },
+                {
+                    "name": "channels",
+                    "view": "pim:views/product-image/fields/channels"
+                }
+            ]
+        ]
+    }
+]

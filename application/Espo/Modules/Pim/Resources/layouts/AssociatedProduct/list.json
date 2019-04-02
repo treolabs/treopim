@@ -1,0 +1,19 @@
+[
+    {
+        "name": "association"
+    },
+    {
+        "name": "mainProductImage",
+        "notSortable": true
+    },
+    {
+        "name": "mainProduct"
+    },
+    {
+        "name": "relatedProductImage",
+        "notSortable": true
+    },
+    {
+        "name": "relatedProduct"
+    }
+]

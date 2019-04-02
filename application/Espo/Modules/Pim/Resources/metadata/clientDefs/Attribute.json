@@ -1,0 +1,111 @@
+{
+    "controller": "controllers/record",
+    "iconClass": "fas fa-sort-amount-down",
+    "boolFilterList": [
+        "onlyMy",
+        "notLinkedWithProductFamily",
+        "notLinkedWithProduct"
+    ],
+    "hiddenBoolFilterList": [
+        "notLinkedWithProductFamily",
+        "notLinkedWithProduct"
+    ],
+    "disabledMassActions": [
+        "merge"
+    ],
+    "views": {
+        "list": "pim:views/list",
+        "detail": "pim:views/attribute/detail"
+    },
+    "recordViews": {
+        "detail": "pim:views/attribute/record/detail",
+        "list": "pim:views/attribute/record/list"
+    },
+    "relationshipPanels": {
+        "productFamilies": {
+            "layout": "listForProductFamilyInAttributes",
+            "label": "productFamily",
+            "view": "pim:views/attribute/record/panels/product-family-attributes",
+            "rowActionsView": "views/record/row-actions/relationship-unlink-only",
+            "selectAction": "selectRelatedEntity",
+            "selectListLayout": "listForSelectProductFamilyInAttribute",
+            "selectBoolFilterList": [
+                "notLinkedWithAttribute"
+            ]
+        }
+    },
+    "dynamicLogic": {
+        "fields": {
+            "type": {
+                "readOnly": {
+                    "conditionGroup": [
+                        {
+                            "type": "isNotEmpty",
+                            "attribute": "id"
+                        }
+                    ]
+                }
+            },
+            "typeValue": {
+                "visible": {
+                    "conditionGroup": [
+                        {
+                            "type": "or",
+                            "value": [
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "enum"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "multiEnum"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "enumMultiLang"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "multiEnumMultiLang"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "required": {
+                    "conditionGroup": [
+                        {
+                            "type": "or",
+                            "value": [
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "enum"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "multiEnum"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "enumMultiLang"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "type",
+                                    "value": "multiEnumMultiLang"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

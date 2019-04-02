@@ -1,0 +1,49 @@
+{
+  "fields": {
+    "image": "Bild",
+    "size": "Größe",
+    "width": "Breite",
+    "height": "Höhe",
+    "imageType": "Bildtyp",
+    "channels": "Kanäle",
+    "type": "Typ",
+    "imageLink": "Bildlink",
+    "createdAt": "erstellt am",
+    "createdBy": "erstellt von",
+    "imagesMultiple": "mehrere Bilder",
+    "modifiedAt": "geändert am",
+    "modifiedBy": "geändert von",
+    "name": "Name",
+    "products": "Produkt",
+    "scope": "Umfang",
+    "sortOrder": "Reihenfolge der Sortierung",
+    "state": "Zustand",
+    "alt": "alt"
+  },
+  "options": {
+    "type": {
+      "File": "Typ. Datei",
+      "Link": "Typ. Link",
+      "Files": "Typ. Dateien"
+    },
+    "state": {
+      "uploaded": "hochgeladen",
+      "processed": "bearbeitet"
+    },
+    "scope": {
+      "Global": "Global",
+      "Channel": "Kanal"
+    }
+  },
+  "links": {
+    "channels": "Kanäle",
+    "createdBy": "erstellt von",
+    "image": "Bild",
+    "imagesMultiple": "mehrere Bilder",
+    "modifiedBy": "geändert von",
+    "products": "Produkte"
+  },
+  "labels": {
+    "Create ProductImage": "Produktbild erstellen"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "controller": "controllers/record",
+  "iconClass": "far fa-window-restore",
+  "boolFilterList": [
+    "onlyMy"
+  ]
+}

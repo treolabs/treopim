@@ -1,0 +1,16 @@
+[
+  {
+    "name": "name",
+    "link": true
+  },
+  {
+    "name": "code",
+    "notSortable": true
+  },
+  {
+    "name": "isMultiChannel"
+  },
+  {
+    "name": "isRequired"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "custom": {
+    "Attribute": "Attribute"
+  },
+  "fields": {
+    "name": "Id",
+    "productAttribute": "Product attribute",
+    "product": "Product",
+    "attribute": "Attribute",
+    "value": "Value"
+  },
+  "links": {
+    "productAttribute": "Product attribute",
+    "product": "Product",
+    "attribute": "Attribute"
+  },
+  "labels": {
+    "Create ProductAttributeValue": "Create Attribute Value"
+  },
+  "exceptions": {
+    "You have no ACL rights to read attribute values": "You have no ACL rights to read attribute values"
+  }
+}

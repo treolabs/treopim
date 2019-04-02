@@ -1,0 +1,12 @@
+{
+    "controller": "controllers/record",
+    "boolFilterList": [
+        "onlyMy"
+    ],
+    "disabledMassActions": [
+        "merge"
+    ],
+    "recordViews": {
+        "list": "pim:views/record/list"
+    }
+}

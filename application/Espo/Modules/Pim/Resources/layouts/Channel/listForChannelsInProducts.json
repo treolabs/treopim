@@ -1,0 +1,23 @@
+[
+  {
+    "name": "name",
+    "link": true,
+    "notSortable": true
+  },
+  {
+    "name": "code",
+    "notSortable": true
+  },
+  {
+    "name": "catalog",
+    "notSortable": true
+  },
+  {
+    "name": "category",
+    "notSortable": true
+  },
+  {
+    "name": "isActive",
+    "notSortable": true
+  }
+]

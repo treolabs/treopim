@@ -1,0 +1,78 @@
+{
+  "fields": {
+    "attributeGroup": "Attributgruppe",
+    "code": "Code",
+    "name": "Attributname",
+    "channelProductAttributeValues": "Attributwerte des Produktkanals",
+    "isRequired": "Erforderlich",
+    "isMultiChannel": "Erforderlich für Channels",
+    "createdAt": "erstellt am",
+    "createdBy": "erstellt von",
+    "isSystem": "Ist das System",
+    "modifiedAt": "geändert am",
+    "modifiedBy": "geändert von",
+    "nameDeDe": "Name DeDe",
+    "nameEnUs": "Name EnUs",
+    "nameEsEs": "Name EsEs",
+    "nameFrFr": "Name FrFr",
+    "productAttributes": "Produktattribute",
+    "productAttributeValues": "Werte des Produktattributes",
+    "productFamilyAttributes": "Attribute der Produktfamilie",
+    "products": "Produkte",
+    "typeValue": "Werttyp",
+    "typeValueDeDe": "Werttyp DeDe",
+    "typeValueEnUs": "Werttyp EnUs",
+    "typeValueEsEs": "Werttyp EsEs",
+    "typeValueFrFr": "Werttyp FrFr",
+    "type": "Typ"
+  },
+  "options": {
+    "type": {
+      "array": "Array",
+      "bool": "Bool",
+      "date": "Datum",
+      "datetime": "Datum Zeit",
+      "enum": "enum",
+      "float": "float",
+      "int": "int",
+      "multiEnum": "multiEnum",
+      "text": "text",
+      "url": "url",
+      "varchar": "varchar",
+      "varcharMultiLang": "varcharMultiLang",
+      "textMultiLang": "textMultiLang",
+      "enumMultiLang": "enumMultiLang",
+      "multiEnumMultiLang": "multiEnumMultiLang",
+      "arrayMultiLang": "ArrayMultiLang",
+      "wysiwyg": "Wysiwyg",
+      "wysiwygMultiLang": "Wysiwyg Multi Lang"
+    }
+  },
+  "links": {
+    "attributeGroup": "Attributgruppe",
+    "createdBy": "erstellt von",
+    "modifiedBy": "geändert von",
+    "products": "Produkte",
+    "productAttributes": "Produktattribute",
+    "productAttributeValues": "Werte der Produktattribute",
+    "productFamilyAttributes": "Attribute der Produktfamilie",
+    "channelProductAttributeValues": "Kanal von",
+    "productFamilies": "Produktfamilien"
+  },
+  "labels": {
+    "Create Attribute": "Attribut erstellen",
+    "productFamily": "Produktfamilie"
+  },
+  "messages": {
+    "sameNumberOptions": "Die gleiche Anzahl von Optionen"
+  },
+  "filterLabels": {
+    "All": "Alle"
+  },
+  "exceptions": {
+    "You can not unlink product family attribute": "Sie können das Produktfamilienattribut nicht aufheben",
+    "Attribute with such CODE already exist": "Das Attribut mit einem solchen CODE existiert bereits",
+    "Attribute is used in product families. Please, update product families first": "Das Attribut wird in den Produktfamilien verwendet. Bitte aktualisieren Sie zuerst die Produktfamilien",
+    "Attribute is used in products. Please, update products first": "Das Attribut wird in den Produkten verwendet. Bitte aktualisieren Sie zuerst die Produkte"
+  }
+}

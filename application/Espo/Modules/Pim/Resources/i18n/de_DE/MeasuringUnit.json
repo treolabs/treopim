@@ -1,0 +1,9 @@
+{
+    "fields": {
+        "value": "Wert",
+        "unit": "Einheit"
+    },
+    "labels": {
+        "Create MeasuringUnit": "Messeinheit erstellen"
+    }
+}

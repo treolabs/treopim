@@ -1,0 +1,15 @@
+{
+  "fields": {
+    "isActive": "Active",
+    "category": "Category"
+  },
+  "links": {
+    "channels": "Channels"
+  },
+  "labels": {
+    "Create Catalog": "Create Catalog"
+  },
+  "exceptions": {
+    "Catalog cannot be deleted": "Catalog cannot be deleted. There are few channels that use current catalog."
+  }
+}

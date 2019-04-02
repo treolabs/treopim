@@ -1,0 +1,15 @@
+{
+  "fields": {
+    "isActive": "Aktiv",
+    "category": "Kategorie"
+  },
+  "links": {
+    "channels": "Kanäle"
+  },
+  "labels": {
+    "Create Catalog": "Katalog erstellen"
+  },
+  "exceptions": {
+    "Catalog cannot be deleted": "Katalog kann nicht gelöscht werden. Es gibt wenige Kanäle, die den aktuellen Katalog verwenden."
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "fields": {
+        "product": "Artikel",
+        "bundleProduct": "Bündelprodukt",
+        "amount": "Menge"
+    },
+    "links": {
+        "bundleProduct": "Bündelprodukt",
+        "product": "Produkt"
+    },
+    "labels": {
+        "Create ProductTypeBundle": "Produkttyp Bündel erstellen",
+        "Bundle Item": "Bundle-Artikel"
+    }
+}

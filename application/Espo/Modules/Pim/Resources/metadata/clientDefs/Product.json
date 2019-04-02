@@ -1,0 +1,164 @@
+{
+    "controller": "controllers/record",
+    "iconClass": "fas fa-box-open",
+    "quickCreate": true,
+    "navigateToEntityAfterQuickCreate": true,
+    "quickCreateOptions": {
+        "fullFormDisabled": true
+    },
+    "boolFilterList": [
+        "onlyMy",
+        "notEntity",
+        "notAssociatedProducts",
+        "onlySimple",
+        "notBundledProducts",
+        "notLinkedWithOrder",
+        "notLinkedWithChannel",
+        "notLinkedWithWarehouse",
+        "notLinkedWithBrand",
+        "notLinkedWithProductFamily",
+        "notLinkedWithPackaging",
+        "withoutAssociatedProducts",
+        "withoutAnyCategory",
+        "withoutProductAttributes",
+        "withoutImageAssets",
+        "notLinkedWithCategory",
+        "notLinkedWithProductSerie"
+    ],
+    "hiddenBoolFilterList": [
+        "notEntity",
+        "notAssociatedProducts",
+        "onlySimple",
+        "notBundledProducts",
+        "notLinkedWithOrder",
+        "notLinkedWithChannel",
+        "notLinkedWithWarehouse",
+        "notLinkedWithBrand",
+        "notLinkedWithProductFamily",
+        "notLinkedWithPackaging",
+        "notLinkedWithCategory",
+        "notLinkedWithProductSerie"
+    ],
+    "disabledMassActions": [
+        "merge"
+    ],
+    "views": {
+        "list": "pim:views/product/list",
+        "detail": "pim:views/product/detail"
+    },
+    "recordViews": {
+        "list": "pim:views/product/record/list",
+        "detail": "pim:views/product/record/detail",
+        "search": "pim:views/product/record/search"
+    },
+    "massRelationView": "pim:views/product/modals/select-entity-and-records",
+    "relationshipPanels": {
+        "attributes": {
+            "label": "Product Attributes",
+            "view": "pim:views/product/record/panels/attributes",
+            "createAction": "createRelatedConfigured",
+            "selectAction": "selectAttribute",
+            "aclScopesList": ["ProductAttributeValue"]
+        },
+        "categories": {
+            "view": "pim:views/product/record/panels/categories",
+            "createAction": "createRelatedConfigured",
+            "selectAction": "selectRelatedEntity",
+            "selectBoolFilterList": ["onlyActive", "notLinkedWithProduct", "onlyChildCategory"],
+            "listLayout": "listCategoryInProduct"
+        },
+        "productImages": {
+            "label": "Image",
+            "view": "pim:views/product/record/panels/product-images",
+            "recordListView": "pim:views/product-image/record/list-in-product",
+            "modalDetailView": "pim:views/product-image/modals/detail-in-product",
+            "modalEditView": "pim:views/product-image/modals/edit-in-product",
+            "layout": "listForProductImagesInProduct",
+            "detailLayout": "detailForProductImagesInProduct",
+            "createAction": "createRelatedProductImage",
+            "selectAction": "selectRelatedEntity",
+            "selectBoolFilterList": ["notLinkedWithProduct"],
+            "recordsPerPage": 200
+        },
+        "associatedMainProducts": {
+            "view": "pim:views/product/record/panels/associated-main-product",
+            "label": "Associated Products",
+            "rowActionsView": "pim:views/associated-product/record/row-actions/edit-and-remove-in-product",
+            "select": false,
+            "aclScopesList": ["Association"]
+        },
+        "productTypeBundles": {
+            "label": "Items",
+            "view": "pim:views/product/record/panels/product-bundles",
+            "selectAction": "selectRelatedEntity",
+            "selectBoolFilterList": ["onlySimple", "onlyActive", "notEntity", "notBundledProducts"]
+        },
+        "productTypePackages": {
+            "label": "Package Details",
+            "view": "pim:views/product/record/panels/product-packages"
+        }
+    },
+    "bottomPanels": {
+        "detail": [
+            {
+                "name": "itemInProducts",
+                "label": "Item in Products",
+                "view": "pim:views/product/record/panels/item-in-products",
+                "layout": "listForItemInProducts",
+                "rowActionsView": "views/record/row-actions/empty",
+                "sortBy": "type",
+                "asc": true,
+                "order": 10
+            },
+            {
+                "name": "Channels",
+                "label": "Channels",
+                "layout": "listForChannelsInProducts",
+                "view": "pim:views/product/record/panels/channel-products",
+                "order": 10,
+                "aclScopesList": ["Channel"]
+            },
+            {
+                "name": "channelProductAttributeValues",
+                "label": "Product Channel Attributes",
+                "view": "pim:views/product/record/panels/channel-product-attribute-values",
+                "aclScopesList": ["Attribute", "Channel"],
+                "rowActionsView": "pim:views/channel-product-attribute-value/record/row-actions/multi-channel-not-remove"
+            }
+        ]
+    },
+    "optionalBottomPanels": {
+        "itemInProducts": [
+            {
+                "field": "type",
+                "value": "simpleProduct"
+            }
+        ],
+        "productTypePackages": [
+            {
+                "field": "type",
+                "value": "packageProduct"
+            }
+        ],
+        "productTypeBundles": [
+            {
+                "field": "type",
+                "value": "bundleProduct"
+            }
+        ]
+    },
+    "dynamicLogic": {
+        "fields": {
+            "type": {
+                "readOnly": {
+                    "conditionGroup": [
+                        {
+                            "type": "isNotEmpty",
+                            "attribute": "id"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

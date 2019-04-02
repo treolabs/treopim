@@ -1,0 +1,42 @@
+[
+  {
+    "label": "Overview",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "products"
+        },
+        {
+        "name": "alt"
+        }
+      ],
+      [
+        {
+          "name": "type"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      [
+        {
+          "name": "image"
+        },
+        false
+      ],
+      [
+        {
+          "name": "imagesMultiple",
+          "fullWidth": true
+        }
+      ],
+      [
+        {
+          "name": "imageLink",
+          "fullWidth": true
+        }
+      ]
+    ]
+  }
+]

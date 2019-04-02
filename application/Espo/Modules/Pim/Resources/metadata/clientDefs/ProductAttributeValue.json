@@ -1,0 +1,12 @@
+{
+    "controller": "pim:controllers/product-attribute-value",
+    "boolFilterList": [
+        "onlyMy"
+    ],
+    "disabledMassActions": [
+        "merge"
+    ],
+    "recordViews": {
+        "list": "pim:views/record/list"
+    }
+}

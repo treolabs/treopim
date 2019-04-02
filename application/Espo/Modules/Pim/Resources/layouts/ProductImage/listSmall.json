@@ -1,0 +1,27 @@
+[
+    {
+        "name": "image",
+        "notSortable": true
+    },
+    {
+        "name": "state"
+    },
+    {
+        "name": "name"
+    },
+    {
+        "name": "alt"
+    },
+    {
+        "name": "width"
+    },
+    {
+        "name": "height"
+    },
+    {
+        "name": "size"
+    },
+    {
+        "name": "imageType"
+    }
+]

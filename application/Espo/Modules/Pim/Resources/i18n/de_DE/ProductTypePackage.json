@@ -1,0 +1,21 @@
+{
+    "fields": {
+        "basicUnit": "Basiseinheit",
+        "unit": "Einheit",
+        "product": "Produkt",
+        "priceUnit": "Preiseinheit",
+        "packingUnit": "Verpackungseinheit",
+        "content": "Inhalt",
+        "packageProduct": "Produktpaket"
+    },
+    "links": {
+        "unit": "Einheit",
+        "basicUnit": "Basiseinheit",
+        "packingUnit": "Verpackungseinheit",
+        "product": "Produkt",
+        "content": "Inhalt"
+    },
+    "labels": {
+        "Create ProductTypePackage": "Produkttyp Paket erstellen"
+    }
+}

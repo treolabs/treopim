@@ -1,0 +1,40 @@
+[
+  {
+    "label": "Overview",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "categories"
+        },
+        false
+      ],
+      [
+        {
+          "name": "type"
+        },
+        {
+          "name": "name"
+        }
+      ],
+      [
+        {
+          "name": "image"
+        },
+        false
+      ],
+      [
+        {
+          "name": "imagesMultiple",
+          "fullWidth": true
+        }
+      ],
+      [
+        {
+          "name": "imageLink",
+          "fullWidth": true
+        }
+      ]
+    ]
+  }
+]

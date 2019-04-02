@@ -1,0 +1,39 @@
+{
+  "fields": {
+    "image": "Image",
+    "products": "Products",
+    "state": "State",
+    "size": "Size",
+    "width": "Width",
+    "height": "Height",
+    "imageType": "Image Type",
+    "name": "Code",
+    "scope": "Scope",
+    "channels": "Channels",
+    "type": "Type",
+    "imageLink": "Image Link",
+    "imagesMultiple": "Multiple images",
+    "alt": "Alt"
+  },
+  "options": {
+    "type": {
+      "File": "File",
+      "Link": "Link"
+    },
+    "state": {
+      "uploaded": "uploaded",
+      "processed": "processed"
+    },
+    "scope": {
+      "Global": "Global",
+      "Channel": "Channel"
+    }
+  },
+  "links": {
+    "products": "Products",
+    "channels": "Channels"
+  },
+  "labels": {
+    "Create ProductImage": "Create Product Image"
+  }
+}

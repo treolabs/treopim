@@ -1,0 +1,17 @@
+{
+    "fields": {
+        "product": "Product",
+        "packageProduct": "Package Product",
+        "unit": "Unit",
+        "content": "Content",
+        "basicUnit": "Basic unit",
+        "packingUnit": "Packing unit",
+        "measuringUnit": "Measuring Unit"
+    },
+    "links": {
+        "product": "Product"
+    },
+    "labels": {
+        "Create ProductTypePackage": "Create ProductType Package"
+    }
+}

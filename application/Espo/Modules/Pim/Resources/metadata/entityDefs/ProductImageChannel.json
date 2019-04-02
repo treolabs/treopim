@@ -1,0 +1,13 @@
+{
+  "fields": {
+    "productId": {
+      "type": "varchar"
+    },
+    "productImageId": {
+      "type": "varchar"
+    },
+    "channelId": {
+      "type": "varchar"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "fields": {
+    "value": {
+      "type": "text",
+      "rows": 4,
+      "lengthOfCut": 400,
+      "isMultilang": true
+    },
+    "channel": {
+      "type": "link"
+    },
+    "productAttribute": {
+      "type": "link"
+    },
+    "ownerUser": {
+      "type": "link",
+      "required": true,
+      "view": "views/fields/owner-user"
+    },
+    "assignedUser": {
+      "type": "link",
+      "required": true,
+      "view": "views/fields/assigned-user"
+    },
+    "teams": {
+      "type": "linkMultiple",
+      "view": "views/fields/teams"
+    }
+  },
+  "links": {
+    "channel": {
+      "type": "belongsTo",
+      "foreign": "channelProductAttributeValues",
+      "entity": "Channel"
+    },
+    "productAttribute": {
+      "type": "belongsTo",
+      "foreign": "channelProductAttributes",
+      "entity": "ProductAttributeValue"
+    },
+    "ownerUser": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "assignedUser": {
+      "type": "belongsTo",
+      "entity": "User"
+    },
+    "teams": {
+      "type": "hasMany",
+      "entity": "Team",
+      "relationName": "EntityTeam",
+      "layoutRelationshipsDisabled": true
+    }
+  }
+}
