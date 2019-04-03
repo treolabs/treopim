@@ -202,17 +202,19 @@ class Product extends AbstractService
                     $entity->set("mainProductId", $mainProductId);
                     $entity->set("relatedProductId", $relatedProductId);
 
-                    $this->getEntityManager()->saveEntity($entity);
-
                     // for backward association
                     if (!empty($backwardAssociationId = $association->get('backwardAssociationId'))) {
-                        $entity = $repository->get();
-                        $entity->set("associationId", $backwardAssociationId);
-                        $entity->set("mainProductId", $relatedProductId);
-                        $entity->set("relatedProductId", $mainProductId);
+                        $entity->set('backwardAssociationId', $backwardAssociationId);
 
-                        $this->getEntityManager()->saveEntity($entity);
+                        $backwardEntity = $repository->get();
+                        $backwardEntity->set("associationId", $backwardAssociationId);
+                        $backwardEntity->set("mainProductId", $relatedProductId);
+                        $backwardEntity->set("relatedProductId", $mainProductId);
+
+                        $this->getEntityManager()->saveEntity($backwardEntity);
                     }
+
+                    $this->getEntityManager()->saveEntity($entity);
                 }
             }
         }
