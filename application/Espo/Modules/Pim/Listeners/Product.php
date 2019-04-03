@@ -100,7 +100,8 @@ class Product extends \Treo\Listeners\AbstractListener
         $arrayTypes = ['array', 'arrayMultiLang', 'enum', 'enumMultiLang', 'multiEnum', 'multiEnumMultiLang'];
 
         // for value
-        if ($post['value'] != $attributeValue->get('value')) {
+        if ($post['value'] != $attributeValue->get('value')
+            || (isset($post['data']['unit']) && $post['data']['unit'] != $attributeValue->get('data')->unit)) {
             $result['fields'][] = $fieldName;
 
             if (in_array($attribute->get('type'), $arrayTypes)) {
@@ -111,7 +112,7 @@ class Product extends \Treo\Listeners\AbstractListener
 
             $result['attributes']['became'][$fieldName] = $post['value'];
 
-            if (isset($post['data'])) {
+            if (isset($post['data']['unit'])) {
                 $result['attributes']['was'][$fieldName . 'Unit'] = $attributeValue->get('data')->unit;
                 $result['attributes']['became'][$fieldName . 'Unit'] = $post['data']['unit'];
             }
