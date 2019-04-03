@@ -4,28 +4,25 @@
 
 ![anne](docs/_assets/zs_ft_19_01_2018_employee_eng2.png)
 
-TreoPIM is a single page application (SPA) with an API-centric architecture and flexible data model based on entities, entity attributes and relations of all kinds among them. TreoPIM allows you to gather and store all your product content in one place, enrich it and spread it to several channels like own online shop, amazon, eBay, online shops of your distributors, on a tablet or mobile application. TreoPIM will help you to structure and organize all your flexible data and get rid of excel mess. You can use TreoPIM together with EspoCRM as a single instance, so if you need both - a PIM and a CRM, TreoPIM is the best solution for you! 
+TreoPIM is a single page application (SPA) with an API-centric architecture and flexible data model based on entities, entity attributes and relations of all kinds among them. TreoPIM allows you to gather and store all your product content in one place, enrich it and spread it to several channels like own online shop, amazon, eBay, online shops of your distributors, on a tablet or mobile application. TreoPIM will help you to structure and organize all your flexible data and get rid of excel mess. 
 
-## Why TreoPIM?
+## What are the advantages of TreoPIM?
+- Many out-of-the-box features,
+- Free - 100% open source, licensed under GPLv3,
+- REST API,
+- Service-oriented architecture (SOA),
+- Responsive and user friendly UI,
+- Configurable (entities, relations, layouts, labels, navigation, dashboards),
+- Extensible with modules,
+- as well as all advantages of TreoCore.
 
-- **Extensible with Modules**
-- Really **quick Time-to-Market** and low implementation costs!
-- TreoPIM is 100% free open source solution licenced under GPLv3
-- TreoPIM is web based and thus platform independent
-- No limitations
-- Configurable, flexible and customizable
-- Based on modern Technologies
-- Modern software architecture it good code quality
-- Role-based permissions, even on field level
-- Flexible Data Modell
-- CRM functions included!
-- REST API
+## How does it work?
+
+![unctions_banne](docs/_assets/how_it_works_scheme_en.png)
 
 ## Functions
 
 TreoPIM comes with a lot of functions directly from the box.
-
-![unctions_banne](docs/_assets/how_it_works_scheme_en.png)
 
 | Basic functions     | Advanced functions |
 | --------------------------------- | -------------------------------- |
@@ -50,16 +47,20 @@ Want to know more about TreoPIM Technology please [visit our website](http://tre
 
 ## Integrations
 
-TreoPIM can be integration with any system, which are import and export channels. For example, most common way to use TreoPIM is together with you ERP System and several online shops.
+TreoPIM has a REST API and can be integrated with any third party system, channel or marketplace. 
 
-We are already working on the following connectors for export channels:
+We offer following integrations:
+- Data synchronisation with over 1000 Channels via channable.com
+- ODOO
+- SAP Business One,
+- Microsoft Dynamics NAV
+- Magento 2
+- Magento 1
+- Shopware 5
+- OXID eShop 6
+- and others
 
-|                      Icon                       | System     | Current State                         |
-| :---------------------------------------------: | ---------- | ------------------------------------- |
-| ![ystem_magento](docs/_assets/system_magento1.png) | Magento 1  | Connector is currently in development |
-| ![ystem_magento](docs/_assets/system_magento2.png) | Magento 2  | Connector is currently in development |
-|      ![ystem_oxi](docs/_assets/system_oxid.png)      | OXID eShop | Connector is currently in development |
-|  ![ystem_shopwar](docs/_assets/system_shopware.png)  | Shopware   | Connector is currently in development |
+please ask, if you want to know more.
 
 ### Documentation
 
