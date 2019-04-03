@@ -68,21 +68,21 @@ We offer following integrations:
 
 please ask, if you want to know more.
 
-### Documentation
+## Documentation
 
 - Documentation for users is available [here](docs/).
 - Documentation for administrators is available [here](docs/en/administration/).
 - Documentation for developers is available [here](docs/).
 
-### Installation
+## Installation
 1. Install [TreoCore](https://github.com/treolabs/treocore#installation)
 2. Install Pim module by ModuleManager
 
-### License
+## License
 
 TreoPIM is published under the GNU GPLv3 [license](LICENSE.txt).
 
-### Support
+## Support
 
 - TreoPIM is a developed and supported by [TreoLabs GmbH](https://treolabs.com/).
 - Be a part of our [community](https://community.treolabs.com/).
