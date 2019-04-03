@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "treo/treopim": "^3.9.0",
+    "treolabs/treocore": "^3.12.0",
     "treo-module/treo-crm": "*",
     "treo-module/coloredfields": "^1.5.1",
     "treo-module/multilang": "^1.11.1"
