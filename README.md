@@ -4,7 +4,9 @@
 
 ![anne](docs/_assets/zs_ft_19_01_2018_employee_eng2.png)
 
-TreoPIM is a single page application (SPA) with an API-centric architecture and flexible data model based on entities, entity attributes and relations of all kinds among them. TreoPIM allows you to gather and store all your product content in one place, enrich it and spread it to several channels like own online shop, amazon, eBay, online shops of your distributors, on a tablet or mobile application. TreoPIM will help you to structure and organize all your flexible data and get rid of excel mess. 
+TreoPIM is an open-source product information management system (PIM), developed by TreoLabs GmbH, which is based on TreoCore Software platform and is developed by TreoLabs GmbH. TreoCore is distributed under GPLv3 License and is free. It has a lot of features right out-of-the box and thus is an excellent tool for cost-effective and timely application development.
+
+TreoPIM is a single page application (SPA) with an API-centric and service-oriented architecture (SOA). It has a flexible data model based on entities, entity attributes and relations of all kinds among them. TreoPIM allows you to gather and store all your product content in one place, enrich it and spread it to several channels like own online shop, amazon, eBay, online shops of your distributors, on a tablet or mobile application. TreoPIM will help you to structure and organize all your flexible data and get rid of excel mess. 
 
 ## What are the advantages of TreoPIM?
 - Many out-of-the-box features,
@@ -14,7 +16,7 @@ TreoPIM is a single page application (SPA) with an API-centric architecture and 
 - Responsive and user friendly UI,
 - Configurable (entities, relations, layouts, labels, navigation, dashboards),
 - Extensible with modules,
-- as well as all advantages of TreoCore.
+- as well as all [advantages of TreoCore](https://github.com/treolabs/treocore).
 
 ## How does it work?
 
@@ -22,18 +24,22 @@ TreoPIM is a single page application (SPA) with an API-centric architecture and 
 
 ## Functions
 
-TreoPIM comes with a lot of functions directly from the box.
+TreoPIM comes with a lot of functions directly from the box:
+- Associations,
+- Measure Units,
+- Channels,
+- Catalogs,
+- Category Trees and Categories,
+- Product Families,
+- Product Series,
+- Products,
+- Attribute Groups and Attributes,
+- Product and Category Images,
+- Assets,
+- Documents,
+- Portals,
+- and much more.
 
-| Basic functions     | Advanced functions |
-| --------------------------------- | -------------------------------- |
-| Simple Data Import and Data Export | Dashboards |
-| Channels                    | Knowledge Management |
-| Product Associations | Document Management |
-| Categorisation and Segmentation | Entity Configurator |
-| Product Families           | Team Work            |
-| Attribute Groups and Attributes | Roles and Team-Based Access |
-| Product Management     | Change history, Notifications and Comments |
-| Image Management         | and much more.. |
 
 Want to know more about TreoPIM functions? Please [visit our website](http://treopim.com)!
 
@@ -47,7 +53,7 @@ Want to know more about TreoPIM Technology please [visit our website](http://tre
 
 ## Integrations
 
-TreoPIM has a REST API and can be integrated with any third party system, channel or marketplace. 
+TreoPIM has a REST API and can be integrated with any third-party system, channel or marketplace. 
 
 We offer following integrations:
 - Data synchronisation with over 1000 Channels via channable.com
