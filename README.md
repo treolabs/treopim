@@ -19,6 +19,7 @@ TreoPIM is a single page application (SPA) with an API-centric and service-orien
 - as well as all [advantages of TreoCore](https://github.com/treolabs/treocore).
 
 ## How does it work?
+TreoPIM is an effective solution for storing, processing and managing your product information. All product data are extracted from different sources, classified, translated and enriched. TreoPIM helps you to publish easily the relevant data on different sales channels. 
 
 ![unctions_banne](docs/_assets/how_it_works_scheme_en.png)
 
@@ -45,7 +46,7 @@ Want to know more about TreoPIM functions? Please [visit our website](http://tre
 
 ## Technology
 
-TreoPIM is based on EspoCRM and uses PHP7 and backbone.js.
+TreoPIM is based on EspoCRM and uses PHP7,backbone.js, composer and some Zend Framework 3 libraries.
 
 ![Technology_schem](docs/_assets/technologie_scheme_eng.png)
 
@@ -64,9 +65,9 @@ We offer following integrations:
 - Magento 1
 - Shopware 5
 - OXID eShop 6
-- and others
+- and others.
 
-please ask, if you want to know more.
+Please ask, if you want to know more.
 
 ## Documentation
 
@@ -76,7 +77,7 @@ please ask, if you want to know more.
 
 ## Installation
 1. Install [TreoCore](https://github.com/treolabs/treocore#installation)
-2. Install Pim module by ModuleManager
+2. Install Pim module by ModuleManager.
 
 ## License
 
@@ -86,4 +87,4 @@ TreoPIM is published under the GNU GPLv3 [license](LICENSE.txt).
 
 - TreoPIM is a developed and supported by [TreoLabs GmbH](https://treolabs.com/).
 - Be a part of our [community](https://community.treolabs.com/).
-- To Contact Us please visit [TreoPIM Website](http://treopim.com).
+- To contact us please visit [TreoPIM Website](http://treopim.com).
