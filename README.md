@@ -64,9 +64,8 @@ We offer following integrations:
 - Magento 1
 - Shopware 5
 - OXID eShop 6
-- and others
-
-please ask, if you want to know more.
+- and others.
+Please ask, if you want to know more.
 
 ## Documentation
 
