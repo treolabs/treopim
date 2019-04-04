@@ -67,4 +67,33 @@ class AbstractPimListener extends AbstractListener
             $sth->execute();
         }
     }
+
+    /**
+     * Set productAttributeValue assignedUser and ownerUser from attribute
+     *
+     * @param array $attributeIds
+     * @param array $productIds
+     */
+    protected function setProductAttributeValueUser(array $attributeIds, array $productIds)
+    {
+        $attributes = $this
+            ->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->where([
+                'productId' => $productIds,
+                'attributeId' => $attributeIds
+            ])
+            ->find();
+
+        if (count($attributes) > 0) {
+            foreach ($attributes as $attribute) {
+                // set productAttributeValue assignedUser and ownerUser
+                $attribute->set('assignedUserId', $attribute->get('attribute')->get('assignedUserId'));
+                $attribute->set('ownerUserId', $attribute->get('attribute')->get('ownerUserId'));
+
+                // save productAttributeValue
+                $this->getEntityManager()->saveEntity($attribute);
+            }
+        }
+    }
 }

@@ -69,6 +69,22 @@ class Attribute extends AbstractPimListener
     }
 
     /**
+     * After action create entity
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    public function afterActionCreate(array $data): array
+    {
+        if (isset($data['data']->productsIds)) {
+            $this->setProductAttributeValueUser((array)$data['result']->id, $data['data']->productsIds);
+        }
+
+        return $data;
+    }
+
+    /**
      * @param array $data
      *
      * @return array

@@ -30,7 +30,7 @@ use Espo\Core\Utils\Util;
  *
  * @author r.ratsun@treolabs.com
  */
-class Product extends \Treo\Listeners\AbstractListener
+class Product extends AbstractPimListener
 {
 
     /**
@@ -70,6 +70,22 @@ class Product extends \Treo\Listeners\AbstractListener
             $note->set('attributeId', $data['post']['attributeId']);
 
             $this->getEntityManager()->saveEntity($note);
+        }
+
+        return $data;
+    }
+
+    /**
+     * After create link
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    public function afterActionCreateLink(array $data): array
+    {
+        if ($data['params']['link'] == 'attributes') {
+            $this->setProductAttributeValueUser($data['data']->ids, (array)$data['params']['id']);
         }
 
         return $data;
