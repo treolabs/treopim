@@ -63,7 +63,7 @@ class MysqlMapper extends \Treo\ORM\DB\MysqlMapper
     {
         if ($table == 'product_attribute_value') {
             // delete row
-            if (strpos($set, 'deleted = 1') !== false) {
+            if (strpos($set, 'deleted = 1') !== false || strpos($set, "`deleted` = '1'") !== false) {
                 return "DELETE FROM `{$table}` WHERE {$where}";
             }
         }
