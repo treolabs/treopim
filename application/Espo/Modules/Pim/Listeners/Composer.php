@@ -29,7 +29,7 @@ use Treo\Listeners\AbstractListener;
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Installer extends AbstractListener
+class Composer extends AbstractListener
 {
 
     /**
@@ -37,9 +37,11 @@ class Installer extends AbstractListener
      *
      * @param array $data
      */
-    public function afterInstallSystem(array $data)
+    public function afterInstallModule(array $data)
     {
-        $this->createSystemProductFamily();
+        if (!empty($data['id']) && $data['id'] == 'Pim') {
+            $this->createSystemProductFamily();
+        }
     }
 
     /**
