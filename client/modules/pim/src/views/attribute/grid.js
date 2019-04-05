@@ -162,6 +162,7 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                 this.initialAttributes = this.model.getClonedAttributes();
                 this.getParentView().hideInlineLinks(this);
                 this.reRender();
+                this.trigger('inline-edit-on');
             });
             saveLink.on('click', () => {
                 this.getParentView().inlineEditSave(this);
