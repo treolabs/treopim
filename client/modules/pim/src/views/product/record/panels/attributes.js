@@ -287,22 +287,12 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
             return this.getView('grid').attributes || [];
         },
 
-        checkAttributeChanges(attr) {
+        checkAttributeChanges(values) {
             let check = false;
             let prev = this.getInitAttributes();
-            if (attr.value === '') {
-                attr.value = null;
+            if (Espo.Utils.isObject(values)) {
+                check = Object.keys(values).some(item => !_.isEqual(prev[item], values[item]));
             }
-            if (!_.isEqual(prev[attr.attributeId], attr.value)) {
-                check = true;
-            }
-            let inputLanguageList = (this.getConfig().get('inputLanguageList') || [])
-                .map(lang => lang.split('_').reduce((prev, curr) => prev + Espo.utils.upperCaseFirst(curr.toLowerCase()), ''));
-            inputLanguageList.forEach(lang => {
-                if (typeof prev[`${attr.attributeId}${lang}`] !== 'undefined' && !_.isEqual(prev[`${attr.attributeId}${lang}`], attr[`value${lang}`])) {
-                    check = true;
-                }
-            });
             return check;
         },
 
@@ -312,13 +302,17 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
             let data = [];
             let fields = this.getFieldViews();
             for (let i in fields) {
-                let fieldValue =  fields[i].fetch();
-                let item = {
-                    attributeId: fields[i].name,
-                    value: fieldValue[fields[i].name],
-                };
-                inputLanguageList.forEach(lang => item[`value${lang}`] = fieldValue[`${fields[i].name}${lang}`] || null);
-                if (this.checkAttributeChanges(item)) {
+                let fieldValue = fields[i].fetch();
+                if (this.checkAttributeChanges(fieldValue)) {
+                    let item = {
+                        attributeId: fields[i].name,
+                        value: fieldValue[fields[i].name],
+                    };
+                    let additionalData = this.getAdditionalFieldData(fields[i], fieldValue);
+                    if (additionalData) {
+                        item.data = additionalData;
+                    }
+                    inputLanguageList.forEach(lang => item[`value${lang}`] = fieldValue[`${fields[i].name}${lang}`] || null);
                     data.push(item);
                 }
             }
@@ -333,6 +327,21 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
                     this.model.trigger('after:attributesSave');
                     this.notify('Saved', 'success');
                 });
+        },
+
+        getAdditionalFieldData(view, data) {
+            let additionalData = false;
+            if (view.type === 'unit') {
+                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
+                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
+                actualFieldDefs.forEach((field, i) => {
+                    if (field) {
+                        additionalData = additionalData || {};
+                        additionalData[field] = data[actualFieldValues[i]];
+                    }
+                });
+            }
+            return additionalData;
         },
 
         cancelEdit() {
