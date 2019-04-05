@@ -136,6 +136,7 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                         this.model.trigger('updateAttributes');
                         this.notify('Unlinked', 'success');
                         this.options.parentModel.trigger('after:unrelate', 'attributes');
+                        this.afterRemoveAttributeCallback(id);
                     }.bind(this),
                     error: function () {
                         this.notify('Error occurred', 'error');
@@ -143,6 +144,8 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                 });
             }, this);
         },
+
+        afterRemoveAttributeCallback(id) {},
 
         initInlineActions() {
             let cell = this.getCellElement();
