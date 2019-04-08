@@ -93,6 +93,11 @@ class Metadata extends AbstractMetadata
             $config->set('tabList', $tabList);
             $config->set('quickCreateList', $quickCreateList);
             $config->set('twoLevelTabList', $twoLevelTabList);
+            if ($config->get('applicationName') == 'TreoCore') {
+                $config->set('applicationName', 'TreoPIM');
+            }
+
+            // set flag
             $config->set('isPimMenuPushed', true);
 
             // save
