@@ -57,7 +57,7 @@ class Metadata extends AbstractMetadata
         // get config
         $config = $this->getContainer()->get('config');
 
-        if (empty($config->get('isPimInstalled')) || !empty($config->get('PimTriggers'))) {
+        if (!empty($config->get('PimTriggers'))) {
             return false;
         }
 
@@ -140,13 +140,20 @@ class Metadata extends AbstractMetadata
                    END IF;
                   END;";
 
-        // execute
+        // create triggers
         $sth = $this->getContainer()->get('entityManager')->getPDO()->prepare($sql);
         $sth->execute();
 
+        // get existings triggers
+        $sth = $this->getContainer()->get('entityManager')->getPDO()->prepare("SHOW TRIGGERS");
+        $sth->execute();
+        $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
+
         // save to config
-        $config->set('PimTriggers', true);
-        $config->save();
+        if (!empty($data) && in_array('trigger_after_update_product', array_column($data, 'Trigger'))) {
+            $config->set('PimTriggers', true);
+            $config->save();
+        }
 
         return true;
     }
