@@ -41,10 +41,65 @@ class Metadata extends AbstractMetadata
      */
     public function modify(array $data): array
     {
+        // push pim menu items
+        $this->pushPimMenuItems();
+
         // create triggers
         $this->createTriggers();
 
         return $data;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function pushPimMenuItems(): bool
+    {
+        // get config
+        $config = $this->getContainer()->get('config');
+
+        if (empty($config->get('isPimMenuPushed'))) {
+            // prepare items
+            $items = [
+                'Association',
+                'Attribute',
+                'AttributeGroup',
+                'Brand',
+                'Category',
+                'Catalog',
+                'Channel',
+                'Product',
+                'ProductFamily'
+            ];
+
+            // get config data
+            $tabList = $config->get("tabList");
+            $quickCreateList = $config->get("quickCreateList");
+            $twoLevelTabList = $config->get("twoLevelTabList");
+
+            foreach ($items as $item) {
+                if (!in_array($item, $tabList)) {
+                    $tabList[] = $item;
+                }
+                if (!in_array($item, $quickCreateList)) {
+                    $quickCreateList[] = $item;
+                }
+                if (!in_array($item, $twoLevelTabList)) {
+                    $twoLevelTabList[] = $item;
+                }
+            }
+
+            // set to config
+            $config->set('tabList', $tabList);
+            $config->set('quickCreateList', $quickCreateList);
+            $config->set('twoLevelTabList', $twoLevelTabList);
+            $config->set('isPimMenuPushed', true);
+
+            // save
+            $config->save();
+        }
+
+        return true;
     }
 
     /**
