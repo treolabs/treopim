@@ -52,7 +52,11 @@
             "view": "views/fields/teams"
         },
         "products": {
-            "type": "linkMultiple"
+            "type": "linkMultiple",
+            "layoutMassUpdateDisabled": true,
+            "layoutListDisabled": true,
+            "layoutDetailDisabled": true,
+            "exportDisabled": true
         }
     },
     "links": {

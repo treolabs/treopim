@@ -73,6 +73,7 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true,
+      "exportDisabled": true,
       "isCustom": false
     },
     "attributes": {
@@ -103,14 +104,13 @@
       "layoutFiltersDisabled": true,
       "layoutListDisabled": true,
       "entity": "ProductFamily",
+      "exportDisabled": true,
       "view": "pim:views/product-family/fields/product-family-template"
     },
     "productAttributeValues": {
       "type": "linkMultiple",
       "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
       "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "noLoad": true,

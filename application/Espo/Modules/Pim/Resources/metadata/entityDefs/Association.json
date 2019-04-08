@@ -74,6 +74,8 @@
         },
         "associations": {
             "type": "linkMultiple",
+            "layoutFiltersDisabled": true,
+            "layoutListDisabled": true,
             "layoutDetailDisabled": true,
             "layoutMassUpdateDisabled": true,
             "noLoad": true,
@@ -124,7 +126,8 @@
             "foreign": "backwardAssociation",
             "entity": "Association",
             "audited": false,
-            "isCustom": true
+            "isCustom": true,
+            "layoutRelationshipsDisabled": true
         }
     },
     "collection": {
