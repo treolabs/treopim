@@ -5,7 +5,6 @@
         "code": "Code",
         "isActive": "Active",
         "productFamilyAttributes": "Attributes",
-        "isSystem": "Is system",
         "productFamilyTemplate": "Copy Attributes from",
         "productFamilies": "Product Families",
         "isRequired": "Required",

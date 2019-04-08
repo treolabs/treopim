@@ -83,21 +83,9 @@
       "noLoad": true,
       "importDisabled": true
     },
-    "isSystem": {
-      "notNull": true,
-      "type": "bool",
-      "layoutDetailDisabled": true,
-      "layoutFiltersDisabled": true,
-      "default": false,
-      "audited": false,
-      "readOnly": true,
-      "tooltip": false,
-      "isCustom": false,
-      "importDisabled": true
-    },
     "productFamilyTemplate": {
       "type": "link",
-      "required": true,
+      "required": false,
       "notStorable": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,

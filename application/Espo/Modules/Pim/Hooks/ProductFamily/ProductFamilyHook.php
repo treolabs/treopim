@@ -66,26 +66,13 @@ class ProductFamilyHook extends AbstractHook
     }
 
     /**
-     * Before remove Entity hook
-     *
-     * @param Entity $entity
-     * @param array  $options
-     */
-    public function beforeRemove(Entity $entity, $options = [])
-    {
-        $this->checkIsSystem($entity);
-    }
-
-    /**
      * Set attributes from parent ProductFamily
      *
      * @param Entity $entity
      */
     protected function setParentAttributes(Entity $entity)
     {
-        if (!$entity->get('isSystem')
-            && ($entity->isNew())
-        ) {
+        if ($entity->isNew()) {
             // prepare repository
             $repository = $this->getEntityManager()->getRepository('ProductFamily');
 
@@ -99,20 +86,6 @@ class ProductFamilyHook extends AbstractHook
                     $repository->relate($entity, 'attributes', $attribute);
                 }
             }
-        }
-    }
-
-    /**
-     * Check if Entity is system
-     *
-     * @param Entity $entity
-     *
-     * @throws Forbidden
-     */
-    protected function checkIsSystem(Entity $entity)
-    {
-        if ($entity->get('isSystem')) {
-            throw new Forbidden();
         }
     }
 }

@@ -51,26 +51,6 @@ class ProductFamily extends AbstractController
     }
 
     /**
-     * Get duplicate attributes
-     *
-     * @param array   $params
-     * @param array   $data
-     * @param Request $request
-     *
-     * @return array
-     */
-    public function postActionGetDuplicateAttributes($params, $data, $request)
-    {
-        // get result
-        $result = parent::postActionGetDuplicateAttributes($params, $data, $request);
-
-        // set system
-        $result->isSystem = false;
-
-        return $result;
-    }
-
-    /**
      * Get Attributes action
      *
      * @ApiDescription(description="Get Attributes in ProductFamily")*
