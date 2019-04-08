@@ -57,7 +57,7 @@ class Metadata extends AbstractMetadata
         // get config
         $config = $this->getContainer()->get('config');
 
-        if (!empty($config->get('PimTriggers')) || empty($config->get('isInstalled'))) {
+        if (empty($config->get('isPimInstalled')) || !empty($config->get('PimTriggers'))) {
             return false;
         }
 

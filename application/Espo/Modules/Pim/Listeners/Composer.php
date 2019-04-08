@@ -40,7 +40,12 @@ class Composer extends AbstractListener
     public function afterInstallModule(array $data)
     {
         if (!empty($data['id']) && $data['id'] == 'Pim') {
+            // create system product family
             $this->createSystemProductFamily();
+
+            // set to config
+            $this->getConfig()->set('isPimInstalled', true);
+            $this->getConfig()->save();
         }
     }
 
