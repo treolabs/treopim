@@ -86,23 +86,31 @@ See [Server Configuration](https://github.com/treolabs/treocore/blob/master/docs
 ### Installation
 To create your new TreoPIM application, first make sure you're using PHP 7.1 or above and have [Composer](https://getcomposer.org/) installed. 
 
-1. Create your new project by running:
+1. Create your new project by running few commands:
    ```
    composer create-project treolabs/treocore my-treopim-project
    ```
+   ```
+   cd my-treopim-project
+   ```
+   ```
+   /usr/bin/php console.php composer require treo-module/pim
+   ```
+   ```
+   /usr/bin/php composer.phar update
+   ```      
 2. Make cron handler files executable:
    ```
    chmod +x bin/cron.sh 
    ```
 3. Configure crontab:
    ```
-   * * * * * cd /var/www/my-treopim-project; ./bin/cron.sh process-treopim-1 /usr/bin/php 
+   * * * * * cd /var/www/my-treopim-project; ./bin/cron.sh process-treopim /usr/bin/php 
    ```
    - **/var/www/my-treopim-project** - path to project root
-   - **process-treopim-1** - an unique id of process. You should use different process id if you have few TreoPIM projects in one server
+   - **process-treopim** - an unique id of process. You should use different process id if you have few TreoPIM projects in one server
    - **/usr/bin/php** - PHP7.1 or above
-4. Install TreoCore by following installation wizard in web interface. Just go to http://YOUR_PROJECT/
-5. Install Pim module by ModuleManager
+4. Install TreoPIM by following installation wizard in web interface. Just go to http://YOUR_PROJECT/
 
 ## License
 
