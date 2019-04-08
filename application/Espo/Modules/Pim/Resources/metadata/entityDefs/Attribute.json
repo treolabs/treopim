@@ -136,19 +136,27 @@
       "audited": false,
       "readOnly": false,
       "tooltip": false,
+      "layoutDetailDisabled": true,
+      "layoutListDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true,
       "isCustom": false
     },
     "isRequired": {
       "notStorable": true,
       "type": "bool",
       "layoutListDisabled": true,
-      "layoutDetailDisabled": true
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
     },
     "isMultiChannel": {
       "notStorable": true,
       "type": "bool",
       "layoutListDisabled": true,
-      "layoutDetailDisabled": true
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
     }
   },
   "links": {

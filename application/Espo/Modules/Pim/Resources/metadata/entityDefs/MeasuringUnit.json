@@ -46,9 +46,11 @@
         },
         "productTypePackages": {
             "type": "linkMultiple",
+            "layoutListDisabled": true,
             "layoutDetailDisabled": true,
             "layoutFiltersDisabled": true,
-            "layoutMassUpdateDisabled": true
+            "layoutMassUpdateDisabled": true,
+            "exportDisabled": true
         }
     },
     "links": {

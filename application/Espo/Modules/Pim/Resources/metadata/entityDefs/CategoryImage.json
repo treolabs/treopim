@@ -99,7 +99,6 @@
         "categories": {
             "type": "linkMultiple",
             "layoutListDisabled": true,
-            "layoutDetailSmallDisabled": true,
             "columns": {
                 "sortOrder": "sortOrder",
                 "scope": "scope"

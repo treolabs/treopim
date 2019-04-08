@@ -44,6 +44,7 @@
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": false,
+      "exportDisabled": true,
       "importDisabled": false,
       "noLoad": true
     },
@@ -54,6 +55,7 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "importDisabled": true,
+      "exportDisabled": true,
       "noLoad": true
     },
     "productFamily": {
@@ -74,6 +76,7 @@
       "layoutFiltersDisabled": true,
       "noLoad": true,
       "importDisabled": true,
+      "exportDisabled": true,
       "emHidden": true
     },
     "sku": {
@@ -109,6 +112,7 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "layoutDetailDisabled": true,
+      "exportDisabled": true,
       "emHidden": true
     },
     "productTypePackages": {
@@ -120,6 +124,7 @@
       "readOnly": true,
       "noSave": true,
       "view": "views/fields/link-one",
+      "exportDisabled": true,
       "emHidden": true
     },
     "associatedRelatedProduct": {
@@ -129,6 +134,7 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "noLoad": true,
+      "exportDisabled": true,
       "importDisabled": true,
       "emHidden": true
     },
@@ -140,7 +146,8 @@
       "layoutDetailDisabled": true,
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true
+      "layoutFiltersDisabled": true,
+      "exportDisabled": true
     },
     "finalPrice": {
       "type": "currency",
@@ -159,6 +166,7 @@
       "previewSize": "medium",
       "readOnly": true,
       "importDisabled": true,
+      "exportDisabled": true,
       "view": "pim:views/product/fields/image"
     },
     "productStatus": {
@@ -184,7 +192,8 @@
       "type": "available-currency",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true
+      "layoutFiltersDisabled": true,
+      "exportDisabled": true
     },
     "tax": {
       "type": "link",
@@ -213,6 +222,7 @@
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
+      "exportDisabled": true,
       "noLoad": true,
       "emHidden": true
     },
@@ -247,9 +257,8 @@
     "data": {
       "type": "jsonObject",
       "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
       "layoutListDisabled": true,
-      "layoutListSmallDisabled": true
+      "layoutMassUpdateDisabled": true
     }
   },
   "links": {
