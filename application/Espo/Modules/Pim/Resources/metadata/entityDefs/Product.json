@@ -44,7 +44,7 @@
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": false,
-      "exportDisabled": true,
+      "exportDisabled": false,
       "importDisabled": false,
       "noLoad": true
     },
