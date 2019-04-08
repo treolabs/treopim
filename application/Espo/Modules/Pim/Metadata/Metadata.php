@@ -73,9 +73,9 @@ class Metadata extends AbstractMetadata
             ];
 
             // get config data
-            $tabList = $config->get("tabList");
-            $quickCreateList = $config->get("quickCreateList");
-            $twoLevelTabList = $config->get("twoLevelTabList");
+            $tabList = $config->get("tabList", []);
+            $quickCreateList = $config->get("quickCreateList", []);
+            $twoLevelTabList = $config->get("twoLevelTabList", []);
 
             foreach ($items as $item) {
                 if (!in_array($item, $tabList)) {
