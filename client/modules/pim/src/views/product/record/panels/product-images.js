@@ -196,10 +196,6 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
             }, this);
 
             this.setupFilterActions();
-
-            this.listenTo(this.collection, 'listSorted', () => {
-                this.model.trigger('updateProductImage');
-            });
         },
 
         setupButtonAndActionLists(force) {
