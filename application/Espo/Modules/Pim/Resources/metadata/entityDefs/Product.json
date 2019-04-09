@@ -162,7 +162,7 @@
     "image": {
       "layoutFiltersDisabled": true,
       "notStorable": true,
-      "type": "base",
+      "type": "image",
       "previewSize": "medium",
       "readOnly": true,
       "importDisabled": true,

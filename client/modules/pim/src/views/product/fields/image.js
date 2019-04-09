@@ -80,6 +80,7 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
                             this.imageId = null;
                             this.imageName = null;
                         }
+                        this.model.trigger('main-image-updated');
                         this.reRender();
                     })
             }
