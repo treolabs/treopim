@@ -101,7 +101,7 @@ abstract class AbstractHook extends BaseHook
         // prepare result
         $result = true;
 
-        // find product
+        // find
         $fundedEntity = $this->getEntityManager()
             ->getRepository($entity->getEntityName())
             ->where([$field => $entity->get($field)])

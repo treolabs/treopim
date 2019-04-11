@@ -259,6 +259,10 @@
       "layoutDetailDisabled": true,
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true
+    },
+    "catalog": {
+      "type": "link",
+      "readOnly": true
     }
   },
   "links": {
@@ -301,6 +305,11 @@
       "type": "belongsTo",
       "foreign": "products",
       "entity": "ProductFamily"
+    },
+    "catalog": {
+      "type": "belongsTo",
+      "foreign": "products",
+      "entity": "Catalog"
     },
     "brand": {
       "type": "belongsTo",

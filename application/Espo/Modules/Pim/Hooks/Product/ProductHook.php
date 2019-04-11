@@ -23,31 +23,52 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Hooks\Product;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Modules\Pim\Core\Hooks\AbstractHook;
 use Espo\ORM\Entity;
-use Espo\Core\Exceptions\Error;
 
 /**
- * ProductHook hook
+ * Class ProductHook
  *
- * @author r.ratsun <r.ratsun@treolabs.com>
+ * @author r.ratsun@treolabs.com
  */
-class ProductHook extends AbstractHook
+class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
 {
     /**
-     * Before save action
-     *
-     * @param Entity $entity
+     * @param Entity $product
      * @param array  $options
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Entity $product, $options = [])
     {
         // SKU validation
-        if (!$this->isUnique($entity, 'sku')) {
+        if (!$this->isSkuUnique($product)) {
             throw new BadRequest($this->exception('Product with such SKU already exist'));
         }
+    }
+
+    /**
+     * @param Entity $product
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function isSkuUnique(Entity $product): bool
+    {
+        $products = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->where(['sku' => $product->get('sku'), 'catalogId' => $product->get('catalogId')])
+            ->find();
+
+        if (count($products) > 0) {
+            foreach ($products as $item) {
+                if ($item->get('id') != $product->get('id')) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**

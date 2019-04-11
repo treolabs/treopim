@@ -4,7 +4,8 @@
     "category": "Kategorie"
   },
   "links": {
-    "channels": "Kanäle"
+    "channels": "Kanäle",
+    "products": "Produkte"
   },
   "labels": {
     "Create Catalog": "Katalog erstellen"

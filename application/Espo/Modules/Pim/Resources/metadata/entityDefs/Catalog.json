@@ -51,6 +51,11 @@
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
       "noLoad": true
+    },
+    "products": {
+      "type": "linkMultiple",
+      "readOnly": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -80,6 +85,11 @@
       "type": "hasMany",
       "foreign": "catalog",
       "entity": "Channel"
+    },
+    "products": {
+      "type": "hasMany",
+      "foreign": "catalog",
+      "entity": "Product"
     }
   },
   "collection": {

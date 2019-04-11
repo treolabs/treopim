@@ -23,8 +23,14 @@
         {
           "name": "configurableProduct"
         },
+        false
+      ],
+      [
         {
           "name": "sku"
+        },
+        {
+          "name": "catalog"
         }
       ],
       [

@@ -36,7 +36,8 @@
     "longDescription": "Long Description",
     "attachments": "Attachments",
     "productSerie": "Product Serie",
-    "association": "Association"
+    "association": "Association",
+    "catalog": "Catalog"
   },
   "links": {
     "categories": "Product Categories",

@@ -56,7 +56,8 @@
     "productTypePackages": "Produkttyp  Pakete",
     "scope": "Umfang",
     "productSerie": "Product Serie",
-    "association": "Assoziation"
+    "association": "Assoziation",
+    "catalog": "Katalog"
   },
   "links": {
     "categories": "Produktkategorien",
