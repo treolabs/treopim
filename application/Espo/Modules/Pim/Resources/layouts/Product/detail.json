@@ -4,19 +4,19 @@
     "style": "default",
     "rows": [
       [
+        [
+          {
+            "name": "isActive"
+          },
+          {
+            "name": "type"
+          }
+        ],
         {
           "name": "name"
         },
         {
           "name": "image"
-        }
-      ],
-      [
-        {
-          "name": "isActive"
-        },
-        {
-          "name": "type"
         }
       ],
       [
