@@ -68,7 +68,7 @@ class ProductFamily extends \Espo\Core\Templates\Services\Base
                 ->where([
                     'productFamilyId' => $productFamilyId,
                     'attributeId' => $attributeId,
-                    'value!=' => ['null', '', 0, '0']
+                    'value!=' => ['null', '', 0, '0', '[]']
                 ])
                 ->count();
         }
