@@ -47,6 +47,36 @@ class ProductFamily extends \Espo\Core\Templates\Services\Base
     }
 
     /**
+     * Get count not empty product family attributes
+     *
+     * @param string $productFamilyId
+     * @param string $attributeId
+     *
+     * @return int
+     */
+    public function getLinkedProductAttributesCount(string $productFamilyId, string $attributeId): int
+    {
+        // prepare result
+        $count = 0;
+
+        // if not empty productFamilyId and attributeId
+        if (!empty($productFamilyId) && !empty($attributeId)) {
+            // get count products
+            $count = $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->where([
+                    'productFamilyId' => $productFamilyId,
+                    'attributeId' => $attributeId,
+                    'value!=' => ['null', '', 0, '0']
+                ])
+                ->count();
+        }
+
+        return $count;
+    }
+
+    /**
      * @param \stdClass $data
      *
      * @return bool

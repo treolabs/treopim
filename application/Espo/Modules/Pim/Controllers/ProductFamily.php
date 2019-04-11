@@ -81,4 +81,36 @@ class ProductFamily extends AbstractController
 
         throw new Exceptions\Error();
     }
+
+    /**
+     * Get count not empty product family attributes
+     *
+     * @ApiDescription(description="Get products count, linked with product family attribute")
+     * @ApiMethod(type="GET")
+     * @ApiRoute(name="/ProductFamily/{product_family_id}/productAttributesCount")
+     * @ApiParams(name="product_family_id", type="string", is_required=1, description="ProductFamily id")
+     * @ApiReturn(sample="'int'")
+     *
+     * @param array $params
+     * @param \stdClass $data
+     * @param Request $request
+     *
+     * @return int
+     *
+     * @throws Exceptions\BadRequest
+     * @throws Exceptions\Forbidden
+     */
+    public function actionProductAttributesCount(array $params, \stdClass $data, Request $request)
+    {
+        if (!$request->isGet()) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (!$this->getAcl()->check($this->name, 'read')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        return $this->getRecordService()
+            ->getLinkedProductAttributesCount($params['productFamilyId'], $data->attributeId);
+    }
 }
