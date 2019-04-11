@@ -29,6 +29,12 @@
         {
           "name": "sku"
         },
+        false
+      ],
+      [
+        {
+          "name": "categories"
+        },
         {
           "name": "catalog"
         }

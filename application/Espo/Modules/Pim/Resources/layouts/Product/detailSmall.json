@@ -1,68 +1,42 @@
 [
-    {
-        "label": "",
-        "style": "default",
-        "rows": [
-            [
-                {
-                    "name": "name"
-                },
-                {
-                    "name": "type"
-                }
-            ],
-            [
-                {
-                    "name": "sku"
-                },
-                {
-                    "name": "configurableProduct"
-                }
-            ],
-            [
-                {
-                    "name": "isActive"
-                },
-                {
-                    "name": "productStatus"
-                }
-            ],
-            [
-                {
-                    "name": "mpn"
-                },
-                {
-                    "name": "ean"
-                }
-            ],
-            [
-                {
-                    "name": "productFamily"
-                },
-                false
-            ],
-            [
-                {
-                    "name": "tax"
-                },
-                {
-                    "name": "packaging"
-                }
-            ],
-            [
-                {
-                    "name": "amount"
-                },
-                {
-                    "name": "tag"
-                }
-            ],
-            [
-                {
-                    "name": "brand"
-                },
-                false
-            ]
-        ]
-    }
+  {
+    "label": "",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "name"
+        },
+        false
+      ],
+      [
+        {
+          "name": "sku"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      [
+        {
+          "name": "productFamily"
+        },
+        false
+      ],
+      [
+        {
+          "name": "categories"
+        },
+        {
+          "name": "catalog"
+        }
+      ],
+      [
+        {
+          "name": "configurableProduct"
+        },
+        false
+      ]
+    ]
+  }
 ]

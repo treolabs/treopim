@@ -40,13 +40,12 @@
     },
     "categories": {
       "type": "linkMultiple",
-      "layoutDetailDisabled": true,
+      "required": true,
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": false,
       "exportDisabled": false,
-      "importDisabled": false,
-      "noLoad": true
+      "importDisabled": false
     },
     "attributes": {
       "type": "linkMultiple",
@@ -262,7 +261,7 @@
     },
     "catalog": {
       "type": "link",
-      "readOnly": true
+      "required": true
     }
   },
   "links": {
