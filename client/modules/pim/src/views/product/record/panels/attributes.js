@@ -302,18 +302,21 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
             let data = [];
             let fields = this.getFieldViews();
             for (let i in fields) {
-                let fieldValue = fields[i].fetch();
-                if (this.checkAttributeChanges(fieldValue)) {
-                    let item = {
-                        attributeId: fields[i].name,
-                        value: fieldValue[fields[i].name],
-                    };
-                    let additionalData = this.getAdditionalFieldData(fields[i], fieldValue);
-                    if (additionalData) {
-                        item.data = additionalData;
+                let field = fields[i];
+                if (!field.disabled && !field.readOnly) {
+                    let fieldValue = field.fetch();
+                    if (this.checkAttributeChanges(fieldValue)) {
+                        let item = {
+                            attributeId: field.name,
+                            value: fieldValue[field.name],
+                        };
+                        let additionalData = this.getAdditionalFieldData(field, fieldValue);
+                        if (additionalData) {
+                            item.data = additionalData;
+                        }
+                        inputLanguageList.forEach(lang => item[`value${lang}`] = fieldValue[`${field.name}${lang}`] || null);
+                        data.push(item);
                     }
-                    inputLanguageList.forEach(lang => item[`value${lang}`] = fieldValue[`${fields[i].name}${lang}`] || null);
-                    data.push(item);
                 }
             }
 
