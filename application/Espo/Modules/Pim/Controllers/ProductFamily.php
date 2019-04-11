@@ -100,7 +100,7 @@ class ProductFamily extends AbstractController
      * @throws Exceptions\BadRequest
      * @throws Exceptions\Forbidden
      */
-    public function actionProductAttributesCount(array $params, \stdClass $data, Request $request)
+    public function actionProductsCount(array $params, \stdClass $data, Request $request)
     {
         if (!$request->isGet()) {
             throw new Exceptions\BadRequest();

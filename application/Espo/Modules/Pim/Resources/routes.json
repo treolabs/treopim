@@ -141,11 +141,11 @@
     }
   },
   {
-    "route": "/ProductFamily/:productFamilyId/productAttributesCount",
+    "route": "/ProductFamily/:productFamilyId/productsCount",
     "method": "get",
     "params": {
       "controller": "ProductFamily",
-      "action": "productAttributesCount"
+      "action": "productsCount"
     }
   }
 ]
