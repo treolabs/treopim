@@ -46,7 +46,11 @@ class ProductHook extends AbstractHook
     {
         // SKU validation
         if (!$this->isUnique($entity, 'sku')) {
-            throw new BadRequest($this->exception('Product with such SKU already exist'));
+            if (isset($options['isImport']) && $options['isImport']) {
+                $entity->setIsNew(false);
+            } else {
+                throw new BadRequest($this->exception('Product with such SKU already exist'));
+            }
         }
     }
 
