@@ -65,7 +65,8 @@
     "productFamily": "Produktfamilie"
   },
   "messages": {
-    "sameNumberOptions": "Die gleiche Anzahl von Optionen"
+    "sameNumberOptions": "Die gleiche Anzahl von Optionen",
+    "productsCountWithAttribute": "Anzahl der Produkte, für die dieses Attribut festgelegt ist: {count}"
   },
   "filterLabels": {
     "All": "Alle"

@@ -476,6 +476,52 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                     }.bind(this),
                 });
             }, this);
+        },
+
+        actionUnlinkRelated: function (data) {
+            var id = data.id;
+
+            this.ajaxGetRequest(`ProductFamily/${this.model.id}/productsCount`, {attributeId: id}).then(response => {
+                Espo.TreoUi.confirmWithBody('', {
+                    message: this.translate('unlinkRecordConfirmation', 'messages'),
+                    confirmText: this.translate('Unlink'),
+                    cancelText: this.translate('Cancel'),
+                    body: this.getUnlinkHtml(response)
+                }, function () {
+                    var model = this.collection.get(id);
+                    this.notify('Unlinking...');
+                    $.ajax({
+                        url: this.collection.url,
+                        type: 'DELETE',
+                        data: JSON.stringify({
+                            id: id
+                        }),
+                        contentType: 'application/json',
+                        success: function () {
+                            this.notify('Unlinked', 'success');
+                            this.collection.fetch();
+                            this.model.trigger('after:unrelate');
+                        }.bind(this),
+                        error: function () {
+                            this.notify('Error occurred', 'error');
+                        }.bind(this),
+                    });
+                }, this);
+            });
+        },
+
+        getUnlinkHtml(count) {
+            return `
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="confirm-message">${this.translate('removeRecordConfirmation', 'messages')}</span>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="cell pull-left" style="margin-top: 15px;">
+                            <label class="control-label">${this.translate('productsCountWithAttribute', 'messages', 'Attribute').replace('{count}', count)}</label>
+                        </div>
+                    </div>
+                </div>`;
         }
 
     })
