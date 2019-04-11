@@ -92,7 +92,7 @@ class ProductFamily extends AbstractController
      * @ApiReturn(sample="'int'")
      *
      * @param array $params
-     * @param \stdClass $data
+     * @param string $attributeId
      * @param Request $request
      *
      * @return int
@@ -100,7 +100,7 @@ class ProductFamily extends AbstractController
      * @throws Exceptions\BadRequest
      * @throws Exceptions\Forbidden
      */
-    public function actionProductsCount(array $params, \stdClass $data, Request $request)
+    public function actionProductsCount(array $params, string $attributeId, Request $request)
     {
         if (!$request->isGet()) {
             throw new Exceptions\BadRequest();
@@ -111,6 +111,6 @@ class ProductFamily extends AbstractController
         }
 
         return $this->getRecordService()
-            ->getLinkedProductAttributesCount($params['productFamilyId'], $data->attributeId);
+            ->getLinkedProductAttributesCount($params['productFamilyId'], $attributeId);
     }
 }
