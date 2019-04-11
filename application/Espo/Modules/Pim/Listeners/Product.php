@@ -62,14 +62,16 @@ class Product extends AbstractPimListener
     {
         if (isset($data['attributeValue']) && isset($data['post']) && isset($data['productId'])) {
             // create note
-            $note = $this->getEntityManager()->getEntity('Note');
-            $note->set('type', 'Update');
-            $note->set('parentId', $data['productId']);
-            $note->set('parentType', 'Product');
-            $note->set('data', $this->getNoteData($data['attributeValue'], $data['post']));
-            $note->set('attributeId', $data['post']['attributeId']);
+            if (!empty($data = $this->getNoteData($data['attributeValue'], $data['post']))) {
+                $note = $this->getEntityManager()->getEntity('Note');
+                $note->set('type', 'Update');
+                $note->set('parentId', $data['productId']);
+                $note->set('parentType', 'Product');
+                $note->set('data', $data);
+                $note->set('attributeId', $data['post']['attributeId']);
 
-            $this->getEntityManager()->saveEntity($note);
+                $this->getEntityManager()->saveEntity($note);
+            }
         }
 
         return $data;
