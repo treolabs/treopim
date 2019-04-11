@@ -52,7 +52,8 @@
     "addNewValue": "Add new value"
   },
   "messages": {
-    "sameNumberOptions": "You must set the same number of options"
+    "sameNumberOptions": "You must set the same number of options",
+    "productsCountWithAttribute": "Count of products where this attribute is set: {count}"
   },
   "filterLabels": {
     "All": "All"
