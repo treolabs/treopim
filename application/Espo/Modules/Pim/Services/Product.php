@@ -630,6 +630,101 @@ class Product extends AbstractService
      */
     protected function duplicateLinks(Entity $product, Entity $duplicatingProduct)
     {
+        // prepare links
+        foreach ($this->getInjection('metadata')->get('entityDefs.Product.fields', []) as $field => $row) {
+            if (!empty($row['type']) && $row['type'] == 'linkMultiple') {
+                $links[] = $field;
+            }
+        }
+
+        if (!empty($links)) {
+            foreach ($links as $link) {
+                // prepare method name
+                $methodName = 'duplicate' . ucfirst($link);
+
+                // call customm method
+                if (method_exists($this, $methodName)) {
+                    $this->{$methodName}($product, $duplicatingProduct);
+                    continue 1;
+                }
+
+                $data = $duplicatingProduct->get($link);
+                if (count($data) > 0) {
+                    foreach ($data as $item) {
+                        $this->getEntityManager()->getRepository('Product')->relate($product, $link, $item);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateAttributes(Entity $product, Entity $duplicatingProduct)
+    {
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateProductImages(Entity $product, Entity $duplicatingProduct)
+    {
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateAssociatedMainProducts(Entity $product, Entity $duplicatingProduct)
+    {
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateAssociatedRelatedProduct(Entity $product, Entity $duplicatingProduct)
+    {
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateProductTypeBundles(Entity $product, Entity $duplicatingProduct)
+    {
+        if ($duplicatingProduct->get('type') === 'bundleProduct') {
+            // create service
+            $service = $this->getServiceFactory()->create('ProductTypeBundle');
+
+            // create new bundles
+            foreach ($service->getBundleProducts($duplicatingProduct->get('id')) as $bundle) {
+                $service->create($product->get('id'), $bundle['productId'], $bundle['amount']);
+            }
+        }
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateProductTypePackages(Entity $product, Entity $duplicatingProduct)
+    {
+        if ($duplicatingProduct->get('type') === 'packageProduct') {
+            // create service
+            $service = $this->getServiceFactory()->create('ProductTypePackage');
+
+            // find ProductPackage
+            $productPackage = $service->getPackageProduct($duplicatingProduct->get('id'));
+
+            // create new productPackage
+            if (!is_null($productPackage['id'])) {
+                $service->update($product->get('id'), $productPackage);
+            }
+        }
     }
 
     /**
