@@ -2,7 +2,11 @@
   "controller": "controllers/record",
   "iconClass": "far fa-window-restore",
   "boolFilterList": [
-    "onlyMy"
+    "onlyMy",
+    "linkedWithCategories"
+  ],
+  "hiddenBoolFilterList": [
+    "linkedWithCategories"
   ],
   "relationshipPanels": {
     "products": {

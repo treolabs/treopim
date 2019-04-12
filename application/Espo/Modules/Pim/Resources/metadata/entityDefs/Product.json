@@ -261,7 +261,8 @@
     },
     "catalog": {
       "type": "link",
-      "required": true
+      "required": true,
+      "view": "pim:views/product/fields/catalog"
     }
   },
   "links": {
