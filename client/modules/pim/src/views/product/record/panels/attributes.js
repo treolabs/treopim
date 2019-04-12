@@ -26,6 +26,12 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
             setupPipes: ['clientDefs', 'Product', 'relationshipPanels', 'attributes', 'setupPipes']
         },
 
+        boolFilterData: {
+            notLinkedWithProduct() {
+                return this.model.id;
+            }
+        },
+
         setup() {
             let bottomPanel = new BottomPanel();
             bottomPanel.setup.call(this);
@@ -80,6 +86,13 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
                             fullFormDisabled: true
                         }
                     });
+
+                    if (this.getAcl().check('AttributeGroup', 'edit')) {
+                        this.actionList.push({
+                            label: 'Select Attribute Group',
+                            action: 'selectAttributeGroup'
+                        });
+                    }
                 }
             }
 
@@ -91,6 +104,9 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
                 if (this.defs.selectBoolFilterList) {
                     data.boolFilterList = this.defs.selectBoolFilterList;
                 }
+                data.boolFilterListCallback = 'getSelectBoolFilterList';
+                data.boolFilterDataCallback = 'getSelectBoolFilterData';
+                data.afterSelectCallback = 'setScopeAfterSelect';
                 this.actionList.unshift({
                     label: 'Select',
                     action: this.defs.selectAction || 'selectRelated',
@@ -108,6 +124,75 @@ Espo.define('pim:views/product/record/panels/attributes', ['views/record/panels/
 
             this.listenTo(this.model, 'after:save', () => {
                 this.actionRefresh();
+            });
+        },
+
+        getSelectBoolFilterData(boolFilterList) {
+            let data = {};
+            if (Array.isArray(boolFilterList)) {
+                boolFilterList.forEach(item => {
+                    if (this.boolFilterData && typeof this.boolFilterData[item] === 'function') {
+                        data[item] = this.boolFilterData[item].call(this);
+                    }
+                });
+            }
+            return data;
+        },
+
+        getSelectBoolFilterList() {
+            return this.defs.selectBoolFilterList || null
+        },
+
+        actionSelectAttributeGroup() {
+            const scope = 'AttributeGroup';
+            const viewName = this.getMetadata().get(['clientDefs', scope, 'modalViews', 'select']) || 'views/modals/select-records';
+
+            this.notify('Loading...');
+            this.createView('dialog', viewName, {
+                scope: scope,
+                multiple: true,
+                createButton: false,
+                massRelateEnabled: false,
+                whereAdditional: [
+                    {
+                        type: 'isLinked',
+                        attribute: 'attributes'
+                    }
+                ]
+            }, dialog => {
+                dialog.render();
+                this.notify(false);
+                dialog.once('select', selectObj => {
+                    if (!Array.isArray(selectObj)) {
+                        return;
+                    }
+                    const boolFilterList = this.getSelectBoolFilterList() || [];
+                    const data = {
+                        massRelate: true,
+                        where: [
+                            {
+                                type: 'bool',
+                                value: boolFilterList,
+                                data: this.getSelectBoolFilterData(boolFilterList)
+                            },
+                            {
+                                attribute: 'attributeGroupId',
+                                type: 'in',
+                                value: selectObj.map(model => model.id)
+                            }
+                        ]
+                    };
+
+                    this.notify('Saving...', 'success');
+                    this.ajaxPostRequest(`${this.model.name}/${this.model.id}/${this.link}`, data).then(response => {
+                        if (response) {
+                            this.notify('Linked', 'success');
+                            this.actionRefresh();
+                        } else {
+                            this.notify('Error occurred', 'error');
+                        }
+                    });
+                });
             });
         },
 

@@ -234,7 +234,7 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                         collection.select = 'sortOrder';
                         collection.maxSize = 200;
                         collection.offset = 0;
-                        collection.additionalWhere = [
+                        collection.whereAdditional = [
                             {
                                 attribute: 'id',
                                 type: 'in',
@@ -394,13 +394,20 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
 
         actionSelectAttributeGroup() {
             const scope= 'AttributeGroup';
-            const viewName = 'pim:views/attribute-group/modals/select-records-in-product-family';
+            const viewName = this.getMetadata().get(['clientDefs', scope, 'modalViews', 'select']) || 'views/modals/select-records';
+
             this.notify('Loading...');
             this.createView('dialog', viewName, {
                 scope: scope,
                 multiple: true,
                 createButton: false,
-                massRelateEnabled: false
+                massRelateEnabled: false,
+                whereAdditional: [
+                    {
+                        type: 'isLinked',
+                        attribute: 'attributes'
+                    }
+                ]
             }, dialog => {
                 dialog.render();
                 this.notify(false);
