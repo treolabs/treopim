@@ -727,7 +727,8 @@ class Product extends AbstractService
     {
         // copy images
         $sql
-            = "INSERT INTO product_image_product (product_id, product_image_id, sort_order, scope, deleted)
+            = "DELETE FROM product_image_product WHERE product_id = '" . $product->get('id') . "';
+               INSERT INTO product_image_product (product_id, product_image_id, sort_order, scope, deleted)
                SELECT
                  '" . $product->get('id') . "',
                   product_image_id,
@@ -741,7 +742,8 @@ class Product extends AbstractService
 
         // copy channel images
         $sql
-            = "INSERT INTO product_image_channel (product_id, product_image_id, channel_id, deleted)
+            = "DELETE FROM product_image_channel WHERE product_id = '" . $product->get('id') . "';
+               INSERT INTO product_image_channel (product_id, product_image_id, channel_id, deleted)
                SELECT
                  '" . $product->get('id') . "',
                   product_image_id,
@@ -759,6 +761,24 @@ class Product extends AbstractService
      */
     protected function duplicateAssociatedMainProducts(Entity $product, Entity $duplicatingProduct)
     {
+        // get data
+        $data = $duplicatingProduct->get('associatedMainProducts');
+
+        // copy
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $item = $row->toArray();
+                $item['id'] = Util::generateId();
+                $item['mainProductId'] = $product->get('id');
+
+                // prepare entity
+                $entity = $this->getEntityManager()->getEntity('AssociatedProduct');
+                $entity->set($item);
+
+                // save
+                $this->getEntityManager()->saveEntity($entity);
+            }
+        }
     }
 
     /**
@@ -767,6 +787,24 @@ class Product extends AbstractService
      */
     protected function duplicateAssociatedRelatedProduct(Entity $product, Entity $duplicatingProduct)
     {
+        // get data
+        $data = $duplicatingProduct->get('associatedRelatedProduct');
+
+        // copy
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $item = $row->toArray();
+                $item['id'] = Util::generateId();
+                $item['relatedProductId'] = $product->get('id');
+
+                // prepare entity
+                $entity = $this->getEntityManager()->getEntity('AssociatedProduct');
+                $entity->set($item);
+
+                // save
+                $this->getEntityManager()->saveEntity($entity);
+            }
+        }
     }
 
     /**
