@@ -26,34 +26,26 @@ use Espo\ORM\Entity;
 use Espo\Core\Exceptions\BadRequest;
 
 /**
- * Class Hook
+ * Class CatalogHook
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Hook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
+class CatalogHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
 {
     /**
-     * Before remove action
-     *
      * @param Entity $entity
      * @param array  $options
-     *
-     * @throws BadRequest
      */
-    public function beforeRemove(Entity $entity, $options = [])
+    public function afterRemove(Entity $entity, $options = [])
     {
-        if (count($entity->get('channels')) > 0) {
-            throw new BadRequest($this->exception("Catalog cannot be deleted"));
-        }
-    }
+        // get products
+        $products = $entity->get('products');
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function exception(string $key): string
-    {
-        return $this->translate($key, 'exceptions', 'Catalog');
+        // delete products
+        if (count($products) > 0) {
+            foreach ($products as $product) {
+                $this->getEntityManager()->removeEntity($product);
+            }
+        }
     }
 }
