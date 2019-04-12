@@ -725,6 +725,32 @@ class Product extends AbstractService
      */
     protected function duplicateProductImages(Entity $product, Entity $duplicatingProduct)
     {
+        // copy images
+        $sql
+            = "INSERT INTO product_image_product (product_id, product_image_id, sort_order, scope, deleted)
+               SELECT
+                 '" . $product->get('id') . "',
+                  product_image_id,
+                  sort_order,
+                  scope,
+                  deleted
+               FROM product_image_product
+               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
+        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
+        $sth->execute();
+
+        // copy channel images
+        $sql
+            = "INSERT INTO product_image_channel (product_id, product_image_id, channel_id, deleted)
+               SELECT
+                 '" . $product->get('id') . "',
+                  product_image_id,
+                  channel_id,
+                  deleted
+               FROM product_image_channel
+               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
+        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
+        $sth->execute();
     }
 
     /**
