@@ -87,7 +87,13 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
             return false;
         }
 
-        if (!in_array($categoryId, $product->get('categoriesIds'))) {
+        if (count($product->get('categories')) > 0) {
+            $categoriesIds = array_column($product->get('categories')->toArray(), 'id');
+        } else {
+            $categoriesIds = (array)$product->get('categoriesIds');
+        }
+
+        if (!in_array($categoryId, $categoriesIds)) {
             return false;
         }
 

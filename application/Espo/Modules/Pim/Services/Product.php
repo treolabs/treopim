@@ -32,7 +32,6 @@ use Espo\Orm\EntityManager;
 use Espo\Core\Utils\Util;
 use Slim\Http\Request;
 use \PDO;
-use Treo\Services\MassActions;
 
 /**
  * Service of Product
@@ -664,6 +663,60 @@ class Product extends AbstractService
      */
     protected function duplicateAttributes(Entity $product, Entity $duplicatingProduct)
     {
+        // delete old
+        if (!empty($attributes = $product->getProductAttributes())) {
+            foreach ($attributes as $attribute) {
+                $this->getEntityManager()->removeEntity($attribute);
+            }
+        }
+        if (!empty($attributes = $product->getProductChannelAttributes())) {
+            foreach ($attributes as $attribute) {
+                $this->getEntityManager()->removeEntity($attribute);
+            }
+        }
+
+        // get attributes
+        if (empty($attributes = $duplicatingProduct->getProductAttributes())) {
+            return false;
+        }
+
+        // copy attributes
+        foreach ($attributes as $attribute) {
+            // prepare data
+            $data = $attribute->toArray();
+            $data['id'] = Util::generateId();
+            $data['productId'] = $product->get('id');
+
+            // prepare entity
+            $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
+            $entity->set($data);
+
+            // save
+            $this->getEntityManager()->saveEntity($entity);
+
+            // prepare attribute ids
+            $ids[$data['attributeId']] = $data['id'];
+        }
+
+        // get channel attributes
+        if (empty($attributes = $duplicatingProduct->getProductChannelAttributes())) {
+            return false;
+        }
+
+        // copy channel attributes
+        foreach ($attributes as $attribute) {
+            // prepare data
+            $data = $attribute->toArray();
+            $data['id'] = Util::generateId();
+            $data['productAttributeId'] = $ids[$attribute->get('productAttribute')->get('attributeId')];
+
+            // prepare entity
+            $entity = $this->getEntityManager()->getEntity('ChannelProductAttributeValue');
+            $entity->set($data);
+
+            // save
+            $this->getEntityManager()->saveEntity($entity);
+        }
     }
 
     /**
