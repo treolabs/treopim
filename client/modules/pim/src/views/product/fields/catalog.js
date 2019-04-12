@@ -34,9 +34,12 @@
 Espo.define('pim:views/product/fields/catalog', 'treo-core:views/fields/filtered-link',
     Dep => Dep.extend({
 
-        selectBoolFilterList:  ['linkedWithCategories'],
+        selectBoolFilterList:  ['notEntity', 'linkedWithCategories'],
 
         boolFilterData: {
+            notEntity() {
+                return this.model.get(this.idName);
+            },
             linkedWithCategories() {
                 return this.model.get('categoriesIds') || [];
             }

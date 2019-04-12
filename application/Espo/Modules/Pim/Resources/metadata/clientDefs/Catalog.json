@@ -3,9 +3,11 @@
   "iconClass": "far fa-window-restore",
   "boolFilterList": [
     "onlyMy",
+    "notEntity",
     "linkedWithCategories"
   ],
   "hiddenBoolFilterList": [
+    "notEntity",
     "linkedWithCategories"
   ],
   "relationshipPanels": {
