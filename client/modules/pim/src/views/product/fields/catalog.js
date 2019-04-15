@@ -34,16 +34,21 @@
 Espo.define('pim:views/product/fields/catalog', 'treo-core:views/fields/filtered-link',
     Dep => Dep.extend({
 
-        selectBoolFilterList:  ['notEntity', 'linkedWithCategories'],
-
-        boolFilterData: {
-            notEntity() {
-                return this.model.get(this.idName);
-            },
-            linkedWithCategories() {
-                return this.model.get('categoriesIds') || [];
+        setup() {
+            if (this.mode !== 'search') {
+                this.selectBoolFilterList = ['notEntity', 'linkedWithCategories'];
+                this.boolFilterData = {
+                    notEntity() {
+                        return this.model.get(this.idName);
+                    },
+                    linkedWithCategories() {
+                        return this.model.get('categoriesIds') || [];
+                    }
+                }
             }
-        },
+
+            Dep.prototype.setup.call(this);
+        }
 
     })
 );
