@@ -36,6 +36,17 @@ class CatalogHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
      * @param Entity $entity
      * @param array  $options
      */
+    public function beforeSave(Entity $entity, $options = [])
+    {
+        if ($entity->isAttributeChanged('categoryId') && count($entity->get('products')) > 0) {
+            throw new BadRequest("Category cannot be changed. Catalog has related products.");
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     */
     public function afterRemove(Entity $entity, $options = [])
     {
         // get products

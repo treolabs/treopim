@@ -16,5 +16,19 @@
       "create": false,
       "rowActionsView": "views/record/row-actions/empty"
     }
+  },
+  "dynamicLogic": {
+    "fields": {
+      "category": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "productsCount"
+            }
+          ]
+        }
+      }
+    }
   }
 }

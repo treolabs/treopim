@@ -56,6 +56,16 @@
       "type": "linkMultiple",
       "readOnly": true,
       "noLoad": true
+    },
+    "productsCount": {
+      "type": "int",
+      "readOnly": true,
+      "notStorable": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutMassUpdateDisabled": true
     }
   },
   "links": {

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Services;
 
 use Espo\Core\Templates\Services\Base;
+use Espo\ORM\Entity;
 
 /**
  * Catalog service
@@ -30,4 +31,24 @@ use Espo\Core\Templates\Services\Base;
  */
 class Catalog extends Base
 {
+    /**
+     * @inheritdoc
+     */
+    public function prepareEntityForOutput(Entity $entity)
+    {
+        // call parent
+        parent::prepareEntityForOutput($entity);
+
+        // get products count
+        $productsCount = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->where(['catalogId' => $entity->get('id')])
+            ->count();
+
+        // set products count to entity
+        if (!empty($productsCount)) {
+            $entity->set('productsCount', $productsCount);
+        }
+    }
 }
