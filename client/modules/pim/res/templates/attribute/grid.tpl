@@ -7,7 +7,7 @@
         {{#each this}}
         <div class="cell {{#if oneInRow}}col-sm-12{{else}}col-sm-6{{/if}} form-group attribute-cell" data-name="{{name}}">
             {{#if deletable}}
-            <a href="javascript:" style="padding-left: 5px;" class="pull-right inline-remove-link hidden" data-name="{{../name}}"><span class="fas fa-times"></span></a>
+            <a href="javascript:" class="pull-right inline-remove-link hidden" data-name="{{../name}}"><span class="fas fa-times"></span></a>
             {{/if}}
             {{#if editable}}
             <a href="javascript:" class="pull-right inline-edit-link edit-attribute hidden" data-name="{{name}}"><span class="fas fa-pencil-alt fa-sm"></span></a>

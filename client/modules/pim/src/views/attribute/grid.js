@@ -29,7 +29,10 @@ Espo.define('pim:views/attribute/grid', 'views/base',
         mode: 'detail',
 
         pipelines: {
-            productAttributesPipe: ['clientDefs', 'Product', 'productAttributesPipe']
+            productAttributesPipe: ['clientDefs', 'Product', 'productAttributesPipe'],
+            productAttributesInitInlineActionsPipe: ['clientDefs', 'Product', 'productAttributesInitInlineActionsPipe'],
+            productAttributesHideInlineLinksPipe: ['clientDefs', 'Product', 'productAttributesHideInlineLinksPipe'],
+            productAttributesShowInlineLinksPipe: ['clientDefs', 'Product', 'productAttributesShowInlineLinksPipe']
         },
 
         events: _.extend({
@@ -198,6 +201,8 @@ Espo.define('pim:views/attribute/grid', 'views/base',
                     }
                 }
             });
+
+            this.getParentView().runPipeline('productAttributesInitInlineActionsPipe', this);
         },
 
         getAdditionalFieldData(view, data) {
@@ -282,6 +287,8 @@ Espo.define('pim:views/attribute/grid', 'views/base',
             cell.find('.inline-remove-link').addClass('hidden');
             cell.find('.inline-save-link').removeClass('hidden');
             cell.find('.inline-cancel-link').removeClass('hidden');
+
+            this.runPipeline('productAttributesHideInlineLinksPipe', view);
         },
 
         showInlineLinks(view) {
@@ -290,6 +297,8 @@ Espo.define('pim:views/attribute/grid', 'views/base',
             cell.find('.inline-remove-link').removeClass('hidden');
             cell.find('.inline-save-link').addClass('hidden');
             cell.find('.inline-cancel-link').addClass('hidden');
+
+            this.runPipeline('productAttributesShowInlineLinksPipe', view);
         },
 
         getDetailViewMode() {
