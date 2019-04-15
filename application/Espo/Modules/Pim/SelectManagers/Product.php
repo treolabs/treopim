@@ -67,6 +67,13 @@ class Product extends AbstractSelectManager
             }
         }
 
+        // prepare where
+        $params['where'][] = [
+            'type'      => 'in',
+            'attribute' => 'type',
+            'value'     => array_keys($this->getMetadata()->get('pim.productType', []))
+        ];
+
         // call parent
         return parent::getSelectParams($params, $withAcl, $checkWherePermission);
     }

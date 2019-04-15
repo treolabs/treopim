@@ -44,7 +44,6 @@ class Product extends AbstractPimListener
         $where = $data['request']->get('where', []);
 
         // prepare where
-        $where = $this->prepareForProductType($where);
         $where = $this->prepareForAttributes($where);
 
         // set where
@@ -159,29 +158,6 @@ class Product extends AbstractPimListener
         }
 
         return $result;
-    }
-
-    /**
-     * @param array $where
-     *
-     * @return array
-     */
-    public function prepareForProductType(array $where): array
-    {
-        // prepare types
-        $types = $this
-            ->getContainer()
-            ->get('metadata')
-            ->get('pim.productType');
-
-        // prepare where
-        $where[] = [
-            'type'      => 'in',
-            'attribute' => 'type',
-            'value'     => array_keys($types)
-        ];
-
-        return $where;
     }
 
     /**

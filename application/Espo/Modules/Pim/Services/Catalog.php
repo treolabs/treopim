@@ -36,7 +36,6 @@ class Catalog extends Base
      */
     public function prepareEntityForOutput(Entity $entity)
     {
-        // call parent
         parent::prepareEntityForOutput($entity);
 
         // get products count
@@ -50,5 +49,35 @@ class Catalog extends Base
         if (!empty($productsCount)) {
             $entity->set('productsCount', $productsCount);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function duplicateLinks(Entity $entity, Entity $duplicatingEntity)
+    {
+        if (!empty($products = $duplicatingEntity->get('products'))) {
+            // get service
+            $productService = $this->getInjection('serviceFactory')->create('Product');
+
+            foreach ($products as $product) {
+                // prepare data
+                $data = $productService->getDuplicateAttributes($product->get('id'));
+                $data->catalogId = $entity->get('id');
+
+                // create entity
+                $productService->createEntity($data);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $this->addDependency('serviceFactory');
     }
 }
