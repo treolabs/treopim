@@ -67,7 +67,7 @@ class Product extends AbstractSelectManager
             }
         }
 
-        // prepare where
+        // filtering by product types
         $params['where'][] = [
             'type'      => 'in',
             'attribute' => 'type',
