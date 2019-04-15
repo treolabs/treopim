@@ -19,16 +19,10 @@
       ],
       [
         {
-          "name": "productFamily"
-        },
-        false
-      ],
-      [
-        {
-          "name": "categories"
-        },
-        {
           "name": "catalog"
+        },
+        {
+          "name": "productFamily"
         }
       ],
       [
