@@ -32,16 +32,11 @@ use Espo\Modules\Pim\Services\Product as ProductService;
 class Product extends AbstractSelectManager
 {
     /**
-     * Include category tree in search on categories
-     *
-     * @param array $params
-     * @param bool  $withAcl
-     * @param bool  $checkWherePermission
-     *
-     * @return array
+     * @inheritdoc
      */
     public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
     {
+        // include category tree in search on categories
         if (!empty($params['where']) && is_array($params['where'])) {
             $params['where'] = $this->getEntityManager()
                 ->getContainer()

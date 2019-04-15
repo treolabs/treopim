@@ -10,6 +10,9 @@
   "labels": {
     "Create Catalog": "Katalog erstellen"
   },
+  "queueManager": {
+    "Duplicate product '%s'": "Duplikatprodukt '%s'"
+  },
   "exceptions": {
     "Catalog cannot be deleted": "Katalog kann nicht gelöscht werden. Es gibt wenige Kanäle, die den aktuellen Katalog verwenden."
   }

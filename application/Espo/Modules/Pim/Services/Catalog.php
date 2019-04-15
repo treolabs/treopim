@@ -57,16 +57,25 @@ class Catalog extends Base
     protected function duplicateLinks(Entity $entity, Entity $duplicatingEntity)
     {
         if (!empty($products = $duplicatingEntity->get('products'))) {
-            // get service
-            $productService = $this->getInjection('serviceFactory')->create('Product');
+            // get language
+            $language = $this->getInjection('language');
 
             foreach ($products as $product) {
-                // prepare data
-                $data = $productService->getDuplicateAttributes($product->get('id'));
-                $data->catalogId = $entity->get('id');
+                // prepare name
+                $name = sprintf(
+                    $language->translate("Duplicate product '%s'", "queueManager", "Catalog"),
+                    $product->get('name')
+                );
 
-                // create entity
-                $productService->createEntity($data);
+                // prepare data
+                $data = [
+                    'productId' => $product->get('id'),
+                    'catalogId' => $entity->get('id')
+                ];
+
+                $this
+                    ->getInjection('queueManager')
+                    ->push($name, 'QueueManagerDuplicateProduct', $data);
             }
         }
     }
@@ -79,5 +88,7 @@ class Catalog extends Base
         parent::init();
 
         $this->addDependency('serviceFactory');
+        $this->addDependency('queueManager');
+        $this->addDependency('language');
     }
 }
