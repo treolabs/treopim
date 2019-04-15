@@ -31,15 +31,18 @@
  * and "TreoPIM" word.
  */
 
-Espo.define('pim:views/product/fields/catalog', 'treo-core:views/fields/filtered-link',
+Espo.define('pim:views/product/fields/category', 'treo-core:views/fields/filtered-link-multiple',
     Dep => Dep.extend({
 
         setup() {
             if (this.mode !== 'search') {
-                this.selectBoolFilterList = ['notEntity'];
+                this.selectBoolFilterList = ['notEntity', 'linkedWithCatalog'];
                 this.boolFilterData = {
                     notEntity() {
                         return this.model.get(this.idName);
+                    },
+                    linkedWithCatalog() {
+                        return this.model.get('catalogId') || [];
                     }
                 }
             }

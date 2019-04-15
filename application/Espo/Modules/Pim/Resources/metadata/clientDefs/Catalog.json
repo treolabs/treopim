@@ -3,12 +3,10 @@
   "iconClass": "far fa-window-restore",
   "boolFilterList": [
     "onlyMy",
-    "notEntity",
-    "linkedWithCategories"
+    "notEntity"
   ],
   "hiddenBoolFilterList": [
-    "notEntity",
-    "linkedWithCategories"
+    "notEntity"
   ],
   "relationshipPanels": {
     "products": {
