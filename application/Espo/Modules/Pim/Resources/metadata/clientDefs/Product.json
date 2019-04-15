@@ -178,19 +178,6 @@
             }
           ]
         }
-      },
-      "catalog": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "isNotEmpty",
-              "attribute": "categoriesIds",
-              "data": {
-                "field": "categories"
-              }
-            }
-          ]
-        }
       }
     }
   }

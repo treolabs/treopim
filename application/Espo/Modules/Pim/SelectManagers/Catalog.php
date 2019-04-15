@@ -31,17 +31,4 @@ use Espo\Modules\Pim\Core\SelectManagers\AbstractSelectManager;
  */
 class Catalog extends AbstractSelectManager
 {
-    /**
-     * linkedWithCategories filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterLinkedWithCategories(array &$result)
-    {
-        if ($this->hasBoolFilter('linkedWithCategories')) {
-            $result['whereClause'][] = [
-                'categoryId' => $this->getSelectCondition('linkedWithCategories')
-            ];
-        }
-    }
 }
