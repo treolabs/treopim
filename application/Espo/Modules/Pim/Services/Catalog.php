@@ -67,8 +67,9 @@ class Catalog extends Base
 
                 // prepare name
                 $name = sprintf(
-                    $language->translate("Duplicate product '%s'", "queueManager", "Catalog"),
-                    $product->get('name')
+                    $language->translate("Create product '%s' for catalog '%s'", "queueManager", "Catalog"),
+                    $product->get('name'),
+                    $entity->get('name')
                 );
 
                 // prepare data

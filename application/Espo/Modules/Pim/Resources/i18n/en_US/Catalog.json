@@ -11,7 +11,7 @@
     "Create Catalog": "Create Catalog"
   },
   "queueManager": {
-    "Duplicate product '%s'": "Duplicate product '%s'"
+    "Create product '%s' for catalog '%s'": "Create product '%s' for catalog '%s'"
   },
   "exceptions": {
     "Catalog cannot be deleted": "Catalog cannot be deleted. There are few channels that use current catalog."
