@@ -61,6 +61,10 @@ class Catalog extends Base
             $language = $this->getInjection('language');
 
             foreach ($products as $product) {
+                if (!in_array($product->get('type'), array_keys($this->getMetadata()->get('pim.productType', [])))) {
+                    continue 1;
+                }
+
                 // prepare name
                 $name = sprintf(
                     $language->translate("Duplicate product '%s'", "queueManager", "Catalog"),
