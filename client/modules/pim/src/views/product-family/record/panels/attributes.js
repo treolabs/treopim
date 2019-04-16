@@ -517,8 +517,8 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                         <span class="confirm-message">${this.translate('removeRecordConfirmation', 'messages')}</span>
                     </div>
                     <div class="col-xs-12">
-                        <div class="cell pull-left" style="margin-top: 15px;">
-                            <label class="control-label">${this.translate('productsCountWithAttribute', 'messages', 'Attribute').replace('{count}', count)}</label>
+                        <div style="margin-top: 15px;">
+                            <span class="product-counts-message">${this.translate('productsCountWithAttribute', 'messages', 'Attribute').replace('{count}', count)}</span>
                         </div>
                     </div>
                 </div>`;
