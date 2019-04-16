@@ -85,10 +85,46 @@ class Product extends AbstractPimListener
     public function afterActionCreateLink(array $data): array
     {
         if ($data['params']['link'] == 'attributes') {
-            $this->setProductAttributeValueUser($data['data']->ids, (array)$data['params']['id']);
+            $attributeIds = $this->prepareAttributeIds(Json::decode(Json::encode($data['data']), true));
+
+            $this->setProductAttributeValueUser($attributeIds, (array)$data['params']['id']);
         }
 
         return $data;
+    }
+
+    /**
+     * Prepare attributes ids data
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function prepareAttributeIds(array $data): array
+    {
+        $ids = [];
+
+        if (isset($data['ids'])) {
+            $ids = $data['ids'];
+        } elseif (isset($data['where'])) {
+            $selectManager = $this
+                ->getContainer()
+                ->get('selectManagerFactory')
+                ->create('Product');
+
+            $result = $this
+                ->getEntityManager()
+                ->getRepository('Attribute')
+                ->select(['id'])
+                ->find($selectManager->getSelectParams(['where' => $data['where']]))
+                ->toArray();
+
+            if (!empty($result)) {
+                $ids = array_column($result, 'id');
+            }
+        }
+
+        return $ids;
     }
 
     /**
