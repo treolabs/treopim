@@ -17,12 +17,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/channel/fields/category', 'treo-core:views/fields/filtered-link',
+Espo.define('pim:views/catalog/fields/categories', 'treo-core:views/fields/filtered-link-multiple',
     Dep => Dep.extend({
 
-        selectBoolFilterList:  ['onlyRootCategory'],
+        createDisabled: true,
+
+        selectBoolFilterList:  ['notEntity', 'onlyRootCategory'],
 
         boolFilterData: {
+            notEntity() {
+                return this.ids || [];
+            },
             onlyRootCategory() {
                 return true;
             }

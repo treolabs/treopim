@@ -57,7 +57,8 @@
     },
     "categories": {
       "type": "linkMultiple",
-      "required": true
+      "required": true,
+      "view": "pim:views/catalog/fields/categories"
     }
   },
   "links": {

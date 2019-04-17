@@ -68,8 +68,7 @@
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
         "onlyActive",
-        "notLinkedWithProduct",
-        "onlyChildCategory"
+        "notLinkedWithProduct"
       ],
       "listLayout": "listCategoryInProduct"
     },
