@@ -77,16 +77,27 @@ class Product extends \Espo\Core\Templates\Repositories\Base
         // prepare result
         $result = [];
 
-        // get channels data
-        if (empty($channels = $this->getChannelsArray($ids))) {
-            return $result;
-        };
+        // get channels ids
+        $channelsIds = $this
+            ->getEntityManager()
+            ->getRepository('Channel')
+            ->select(['id'])
+            ->join('products')
+            ->where(['products.id' => $ids])
+            ->find()
+            ->toArray();
+        $channelsIds = array_column($channelsIds, 'id');
 
-        // create multichannel attributes
-        $this->createMultiChannelAttributes($channels);
+        // exit if no linked channels
+        if (empty($channelsIds)) {
+            return $result;
+        }
 
         // get attributes data
-        if (empty($attributes = $this->getProductsAttributes($ids))) {
+        $attributes = $this->getProductsAttributes($ids);
+
+        // exit if no linked attributes
+        if (count($attributes) == 0) {
             return $result;
         };
 
@@ -105,7 +116,7 @@ class Product extends \Espo\Core\Templates\Repositories\Base
         $params['where'][] = [
             'type'      => 'in',
             'attribute' => 'channelId',
-            'value'     => array_column($channels, 'channelId')
+            'value'     => $channelsIds
         ];
 
         // get channel product attribute data
@@ -119,10 +130,10 @@ class Product extends \Espo\Core\Templates\Repositories\Base
 
         foreach ($ids as $id) {
             if (isset($attributes[$id])) {
-                foreach ($channels as $channel) {
+                foreach ($channelsIds as $channelId) {
                     foreach ($attributes[$id] as $attribute) {
-                        if (isset($exists[$attribute->get('id') . "_" . $channel['channelId']])) {
-                            $result[$id][] = $exists[$attribute->get('id') . "_" . $channel['channelId']];
+                        if (isset($exists[$attribute->get('id') . "_" . $channelId])) {
+                            $result[$id][] = $exists[$attribute->get('id') . "_" . $channelId];
                         }
                     }
                 }
@@ -189,61 +200,6 @@ class Product extends \Espo\Core\Templates\Repositories\Base
     public function getCategoriesArray(array $ids, bool $isTree = false): array
     {
         return $this->getCategoriesArrayData($ids, $isTree);
-    }
-
-    /**
-     * Get products channels
-     *
-     * @param array $productIds
-     *
-     * @return array
-     */
-    public function getChannels(array $productIds): array
-    {
-        // get data
-        if (empty($data = $this->getChannelsArray($productIds))) {
-            return [];
-        }
-
-        // prepare params
-        $params['where'][] = [
-            'type'      => 'in',
-            'attribute' => 'id',
-            'value'     => array_column($data, 'channelId')
-        ];
-
-        // get collection
-        $channels = $this->getCollection('Channel', $params);
-
-        // prepare result
-        $result = [];
-        foreach ($channels as $channel) {
-            foreach ($data as $row) {
-                if ($row['channelId'] == $channel->get('id')) {
-                    $result[$row['productId']][] = $channel;
-                }
-            }
-        }
-
-        // create collection
-        foreach ($result as $productId => $categories) {
-            $result[$productId] = new EntityCollection($categories);
-        }
-
-        return $result;
-    }
-
-
-    /**
-     * Get products channels array data
-     *
-     * @param array $ids
-     *
-     * @return array
-     */
-    public function getChannelsArray(array $ids): array
-    {
-        return $this->getChannelsArrayData($ids);
     }
 
     /**
@@ -505,53 +461,6 @@ class Product extends \Espo\Core\Templates\Repositories\Base
     }
 
     /**
-     * @param array $data
-     *
-     * @return bool
-     */
-    protected function createMultiChannelAttributes(array $data): bool
-    {
-        // get attributes
-        if (empty($attributes = $this->getMultiChannelAttributes(array_unique(array_column($data, 'productId'))))) {
-            return false;
-        }
-
-        // prepare params
-        $params['where'][] = [
-            'type'      => 'in',
-            'attribute' => 'productAttributeId',
-            'value'     => array_column($attributes, 'productAttributeId')
-        ];
-
-        // get existings
-        if (!empty($exists = $this->getCollection('ChannelProductAttributeValue', $params))) {
-            $tmp = [];
-            foreach ($exists as $v) {
-                $tmp[] = $v->get('channelId') . "_" . $v->get('productAttributeId');
-            }
-            $exists = $tmp;
-        }
-
-        foreach ($data as $row) {
-            foreach ($attributes as $attribute) {
-                if ($attribute['productId'] == $row['productId']
-                    && !in_array($row['channelId'] . "_" . $attribute['productAttributeId'], $exists)) {
-                    $entity = $this->getEntityManager()->getEntity("ChannelProductAttributeValue");
-                    $entity->set('channelId', $row['channelId']);
-                    $entity->set('productAttributeId', $attribute['productAttributeId']);
-                    $entity->set('value', $attribute['attributeValue']);
-
-                    $this->getEntityManager()->saveEntity($entity);
-
-                    $exists[] = $entity->get('channelId') . "_" . $entity->get('productAttributeId');
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * @param array $productsIds
      *
      * @return array
@@ -633,58 +542,6 @@ class Product extends \Espo\Core\Templates\Repositories\Base
                                 // push
                                 $result[] = $row;
                             }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param array $ids
-     *
-     * @return array
-     */
-    protected function getChannelsArrayData(array $ids): array
-    {
-        // prepare result
-        $result = [];
-
-        // get products categories
-        if (!empty($productsCategories = $this->getCategoriesArray($ids, true))) {
-            // prepare category ids
-            $ids = implode("','", array_column($productsCategories, 'categoryId'));
-
-            $sql
-                = "SELECT
-                     channel.id     AS channelId,
-                     channel.name   AS channelName,
-                     category.id    AS categoryId,
-                     category.name  AS categoryName,
-                     catalog.id     AS catalogId,
-                     catalog.name   AS catalogName
-                FROM 
-                   category
-                JOIN
-                   catalog ON catalog.category_id=category.id AND catalog.deleted=0
-                JOIN 
-                   channel ON catalog.id=channel.catalog_id AND channel.deleted=0
-                WHERE 
-                     category.deleted = 0
-                 AND
-                     category.id IN ('{$ids}')";
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-            $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-            if (!empty($data)) {
-                foreach ($productsCategories as $row) {
-                    foreach ($data as $v) {
-                        if ($row['categoryId'] == $v['categoryId']
-                            && !in_array($v['channelId'], array_column($result, 'channelId'))) {
-                            $result[] = array_merge($row, $v);
                         }
                     }
                 }
