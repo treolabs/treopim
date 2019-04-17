@@ -33,22 +33,22 @@ use Espo\ORM\Entity;
 class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
 {
     /**
-     * @param Entity $product
+     * @param Entity $entity
      * @param array  $options
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $product, $options = [])
+    public function beforeSave(Entity $entity, $options = [])
     {
         // SKU validation
-        if (!$this->isSkuUnique($product)) {
+        if (!$this->isSkuUnique($entity)) {
             throw new BadRequest($this->exception('Product with such SKU already exist'));
         }
 
         // categories validation
-        if (!empty($product->get('categoriesIds'))) {
-            foreach ($product->get('categories') as $category) {
-                if (!$this->isValidProductCategory($product, $category)) {
+        if (!empty($entity->get('categoriesIds'))) {
+            foreach ($entity->get('categories') as $category) {
+                if (!$this->isValidProductCategory($entity, $category)) {
                     throw new BadRequest($this->exception('You cannot linked current product with selected category'));
                 }
             }

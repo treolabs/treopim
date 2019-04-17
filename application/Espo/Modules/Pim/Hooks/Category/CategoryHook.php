@@ -23,46 +23,70 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Hooks\Category;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\ORM\Entity;
+use Espo\ORM\Entity;
 
 /**
  * Class CategoryHook
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class CategoryHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
+class CategoryHook extends \Espo\Modules\Pim\Hooks\Product\ProductHook
 {
     /**
      * @param Entity $entity
      * @param array  $params
+     *
+     * @throws BadRequest
      */
     public function beforeSave(Entity $entity, $params = [])
     {
+        // is code valid
         if (!$this->isCodeValid($entity)) {
-            throw new BadRequest(
-                $this->translate(
-                    'Code is invalid',
-                    'exceptions',
-                    'Global'
-                )
-            );
+            throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
+        }
+
+        // categories validation
+        if (!empty($entity->get('productsIds'))) {
+            foreach ($entity->get('products') as $product) {
+                if (!$this->isValidProductCategory($product, $entity)) {
+                    throw new BadRequest($this->exception('You cannot linked current product with selected category'));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     * @param array  $hookData
+     *
+     * @throws BadRequest
+     */
+    public function beforeRelate(Entity $entity, array $options, array $hookData)
+    {
+        if (!$this->isValidProductCategory($hookData['foreignEntity'], $entity)) {
+            throw new BadRequest($this->exception('You cannot linked current product with selected category'));
         }
     }
 
     /**
      * @param Entity $entity
      * @param array  $params
+     *
+     * @throws BadRequest
      */
     public function beforeRemove(Entity $entity, $params = [])
     {
         if (count($entity->get('categories')) > 0) {
-            throw new BadRequest(
-                $this->translate(
-                    "Category has child category and can't be deleted",
-                    'exceptions',
-                    'Category'
-                )
-            );
+            throw new BadRequest($this->exception("Category has child category and can't be deleted"));
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function exception(string $key): string
+    {
+        return $this->getInjection('language')->translate($key, 'exceptions', 'Category');
     }
 }
