@@ -400,17 +400,18 @@ class Product extends AbstractService
         }
 
         // get product
-        $product = $this->getEntityManager()->getEntity('Product', $productId);
-
-        if (empty($product)) {
+        if (empty($product = $this->getEntityManager()->getEntity('Product', $productId))) {
             throw new NotFound("No such product");
         }
 
         // prepare result
         $result = [];
 
+        // get channels
+        $channels = $product->get('channels');
+
         // push channels
-        if (!empty($channels = $product->getChannels())) {
+        if (count($channels) > 0) {
             foreach ($channels as $channel) {
                 $result[$channel->get('id')]['channelId'] = $channel->get('id');
                 $result[$channel->get('id')]['channelName'] = $channel->get('name');

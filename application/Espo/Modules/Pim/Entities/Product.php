@@ -365,27 +365,6 @@ class Product extends Base
     }
 
     /**
-     * Get product channels
-     *
-     * @return EntityCollection|null
-     * @throws Error
-     */
-    public function getChannels(): ?EntityCollection
-    {
-        if (!empty($this->get('id'))) {
-            $data = $this
-                ->getProductRepository()
-                ->getChannels([$this->get('id')]);
-
-            if (isset($data[$this->get('id')])) {
-                return $data[$this->get('id')];
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Get images
      *
      * @return array
