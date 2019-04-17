@@ -31,9 +31,20 @@ use Espo\Modules\Pim\Core\SelectManagers\AbstractSelectManager;
  */
 class Category extends AbstractSelectManager
 {
+
     /**
-     * OnlyChildCategory filter
-     *
+     * @param array $result
+     */
+    protected function boolFilterOnlyRootCategory(array &$result)
+    {
+        if ($this->hasBoolFilter('onlyRootCategory')) {
+            $result['whereClause'][] = [
+                'categoryParentId' => null
+            ];
+        }
+    }
+
+    /**
      * @param array $result
      */
     protected function boolFilterOnlyChildCategory(array &$result)
@@ -46,8 +57,6 @@ class Category extends AbstractSelectManager
     }
 
     /**
-     * NotChildCategory filter
-     *
      * @param array $result
      */
     protected function boolFilterNotChildCategory(array &$result)
@@ -59,8 +68,6 @@ class Category extends AbstractSelectManager
     }
 
     /**
-     * NotLinkedWithChannel filter
-     *
      * @param array $result
      */
     protected function boolFilterNotLinkedWithChannel(array &$result)
@@ -82,8 +89,6 @@ class Category extends AbstractSelectManager
     }
 
     /**
-     * NotLinkedWithProduct filter
-     *
      * @param array $result
      */
     protected function boolFilterNotLinkedWithProduct(array &$result)

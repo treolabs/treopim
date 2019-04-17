@@ -44,6 +44,29 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
         if (!$this->isSkuUnique($product)) {
             throw new BadRequest($this->exception('Product with such SKU already exist'));
         }
+
+        // categories validation
+        if (!empty($product->get('categoriesIds'))) {
+            foreach ($product->get('categories') as $category) {
+                if (!$this->isValidProductCategory($product, $category)) {
+                    throw new BadRequest($this->exception('You cannot linked current product with selected category'));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     * @param array  $hookData
+     *
+     * @throws BadRequest
+     */
+    public function beforeRelate(Entity $entity, array $options, array $hookData)
+    {
+        if (!$this->isValidProductCategory($entity, $hookData['foreignEntity'])) {
+            throw new BadRequest($this->exception('You cannot linked current product with selected category'));
+        }
     }
 
     /**
@@ -69,6 +92,44 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
         }
 
         return true;
+    }
+
+
+    /**
+     * @param Entity $product
+     * @param Entity $category
+     *
+     * @return bool
+     */
+    protected function isValidProductCategory($product, $category): bool
+    {
+        // exit if empty
+        if (empty($product) || empty($category)) {
+            return false;
+        }
+
+        // get catalog
+        if (empty($catalog = $product->get('catalog'))) {
+            return false;
+        }
+
+        // get catalog categories trees
+        $trees = $catalog->get('categories');
+
+        if (count($trees) == 0) {
+            return false;
+        }
+
+        // prepare category tree
+        $categoryTree = array_merge([$category->get('id')], explode("|", $category->get('categoryRoute')));
+
+        foreach ($trees as $tree) {
+            if (in_array($tree->get('id'), $categoryTree)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
