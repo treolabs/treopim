@@ -41,10 +41,12 @@
     "categories": {
       "type": "linkMultiple",
       "layoutListDisabled": true,
+      "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": false,
       "exportDisabled": false,
-      "importDisabled": false
+      "importDisabled": false,
+      "noLoad": true
     },
     "attributes": {
       "type": "linkMultiple",
