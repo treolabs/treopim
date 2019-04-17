@@ -41,11 +41,13 @@
     "categories": {
       "type": "linkMultiple",
       "layoutListDisabled": true,
+      "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": false,
       "exportDisabled": false,
       "importDisabled": false,
-      "view": "pim:views/product/fields/categories"
+      "view": "pim:views/product/fields/categories",
+      "noLoad": true
     },
     "attributes": {
       "type": "linkMultiple",
