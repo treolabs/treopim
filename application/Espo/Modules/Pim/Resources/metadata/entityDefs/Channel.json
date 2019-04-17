@@ -85,6 +85,13 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
+    },
+    "products": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -120,6 +127,12 @@
       "type": "hasMany",
       "foreign": "channel",
       "entity": "Account"
+    },
+    "products": {
+      "type": "hasMany",
+      "relationName": "productChannel",
+      "foreign": "channels",
+      "entity": "Product"
     }
   },
   "collection": {

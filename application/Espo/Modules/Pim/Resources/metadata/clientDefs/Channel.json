@@ -41,15 +41,5 @@
         "notLinkedWithChannel"
       ]
     }
-  },
-  "bottomPanels": {
-    "detail": [
-      {
-        "name": "products",
-        "label": "Products",
-        "layout": "listForProductsInChannel",
-        "view": "pim:views/channel/record/panels/channel-products"
-      }
-    ]
   }
 }

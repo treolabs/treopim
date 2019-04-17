@@ -263,6 +263,13 @@
       "type": "link",
       "required": true,
       "view": "pim:views/product/fields/catalog"
+    },
+    "channels": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -369,6 +376,12 @@
       "foreign": "products",
       "entity": "ProductSerie",
       "audited": false
+    },
+    "channels": {
+      "type": "hasMany",
+      "relationName": "productChannel",
+      "foreign": "products",
+      "entity": "Channel"
     }
   },
   "collection": {

@@ -126,16 +126,6 @@
         "order": 10
       },
       {
-        "name": "Channels",
-        "label": "Channels",
-        "layout": "listForChannelsInProducts",
-        "view": "pim:views/product/record/panels/channel-products",
-        "order": 10,
-        "aclScopesList": [
-          "Channel"
-        ]
-      },
-      {
         "name": "channelProductAttributeValues",
         "label": "Product Channel Attributes",
         "view": "pim:views/product/record/panels/channel-product-attribute-values",

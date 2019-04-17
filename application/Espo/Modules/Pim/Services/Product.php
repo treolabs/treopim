@@ -553,18 +553,6 @@ class Product extends AbstractService
     }
 
     /**
-     * Get Channels for product
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    public function getChannels(string $productId): array
-    {
-        return $this->prepareGetChannels($this->getDBChannel($productId));
-    }
-
-    /**
      * Get ids all active categories in tree
      *
      * @param string $productId
@@ -845,88 +833,6 @@ class Product extends AbstractService
     }
 
     /**
-     * Get channels from DB
-     *
-     * @param string $productId
-     *
-     * @param bool   $onlyActive
-     *
-     * @return array
-     * @throws Error
-     */
-    protected function getDBChannel(string $productId, bool $onlyActive = false): array
-    {
-        // prepare result
-        $result = [];
-
-        if (!empty($categories = $this->getCategories($productId))) {
-            // prepare where
-            $where = '';
-            if ($onlyActive) {
-                $where .= ' AND channel.is_active = 1';
-                $where .= ' AND catalog.is_active = 1';
-                $where .= ' AND category.is_active = 1';
-            }
-
-            // ACL
-            $where .= $this->getAclWhereSql('Channel', 'channel');
-            $where .= $this->getAclWhereSql('Catalog', 'catalog');
-            $where .= $this->getAclWhereSql('Category', 'category');
-
-            // prepare categories ids
-            $ids = implode("', '", $categories);
-
-            $sql
-                = "SELECT
-                  channel.id             AS channelId,
-                  channel.name           AS channelName,
-                  channel.code           AS channelCode,
-                  channel.currencies     AS channelCurrencies,
-                  channel.locales        AS channelLocales,
-                  channel.is_active      AS channelIsActive,
-                  catalog.id             AS catalogId,
-                  catalog.name           AS catalogName,
-                  catalog.is_active      AS catalogIsActive,
-                  category.id            AS categoryId,
-                  category.name          AS categoryName,
-                  category.is_active     AS categoryIsActive
-                FROM channel as channel
-                JOIN catalog as catalog 
-                  ON catalog.id=channel.catalog_id AND channel.deleted=0
-                JOIN category as category 
-                  ON category.id=catalog.category_id AND category.deleted=0
-                WHERE channel.deleted = 0 AND catalog.category_id IN ('{$ids}') {$where}";
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-            // prepare result
-            if (!empty($result)) {
-                // prepare params
-                $channelService = $this->getInjection('serviceFactory')->create('Channel');
-
-                foreach ($result as $k => $row) {
-                    if (!empty($row['channelLocales'])) {
-                        $result[$k]['channelLocales'] = $channelService
-                            ->prepareLocales(Json::decode($row['channelLocales'], true));
-                    } else {
-                        $result[$k]['channelLocales'] = [];
-                    }
-
-                    if (!empty($row['channelCurrencies'])) {
-                        $result[$k]['channelCurrencies'] = Json::decode($row['channelLocales'], true);
-                    } else {
-                        $result[$k]['channelCurrencies'] = [];
-                    }
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * @param string $productId
      * @param string $channelId
      * @param array  $attributeData
@@ -951,29 +857,6 @@ class Product extends AbstractService
         ];
 
         return $service->createValue($data, false);
-    }
-
-    /**
-     * Prepare data Channels for output
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function prepareGetChannels(array $data): array
-    {
-        $result = [];
-        foreach ($data as $key => $row) {
-            if (!isset($result[$row['channelId']])) {
-                $result[$row['channelId']] = $row;
-
-                $result[$row['channelId']]['channelIsActive'] = (bool)$row['channelIsActive'];
-                $result[$row['channelId']]['catalogIsActive'] = (bool)$row['catalogIsActive'];
-                $result[$row['channelId']]['categoryIsActive'] = (bool)$row['categoryIsActive'];
-            }
-        }
-
-        return array_values($result);
     }
 
     /**
