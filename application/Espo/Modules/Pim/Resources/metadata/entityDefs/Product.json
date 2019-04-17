@@ -44,8 +44,7 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": false,
       "exportDisabled": false,
-      "importDisabled": false,
-      "view": "pim:views/product/fields/categories"
+      "importDisabled": false
     },
     "attributes": {
       "type": "linkMultiple",
