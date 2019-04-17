@@ -37,7 +37,8 @@
     "attachments": "Attachments",
     "productSerie": "Product Serie",
     "association": "Association",
-    "catalog": "Catalog"
+    "catalog": "Catalog",
+    "channels": "Channels"
   },
   "links": {
     "categories": "Product Categories",
@@ -59,7 +60,9 @@
     "channelProductAttributeValues": "Channel Product Attribute Values",
     "channelProducts": "Product Channels",
     "tax": "Tax",
-    "packaging": "Packaging"
+    "packaging": "Packaging",
+    "catalog": "Catalog",
+    "channels": "Channels"
   },
   "labels": {
     "Create Product": "Create Product",

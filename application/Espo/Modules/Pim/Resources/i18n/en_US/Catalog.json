@@ -1,11 +1,13 @@
 {
   "fields": {
     "isActive": "Active",
-    "category": "Category"
+    "products": "Products",
+    "categories": "Categories"
   },
   "links": {
     "channels": "Channels",
-    "products": "Products"
+    "products": "Products",
+    "categories": "Categories"
   },
   "labels": {
     "Create Catalog": "Create Catalog"
