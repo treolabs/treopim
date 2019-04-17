@@ -51,10 +51,6 @@
       "type": "linkMultiple",
       "view": "views/fields/teams"
     },
-    "catalog": {
-      "type": "link",
-      "required": true
-    },
     "currencies": {
       "type": "multiEnum",
       "required": true,
@@ -113,10 +109,6 @@
       "entity": "Team",
       "relationName": "EntityTeam",
       "layoutRelationshipsDisabled": true
-    },
-    "catalog": {
-      "type": "belongsTo",
-      "entity": "Catalog"
     },
     "channelProductAttributeValues": {
       "type": "hasMany",

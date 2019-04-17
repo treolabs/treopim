@@ -93,14 +93,6 @@
       "importDisabled": true,
       "noLoad": true
     },
-    "catalogs": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
-      "noLoad": true
-    },
     "image": {
       "layoutFiltersDisabled": true,
       "notStorable": true,
@@ -139,6 +131,13 @@
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true
+    },
+    "catalogs": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -182,16 +181,17 @@
       "foreign": "categories",
       "entity": "Product"
     },
-    "catalogs": {
-      "type": "hasMany",
-      "foreign": "category",
-      "entity": "Catalog"
-    },
     "categoryImages": {
       "type": "hasMany",
       "relationName": "categoryImageCategory",
       "foreign": "categories",
       "entity": "CategoryImage"
+    },
+    "catalogs": {
+      "type": "hasMany",
+      "relationName": "catalogCategory",
+      "foreign": "categories",
+      "entity": "Catalog"
     }
   },
   "collection": {

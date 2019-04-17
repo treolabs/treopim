@@ -44,11 +44,6 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
         if (!$this->isSkuUnique($product)) {
             throw new BadRequest($this->exception('Product with such SKU already exist'));
         }
-
-        // check catalog
-        if (!$this->isCatalogValid($product)) {
-            throw new BadRequest($this->exception('Wrong catalog'));
-        }
     }
 
     /**
@@ -71,30 +66,6 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
                     return false;
                 }
             }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param Entity $product
-     *
-     * @return bool
-     */
-    protected function isCatalogValid(Entity $product): bool
-    {
-        if (empty($catalog = $product->get('catalog')) || empty($categoryId = $catalog->get('categoryId'))) {
-            return false;
-        }
-
-        if (count($product->get('categories')) > 0) {
-            $categoriesIds = array_column($product->get('categories')->toArray(), 'id');
-        } else {
-            $categoriesIds = (array)$product->get('categoriesIds');
-        }
-
-        if (!in_array($categoryId, $categoriesIds)) {
-            return false;
         }
 
         return true;

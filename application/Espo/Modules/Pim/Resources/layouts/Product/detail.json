@@ -35,9 +35,7 @@
         {
           "name": "catalog"
         },
-        {
-          "name": "categories"
-        }
+        false
       ],
       [
         {
