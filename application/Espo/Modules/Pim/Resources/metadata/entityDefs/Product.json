@@ -46,7 +46,6 @@
       "layoutFiltersDisabled": false,
       "exportDisabled": false,
       "importDisabled": false,
-      "view": "pim:views/product/fields/categories",
       "noLoad": true
     },
     "attributes": {
