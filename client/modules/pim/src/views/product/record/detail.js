@@ -23,7 +23,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
         setup() {
             Dep.prototype.setup.call(this);
 
-            if (!this.model.isNew() && this.getMetadata().get(['scopes', this.scope, 'advancedFilters'])) {
+            if (!this.model.isNew() && (this.type === 'detail' || this.type === 'edit') && this.getMetadata().get(['scopes', this.scope, 'advancedFilters'])) {
                 this.listenTo(this.model, 'attributes-rendered main-image-updated', () => {
                     this.applyOverviewFilters();
                 });
