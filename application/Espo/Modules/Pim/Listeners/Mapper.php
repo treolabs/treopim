@@ -56,8 +56,13 @@ class Mapper extends AbstractListener
      *
      * @return bool
      */
-    protected function isValidCategory(Product $product, Category $category): bool
+    protected function isValidCategory($product, $category): bool
     {
+        // exit if empty
+        if (empty($product) || empty($category)) {
+            return false;
+        }
+
         // get catalog
         if (empty($catalog = $product->get('catalog'))) {
             return false;

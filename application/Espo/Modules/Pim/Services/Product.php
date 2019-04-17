@@ -632,14 +632,23 @@ class Product extends AbstractService
 
                 // call customm method
                 if (method_exists($this, $methodName)) {
-                    $this->{$methodName}($product, $duplicatingProduct);
+                    try {
+                        $this->{$methodName}($product, $duplicatingProduct);
+                    } catch (\Throwable $e) {
+                        $GLOBALS['log']->error($e->getMessage());
+                    }
+
                     continue 1;
                 }
 
                 $data = $duplicatingProduct->get($link);
                 if (count($data) > 0) {
                     foreach ($data as $item) {
-                        $this->getEntityManager()->getRepository('Product')->relate($product, $link, $item);
+                        try {
+                            $this->getEntityManager()->getRepository('Product')->relate($product, $link, $item);
+                        } catch (\Throwable $e) {
+                            $GLOBALS['log']->error($e->getMessage());
+                        }
                     }
                 }
             }
