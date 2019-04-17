@@ -66,7 +66,7 @@
   },
   "messages": {
     "sameNumberOptions": "Die gleiche Anzahl von Optionen",
-    "productsCountWithAttribute": "Anzahl der Produkte, für die dieses Attribut festgelegt ist: {count}"
+    "productsCountWithAttribute": "Anzahl der Produkte, für die dieses Attribut festgelegt ist: <strong>{count}</strong>"
   },
   "filterLabels": {
     "All": "Alle"

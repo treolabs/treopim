@@ -53,7 +53,7 @@
   },
   "messages": {
     "sameNumberOptions": "You must set the same number of options",
-    "productsCountWithAttribute": "Count of products where this attribute is set: {count}"
+    "productsCountWithAttribute": "Count of products where this attribute is set: <strong>{count}</strong>"
   },
   "filterLabels": {
     "All": "All"
