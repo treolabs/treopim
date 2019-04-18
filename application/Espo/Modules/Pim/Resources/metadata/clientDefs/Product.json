@@ -58,6 +58,7 @@
             "view": "pim:views/product/record/panels/attributes",
             "createAction": "createRelatedConfigured",
             "selectAction": "selectAttribute",
+            "selectBoolFilterList": ["notLinkedWithProduct"],
             "aclScopesList": ["ProductAttributeValue"]
         },
         "categories": {
