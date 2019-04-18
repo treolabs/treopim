@@ -58,6 +58,8 @@
     "categories": {
       "type": "linkMultiple",
       "required": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "noLoad": true,
       "view": "pim:views/catalog/fields/categories"
     }
