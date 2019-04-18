@@ -26,6 +26,9 @@ Espo.define('pim:views/product/record/panels/categories', 'views/record/panels/r
             },
             onlyCatalogCategories() {
                 return this.model.get('catalogId');
+            },
+            onlyChildCategory() {
+                return true;
             }
         },
 

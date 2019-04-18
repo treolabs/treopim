@@ -23,7 +23,8 @@
     "withoutProductAttributes",
     "withoutImageAssets",
     "notLinkedWithCategory",
-    "notLinkedWithProductSerie"
+    "notLinkedWithProductSerie",
+    "onlyCatalogProducts"
   ],
   "hiddenBoolFilterList": [
     "notEntity",
@@ -37,7 +38,8 @@
     "notLinkedWithProductFamily",
     "notLinkedWithPackaging",
     "notLinkedWithCategory",
-    "notLinkedWithProductSerie"
+    "notLinkedWithProductSerie",
+    "onlyCatalogProducts"
   ],
   "disabledMassActions": [
     "merge"
@@ -69,7 +71,8 @@
       "selectBoolFilterList": [
         "onlyActive",
         "notEntity",
-        "onlyCatalogCategories"
+        "onlyCatalogCategories",
+        "onlyChildCategory"
       ],
       "listLayout": "listCategoryInProduct"
     },
