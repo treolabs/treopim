@@ -44,15 +44,6 @@ class CategoryHook extends \Espo\Modules\Pim\Hooks\Product\ProductHook
         if (!$this->isCodeValid($entity)) {
             throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
         }
-
-        // categories validation
-        if (!empty($entity->get('productsIds'))) {
-            foreach ($entity->get('products') as $product) {
-                if (!$this->isValidProductCategory($product, $entity)) {
-                    throw new BadRequest($this->exception('You cannot linked current product with selected category'));
-                }
-            }
-        }
     }
 
     /**
@@ -64,8 +55,8 @@ class CategoryHook extends \Espo\Modules\Pim\Hooks\Product\ProductHook
      */
     public function beforeRelate(Entity $entity, array $options, array $hookData)
     {
-        if ($hookData['relationName'] == 'products' && !$this->isValidProductCategory($hookData['foreignEntity'], $entity)) {
-            throw new BadRequest($this->exception('You cannot linked current product with selected category'));
+        if ($hookData['relationName'] == 'products') {
+            $this->productCategoryBeforeRelateValidation($hookData['foreignEntity'], $entity);
         }
         if ($hookData['relationName'] == 'catalogs' && !empty($entity->get('categoryParent'))) {
             throw new BadRequest($this->translate('Only root category can be linked with catalog', 'exceptions', 'Catalog'));

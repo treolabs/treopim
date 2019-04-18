@@ -44,15 +44,6 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
         if (!$this->isSkuUnique($entity)) {
             throw new BadRequest($this->exception('Product with such SKU already exist'));
         }
-
-        // categories validation
-        if (!empty($entity->get('categoriesIds'))) {
-            foreach ($entity->get('categories') as $category) {
-                if (!$this->isValidProductCategory($entity, $category)) {
-                    throw new BadRequest($this->exception('You cannot linked current product with selected category'));
-                }
-            }
-        }
     }
 
     /**
@@ -64,8 +55,8 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
      */
     public function beforeRelate(Entity $entity, array $options, array $hookData)
     {
-        if ($hookData['relationName'] == 'categories' && !$this->isValidProductCategory($entity, $hookData['foreignEntity'])) {
-            throw new BadRequest($this->exception('You cannot linked current product with selected category'));
+        if ($hookData['relationName'] == 'categories') {
+            $this->productCategoryBeforeRelateValidation($entity, $hookData['foreignEntity']);
         }
     }
 
@@ -100,24 +91,27 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
      * @param Entity $category
      *
      * @return bool
+     * @throws BadRequest
      */
-    protected function isValidProductCategory($product, $category): bool
+    protected function productCategoryBeforeRelateValidation($product, $category): bool
     {
-        // exit if empty
         if (empty($product) || empty($category)) {
-            return false;
+            throw new BadRequest($this->exception('Product and Category cannot be empty'));
         }
 
-        // get catalog
+        if (count($category->get('categories')) > 0) {
+            throw new BadRequest($this->exception('Category has child category'));
+        }
+
         if (empty($catalog = $product->get('catalog'))) {
-            return false;
+            throw new BadRequest($this->exception('No such product catalog'));
         }
 
         // get catalog categories trees
         $trees = $catalog->get('categories');
 
         if (count($trees) == 0) {
-            return false;
+            throw new BadRequest($this->exception('No category trees in product catalog'));
         }
 
         // prepare category tree
@@ -129,7 +123,7 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
             }
         }
 
-        return false;
+        throw new BadRequest($this->exception('Category should be in catalog trees'));
     }
 
     /**
