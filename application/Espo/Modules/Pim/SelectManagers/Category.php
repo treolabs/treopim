@@ -68,11 +68,13 @@ class Category extends AbstractSelectManager
     }
 
     /**
-     * @param array  $result
-     * @param string $categoryId
+     * @param array $result
      */
-    protected function hideChildCategories(array &$result, string $categoryId)
+    protected function boolFilterNotChildCategory(array &$result)
     {
+        // prepare category id
+        $categoryId = (string)$this->getSelectCondition('notChildCategory');
+
         $result['whereClause'][] = [
             'categoryRoute!*' => "%|$categoryId|%"
         ];
