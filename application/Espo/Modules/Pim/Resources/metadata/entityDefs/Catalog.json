@@ -60,8 +60,7 @@
       "required": true,
       "layoutDetailDisabled": true,
       "layoutDetailSmallDisabled": true,
-      "noLoad": true,
-      "view": "pim:views/catalog/fields/categories"
+      "noLoad": true
     }
   },
   "links": {
