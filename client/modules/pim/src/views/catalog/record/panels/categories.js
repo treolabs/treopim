@@ -161,9 +161,7 @@ Espo.define('pim:views/catalog/record/panels/categories', ['views/record/panels/
                             checkboxes: false,
                             rowActionsView: this.defs.readOnly ? false : (this.defs.rowActionsView || this.rowActionsView),
                             buttonsDisabled: true,
-                            el: this.options.el + ' .list-container',
-                            dragableListRows: !this.defs.readOnly,
-                            listRowsOrderSaveUrl: `ProductImage/${this.model.id}/sortOrder`
+                            el: this.options.el + ' .list-container'
                         }, function (view) {
                             view.render();
                         });
