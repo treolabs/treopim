@@ -64,7 +64,7 @@ class CategoryHook extends \Espo\Modules\Pim\Hooks\Product\ProductHook
      */
     public function beforeRelate(Entity $entity, array $options, array $hookData)
     {
-        if (!$this->isValidProductCategory($hookData['foreignEntity'], $entity)) {
+        if ($hookData['relationName'] == 'products' && !$this->isValidProductCategory($hookData['foreignEntity'], $entity)) {
             throw new BadRequest($this->exception('You cannot linked current product with selected category'));
         }
     }

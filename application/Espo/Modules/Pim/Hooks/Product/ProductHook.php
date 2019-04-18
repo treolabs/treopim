@@ -64,7 +64,7 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
      */
     public function beforeRelate(Entity $entity, array $options, array $hookData)
     {
-        if (!$this->isValidProductCategory($entity, $hookData['foreignEntity'])) {
+        if ($hookData['relationName'] == 'categories' && !$this->isValidProductCategory($entity, $hookData['foreignEntity'])) {
             throw new BadRequest($this->exception('You cannot linked current product with selected category'));
         }
     }
@@ -121,7 +121,7 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
         }
 
         // prepare category tree
-        $categoryTree = array_merge([$category->get('id')], explode("|", $category->get('categoryRoute')));
+        $categoryTree = array_merge([$category->get('id')], explode("|", (string)$category->get('categoryRoute')));
 
         foreach ($trees as $tree) {
             if (in_array($tree->get('id'), $categoryTree)) {
