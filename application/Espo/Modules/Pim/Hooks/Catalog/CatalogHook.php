@@ -35,11 +35,42 @@ class CatalogHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
     /**
      * @param Entity $entity
      * @param array  $options
+     * @param array  $hookData
+     *
+     * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeRelate(Entity $entity, array $options, array $hookData)
     {
-        if ($entity->isAttributeChanged('categoryId') && count($entity->get('products')) > 0) {
-            throw new BadRequest("Category cannot be changed. Catalog has related products.");
+        if ($hookData['relationName'] == 'categories') {
+            if (!empty($hookData['foreignEntity']->get('categoryParent'))) {
+                throw new BadRequest($this->exception('Only root category can be linked with catalog'));
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     * @param array  $hookData
+     *
+     * @throws BadRequest
+     */
+    public function beforeUnrelate(Entity $entity, array $options, array $hookData)
+    {
+        if ($hookData['relationName'] == 'categories' && count($entity->get('products')) > 0) {
+            // get root category id
+            $categoryId = $hookData['foreignEntity']->get('id');
+
+            foreach ($entity->get('products') as $product) {
+                $categories = $product->get('categories');
+                if (count($categories) > 0) {
+                    foreach ($categories as $category) {
+                        if (in_array($categoryId, array_merge(explode("|", (string)$category->get('categoryRoute')), [$category->get('id')]))) {
+                            throw new BadRequest($this->exception('There are few products that using current category tree'));
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -58,5 +89,15 @@ class CatalogHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
                 $this->getEntityManager()->removeEntity($product);
             }
         }
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function exception(string $key): string
+    {
+        return $this->getInjection('language')->translate($key, 'exceptions', 'Catalog');
     }
 }

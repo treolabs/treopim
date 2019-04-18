@@ -13,9 +13,7 @@
         {
           "name": "name"
         },
-        {
-          "name": "categories"
-        }
+        false
       ],
       [
         {
