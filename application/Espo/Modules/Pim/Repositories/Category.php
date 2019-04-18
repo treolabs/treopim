@@ -21,72 +21,13 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Repositories;
 
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Modules\Pim\Core\Repositories\AbstractRepositories;
-use Espo\ORM\Entity;
-use Espo\ORM\EntityCollection;
+use Espo\Core\Templates\Repositories\Base;
 
 /**
- * Repository Category
+ * Class Category
  *
- * @author r.ratsun <r.ratsun@treolabs.com>
+ * @author r.ratsun@treolabs.com
  */
-class Category extends AbstractRepositories
+class Category extends Base
 {
-    /**
-     * @param string     $id
-     * @param array|null $select
-     *
-     * @return EntityCollection|null
-     */
-    public function getChildren(string $id, array $select = null): ?EntityCollection
-    {
-        if (!is_null($select)) {
-            $this->select($select);
-        }
-
-        return $this->where(['categoryRoute*' => "%|$id|%"])->find();
-    }
-
-    /**
-     * Init
-     */
-    protected function init()
-    {
-        // call parent
-        parent::init();
-
-        $this->addDependency('language');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = array())
-    {
-        parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
-
-        if ($relationName !== 'categoryImages' && $relationName !== 'catalogs') {
-            $count = $this
-                ->select(['id'])
-                ->where(['categoryParentId' => $entity->get('id')])
-                ->count();
-
-            if (!empty($count)) {
-                throw new BadRequest($this->exception('Category has children'));
-            }
-        }
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function exception(string $key): string
-    {
-        return $this
-            ->getInjection('language')
-            ->translate($key, 'exceptions', 'Category');
-    }
 }

@@ -273,13 +273,10 @@ class Category extends Base
      */
     protected function getCategoryChildren(string $id): array
     {
-        // prepare result
-        $result = [];
-
-        if (!empty($data = $this->getRepository()->getChildren($id, ['id']))) {
-            $result = array_column($data->toArray(), 'id');
+        if (empty($category = $this->getEntityManager()->getEntity('Category', $id))) {
+            return [];
         }
 
-        return $result;
+        return array_column($category->getChildren()->toArray(), 'id');
     }
 }

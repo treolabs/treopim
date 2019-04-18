@@ -20,75 +20,13 @@
 
 namespace Espo\Modules\Pim\Repositories;
 
-use \Espo\Modules\Pim\Core\Repositories\AbstractRepositories;
-use Espo\ORM\EntityCollection;
+use Espo\Core\Templates\Repositories\Base;
 
 /**
- * Channel repository
+ * Class Channel
  *
- * @author r.ratsun <r.ratsun@treolabs.com>
+ * @author r.ratsun@treolabs.com
  */
-class Channel extends AbstractRepositories
+class Channel extends Base
 {
-    /**
-     * Get channel products
-     *
-     * @param string $channelId
-     * @param array $select
-     *
-     * @return EntityCollection|null
-     */
-    public function getProducts(string $channelId, array $select = []): ?EntityCollection
-    {
-        // prepare result
-        $result = null;
-
-        if (!empty($productsIds = $this->getProductsIds($channelId))) {
-            $repository = $this
-                ->getEntityManager()
-                ->getRepository('Product');
-            if (!empty($select)) {
-                $repository->select($select);
-            }
-
-            // prepare result
-            $result = $repository->where(['id' => $productsIds])->find();
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get channel products ids
-     *
-     * @param string $channelId
-     *
-     * @return array
-     */
-    public function getProductsIds(string $channelId): array
-    {
-        $result = [];
-
-        if (!empty($channelId)) {
-            $sql = "
-             SELECT p.id
-            FROM product p
-              JOIN product_category_linker pcl
-                ON pcl.product_id = p.id AND pcl.deleted = 0
-              JOIN category cat
-                ON cat.id = pcl.category_id AND cat.deleted = 0
-              JOIN catalog ct
-                ON ct.category_id = cat.id AND ct.deleted = 0
-              JOIN channel ch
-                ON ch.catalog_id = ct.id AND ch.deleted = 0
-            WHERE p.deleted = 0 AND ch.id = :id";
-
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute(['id' => $channelId]);
-
-            $result = $sth->fetchAll(\PDO::FETCH_ASSOC|\PDO::FETCH_COLUMN);
-        }
-
-        return $result;
-    }
 }
