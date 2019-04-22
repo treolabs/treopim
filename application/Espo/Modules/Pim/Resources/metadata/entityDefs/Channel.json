@@ -78,14 +78,6 @@
       "emHidden": true,
       "view": "pim:views/fields/code-from-name"
     },
-    "accounts": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "noLoad": true,
-      "importDisabled": true
-    },
     "products": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
@@ -122,11 +114,6 @@
       "foreign": "channel",
       "entity": "ChannelProductAttributeValue",
       "layoutRelationshipsDisabled": true
-    },
-    "accounts": {
-      "type": "hasMany",
-      "foreign": "channel",
-      "entity": "Account"
     },
     "products": {
       "type": "hasMany",

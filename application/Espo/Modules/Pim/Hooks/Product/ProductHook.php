@@ -42,7 +42,11 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
     {
         // is sku valid
         if (!$this->isSkuUnique($entity)) {
-            throw new BadRequest($this->exception('Product with such SKU already exist'));
+            if (isset($options['isImport']) && $options['isImport']) {
+                $entity->setIsNew(false);
+            } else {
+                throw new BadRequest($this->exception('Product with such SKU already exist'));
+            }
         }
 
         if ($entity->isAttributeChanged('catalogId')) {

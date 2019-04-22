@@ -74,33 +74,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * Prepare access for portal
-     *
-     * @param array $result
-     *
-     * @return null|void
-     */
-    protected function accessPortalOnlyAccount(&$result)
-    {
-        // get accounts
-        $accounts = $this->getUser()->getLinkMultipleIdList('accounts');
-
-        if (!empty($accounts)) {
-            $productIds = ProductService::getAccountProductIds($this->getEntityManager(), $accounts);
-            if (!empty($productIds)) {
-                $result['whereClause'][] = [
-                    'id' => $productIds
-                ];
-
-                return;
-            }
-        }
-
-        // call parent action
-        parent::accessPortalOnlyAccount($result);
-    }
-
-    /**
      * Products without associated products filter
      *
      * @param $result
