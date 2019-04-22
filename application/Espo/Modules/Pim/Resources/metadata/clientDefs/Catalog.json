@@ -8,6 +8,9 @@
   "hiddenBoolFilterList": [
     "notEntity"
   ],
+  "recordViews": {
+    "edit": "pim:views/catalog/record/edit"
+  },
   "relationshipPanels": {
     "categories": {
       "view": "pim:views/catalog/record/panels/categories",
