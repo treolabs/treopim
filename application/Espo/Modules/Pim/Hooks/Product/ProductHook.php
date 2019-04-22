@@ -40,9 +40,14 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
      */
     public function beforeSave(Entity $entity, $options = [])
     {
-        // SKU validation
+        // is sku valid
         if (!$this->isSkuUnique($entity)) {
             throw new BadRequest($this->exception('Product with such SKU already exist'));
+        }
+
+        if ($entity->isAttributeChanged('catalogId')) {
+            // is product categories in selected catalog
+            $this->isProductCategoriesInSelectedCatalog($entity);
         }
     }
 
@@ -124,6 +129,42 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
         }
 
         throw new BadRequest($this->exception('Category should be in catalog trees'));
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     * @throws BadRequest
+     */
+    protected function isProductCategoriesInSelectedCatalog(Entity $entity): bool
+    {
+        // get product categories
+        $categories = $entity->get('categories');
+
+        if (count($categories) > 0) {
+            // get catalog categories ids
+            $catalogCategories = array_column($entity->get('catalog')->get('categories')->toArray(), 'id');
+
+            foreach ($categories as $category) {
+                if (empty($category->get('categoryParent'))) {
+                    $root = $category->get('id');
+                } else {
+                    $tree = explode("|", (string)$category->get('categoryRoute'));
+
+                    $root = null;
+                    if (!empty($tree[1])) {
+                        $root = $tree[1];
+                    }
+                }
+
+                if (!in_array($root, $catalogCategories)) {
+                    throw new BadRequest($this->exception("Some category cannot be linked with selected catalog"));
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
