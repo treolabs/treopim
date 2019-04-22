@@ -6,7 +6,6 @@
     "category": "Kategorie",
     "catalog": "Katalog",
     "code": "Code",
-    "accounts": "Konten",
     "channelProductAttributeValues": "Attributwerte des Produktkanals",
     "channelProducts": "Produkte des Kanals",
     "descriptionDeDe": "Beschreibung DeDe",
@@ -27,7 +26,6 @@
   },
   "links": {
     "categories": "Kategorien",
-    "accounts": "Konten",
     "category": "Kategorie",
     "channelProductAttributeValues": "Attributwerte des Produktkanals",
     "channelProducts": "Produkte des Kanals",
