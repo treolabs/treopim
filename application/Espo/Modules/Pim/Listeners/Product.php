@@ -61,14 +61,16 @@ class Product extends AbstractPimListener
     {
         if (isset($data['attributeValue']) && isset($data['post']) && isset($data['productId'])) {
             // create note
-            $note = $this->getEntityManager()->getEntity('Note');
-            $note->set('type', 'Update');
-            $note->set('parentId', $data['productId']);
-            $note->set('parentType', 'Product');
-            $note->set('data', $this->getNoteData($data['attributeValue'], $data['post']));
-            $note->set('attributeId', $data['post']['attributeId']);
+            if (!empty($noteData = $this->getNoteData($data['attributeValue'], $data['post']))) {
+                $note = $this->getEntityManager()->getEntity('Note');
+                $note->set('type', 'Update');
+                $note->set('parentId', $data['productId']);
+                $note->set('parentType', 'Product');
+                $note->set('data', $noteData);
+                $note->set('attributeId', $data['post']['attributeId']);
 
-            $this->getEntityManager()->saveEntity($note);
+                $this->getEntityManager()->saveEntity($note);
+            }
         }
 
         return $data;
@@ -84,10 +86,46 @@ class Product extends AbstractPimListener
     public function afterActionCreateLink(array $data): array
     {
         if ($data['params']['link'] == 'attributes') {
-            $this->setProductAttributeValueUser($data['data']->ids, (array)$data['params']['id']);
+            $attributeIds = $this->prepareAttributeIds(Json::decode(Json::encode($data['data']), true));
+
+            $this->setProductAttributeValueUser($attributeIds, (array)$data['params']['id']);
         }
 
         return $data;
+    }
+
+    /**
+     * Prepare attributes ids data
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function prepareAttributeIds(array $data): array
+    {
+        $ids = [];
+
+        if (isset($data['ids'])) {
+            $ids = $data['ids'];
+        } elseif (isset($data['where'])) {
+            $selectManager = $this
+                ->getContainer()
+                ->get('selectManagerFactory')
+                ->create('Product');
+
+            $result = $this
+                ->getEntityManager()
+                ->getRepository('Attribute')
+                ->select(['id'])
+                ->find($selectManager->getSelectParams(['where' => $data['where']]))
+                ->toArray();
+
+            if (!empty($result)) {
+                $ids = array_column($result, 'id');
+            }
+        }
+
+        return $ids;
     }
 
     /**
