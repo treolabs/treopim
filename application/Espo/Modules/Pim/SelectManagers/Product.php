@@ -143,6 +143,46 @@ class Product extends AbstractSelectManager
     }
 
     /**
+     * @param array $result
+     */
+    protected function boolFilterOnlyCatalogProducts(&$result)
+    {
+        if (!empty($category = $this->getEntityManager()->getEntity('Category', (string)$this->getSelectCondition('notLinkedWithCategory')))) {
+            // prepare ids
+            $ids = ['-1'];
+
+            // get root id
+            if (empty($category->get('categoryParent'))) {
+                $rootId = $category->get('id');
+            } else {
+                $tree = explode("|", (string)$category->get('categoryRoute'));
+                $rootId = (!empty($tree[1])) ? $tree[1] : null;
+            }
+
+            if (!empty($rootId)) {
+                $catalogs = $this
+                    ->getEntityManager()
+                    ->getRepository('Catalog')
+                    ->distinct()
+                    ->join('categories')
+                    ->where(['categories.id' => $rootId])
+                    ->find();
+
+                if (count($catalogs) > 0) {
+                    foreach ($catalogs as $catalog) {
+                        $ids = array_merge($ids, array_column($catalog->get('products')->toArray(), 'id'));
+                    }
+                }
+            }
+
+            // prepare where
+            $result['whereClause'][] = [
+                'id' => $ids
+            ];
+        }
+    }
+
+    /**
      * Get product without AssociatedProduct
      *
      * @return array
