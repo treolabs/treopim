@@ -80,7 +80,7 @@ class Product extends Base
             if (!empty($locale)) {
                 $attributeId = substr($attributeId, 0, -4);
             }
-            $value = (is_array($p2)) ? json_encode($p2, \JSON_UNESCAPED_UNICODE) : (string)$p2;
+            $value = (is_array($p2)) ? json_encode($p2, \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES) : (string)$p2;
 
             if (empty($channelId)) {
                 $this->setProductAttributeValue($attributeId, $value, $locale);
