@@ -48,17 +48,17 @@ class V2Dot14Dot7 extends \Treo\Core\Migration\AbstractMigration
             ->find();
 
         if (count($attributes) > 0) {
-            foreach ($attributes as $attribute) {
-                // prepare value field
-                $fields = ['value'];
+            // prepare value field
+            $fields = ['value'];
 
-                // prepare multi lang fields
-                if ($this->getConfig()->get('isMultilangActive')) {
-                    foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                        $fields[] = Util::toCamelCase('value_' . strtolower($locale));
-                    }
+            // prepare multi lang fields
+            if ($this->getConfig()->get('isMultilangActive')) {
+                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                    $fields[] = Util::toCamelCase('value_' . strtolower($locale));
                 }
+            }
 
+            foreach ($attributes as $attribute) {
                 foreach ($fields as $field) {
                     if (!empty($value = $attribute->get($field))) {
                         // update attribute values
