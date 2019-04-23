@@ -65,6 +65,7 @@
       ]
     },
     "categories": {
+      "modalEditView": "pim:views/category/modals/edit-in-product",
       "view": "pim:views/product/record/panels/categories",
       "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity",
