@@ -4,14 +4,14 @@
     "style": "default",
     "rows": [
       [
-        [
-          {
-            "name": "isActive"
-          },
-          {
-            "name": "type"
-          }
-        ],
+        {
+          "name": "isActive"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      [
         {
           "name": "name"
         },
