@@ -5,10 +5,12 @@
       "trim": true
     },
     "product": {
-      "type": "link"
+      "type": "link",
+      "required": true
     },
     "category": {
-      "type": "link"
+      "type": "link",
+      "required": true
     },
     "scope": {
       "type": "enum",
