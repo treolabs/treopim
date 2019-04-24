@@ -1,0 +1,16 @@
+[
+  {
+    "rows": [
+      [
+        {
+          "name": "product"
+        },
+        {
+          "name": "category"
+        }
+      ]
+    ],
+    "style": "default",
+    "label": "Overview"
+  }
+]

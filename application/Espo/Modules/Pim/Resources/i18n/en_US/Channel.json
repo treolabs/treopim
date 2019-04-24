@@ -9,13 +9,15 @@
     "category": "Category",
     "locales": "Locales",
     "code": "Code",
-    "products": "Products"
+    "products": "Products",
+    "productCategories": "Product Categories"
   },
   "links": {
     "categories": "Categories",
     "channelProductAttributeValues": "Channel product attribute values",
     "channelProducts": "Product Channels",
-    "products": "Products"
+    "products": "Products",
+    "productCategories": "Product Categories"
   },
   "labels": {
     "Create Channel": "Create Channel"
