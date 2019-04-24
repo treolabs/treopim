@@ -20,40 +20,34 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Hooks\Catalog;
-
-use Espo\ORM\Entity;
-use Espo\Core\Exceptions\BadRequest;
+namespace Espo\Modules\Pim\Services;
 
 /**
- * Class Hook
+ * Class QueueManagerDuplicateProduct
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Hook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
+class QueueManagerDuplicateProduct extends \Treo\Services\QueueManagerBase
 {
     /**
-     * Before remove action
-     *
-     * @param Entity $entity
-     * @param array  $options
-     *
-     * @throws BadRequest
+     * @inheritdoc
      */
-    public function beforeRemove(Entity $entity, $options = [])
+    public function run(array $data = []): bool
     {
-        if (count($entity->get('channels')) > 0) {
-            throw new BadRequest($this->exception("Catalog cannot be deleted"));
+        if (empty($data['productId']) || empty($data['catalogId'])) {
+            return false;
         }
-    }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function exception(string $key): string
-    {
-        return $this->translate($key, 'exceptions', 'Catalog');
+        // get service
+        $service = $this->getContainer()->get('serviceFactory')->create('Product');
+
+        // prepare product data
+        $productData = $service->getDuplicateAttributes($data['productId']);
+        $productData->catalogId = $data['catalogId'];
+
+        // create entity
+        $service->createEntity($productData);
+
+        return true;
     }
 }

@@ -60,7 +60,9 @@ Espo.define('pim:views/detail', 'views/detail',
 
             this.notify('Loading...');
 
-            let viewName = this.getMetadata().get('clientDefs.' + scope + '.modalViews.edit') || 'views/modals/edit';
+            let viewName = panelView ? panelView.defs.modalEditView : this.getMetadata().get(['clientDefs', scope, 'modalViews', 'edit']) ||
+                'views/modals/edit';
+
             this.createView('quickCreate', viewName, {
                 scope: scope,
                 relate: {
@@ -89,7 +91,8 @@ Espo.define('pim:views/detail', 'views/detail',
             let afterSaveCallback = data.afterSaveCallback;
             let panelView = this.getPanelView(link);
 
-            let viewName = this.getMetadata().get('clientDefs.' + scope + '.modalViews.edit') || 'views/modals/edit';
+            let viewName = panelView ? panelView.defs.modalEditView : this.getMetadata().get(['clientDefs', scope, 'modalViews', 'edit']) ||
+                'views/modals/edit';
 
             this.notify('Loading...');
             this.createView('quickCreate', viewName, {

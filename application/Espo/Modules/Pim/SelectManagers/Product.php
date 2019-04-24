@@ -32,16 +32,11 @@ use Espo\Modules\Pim\Services\Product as ProductService;
 class Product extends AbstractSelectManager
 {
     /**
-     * Include category tree in search on categories
-     *
-     * @param array $params
-     * @param bool  $withAcl
-     * @param bool  $checkWherePermission
-     *
-     * @return array
+     * @inheritdoc
      */
     public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
     {
+        // include category tree in search on categories
         if (!empty($params['where']) && is_array($params['where'])) {
             $params['where'] = $this->getEntityManager()
                 ->getContainer()
@@ -67,35 +62,15 @@ class Product extends AbstractSelectManager
             }
         }
 
+        // filtering by product types
+        $params['where'][] = [
+            'type'      => 'in',
+            'attribute' => 'type',
+            'value'     => array_keys($this->getMetadata()->get('pim.productType', []))
+        ];
+
         // call parent
         return parent::getSelectParams($params, $withAcl, $checkWherePermission);
-    }
-
-    /**
-     * Prepare access for portal
-     *
-     * @param array $result
-     *
-     * @return null|void
-     */
-    protected function accessPortalOnlyAccount(&$result)
-    {
-        // get accounts
-        $accounts = $this->getUser()->getLinkMultipleIdList('accounts');
-
-        if (!empty($accounts)) {
-            $productIds = ProductService::getAccountProductIds($this->getEntityManager(), $accounts);
-            if (!empty($productIds)) {
-                $result['whereClause'][] = [
-                    'id' => $productIds
-                ];
-
-                return;
-            }
-        }
-
-        // call parent action
-        parent::accessPortalOnlyAccount($result);
     }
 
     /**
@@ -137,6 +112,46 @@ class Product extends AbstractSelectManager
                     'id!=' => array_column($data, 'id')
                 ];
             }
+        }
+    }
+
+    /**
+     * @param array $result
+     */
+    protected function boolFilterOnlyCatalogProducts(&$result)
+    {
+        if (!empty($category = $this->getEntityManager()->getEntity('Category', (string)$this->getSelectCondition('notLinkedWithCategory')))) {
+            // prepare ids
+            $ids = ['-1'];
+
+            // get root id
+            if (empty($category->get('categoryParent'))) {
+                $rootId = $category->get('id');
+            } else {
+                $tree = explode("|", (string)$category->get('categoryRoute'));
+                $rootId = (!empty($tree[1])) ? $tree[1] : null;
+            }
+
+            if (!empty($rootId)) {
+                $catalogs = $this
+                    ->getEntityManager()
+                    ->getRepository('Catalog')
+                    ->distinct()
+                    ->join('categories')
+                    ->where(['categories.id' => $rootId])
+                    ->find();
+
+                if (count($catalogs) > 0) {
+                    foreach ($catalogs as $catalog) {
+                        $ids = array_merge($ids, array_column($catalog->get('products')->toArray(), 'id'));
+                    }
+                }
+            }
+
+            // prepare where
+            $result['whereClause'][] = [
+                'id' => $ids
+            ];
         }
     }
 

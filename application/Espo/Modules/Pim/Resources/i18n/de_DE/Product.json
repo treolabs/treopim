@@ -1,6 +1,6 @@
 {
   "fields": {
-    "categories": "Produktkategorien",
+    "categories": "Kategorien",
     "productImages": "Produktbilder",
     "product": "Hauptartikel",
     "attributes": "Attribute",
@@ -56,7 +56,9 @@
     "productTypePackages": "Produkttyp  Pakete",
     "scope": "Umfang",
     "productSerie": "Product Serie",
-    "association": "Assoziation"
+    "association": "Assoziation",
+    "catalog": "Katalog",
+    "channels": "Kanale"
   },
   "links": {
     "categories": "Produktkategorien",
@@ -82,7 +84,9 @@
     "products": "Produkte",
     "productTypeBundles": "Produkttyp Bündel",
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
-    "productTypePackages": "Produkttyp  Pakete"
+    "productTypePackages": "Produkttyp  Pakete",
+    "catalog": "Katalog",
+    "channels": "Kanale"
   },
   "labels": {
     "There is no valid attributes for channel": "Es gibt keine gültigen Attribute für Kanal",

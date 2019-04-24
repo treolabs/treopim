@@ -194,40 +194,6 @@ class Product extends AbstractController
     }
 
     /**
-     * Get Channels action
-     *
-     * @ApiDescription(description="Get Channels in product")
-     * @ApiMethod(type="GET")
-     * @ApiRoute(name="/Markets/Product/{product_id}/channels")
-     * @ApiParams(name="product_id", type="string", is_required=1, description="Product id")
-     * @ApiReturn(sample="[{
-     *     'channelProductId': 'string',
-     *     'channelId': 'string',
-     *     'channelName': 'string',
-     *     'categories': [
-     *          'string',
-     *          'string',
-     *          '...'
-     *      ],
-     *     'isActive': 'bool',
-     *     'isEditable': 'bool'
-     * },{}]")
-     *
-     * @param string $productId
-     *
-     * @return array
-     * @throws Exceptions\Forbidden
-     */
-    public function getChannels(string $productId): array
-    {
-        if ($this->isReadEntity($this->name, $productId) && $this->getAcl()->check('Channel', 'read')) {
-            return $this->getRecordService()->getChannels($productId);
-        }
-
-        throw new Exceptions\Forbidden();
-    }
-
-    /**
      * Action add associated products
      *
      * @param array     $params

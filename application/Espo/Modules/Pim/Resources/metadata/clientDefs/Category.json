@@ -7,14 +7,20 @@
         "notEntity",
         "notChildCategory",
         "notLinkedWithChannel",
-        "notLinkedWithProduct"
+        "notLinkedWithProduct",
+        "linkedWithCatalog",
+        "onlyRootCategory",
+        "onlyCatalogCategories"
     ],
     "hiddenBoolFilterList": [
         "onlyChildCategory",
         "notEntity",
         "notChildCategory",
         "notLinkedWithChannel",
-        "notLinkedWithProduct"
+        "notLinkedWithProduct",
+        "linkedWithCatalog",
+        "onlyRootCategory",
+        "onlyCatalogCategories"
     ],
     "disabledMassActions": [
         "merge"
@@ -48,7 +54,7 @@
             "rowActionsView": "views/record/row-actions/relationship-unlink-only",
             "createAction": "createRelatedConfigured",
             "selectAction": "selectRelatedEntity",
-            "selectBoolFilterList": ["onlyActive", "notLinkedWithCategory"]
+            "selectBoolFilterList": ["onlyActive", "notLinkedWithCategory", "onlyCatalogProducts"]
         },
         "channels": {
             "view": "pim:views/category/record/panels/channels",
@@ -76,6 +82,20 @@
                     "style": "default"
                 }
             ]
+        }
+    },
+    "dynamicLogic": {
+        "panels": {
+            "catalogs": {
+                "visible": {
+                    "conditionGroup": [
+                        {
+                            "type": "isEmpty",
+                            "attribute": "categoryRouteName"
+                        }
+                    ]
+                }
+            }
         }
     }
 }

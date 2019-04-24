@@ -21,8 +21,14 @@ Espo.define('pim:views/product/record/panels/categories', 'views/record/panels/r
     Dep => Dep.extend({
 
         boolFilterData: {
-            notLinkedWithProduct() {
-                return this.model.id;
+            notEntity() {
+                return this.model.get('categoriesIds');
+            },
+            onlyCatalogCategories() {
+                return this.model.get('catalogId');
+            },
+            onlyChildCategory() {
+                return true;
             }
         },
 

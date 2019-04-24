@@ -1,4 +1,5 @@
-/*
+<?php
+/**
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -17,16 +18,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/channel/fields/category', 'treo-core:views/fields/filtered-link',
-    Dep => Dep.extend({
+declare(strict_types=1);
 
-        selectBoolFilterList:  ['onlyRootCategory'],
+namespace Espo\Modules\Pim\SelectManagers;
 
-        boolFilterData: {
-            onlyRootCategory() {
-                return true;
-            }
-        },
+use Espo\Modules\Pim\Core\SelectManagers\AbstractSelectManager;
 
-    })
-);
+/**
+ * Class of Category
+ *
+ * @author r.ratsun <r.ratsun@treolabs.com>
+ */
+class Catalog extends AbstractSelectManager
+{
+}

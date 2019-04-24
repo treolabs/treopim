@@ -51,10 +51,6 @@
       "type": "linkMultiple",
       "view": "views/fields/teams"
     },
-    "catalog": {
-      "type": "link",
-      "required": true
-    },
     "currencies": {
       "type": "multiEnum",
       "required": true,
@@ -81,6 +77,13 @@
       "trim": true,
       "emHidden": true,
       "view": "pim:views/fields/code-from-name"
+    },
+    "products": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -106,15 +109,17 @@
       "relationName": "EntityTeam",
       "layoutRelationshipsDisabled": true
     },
-    "catalog": {
-      "type": "belongsTo",
-      "entity": "Catalog"
-    },
     "channelProductAttributeValues": {
       "type": "hasMany",
       "foreign": "channel",
       "entity": "ChannelProductAttributeValue",
       "layoutRelationshipsDisabled": true
+    },
+    "products": {
+      "type": "hasMany",
+      "relationName": "productChannel",
+      "foreign": "channels",
+      "entity": "Product"
     }
   },
   "collection": {

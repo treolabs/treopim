@@ -40,8 +40,8 @@
     },
     "categories": {
       "type": "linkMultiple",
-      "layoutDetailDisabled": true,
       "layoutListDisabled": true,
+      "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": false,
       "exportDisabled": false,
@@ -259,6 +259,18 @@
       "layoutDetailDisabled": true,
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true
+    },
+    "catalog": {
+      "type": "link",
+      "required": true,
+      "view": "pim:views/product/fields/catalog"
+    },
+    "channels": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -301,6 +313,11 @@
       "type": "belongsTo",
       "foreign": "products",
       "entity": "ProductFamily"
+    },
+    "catalog": {
+      "type": "belongsTo",
+      "foreign": "products",
+      "entity": "Catalog"
     },
     "brand": {
       "type": "belongsTo",
@@ -360,6 +377,12 @@
       "foreign": "products",
       "entity": "ProductSerie",
       "audited": false
+    },
+    "channels": {
+      "type": "hasMany",
+      "relationName": "productChannel",
+      "foreign": "products",
+      "entity": "Channel"
     }
   },
   "collection": {

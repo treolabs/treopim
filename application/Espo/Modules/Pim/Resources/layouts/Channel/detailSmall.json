@@ -13,11 +13,9 @@
       ],
       [
         {
-          "name": "catalog"
-        },
-        {
           "name": "locales"
-        }
+        },
+        false
       ],
       [
         {

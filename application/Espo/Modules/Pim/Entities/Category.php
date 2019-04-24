@@ -47,7 +47,7 @@ class Category extends \Espo\Core\Templates\Entities\Base
 
         $count = $this
             ->getEntityManager()
-            ->getRepository($this->entityType)
+            ->getRepository('Category')
             ->where(['categoryParentId' => $this->get('id')])
             ->count();
 
@@ -55,43 +55,46 @@ class Category extends \Espo\Core\Templates\Entities\Base
     }
 
     /**
-     * @param array|null $select
-     *
-     * @return EntityCollection|null
+     * @return EntityCollection
      * @throws Error
      */
-    public function getChildren(array $select = null): ?EntityCollection
+    public function getChildren(): EntityCollection
     {
         // validation
         $this->isEntity();
 
         return $this
             ->getEntityManager()
-            ->getRepository($this->entityType)
-            ->getChildren($this->get('id'), $select);
+            ->getRepository('Category')
+            ->where(['categoryRoute*' => "%|" . $this->get('id') . "|%"])
+            ->find();
     }
 
     /**
-     * @return EntityCollection|null
+     * @return EntityCollection
      * @throws Error
      */
-    public function getChannels(): ?EntityCollection
+    public function getTreeProducts(): EntityCollection
     {
         // validation
         $this->isEntity();
 
-        // prepare categories ids
-        $ids = [];
-        if (!empty($route = $this->get('categoryRoute'))) {
-            $ids = explode("|", $route);
-        }
-        $ids[] = $this->get('id');
+        // prepare where
+        $where = [
+            [
+                'OR' => [
+                    ['categories.id' => $this->get('id')],
+                    ['categories.categoryRoute*' => "%|" . $this->get('id') . "|%"]
+                ]
+            ]
+        ];
 
         return $this
             ->getEntityManager()
-            ->getRepository('Channel')
-            ->join('catalog')
-            ->where(['catalog.categoryId' => $ids])
+            ->getRepository('Product')
+            ->distinct()
+            ->join('categories')
+            ->where($where)
             ->find();
     }
 

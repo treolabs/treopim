@@ -1,6 +1,6 @@
 {
   "fields": {
-    "categories": "Product Categories",
+    "categories": "Categories",
     "productAttributes": "Product attributes",
     "productImages": "Product Images",
     "product": "Main Product",
@@ -36,7 +36,9 @@
     "longDescription": "Long Description",
     "attachments": "Attachments",
     "productSerie": "Product Serie",
-    "association": "Association"
+    "association": "Association",
+    "catalog": "Catalog",
+    "channels": "Channels"
   },
   "links": {
     "categories": "Product Categories",
@@ -58,7 +60,9 @@
     "channelProductAttributeValues": "Channel Product Attribute Values",
     "channelProducts": "Product Channels",
     "tax": "Tax",
-    "packaging": "Packaging"
+    "packaging": "Packaging",
+    "catalog": "Catalog",
+    "channels": "Channels"
   },
   "labels": {
     "Create Product": "Create Product",

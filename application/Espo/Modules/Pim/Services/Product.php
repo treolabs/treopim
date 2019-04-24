@@ -32,7 +32,6 @@ use Espo\Orm\EntityManager;
 use Espo\Core\Utils\Util;
 use Slim\Http\Request;
 use \PDO;
-use Treo\Services\MassActions;
 
 /**
  * Service of Product
@@ -56,106 +55,6 @@ class Product extends AbstractService
                 ]
             ]
         ];
-
-    /**
-     * @var array
-     */
-    protected $duplicatingLinkList
-        = [
-            'categories',
-            'attributes',
-            'channelProductAttributeValues',
-            'productImages',
-            'bundleProducts',
-            'associatedMainProducts',
-            'productTypePackages'
-        ];
-
-    /**
-     * Get accounts categories ids
-     *
-     * @param EntityManager $entityManager
-     * @param array         $accountIds
-     *
-     * @return array
-     */
-    public static function getAccountCategoryIds(EntityManager $entityManager, array $accountIds): array
-    {
-        // prepare ids
-        $ids = implode("','", $accountIds);
-
-        $sql
-            = "SELECT
-                 category.id   AS categoryId
-               FROM
-                 account
-               JOIN 
-                 channel ON account.channel_id=channel.id AND channel.deleted=0
-               JOIN 
-                 catalog ON channel.catalog_id=catalog.id AND catalog.deleted=0
-               JOIN 
-                 category ON catalog.category_id=category.id AND catalog.deleted=0
-               WHERE
-                 account.deleted=0
-                AND
-                 account.id IN ('{$ids}')";
-
-        $sth = $entityManager->getPDO()->prepare($sql);
-        $sth->execute();
-
-        $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        return (!empty($data)) ? array_column($data, 'categoryId') : [];
-    }
-
-    /**
-     * Get accounts products ids
-     *
-     * @param EntityManager $entityManager
-     * @param array         $accountIds
-     *
-     * @return array
-     */
-    public static function getAccountProductIds(EntityManager $entityManager, array $accountIds): array
-    {
-        // prepare result
-        $result = [];
-
-        if (!empty($categoryIds = self::getAccountCategoryIds($entityManager, $accountIds))) {
-            // prepare sql variables
-            $categoryIn = "'" . implode("','", $categoryIds) . "'";
-            $categoryLike = '';
-            foreach ($categoryIds as $id) {
-                $categoryLike .= "OR category_route LIKE '%|{$id}|%'";
-            }
-
-            $sql
-                = "SELECT
-                  product.id    AS productId
-                FROM 
-                  product_category_linker
-                JOIN 
-                  product ON product.id=product_category_linker.product_id AND product.deleted=0
-                JOIN 
-                  category ON category.id=product_category_linker.category_id AND category.deleted=0
-                WHERE
-                  product_category_linker.deleted = 0
-                 AND
-                  product_category_linker.category_id 
-                   IN (SELECT id FROM category WHERE deleted=0 AND (id IN ({$categoryIn}) {$categoryLike}))";
-
-            $sth = $entityManager->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-            if (!empty($data)) {
-                $result = array_column($data, 'productId');
-            }
-        }
-
-        return $result;
-    }
 
     /**
      * @param \stdClass $data
@@ -239,11 +138,13 @@ class Product extends AbstractService
         $associatedProducts = $this
             ->getEntityManager()
             ->getRepository('AssociatedProduct')
-            ->where([
-                'associationId'    => $data->associationId,
-                'mainProductId'    => $data->ids,
-                'relatedProductId' => $data->foreignIds
-            ])
+            ->where(
+                [
+                    'associationId'    => $data->associationId,
+                    'mainProductId'    => $data->ids,
+                    'relatedProductId' => $data->foreignIds
+                ]
+            )
             ->find();
 
         if (count($associatedProducts) > 0) {
@@ -269,16 +170,6 @@ class Product extends AbstractService
         }
 
         return true;
-    }
-
-    /**
-     * Set duplicating links
-     *
-     * @param array $links
-     */
-    public function setDuplicatingLinkList(array $links)
-    {
-        $this->duplicatingLinkList = array_merge($this->duplicatingLinkList, $links);
     }
 
     /**
@@ -423,17 +314,18 @@ class Product extends AbstractService
         }
 
         // get product
-        $product = $this->getEntityManager()->getEntity('Product', $productId);
-
-        if (empty($product)) {
+        if (empty($product = $this->getEntityManager()->getEntity('Product', $productId))) {
             throw new NotFound("No such product");
         }
 
         // prepare result
         $result = [];
 
+        // get channels
+        $channels = $product->get('channels');
+
         // push channels
-        if (!empty($channels = $product->getChannels())) {
+        if (count($channels) > 0) {
             foreach ($channels as $channel) {
                 $result[$channel->get('id')]['channelId'] = $channel->get('id');
                 $result[$channel->get('id')]['channelName'] = $channel->get('name');
@@ -560,29 +452,19 @@ class Product extends AbstractService
 
             // trigger event
             if (!empty($attributeValue = $product->getProductAttribute($row->attributeId))) {
-                $this->triggered('Product', 'updateAttribute', [
-                    'attributeValue' => $attributeValue,
-                    'post' => Json::decode(Json::encode($row), true),
-                    'productId' => $productId
-                ]);
+                $this->triggered(
+                    'Product', 'updateAttribute', [
+                        'attributeValue' => $attributeValue,
+                        'post'           => Json::decode(Json::encode($row), true),
+                        'productId'      => $productId
+                    ]
+                );
             }
         }
 
         $this->getEntityManager()->saveEntity($product);
 
         return true;
-    }
-
-    /**
-     * Get Channels for product
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    public function getChannels(string $productId): array
-    {
-        return $this->prepareGetChannels($this->getDBChannel($productId));
     }
 
     /**
@@ -646,85 +528,232 @@ class Product extends AbstractService
     }
 
     /**
-     * Get channels from DB
-     *
-     * @param string $productId
-     *
-     * @param bool   $onlyActive
-     *
-     * @return array
-     * @throws Error
+     * @inheritdoc
      */
-    protected function getDBChannel(string $productId, bool $onlyActive = false): array
+    protected function duplicateLinks(Entity $product, Entity $duplicatingProduct)
     {
-        // prepare result
-        $result = [];
-
-        if (!empty($categories = $this->getCategories($productId))) {
-            // prepare where
-            $where = '';
-            if ($onlyActive) {
-                $where .= ' AND channel.is_active = 1';
-                $where .= ' AND catalog.is_active = 1';
-                $where .= ' AND category.is_active = 1';
+        // prepare links
+        foreach ($this->getInjection('metadata')->get('entityDefs.Product.fields', []) as $field => $row) {
+            if (!empty($row['type']) && $row['type'] == 'linkMultiple') {
+                $links[] = $field;
             }
+        }
 
-            // ACL
-            $where .= $this->getAclWhereSql('Channel', 'channel');
-            $where .= $this->getAclWhereSql('Catalog', 'catalog');
-            $where .= $this->getAclWhereSql('Category', 'category');
+        if (!empty($links)) {
+            foreach ($links as $link) {
+                // prepare method name
+                $methodName = 'duplicate' . ucfirst($link);
 
-            // prepare categories ids
-            $ids = implode("', '", $categories);
-
-            $sql
-                = "SELECT
-                  channel.id             AS channelId,
-                  channel.name           AS channelName,
-                  channel.code           AS channelCode,
-                  channel.currencies     AS channelCurrencies,
-                  channel.locales        AS channelLocales,
-                  channel.is_active      AS channelIsActive,
-                  catalog.id             AS catalogId,
-                  catalog.name           AS catalogName,
-                  catalog.is_active      AS catalogIsActive,
-                  category.id            AS categoryId,
-                  category.name          AS categoryName,
-                  category.is_active     AS categoryIsActive
-                FROM channel as channel
-                JOIN catalog as catalog 
-                  ON catalog.id=channel.catalog_id AND channel.deleted=0
-                JOIN category as category 
-                  ON category.id=catalog.category_id AND category.deleted=0
-                WHERE channel.deleted = 0 AND catalog.category_id IN ('{$ids}') {$where}";
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-            // prepare result
-            if (!empty($result)) {
-                // prepare params
-                $channelService = $this->getInjection('serviceFactory')->create('Channel');
-
-                foreach ($result as $k => $row) {
-                    if (!empty($row['channelLocales'])) {
-                        $result[$k]['channelLocales'] = $channelService
-                            ->prepareLocales(Json::decode($row['channelLocales'], true));
-                    } else {
-                        $result[$k]['channelLocales'] = [];
+                // call customm method
+                if (method_exists($this, $methodName)) {
+                    try {
+                        $this->{$methodName}($product, $duplicatingProduct);
+                    } catch (\Throwable $e) {
+                        $GLOBALS['log']->error($e->getMessage());
                     }
 
-                    if (!empty($row['channelCurrencies'])) {
-                        $result[$k]['channelCurrencies'] = Json::decode($row['channelLocales'], true);
-                    } else {
-                        $result[$k]['channelCurrencies'] = [];
+                    continue 1;
+                }
+
+                $data = $duplicatingProduct->get($link);
+                if (count($data) > 0) {
+                    foreach ($data as $item) {
+                        try {
+                            $this->getEntityManager()->getRepository('Product')->relate($product, $link, $item);
+                        } catch (\Throwable $e) {
+                            $GLOBALS['log']->error($e->getMessage());
+                        }
                     }
                 }
             }
         }
+    }
 
-        return $result;
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateAttributes(Entity $product, Entity $duplicatingProduct)
+    {
+        // delete old
+        if (!empty($attributes = $product->getProductAttributes())) {
+            foreach ($attributes as $attribute) {
+                $this->getEntityManager()->removeEntity($attribute);
+            }
+        }
+        if (!empty($attributes = $product->getProductChannelAttributes())) {
+            foreach ($attributes as $attribute) {
+                $this->getEntityManager()->removeEntity($attribute);
+            }
+        }
+
+        // get attributes
+        if (empty($attributes = $duplicatingProduct->getProductAttributes())) {
+            return false;
+        }
+
+        // copy attributes
+        foreach ($attributes as $attribute) {
+            // prepare data
+            $data = $attribute->toArray();
+            $data['id'] = Util::generateId();
+            $data['productId'] = $product->get('id');
+
+            // prepare entity
+            $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
+            $entity->set($data);
+
+            // save
+            $this->getEntityManager()->saveEntity($entity);
+
+            // prepare attribute ids
+            $ids[$data['attributeId']] = $data['id'];
+        }
+
+        // get channel attributes
+        if (empty($attributes = $duplicatingProduct->getProductChannelAttributes())) {
+            return false;
+        }
+
+        // copy channel attributes
+        foreach ($attributes as $attribute) {
+            // prepare data
+            $data = $attribute->toArray();
+            $data['id'] = Util::generateId();
+            $data['productAttributeId'] = $ids[$attribute->get('productAttribute')->get('attributeId')];
+
+            // prepare entity
+            $entity = $this->getEntityManager()->getEntity('ChannelProductAttributeValue');
+            $entity->set($data);
+
+            // save
+            $this->getEntityManager()->saveEntity($entity);
+        }
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateProductImages(Entity $product, Entity $duplicatingProduct)
+    {
+        // copy images
+        $sql
+            = "DELETE FROM product_image_product WHERE product_id = '" . $product->get('id') . "';
+               INSERT INTO product_image_product (product_id, product_image_id, sort_order, scope, deleted)
+               SELECT
+                 '" . $product->get('id') . "',
+                  product_image_id,
+                  sort_order,
+                  scope,
+                  deleted
+               FROM product_image_product
+               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
+        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
+        $sth->execute();
+
+        // copy channel images
+        $sql
+            = "DELETE FROM product_image_channel WHERE product_id = '" . $product->get('id') . "';
+               INSERT INTO product_image_channel (product_id, product_image_id, channel_id, deleted)
+               SELECT
+                 '" . $product->get('id') . "',
+                  product_image_id,
+                  channel_id,
+                  deleted
+               FROM product_image_channel
+               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
+        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
+        $sth->execute();
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateAssociatedMainProducts(Entity $product, Entity $duplicatingProduct)
+    {
+        // get data
+        $data = $duplicatingProduct->get('associatedMainProducts');
+
+        // copy
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $item = $row->toArray();
+                $item['id'] = Util::generateId();
+                $item['mainProductId'] = $product->get('id');
+
+                // prepare entity
+                $entity = $this->getEntityManager()->getEntity('AssociatedProduct');
+                $entity->set($item);
+
+                // save
+                $this->getEntityManager()->saveEntity($entity);
+            }
+        }
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateAssociatedRelatedProduct(Entity $product, Entity $duplicatingProduct)
+    {
+        // get data
+        $data = $duplicatingProduct->get('associatedRelatedProduct');
+
+        // copy
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $item = $row->toArray();
+                $item['id'] = Util::generateId();
+                $item['relatedProductId'] = $product->get('id');
+
+                // prepare entity
+                $entity = $this->getEntityManager()->getEntity('AssociatedProduct');
+                $entity->set($item);
+
+                // save
+                $this->getEntityManager()->saveEntity($entity);
+            }
+        }
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateProductTypeBundles(Entity $product, Entity $duplicatingProduct)
+    {
+        if ($duplicatingProduct->get('type') === 'bundleProduct') {
+            // create service
+            $service = $this->getServiceFactory()->create('ProductTypeBundle');
+
+            // create new bundles
+            foreach ($service->getBundleProducts($duplicatingProduct->get('id')) as $bundle) {
+                $service->create($product->get('id'), $bundle['productId'], $bundle['amount']);
+            }
+        }
+    }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateProductTypePackages(Entity $product, Entity $duplicatingProduct)
+    {
+        if ($duplicatingProduct->get('type') === 'packageProduct') {
+            // create service
+            $service = $this->getServiceFactory()->create('ProductTypePackage');
+
+            // find ProductPackage
+            $productPackage = $service->getPackageProduct($duplicatingProduct->get('id'));
+
+            // create new productPackage
+            if (!is_null($productPackage['id'])) {
+                $service->update($product->get('id'), $productPackage);
+            }
+        }
     }
 
     /**
@@ -752,29 +781,6 @@ class Product extends AbstractService
         ];
 
         return $service->createValue($data, false);
-    }
-
-    /**
-     * Prepare data Channels for output
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function prepareGetChannels(array $data): array
-    {
-        $result = [];
-        foreach ($data as $key => $row) {
-            if (!isset($result[$row['channelId']])) {
-                $result[$row['channelId']] = $row;
-
-                $result[$row['channelId']]['channelIsActive'] = (bool)$row['channelIsActive'];
-                $result[$row['channelId']]['catalogIsActive'] = (bool)$row['catalogIsActive'];
-                $result[$row['channelId']]['categoryIsActive'] = (bool)$row['categoryIsActive'];
-            }
-        }
-
-        return array_values($result);
     }
 
     /**
@@ -1186,201 +1192,6 @@ class Product extends AbstractService
     protected function getProductAttributeValueService(): ProductAttributeValue
     {
         return $this->getServiceFactory()->create('ProductAttributeValue');
-    }
-
-    /**
-     * Duplicate links for product
-     *
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateLinks(Entity $product, Entity $duplicatingProduct)
-    {
-        $repository = $this->getRepository();
-
-        foreach ($this->getDuplicatingLinkList() as $link) {
-            $methodName = 'duplicateLinks' . ucfirst($link);
-            // check if method exists for duplicate this $link
-            if (method_exists($this, $methodName)) {
-                $this->{$methodName}($product, $duplicatingProduct);
-            } else {
-                // find liked entities
-                foreach ($repository->findRelated($duplicatingProduct, $link) as $linked) {
-                    switch ($product->getRelationType($link)) {
-                        case Entity::HAS_MANY:
-                            // create and relate new entity
-                            $this->linkCopiedEntity($product, $link, $linked);
-
-                            break;
-                        case Entity::MANY_MANY:
-                            // create new relation
-                            $repository->relate($product, $link, $linked);
-
-                            break;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Get Duplicating Link List
-     *
-     * @return array
-     */
-    protected function getDuplicatingLinkList(): array
-    {
-        // event call
-        $this->triggered('Product', 'getDuplicatingLinkList', ['productService' => $this]);
-
-        return $this->duplicatingLinkList;
-    }
-
-    /**
-     * Create new entity from $linked entity and relate to Product
-     *
-     * @param Entity $product
-     * @param string $link
-     * @param Entity $linked
-     */
-    protected function linkCopiedEntity(Entity $product, string $link, Entity $linked)
-    {
-        // get new Entity
-        $newEntity = $this->getEntityManager()->getEntity($linked->getEntityType());
-
-        // prepare data
-        $data = [
-            '_duplicatingEntityId'                          => $linked->get('id'),
-            'id'                                            => null,
-            $product->getRelationParam($link, 'foreignKey') => $product->get('id')
-        ];
-
-        // set data to new entity
-        $newEntity->set(array_merge($linked->toArray(), $data));
-        // save entity
-        $this->getEntityManager()->saveEntity($newEntity);
-    }
-
-    /**
-     * Duplicate ChannelProductAttributeValue
-     *
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     *
-     * @throws BadRequest
-     * @throws Forbidden
-     * @throws Error
-     */
-    protected function duplicateLinksChannelProductAttributeValues(Entity $product, Entity $duplicatingProduct)
-    {
-        $attributeService = $this->getServiceFactory()->create('ChannelProductAttributeValue');
-
-        $productAttributes = $product->getProductAttributes();
-
-        foreach ($this->getChannelAttributes($duplicatingProduct->get('id')) as $row) {
-            foreach ($row['attributes'] as $attribute) {
-                $key = array_search(
-                    $attribute['attributeId'],
-                    array_column($productAttributes->toArray(), 'attributeId')
-                );
-
-                if ($key !== false) {
-                    $data = [
-                        'productAttributeId' => $productAttributes[$key]->get('id'),
-                        'channelId'          => $row['channelId'],
-                    ];
-
-                    // set value
-                    if (isset($attribute['attributeValue'])) {
-                        $data['value'] = $attribute['attributeValue'];
-                    }
-
-                    // set value multiLang
-                    foreach ($this->getConfig()->get('inputLanguageList') as $language) {
-                        $lang = strtolower($language);
-                        if (isset($attribute['attributeValue' . $lang])) {
-                            $data['value' . $lang] = $attribute['attributeValue' . $lang];
-                        }
-                    }
-                    $attributeService->createEntity((object)$data);
-                }
-            }
-        }
-    }
-
-    /**
-     * Duplicate AssociationMainProducts
-     *
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     *
-     * @throws BadRequest
-     * @throws Error
-     * @throws Forbidden
-     */
-    protected function duplicateLinksAssociationMainProducts(Entity $product, Entity $duplicatingProduct)
-    {
-        /** @var AssociatedProduct $associationProductService */
-        $associationProductService = $this->getServiceFactory()->create('AssociatedProduct');
-
-        // find AssociatedProducts
-        $associationProducts = $this->findLinkedEntitiesAssociationMainProducts($duplicatingProduct->get('id'), []);
-
-        foreach ($associationProducts['list'] as $associationProduct) {
-            // prepare data
-            $data = [
-                'mainProductId'    => $product->get('id'),
-                'relatedProductId' => $associationProduct['relatedProductId'],
-                'associationId'    => $associationProduct['associationId']
-            ];
-            // create new AssociatedProducts
-            $associationProductService->createAssociatedProduct($data);
-        }
-    }
-
-    /**
-     * Duplicate BundleProducts
-     *
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     *
-     */
-    protected function duplicateLinksBundleProducts(Entity $product, Entity $duplicatingProduct)
-    {
-        if ($duplicatingProduct->get('type') === 'bundleProduct') {
-            /** @var ProductTypeBundle $bundleService */
-            $bundleService = $this->getServiceFactory()->create('ProductTypeBundle');
-
-            // find bundles
-            $bundles = $bundleService->getBundleProducts($duplicatingProduct->get('id'));
-            // create new bundles
-            foreach ($bundles as $bundle) {
-                $bundleService->create($product->get('id'), $bundle['productId'], $bundle['amount']);
-            }
-        }
-    }
-
-    /**
-     * Duplicate ProductTypePackages
-     *
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     *
-     */
-    protected function duplicateLinksProductTypePackages(Entity $product, Entity $duplicatingProduct)
-    {
-        if ($duplicatingProduct->get('type') === 'packageProduct') {
-            /** @var ProductTypePackage $productPackageService */
-            $productPackageService = $this->getServiceFactory()->create('ProductTypePackage');
-
-            // find ProductPackage
-            $productPackage = $productPackageService->getPackageProduct($duplicatingProduct->get('id'));
-
-            // create new productPackage
-            if (!is_null($productPackage['id'])) {
-                $productPackageService->update($product->get('id'), $productPackage);
-            }
-        }
     }
 
     /**

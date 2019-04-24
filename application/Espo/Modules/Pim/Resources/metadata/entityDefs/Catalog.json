@@ -40,16 +40,26 @@
     "isActive": {
       "type": "bool"
     },
-    "category": {
-      "type": "link",
-      "required": true
-    },
-    "channels": {
+    "products": {
       "type": "linkMultiple",
+      "readOnly": true,
+      "noLoad": true
+    },
+    "productsCount": {
+      "type": "int",
+      "readOnly": true,
+      "notStorable": true,
       "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutMassUpdateDisabled": true
+    },
+    "categories": {
+      "type": "linkMultiple",
+      "required": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "noLoad": true
     }
   },
@@ -72,14 +82,16 @@
       "relationName": "EntityTeam",
       "layoutRelationshipsDisabled": true
     },
-    "category": {
-      "type": "belongsTo",
-      "entity": "Category"
-    },
-    "channels": {
+    "products": {
       "type": "hasMany",
       "foreign": "catalog",
-      "entity": "Channel"
+      "entity": "Product"
+    },
+    "categories": {
+      "type": "hasMany",
+      "relationName": "catalogCategory",
+      "foreign": "catalogs",
+      "entity": "Category"
     }
   },
   "collection": {
