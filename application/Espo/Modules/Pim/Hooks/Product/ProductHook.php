@@ -49,6 +49,11 @@ class ProductHook extends BaseHook
                 throw new BadRequest($this->exception('Product with such SKU already exist'));
             }
         }
+
+        if ($entity->isAttributeChanged('catalogId')) {
+            // is product categories in selected catalog
+            $this->isProductCategoriesInSelectedCatalog($entity);
+        }
     }
 
     /**
@@ -73,6 +78,48 @@ class ProductHook extends BaseHook
             }
         }
 
+        return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     * @throws BadRequest
+     */
+    protected function isProductCategoriesInSelectedCatalog(Entity $entity): bool
+    {
+        // get product categories
+        $productCategories = $this
+            ->getEntityManager()
+            ->getRepository('ProductCategory')
+            ->where(['productId' => $entity->get('id')])
+            ->find();
+
+        if (count($productCategories) > 0) {
+            // get catalog categories ids
+            $catalogCategories = array_column($entity->get('catalog')->get('categories')->toArray(), 'id');
+
+            foreach ($productCategories as $productCategory) {
+                // get category
+                if (empty($category = $productCategory->get('category'))) {
+                    throw new BadRequest($this->exception("No such category"));
+                }
+
+                if (empty($category->get('categoryParent'))) {
+                    $root = $category->get('id');
+                } else {
+                    $tree = explode("|", (string)$category->get('categoryRoute'));
+                    $root = null;
+                    if (!empty($tree[1])) {
+                        $root = $tree[1];
+                    }
+                }
+                if (!in_array($root, $catalogCategories)) {
+                    throw new BadRequest($this->exception("Some category cannot be linked with selected catalog"));
+                }
+            }
+        }
         return true;
     }
 
