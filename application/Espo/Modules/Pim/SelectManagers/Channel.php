@@ -25,73 +25,12 @@ namespace Espo\Modules\Pim\SelectManagers;
 use Espo\Modules\Pim\Core\SelectManagers\AbstractSelectManager;
 
 /**
- * Channel select manager
+ * Class Channel
  *
- * @author r.ratsun <r.ratsun@treolabs.com>
+ * @author r.ratsun@treolabs.com
  */
 class Channel extends AbstractSelectManager
 {
-    /**
-     * NotLinkedWithCategory filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotLinkedWithCategory(&$result)
-    {
-        if (!empty($categoryId = (string)$this->getSelectCondition('notLinkedWithCategory'))) {
-            // get category
-            $category = $this->getEntityManager()->getEntity('Category', $categoryId);
-
-            if (!empty($category) && !empty($channels = $category->getChannels())) {
-                $result['whereClause'][] = [
-                    'id!=' => array_column($channels->toArray(), 'id')
-                ];
-            }
-        }
-    }
-
-    /**
-     * LinkedWithCategory filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterLinkedWithCategory(&$result)
-    {
-        if (!empty($categoryId = (string)$this->getSelectCondition('linkedWithCategory'))) {
-            // get category
-            $category = $this->getEntityManager()->getEntity('Category', $categoryId);
-
-            $ids = 'no-allowed-channels';
-            if (!empty($category) && !empty($channels = $category->getChannels())) {
-                $ids = array_column($channels->toArray(), 'id');
-            }
-
-            // prepare where
-            $result['whereClause'][] = [
-                'id=' => $ids
-            ];
-        }
-    }
-
-    /**
-     * LinkedWithProduct filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterLinkedWithProduct(&$result)
-    {
-        if (!empty($productId = (string)$this->getSelectCondition('linkedWithProduct'))) {
-            // get channels
-            $channels = $this->createService('Product')->getChannels($productId);
-
-            // prepare where
-            $result['whereClause'][] = [
-                'id=' => array_column($channels, 'channelId')
-            ];
-        }
-    }
-
-
     /**
      * NotLinkedWithPricing filter
      *
@@ -99,9 +38,7 @@ class Channel extends AbstractSelectManager
      */
     protected function boolFilterNotLinkedWithPricing(&$result)
     {
-        $pricingId = (string)$this->getSelectCondition('notLinkedWithPricing');
-
-        if (!empty($pricingId)) {
+        if (!empty($pricingId = (string)$this->getSelectCondition('notLinkedWithPricing'))) {
             // get channel related with product
             $channel = $this->getEntityManager()
                 ->getRepository('Channel')
