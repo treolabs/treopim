@@ -10,7 +10,8 @@
     "channels": "Channels",
     "categoryImages": "Category Images",
     "image": "Main Image",
-    "categoryRouteName": "Сategory Tree"
+    "categoryRouteName": "Сategory Tree",
+    "scope": "Scope"
   },
   "links": {
     "categoryParent": "Parent Category",

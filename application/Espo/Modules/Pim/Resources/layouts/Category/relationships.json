@@ -1,11 +1,11 @@
 [
-    {
-        "name": "categoryImages"
-    },
-    {
-        "name": "products"
-    },
-    {
-        "name": "catalogs"
-    }
+  {
+    "name": "categoryImages"
+  },
+  {
+    "name": "products"
+  },
+  {
+    "name": "catalogs"
+  }
 ]

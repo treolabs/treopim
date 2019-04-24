@@ -19,16 +19,12 @@
     "isActive": "Aktiv",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
-    "nameDeDe": "NameDeDe",
-    "nameEnUs": "Name EnUs",
-    "nameEsEs": "Name EsEs",
-    "nameFrFr": "Name FrFr",
     "products": "Produkte",
     "rootCategories": "Stammkategorien",
-    "scope": "Umfang",
     "teams": "Teams",
     "markupType": "Typ",
-    "markupValue": "Wert"
+    "markupValue": "Wert",
+    "scope": "Umfang"
   },
   "links": {
     "categories": "Kategorien",

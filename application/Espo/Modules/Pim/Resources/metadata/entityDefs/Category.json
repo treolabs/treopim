@@ -110,19 +110,6 @@
       "importDisabled": true,
       "noLoad": true
     },
-    "scope": {
-      "type": "enum",
-      "notStorable": true,
-      "options": [
-        "Global",
-        "Channel"
-      ],
-      "default": "Global",
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true
-    },
     "hasChildren": {
       "type": "bool",
       "notStorable": true,
