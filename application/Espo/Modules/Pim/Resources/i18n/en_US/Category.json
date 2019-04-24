@@ -6,7 +6,6 @@
     "isActive": "Active",
     "categoryParent": "Parent Category",
     "categories": "Categories",
-    "products": "Products",
     "channels": "Channels",
     "categoryImages": "Category Images",
     "image": "Main Image",
@@ -17,7 +16,6 @@
   "links": {
     "categoryParent": "Parent Category",
     "categories": "Categories",
-    "products": "Products",
     "channels": "Channels",
     "categoryImages": "Category Images",
     "catalogs": "Catalogs",

@@ -82,31 +82,4 @@ class Category extends Base
 
         return in_array($categoryId, explode("|", (string)$category->get('categoryRoute')));
     }
-
-    /**
-     * @param string $id
-     * @param array  $params
-     */
-    public function findLinkedEntitiesProducts($id, $params)
-    {
-        $products = $this
-            ->getEntityManager()
-            ->getRepository('Product')
-            ->distinct()
-            ->join('categories')
-            ->where(
-                [
-                    'OR' => [
-                        'categories.id'             => $id,
-                        'categories.categoryRoute*' => "%|$id|%"
-                    ]
-                ]
-            )
-            ->find();
-
-        return [
-            'total'      => count($products),
-            'collection' => $products
-        ];
-    }
 }

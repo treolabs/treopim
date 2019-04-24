@@ -37,7 +37,6 @@
     "notLinkedWithBrand",
     "notLinkedWithProductFamily",
     "notLinkedWithPackaging",
-    "notLinkedWithCategory",
     "notLinkedWithProductSerie",
     "onlyCatalogProducts"
   ],
@@ -63,19 +62,6 @@
       "aclScopesList": [
         "ProductAttributeValue"
       ]
-    },
-    "categories": {
-      "modalEditView": "pim:views/category/modals/edit-in-product",
-      "view": "pim:views/product/record/panels/categories",
-      "createAction": "createRelatedConfigured",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "onlyActive",
-        "notEntity",
-        "onlyCatalogCategories",
-        "onlyChildCategory"
-      ],
-      "listLayout": "listCategoryInProduct"
     },
     "productImages": {
       "label": "Image",
