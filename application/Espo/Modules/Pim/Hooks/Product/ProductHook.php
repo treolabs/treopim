@@ -24,13 +24,14 @@ namespace Espo\Modules\Pim\Hooks\Product;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
+use Espo\Modules\Pim\Core\Hooks\AbstractHook as BaseHook;
 
 /**
  * Class ProductHook
  *
  * @author r.ratsun@treolabs.com
  */
-class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
+class ProductHook extends BaseHook
 {
     /**
      * @param Entity $entity
@@ -47,25 +48,6 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
             } else {
                 throw new BadRequest($this->exception('Product with such SKU already exist'));
             }
-        }
-
-        if ($entity->isAttributeChanged('catalogId')) {
-            // is product categories in selected catalog
-            $this->isProductCategoriesInSelectedCatalog($entity);
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param array  $options
-     * @param array  $hookData
-     *
-     * @throws BadRequest
-     */
-    public function beforeRelate(Entity $entity, array $options, array $hookData)
-    {
-        if ($hookData['relationName'] == 'categories') {
-            $this->productCategoryBeforeRelateValidation($entity, $hookData['foreignEntity']);
         }
     }
 
@@ -87,83 +69,6 @@ class ProductHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
             foreach ($products as $item) {
                 if ($item->get('id') != $product->get('id')) {
                     return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     * @param Entity $product
-     * @param Entity $category
-     *
-     * @return bool
-     * @throws BadRequest
-     */
-    protected function productCategoryBeforeRelateValidation($product, $category): bool
-    {
-        if (empty($product) || empty($category)) {
-            throw new BadRequest($this->exception('Product and Category cannot be empty'));
-        }
-
-        if (count($category->get('categories')) > 0) {
-            throw new BadRequest($this->exception('Category has child category'));
-        }
-
-        if (empty($catalog = $product->get('catalog'))) {
-            throw new BadRequest($this->exception('No such product catalog'));
-        }
-
-        // get catalog categories trees
-        $trees = $catalog->get('categories');
-
-        if (count($trees) == 0) {
-            throw new BadRequest($this->exception('No category trees in product catalog'));
-        }
-
-        // prepare category tree
-        $categoryTree = array_merge([$category->get('id')], explode("|", (string)$category->get('categoryRoute')));
-
-        foreach ($trees as $tree) {
-            if (in_array($tree->get('id'), $categoryTree)) {
-                return true;
-            }
-        }
-
-        throw new BadRequest($this->exception('Category should be in catalog trees'));
-    }
-
-    /**
-     * @param Entity $entity
-     *
-     * @return bool
-     * @throws BadRequest
-     */
-    protected function isProductCategoriesInSelectedCatalog(Entity $entity): bool
-    {
-        // get product categories
-        $categories = $entity->get('categories');
-
-        if (count($categories) > 0) {
-            // get catalog categories ids
-            $catalogCategories = array_column($entity->get('catalog')->get('categories')->toArray(), 'id');
-
-            foreach ($categories as $category) {
-                if (empty($category->get('categoryParent'))) {
-                    $root = $category->get('id');
-                } else {
-                    $tree = explode("|", (string)$category->get('categoryRoute'));
-
-                    $root = null;
-                    if (!empty($tree[1])) {
-                        $root = $tree[1];
-                    }
-                }
-
-                if (!in_array($root, $catalogCategories)) {
-                    throw new BadRequest($this->exception("Some category cannot be linked with selected catalog"));
                 }
             }
         }

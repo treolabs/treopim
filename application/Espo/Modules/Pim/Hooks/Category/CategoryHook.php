@@ -24,13 +24,14 @@ namespace Espo\Modules\Pim\Hooks\Category;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
+use Espo\Modules\Pim\Core\Hooks\AbstractHook as BaseHook;
 
 /**
  * Class CategoryHook
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class CategoryHook extends \Espo\Modules\Pim\Hooks\Product\ProductHook
+class CategoryHook extends BaseHook
 {
     /**
      * @param Entity $entity
@@ -59,9 +60,6 @@ class CategoryHook extends \Espo\Modules\Pim\Hooks\Product\ProductHook
      */
     public function beforeRelate(Entity $entity, array $options, array $hookData)
     {
-        if ($hookData['relationName'] == 'products') {
-            $this->productCategoryBeforeRelateValidation($hookData['foreignEntity'], $entity);
-        }
         if ($hookData['relationName'] == 'catalogs' && !empty($entity->get('categoryParent'))) {
             throw new BadRequest($this->translate('Only root category can be linked with catalog', 'exceptions', 'Catalog'));
         }
