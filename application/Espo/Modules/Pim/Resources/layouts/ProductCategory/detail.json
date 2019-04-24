@@ -5,9 +5,13 @@
         {
           "name": "product"
         },
+        false
+      ],
+      [
         {
           "name": "category"
-        }
+        },
+        false
       ],
       [
         {

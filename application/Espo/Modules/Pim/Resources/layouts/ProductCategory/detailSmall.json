@@ -3,11 +3,9 @@
     "rows": [
       [
         {
-          "name": "product"
-        },
-        {
           "name": "category"
-        }
+        },
+        false
       ],
       [
         {

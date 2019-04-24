@@ -63,6 +63,10 @@
         "ProductAttributeValue"
       ]
     },
+    "productCategories": {
+      "select": false,
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink"
+    },
     "productImages": {
       "label": "Image",
       "view": "pim:views/product/record/panels/product-images",
