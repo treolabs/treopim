@@ -23,6 +23,7 @@
     },
     "channels": {
       "type": "linkMultiple",
+      "required": true,
       "importDisabled": true,
       "noLoad": false
     },
