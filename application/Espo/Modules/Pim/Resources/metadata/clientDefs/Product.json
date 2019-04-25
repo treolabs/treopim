@@ -37,7 +37,6 @@
     "notLinkedWithBrand",
     "notLinkedWithProductFamily",
     "notLinkedWithPackaging",
-    "notLinkedWithCategory",
     "notLinkedWithProductSerie",
     "onlyCatalogProducts"
   ],
@@ -64,18 +63,9 @@
         "ProductAttributeValue"
       ]
     },
-    "categories": {
-      "modalEditView": "pim:views/category/modals/edit-in-product",
-      "view": "pim:views/product/record/panels/categories",
-      "createAction": "createRelatedConfigured",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "onlyActive",
-        "notEntity",
-        "onlyCatalogCategories",
-        "onlyChildCategory"
-      ],
-      "listLayout": "listCategoryInProduct"
+    "productCategories": {
+      "select": false,
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink"
     },
     "productImages": {
       "label": "Image",

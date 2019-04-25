@@ -84,15 +84,6 @@
       "noLoad": true,
       "importDisabled": true
     },
-    "products": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "importDisabled": true,
-      "noLoad": true
-    },
     "image": {
       "layoutFiltersDisabled": true,
       "notStorable": true,
@@ -110,19 +101,6 @@
       "importDisabled": true,
       "noLoad": true
     },
-    "scope": {
-      "type": "enum",
-      "notStorable": true,
-      "options": [
-        "Global",
-        "Channel"
-      ],
-      "default": "Global",
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true
-    },
     "hasChildren": {
       "type": "bool",
       "notStorable": true,
@@ -138,6 +116,16 @@
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
       "noLoad": true
+    },
+    "productCategories": {
+      "type": "linkMultiple",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
     }
   },
   "links": {
@@ -175,12 +163,6 @@
       "entity": "Category",
       "disableMassRelation": true
     },
-    "products": {
-      "type": "hasMany",
-      "relationName": "productCategoryLinker",
-      "foreign": "categories",
-      "entity": "Product"
-    },
     "categoryImages": {
       "type": "hasMany",
       "relationName": "categoryImageCategory",
@@ -192,6 +174,12 @@
       "relationName": "catalogCategory",
       "foreign": "categories",
       "entity": "Catalog"
+    },
+    "productCategories": {
+      "type": "hasMany",
+      "foreign": "category",
+      "entity": "ProductCategory",
+      "layoutRelationshipsDisabled": true
     }
   },
   "collection": {

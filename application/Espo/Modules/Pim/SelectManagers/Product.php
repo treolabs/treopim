@@ -86,36 +86,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * NotLinkedWithCategory filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotLinkedWithCategory(&$result)
-    {
-        if (!empty($categoryId = (string)$this->getSelectCondition('notLinkedWithCategory'))) {
-            // get data
-            $data = $this->getEntityManager()
-                ->getRepository('Product')
-                ->select(['id'])
-                ->join(['categories'])
-                ->where(
-                    [
-                        'categories.id' => $categoryId
-                    ]
-                )
-                ->find()
-                ->toArray();
-
-            if (!empty($data)) {
-                // prepare where
-                $result['whereClause'][] = [
-                    'id!=' => array_column($data, 'id')
-                ];
-            }
-        }
-    }
-
-    /**
      * @param array $result
      */
     protected function boolFilterOnlyCatalogProducts(&$result)

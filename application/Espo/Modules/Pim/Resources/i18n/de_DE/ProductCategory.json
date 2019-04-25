@@ -1,0 +1,22 @@
+{
+  "fields": {
+    "product": "Produkt",
+    "category": "Kategorie",
+    "scope": "Umfang",
+    "channels": "Kanale"
+  },
+  "links": {
+    "product": "Produkte",
+    "category": "Kategorie",
+    "channels": "Kanale"
+  },
+  "labels": {
+    "Create ProductCategory": "Produktkategorie erstellen"
+  },
+  "options": {
+    "scope": {
+      "Global": "Global",
+      "Channel": "Kanal"
+    }
+  }
+}

@@ -38,7 +38,8 @@
     "productSerie": "Product Serie",
     "association": "Association",
     "catalog": "Catalog",
-    "channels": "Channels"
+    "channels": "Channels",
+    "productCategories": "Product Categories"
   },
   "links": {
     "categories": "Product Categories",
@@ -62,7 +63,8 @@
     "tax": "Tax",
     "packaging": "Packaging",
     "catalog": "Catalog",
-    "channels": "Channels"
+    "channels": "Channels",
+    "productCategories": "Product Categories"
   },
   "labels": {
     "Create Product": "Create Product",

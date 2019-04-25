@@ -84,6 +84,13 @@
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
       "noLoad": true
+    },
+    "productCategories": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -120,6 +127,12 @@
       "relationName": "productChannel",
       "foreign": "channels",
       "entity": "Product"
+    },
+    "productCategories": {
+      "type": "hasMany",
+      "relationName": "productCategoryChannel",
+      "foreign": "channels",
+      "entity": "ProductCategory"
     }
   },
   "collection": {
