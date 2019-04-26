@@ -24,9 +24,7 @@ namespace Espo\Modules\Pim\Entities;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Utils\Util;
 use Espo\Core\Templates\Entities\Base;
-use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
-use Espo\Modules\Pim\Repositories\Product as ProductRepository;
 
 /**
  * Product entity
@@ -39,11 +37,6 @@ class Product extends Base
      * @var array
      */
     public $productAttribute = [];
-
-    /**
-     * @var array
-     */
-    public $productChannelAttribute = [];
 
     /**
      * @var string
@@ -70,18 +63,13 @@ class Product extends Base
 
             // prepare data
             $attributeId = (string)$keyParts[0];
-            $channelId = (isset($keyParts[1])) ? (string)$keyParts[1] : null;
             $locale = $this->getLocale(substr($attributeId, -4));
             if (!empty($locale)) {
                 $attributeId = substr($attributeId, 0, -4);
             }
             $value = (is_array($p2)) ? json_encode($p2, \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES) : (string)$p2;
 
-            if (empty($channelId)) {
-                $this->setProductAttributeValue($attributeId, $value, $locale);
-            } else {
-                $this->setProductChannelAttributeValue($attributeId, $channelId, $value, $locale);
-            }
+            $this->setProductAttributeValue($attributeId, $value, $locale);
         }
     }
 
@@ -97,17 +85,12 @@ class Product extends Base
 
             // prepare data
             $attributeId = (string)$keyParts[0];
-            $channelId = (isset($keyParts[1])) ? (string)$keyParts[1] : null;
             $locale = $this->getLocale(substr($attributeId, -4));
             if (!empty($locale)) {
                 $attributeId = substr($attributeId, 0, -4);
             }
 
-            if (empty($channelId)) {
-                return $this->getProductAttributeValue($attributeId, $locale);
-            } else {
-                return $this->getProductChannelAttributeValue($attributeId, $channelId, $locale);
-            }
+            return $this->getProductAttributeValue($attributeId, $locale);
         }
 
         return parent::get($name, $params);
@@ -231,82 +214,6 @@ class Product extends Base
         }
 
         return $value;
-    }
-
-    /**
-     * Set product channel attribute value
-     *
-     * @param string      $attributeId
-     * @param string      $channelId
-     * @param string      $value
-     * @param string|null $locale
-     *
-     * @return Product
-     */
-    public function setProductChannelAttributeValue(string $attributeId, string $channelId, string $value, string $locale = null): Product
-    {
-        if (!isset($this->productChannelAttribute[$attributeId][$channelId])) {
-            $this->productChannelAttribute[$attributeId][$channelId] = [];
-        }
-
-        // prepare locale
-        if (empty($locale)) {
-            $locale = 'default';
-        }
-
-        $this->productChannelAttribute[$attributeId][$channelId][$locale] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Get product channel attribute value
-     *
-     * @param string      $attributeId
-     * @param string      $channelId
-     * @param string|null $locale
-     * @param bool        $isStrict
-     *
-     * @return mixed
-     * @throws Error
-     */
-    public function getProductChannelAttributeValue(
-        string $attributeId,
-        string $channelId,
-        string $locale = null,
-        bool $isStrict = false
-    ) {
-        // find
-        $attribute = $this
-            ->getEntityManager()
-            ->getRepository('ProductAttributeValue')
-            ->distinct()
-            ->join('channels')
-            ->where(
-                [
-                    'productId'   => $this->get('id'),
-                    'attributeId' => $attributeId,
-                    'scope'       => 'Channel',
-                    'channels.id' => $channelId
-                ]
-            )
-            ->findOne();
-
-        if (!empty($attribute)) {
-            // prepare key
-            $key = 'value';
-            if (!empty($locale)) {
-                $key .= Util::toCamelCase(strtolower($locale), '_', true);
-            }
-
-            return $attribute->get($key);
-        }
-
-        if (!$isStrict) {
-            return $this->getProductAttributeValue($attributeId, $locale);
-        }
-
-        return null;
     }
 
     /**
