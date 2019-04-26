@@ -24,6 +24,8 @@ namespace Espo\Modules\Pim\Hooks\ProductAttributeValue;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Hooks\Base as BaseHook;
+use Espo\Core\Utils\Json;
+use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 
 /**
@@ -33,6 +35,11 @@ use Espo\ORM\Entity;
  */
 class ProductAttributeValueHook extends BaseHook
 {
+    /**
+     * @var array
+     */
+    protected $beforeSaveData = [];
+
     /**
      * @param Entity $entity
      * @param array  $options
@@ -48,6 +55,21 @@ class ProductAttributeValueHook extends BaseHook
         if (!$this->isUnique($entity)) {
             throw new BadRequest($this->exception('Such record already exists'));
         }
+
+        // storing data
+        if (!$entity->isNew()) {
+            $this->beforeSaveData = $this->getEntityManager()->getEntity('ProductAttributeValue', $entity->get('id'))->toArray();
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     */
+    public function afterSave(Entity $entity, $options = [])
+    {
+        // create note
+        $this->createNote($entity);
     }
 
     /**
@@ -105,6 +127,84 @@ class ProductAttributeValueHook extends BaseHook
         }
 
         return empty($count);
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function createNote(Entity $entity)
+    {
+        $note = $this->getEntityManager()->getEntity('Note');
+        $note->set('type', 'Update');
+        $note->set('parentId', $entity->get('productId'));
+        $note->set('parentType', 'Product');
+        $note->set('data', $this->getNoteData($entity));
+        $note->set('attributeId', $entity->get('attributeId'));
+
+        $this->getEntityManager()->saveEntity($note);
+    }
+
+    /**
+     * Get note data
+     *
+     * @param Entity $entity
+     *
+     * @return array
+     */
+    protected function getNoteData(Entity $entity): array
+    {
+        // get attribute
+        $attribute = $entity->get('attribute');
+
+        // prepare field name
+        $fieldName = $this
+                ->getInjection('language')
+                ->translate('Attribute', 'custom', 'ProductAttributeValue') . ' ' . $attribute->get('name');
+
+        // prepare result
+        $result = [];
+
+        // prepare array types
+        $arrayTypes = ['array', 'arrayMultiLang', 'enum', 'enumMultiLang', 'multiEnum', 'multiEnumMultiLang'];
+
+        // for value
+        if ($entity->isAttributeChanged('value') || ($entity->isAttributeChanged('data') && $this->beforeSaveData['data']['unit'] != $entity->get('data')->unit)) {
+            $result['fields'][] = $fieldName;
+            if (in_array($attribute->get('type'), $arrayTypes)) {
+                $result['attributes']['was'][$fieldName] = Json::decode($this->beforeSaveData['value'], true);
+            } else {
+                $result['attributes']['was'][$fieldName] = $this->beforeSaveData['value'];
+            }
+            $result['attributes']['became'][$fieldName] = $entity->get('value');
+
+            if ($entity->isAttributeChanged('data')) {
+                $result['attributes']['was'][$fieldName . 'Unit'] = $this->beforeSaveData['data']->unit;
+                $result['attributes']['became'][$fieldName . 'Unit'] = $entity->get('data')->unit;
+            }
+        }
+
+        // for multilang value
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                // prepare field
+                $field = Util::toCamelCase('value_' . strtolower($locale));
+
+                if ($entity->isAttributeChanged($field)) {
+                    // prepare field name
+                    $localeFieldName = $fieldName . " ($locale)";
+                    $result['fields'][] = $localeFieldName;
+                    if (in_array($attribute->get('type'), $arrayTypes)) {
+                        $result['attributes']['was'][$localeFieldName]
+                            = Json::decode($this->beforeSaveData[$field], true);
+                    } else {
+                        $result['attributes']['was'][$localeFieldName] = $this->beforeSaveData[$field];
+                    }
+                    $result['attributes']['became'][$localeFieldName] = $entity->get($field);
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
