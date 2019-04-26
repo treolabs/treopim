@@ -41,11 +41,6 @@ class Product extends Base
     public $productAttribute = [];
 
     /**
-     * @var array
-     */
-    public $productChannelAttribute = [];
-
-    /**
      * @var string
      */
     protected $entityType = "Product";
