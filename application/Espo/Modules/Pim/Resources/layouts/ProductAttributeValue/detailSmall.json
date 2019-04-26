@@ -5,6 +5,12 @@
     "rows": [
       [
         {
+          "name": "attribute"
+        },
+        false
+      ],
+      [
+        {
           "name": "value"
         },
         false

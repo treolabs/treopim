@@ -5,6 +5,18 @@
     "rows": [
       [
         {
+          "name": "product"
+        },
+        false
+      ],
+      [
+        {
+          "name": "attribute"
+        },
+        false
+      ],
+      [
+        {
           "name": "value"
         },
         false

@@ -110,10 +110,12 @@
       "tooltip": false,
       "importDisabled": true
     },
-    "products": {
+    "productAttributeValues": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "importDisabled": true,
@@ -188,11 +190,11 @@
       "entity": "AttributeGroup",
       "audited": false
     },
-    "products": {
+    "productAttributeValues": {
       "type": "hasMany",
-      "relationName": "ProductAttributeValue",
-      "foreign": "attributes",
-      "entity": "Product"
+      "foreign": "attribute",
+      "entity": "ProductAttributeValue",
+      "layoutRelationshipsDisabled": true
     },
     "productFamilies": {
       "type": "hasMany",
