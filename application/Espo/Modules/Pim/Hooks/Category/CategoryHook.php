@@ -46,8 +46,12 @@ class CategoryHook extends BaseHook
             throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
         }
 
-        if ($entity->isAttributeChanged('categoryParentId') && count($entity->getTreeProducts()) > 0) {
+        if (!$entity->isNew() && $entity->isAttributeChanged('categoryParentId') && count($entity->getTreeProducts()) > 0) {
             throw new BadRequest($this->exception('Category has linked products'));
+        }
+
+        if ($entity->isNew() && !empty($entity->get('catalogsIds')) && !empty($entity->get('categoryParent'))) {
+            throw new BadRequest($this->translate('Only root category can be linked with catalog', 'exceptions', 'Catalog'));
         }
     }
 
