@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Hooks\ProductCategory;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\ORM\Entity;
 use Espo\Core\Hooks\Base as BaseHook;
+use Espo\ORM\Entity;
 
 /**
  * Class ProductCategoryHook

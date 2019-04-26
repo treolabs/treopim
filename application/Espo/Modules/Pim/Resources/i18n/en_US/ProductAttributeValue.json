@@ -7,12 +7,15 @@
     "productAttribute": "Product attribute",
     "product": "Product",
     "attribute": "Attribute",
-    "value": "Value"
+    "value": "Value",
+    "scope": "Scope",
+    "channels": "Channels"
   },
   "links": {
     "productAttribute": "Product attribute",
     "product": "Product",
-    "attribute": "Attribute"
+    "attribute": "Attribute",
+    "channels": "Channels"
   },
   "labels": {
     "Create ProductAttributeValue": "Create Attribute Value"
