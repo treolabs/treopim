@@ -1,28 +1,23 @@
 {
-    "fields": {
-        "products": "Products",
-        "description": "Description",
-        "code": "Code",
-        "isActive": "Active",
-        "productFamilyAttributes": "Attributes",
-        "productFamilyTemplate": "Copy Attributes from",
-        "productFamilies": "Product Families",
-        "isRequired": "Required",
-        "isMultiChannel": "Required for Channels"
-    },
-    "links": {
-        "products": "Products",
-        "productFamilyAttributes": "Attributes",
-        "productFamilyTemplate": "Copy Attributes from",
-        "productFamilies": "Product Families",
-        "attributes": "Attributes"
-    },
-    "labels": {
-        "Create ProductFamily": "Create Product family",
-        "Select Attribute Group": "Select Attribute Group"
-    },
-    "messages": {
-        "Can't remove system Product Family": "Can't remove system Product Family",
-        "unlinkAttributeGroupConfirmation": "Are you sure you want to unlink all Attribute Group's Attributes?"
-    }
+  "fields": {
+    "products": "Products",
+    "description": "Description",
+    "code": "Code",
+    "isActive": "Active",
+    "productFamilyTemplate": "Copy Attributes from",
+    "productFamilies": "Product Families"
+  },
+  "links": {
+    "products": "Products",
+    "productFamilyTemplate": "Copy Attributes from",
+    "productFamilies": "Product Families"
+  },
+  "labels": {
+    "Create ProductFamily": "Create Product family",
+    "Select Attribute Group": "Select Attribute Group"
+  },
+  "messages": {
+    "Can't remove system Product Family": "Can't remove system Product Family",
+    "unlinkAttributeGroupConfirmation": "Are you sure you want to unlink all Attribute Group's Attributes?"
+  }
 }

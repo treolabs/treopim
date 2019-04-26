@@ -34,41 +34,6 @@ class Attribute extends \Espo\Core\Templates\Repositories\Base
     /**
      * @inheritdoc
      */
-    public function findRelated(Entity $entity, $relationName, array $params = [])
-    {
-        if ($relationName == 'productFamilies' && !empty($params['select'])) {
-            $params['select'] = $this->prepareSelect($params['select']);
-        }
-
-        return parent::findRelated($entity, $relationName, $params);
-    }
-
-    /**
-     * Prepare select for 'productFamilies' returning
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    public function prepareSelect(array $data): array
-    {
-        foreach ($data as $k => $v) {
-            switch ($v) {
-                case 'isRequired':
-                    $data[$k] = ['product_family_attribute_linker.is_required', 'isRequired'];
-                    break;
-                case 'isMultiChannel':
-                    $data[$k] = ['product_family_attribute_linker.is_multi_channel', 'isMultiChannel'];
-                    break;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function init()
     {
         parent::init();

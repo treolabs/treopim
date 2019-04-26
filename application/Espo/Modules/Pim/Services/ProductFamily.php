@@ -30,23 +30,6 @@ namespace Espo\Modules\Pim\Services;
 class ProductFamily extends \Espo\Core\Templates\Services\Base
 {
     /**
-     * @param \stdClass $data
-     *
-     * @return bool
-     */
-    public function updateAttribute(\stdClass $data): bool
-    {
-        // validation
-        if (!isset($data->attributeId) || !isset($data->productFamilyId)) {
-            return false;
-        }
-        // update
-        $this->updateProductFamilyArribute($data);
-
-        return true;
-    }
-
-    /**
      * Get count not empty product family attributes
      *
      * @param string $productFamilyId
@@ -65,49 +48,16 @@ class ProductFamily extends \Espo\Core\Templates\Services\Base
             $count = $this
                 ->getEntityManager()
                 ->getRepository('ProductAttributeValue')
-                ->where([
-                    'productFamilyId' => $productFamilyId,
-                    'attributeId' => $attributeId,
-                    'value!=' => ['null', '', 0, '0', '[]']
-                ])
+                ->where(
+                    [
+                        'productFamilyId' => $productFamilyId,
+                        'attributeId'     => $attributeId,
+                        'value!='         => ['null', '', 0, '0', '[]']
+                    ]
+                )
                 ->count();
         }
 
         return $count;
-    }
-
-    /**
-     * @param \stdClass $data
-     *
-     * @return bool
-     */
-    protected function updateProductFamilyArribute(\stdClass $data): bool
-    {
-        // prepare params
-        $params = [];
-        if (isset($data->isRequired)) {
-            $params[] = "is_required=" . (int)$data->isRequired;
-        }
-        if (isset($data->isMultiChannel)) {
-            $params[] = "is_multi_channel=" . (int)$data->isMultiChannel;
-        }
-        if (empty($params)) {
-            return false;
-        }
-
-        // prepare data
-        $param = implode(",", $params);
-        $attributeId = (string)$data->attributeId;
-        $productFamilyId = (string)$data->productFamilyId;
-
-        // update
-        $sql
-            = "UPDATE product_family_attribute_linker 
-                SET {$param} 
-                WHERE attribute_id='$attributeId' AND product_family_id='$productFamilyId'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
-
-        return true;
     }
 }

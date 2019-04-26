@@ -121,15 +121,6 @@
       "importDisabled": true,
       "noLoad": true
     },
-    "productFamilies": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "noLoad": true,
-      "importDisabled": true
-    },
     "sortOrder": {
       "type": "int",
       "required": false,
@@ -195,21 +186,6 @@
       "foreign": "attribute",
       "entity": "ProductAttributeValue",
       "layoutRelationshipsDisabled": true
-    },
-    "productFamilies": {
-      "type": "hasMany",
-      "foreign": "attributes",
-      "entity": "ProductFamily",
-      "relationName": "ProductFamilyAttributeLinker",
-      "audited": false,
-      "additionalColumns": {
-        "isRequired": {
-          "type": "bool"
-        },
-        "isMultiChannel": {
-          "type": "bool"
-        }
-      }
     }
   },
   "collection": {

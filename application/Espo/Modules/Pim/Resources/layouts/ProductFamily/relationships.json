@@ -1,8 +1,5 @@
 [
-    {
-        "name": "attributes"
-    },
-    {
-        "name": "products"
-    }
+  {
+    "name": "products"
+  }
 ]
