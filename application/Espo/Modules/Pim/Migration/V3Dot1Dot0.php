@@ -36,6 +36,15 @@ class V3Dot1Dot0 extends AbstractMigration
      */
     public function up(): void
     {
+        // drop triggers
+        $this->dropTriggers();
+    }
+
+    /**
+     * Drop triggers
+     */
+    protected function dropTriggers()
+    {
         $sql = "DROP TRIGGER IF EXISTS trigger_after_insert_product_family_attribute_linker;";
         $sql .= "DROP TRIGGER IF EXISTS trigger_after_update_product_family_attribute_linker;";
         $sql .= "DROP TRIGGER IF EXISTS trigger_after_insert_product;";
