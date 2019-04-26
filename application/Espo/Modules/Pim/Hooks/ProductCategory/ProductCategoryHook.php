@@ -89,6 +89,7 @@ class ProductCategoryHook extends BaseHook
             ->getRepository('ProductCategory')
             ->where(
                 [
+                    'id!='       => $entity->get('id'),
                     'productId'  => $entity->get('productId'),
                     'categoryId' => $entity->get('categoryId'),
                     'scope'      => $entity->get('scope'),
