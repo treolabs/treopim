@@ -1,12 +1,37 @@
 {
-    "controller": "pim:controllers/product-attribute-value",
-    "boolFilterList": [
-        "onlyMy"
-    ],
-    "disabledMassActions": [
-        "merge"
-    ],
-    "recordViews": {
-        "list": "pim:views/record/list"
+  "controller": "controllers/record",
+  "boolFilterList": [
+    "onlyMy"
+  ],
+  "disabledMassActions": [
+    "merge"
+  ],
+  "recordViews": {
+    "list": "pim:views/record/list"
+  },
+  "dynamicLogic": {
+    "fields": {
+      "channels": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "scope",
+              "value": "Channel"
+            }
+          ]
+        }
+      },
+      "value": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "attributeId"
+            }
+          ]
+        }
+      }
     }
+  }
 }

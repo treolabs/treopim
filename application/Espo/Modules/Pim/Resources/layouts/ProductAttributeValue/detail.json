@@ -5,6 +5,14 @@
     "rows": [
       [
         {
+          "name": "scope"
+        },
+        {
+          "name": "channels"
+        }
+      ],
+      [
+        {
           "name": "product"
         },
         false

@@ -24,6 +24,21 @@
     "data": {
       "type": "jsonObject"
     },
+    "scope": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "Global",
+        "Channel"
+      ],
+      "default": "Global"
+    },
+    "channels": {
+      "type": "linkMultiple",
+      "required": true,
+      "importDisabled": true,
+      "noLoad": false
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
@@ -70,6 +85,12 @@
     "attribute": {
       "type": "belongsTo",
       "entity": "Attribute"
+    },
+    "channels": {
+      "type": "hasMany",
+      "relationName": "productAttributeValueChannel",
+      "foreign": "productAttributeValues",
+      "entity": "Channel"
     },
     "createdBy": {
       "type": "belongsTo",

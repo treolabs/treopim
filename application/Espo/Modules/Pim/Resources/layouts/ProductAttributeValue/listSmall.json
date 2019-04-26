@@ -4,5 +4,11 @@
   },
   {
     "name": "value"
+  },
+  {
+    "name": "scope"
+  },
+  {
+    "name": "channels"
   }
 ]
