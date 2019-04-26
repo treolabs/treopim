@@ -22,6 +22,7 @@ namespace Espo\Modules\Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
+use Treo\Listeners\AbstractListener;
 use PDO;
 
 /**
@@ -29,7 +30,7 @@ use PDO;
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends AbstractPimListener
+class Attribute extends AbstractListener
 {
     /**
      * @param array $data
@@ -63,22 +64,6 @@ class Attribute extends AbstractPimListener
                     )
                 );
             }
-        }
-
-        return $data;
-    }
-
-    /**
-     * After action create entity
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    public function afterActionCreate(array $data): array
-    {
-        if (isset($data['data']->productsIds)) {
-            $this->setProductAttributeValueUser((array)$data['result']->id, $data['data']->productsIds);
         }
 
         return $data;
@@ -124,22 +109,6 @@ class Attribute extends AbstractPimListener
 
             // set where
             $data['request']->setQuery('where', $where);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Before action remove link
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    public function beforeActionRemoveLink(array $data): array
-    {
-        if (!empty($data['data']->id) && $data['params']['link'] == 'productFamilies') {
-            $this->removeProductAttributeValue($data['data']->id, $data['params']['id']);
         }
 
         return $data;
