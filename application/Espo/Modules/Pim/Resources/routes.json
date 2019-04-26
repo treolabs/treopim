@@ -16,14 +16,6 @@
     }
   },
   {
-    "route": "/Markets/Channel/:channel_id/Product/:product_id/attributes",
-    "method": "get",
-    "params": {
-      "controller": "Channel",
-      "action": "GetChannelProductAttributes"
-    }
-  },
-  {
     "route": "/Markets/:controller/:entity_id/:action",
     "method": "get",
     "params": {

@@ -1,7 +1,6 @@
 {
   "scopeNames": {
     "ProductAttributeValue": "Produktattributwert",
-    "ChannelProductAttributeValue": "Produktattributwert (kanalspezifisch)",
     "Product": "Produkt",
     "ProductFamily": "Produktfamilie",
     "Category": "Kategorie",
@@ -24,7 +23,6 @@
   },
   "scopeNamesPlural": {
     "ProductAttributeValue": "Produktattributwert",
-    "ChannelProductAttributeValue": "Produktattributwert (kanalspezifisch)",
     "Product": "Produkte",
     "ProductFamily": "Produktfamilien",
     "Category": "Kategorien",

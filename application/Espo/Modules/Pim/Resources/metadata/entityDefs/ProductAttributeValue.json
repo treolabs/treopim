@@ -21,10 +21,6 @@
       "lengthOfCut": 400,
       "isMultilang": true
     },
-    "channelProductAttributes": {
-      "type": "linkMultiple",
-      "noLoad": true
-    },
     "data": {
       "type": "jsonObject"
     },
@@ -74,11 +70,6 @@
     "attribute": {
       "type": "belongsTo",
       "entity": "Attribute"
-    },
-    "channelProductAttributes": {
-      "type": "hasMany",
-      "foreign": "productAttribute",
-      "entity": "ChannelProductAttributeValue"
     },
     "createdBy": {
       "type": "belongsTo",
