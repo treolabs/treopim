@@ -46,45 +46,4 @@ class Attribute extends AbstractSelectManager
             ];
         }
     }
-
-    /**
-     * NotLinkedWithProductFamily filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotLinkedWithProductFamily(&$result)
-    {
-        // prepare data
-        $productFamilyId = (string)$this->getSelectCondition('notLinkedWithProductFamily');
-
-        foreach ($this->getProductFamilyAttributes($productFamilyId) as $row) {
-            $result['whereClause'][] = [
-                'id!=' => $row['attribute_id']
-            ];
-        }
-    }
-
-    /**
-     * Get product family attributes
-     *
-     * @param string $productFamilyId
-     *
-     * @return array
-     */
-    protected function getProductFamilyAttributes($productFamilyId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql = 'SELECT
-          attribute_id
-        FROM
-          product_family_attribute_linker
-        WHERE
-          product_family_id =' . $pdo->quote($productFamilyId) . '
-          AND deleted = 0';
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
 }
