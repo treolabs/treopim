@@ -70,6 +70,24 @@ class ProductAttributeValueHook extends BaseHook
     /**
      * @param Entity $entity
      * @param array  $options
+     *
+     * @throws BadRequest
+     */
+    public function beforeRemove(Entity $entity, $options = [])
+    {
+        // exit
+        if (!empty($options['skipProductAttributeValueHook'])) {
+            return true;
+        }
+
+        if (!empty($entity->get('productFamily'))) {
+            throw new BadRequest($this->exception('Product Family attribute cannot be deleted'));
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
      */
     public function afterSave(Entity $entity, $options = [])
     {

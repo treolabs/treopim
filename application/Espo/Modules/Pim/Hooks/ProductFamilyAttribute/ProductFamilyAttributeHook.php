@@ -130,10 +130,9 @@ class ProductFamilyAttributeHook extends BaseHook
             ->getRepository('ProductAttributeValue')
             ->where(
                 [
-                    'productId'       => array_column($products->toArray(), 'id'),
-                    'attributeId'     => $entity->get('attributeId'),
-                    'scope'           => $entity->get('scope'),
-                    'productFamilyId' => null
+                    'productId'   => array_column($products->toArray(), 'id'),
+                    'attributeId' => $entity->get('attributeId'),
+                    'scope'       => $entity->get('scope')
                 ]
             )
             ->find();
@@ -187,7 +186,7 @@ class ProductFamilyAttributeHook extends BaseHook
 
         if (count($records) > 0) {
             foreach ($records as $record) {
-                $this->getEntityManager()->removeEntity($record);
+                $this->getEntityManager()->removeEntity($record, ['skipProductAttributeValueHook' => true]);
             }
         }
 

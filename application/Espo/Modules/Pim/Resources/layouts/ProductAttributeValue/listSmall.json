@@ -3,6 +3,9 @@
     "name": "attribute"
   },
   {
+    "name": "isRequired"
+  },
+  {
     "name": "value"
   },
   {
