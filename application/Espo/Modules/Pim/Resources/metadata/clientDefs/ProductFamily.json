@@ -16,6 +16,10 @@
     "list": "pim:views/product-family/record/list"
   },
   "relationshipPanels": {
+    "productFamilyAttributes": {
+      "select": false,
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink"
+    },
     "products": {
       "view": "pim:views/product-family/record/panels/products",
       "selectBoolFilterList": [

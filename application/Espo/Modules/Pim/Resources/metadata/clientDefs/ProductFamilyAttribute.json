@@ -5,5 +5,20 @@
   ],
   "kanbanViewMode": false,
   "color": null,
-  "iconClass": null
+  "iconClass": null,
+  "dynamicLogic": {
+    "fields": {
+      "channels": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "scope",
+              "value": "Channel"
+            }
+          ]
+        }
+      }
+    }
+  }
 }
