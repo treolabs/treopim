@@ -20,6 +20,8 @@
 Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
     Dep => Dep.extend({
 
+        categoryTrees: [],
+
         template: 'pim:product/record/catalog-tree-panel/category-tree',
 
         events: {
@@ -41,88 +43,75 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 this.fold($(e.currentTarget).data('id'));
             },
             'click button.category.child-category': function (e) {
-                let button = $(e.currentTarget);
-                let categoryId = button.data('id');
-                let catalogPanel = button.parents('div.panel-collapse.collapse[class^="catalog-"]');
-                let catalogId = catalogPanel.data('id');
-                this.trigger('category-tree-select', categoryId, catalogId);
+                this.selectCategory($(e.currentTarget).data('id'));
             }
         },
         
         data() {
             return {
-                scope: this.scope,
                 catalog: this.options.catalog,
-                rowList: this.getRowList(),
+                rootCategoriesList: this.getRootCategoriesList(),
                 hash: this.getRandomHash()
             }
         },
 
         setup() {
-            this.scope = this.options.scope || this.scope;
+            this.categories = this.options.categories || [];
+            this.catalog = this.options.catalog;
+
+            let rootCategoriesIds = [];
+            this.categories.forEach(category => {
+                if (category.categoryParentId) {
+                    rootCategoriesIds.push(category.categoryParentId);
+                }
+            });
+            this.rootCategories = this.categories.filter(category => {
+                return rootCategoriesIds.includes(category.id) && (this.catalog.categoriesIds || []).includes(category.id);
+            });
         },
 
-        getRowList() {
+        selectCategory(id) {
+            let category = this.categoryTrees.find(item => item.id === id);
+            category.catalogId = this.catalog.id;
+            this.trigger('category-tree-select', category);
+        },
+
+        getRootCategoriesList() {
             let arr = [];
-            let rootCategory = this.options.catalog.categoryTree || {};
-            arr.push({
-                id: rootCategory.id,
-                html: (rootCategory.children && rootCategory.children.length) ? this.getParentHtml(rootCategory) : this.getChildHtml(rootCategory)
+            this.rootCategories.forEach(category => {
+                let hasChildren = this.categories.some(item => item.categoryParentId === category.id);
+                arr.push({
+                    id: category.id,
+                    html: hasChildren ? this.getParentHtml(category) : this.getChildHtml(category)
+                });
             });
             return arr;
         },
 
-        getParentHtml(root) {
+        getParentHtml(category) {
             let hash = this.getRandomHash();
-            let children = '';
-
-            if (root.children && root.children.length) {
-                root.children.sort((a, b) => {
-                    return a.name.localeCompare(b.name);
-                });
-                root.children.sort((a, b) => {
-                    if ((a.children && a.children.length) && !b.children) {
-                        return -1;
-                    }
-                    if ((b.children && b.children.length) && !a.children) {
-                        return 1;
-                    }
-                    return 0;
-                });
-            }
-
-            (root.children || []).forEach(child => {
-                if (child.children && child.children.length) {
-                    children += this.getParentHtml(child);
-                } else {
-                    children += this.getChildHtml(child);
-                }
-            });
-
-            return `` +
-                `<li data-id="${root.id}" class="list-group-item child">` +
-                    `<button class="btn btn-link category category-icons" data-toggle="collapse" data-target=".category-${hash}" data-id="${root.id}">` +
-                        `<span class="fas fa-chevron-right"></span>` +
-                        `<span class="fas fa-chevron-down hidden"></span>` +
-                    `</button>` +
-                    `<button class="btn btn-link category child-category" data-id="${root.id}">` +
-                        `${root.name}` +
-                    `</button>` +
-                    `<div class="category-${hash} panel-collapse collapse" data-id="${root.id}">` +
-                        `<ul class="list-group list-group-tree">` +
-                            `${children}`+
-                        `</ul>` +
-                    `</div>` +
-                `</li>`;
+            return `
+                <li data-id="${category.id}" class="list-group-item child">
+                    <button class="btn btn-link category category-icons" data-toggle="collapse" data-target=".category-${hash}" data-id="${category.id}" data-name="${category.name}">
+                        <span class="fas fa-chevron-right"></span>
+                        <span class="fas fa-chevron-down hidden"></span>
+                    </button>
+                    <button class="btn btn-link category child-category" data-id="${category.id}">
+                        ${category.name}
+                    </button>
+                    <div class="category-${hash} panel-collapse collapse" data-id="${category.id}">
+                        <ul class="list-group list-group-tree"></ul>
+                    </div>
+                </li>`;
         },
 
-        getChildHtml(child) {
-            return `` +
-                `<li data-id="${child.id}" class="list-group-item child">` +
-                    `<button class="btn btn-link category child-category" data-id="${child.id}" href="javascript">` +
-                        `${child.name}` +
-                    `</button>` +
-                `</li>`;
+        getChildHtml(category) {
+            return `
+                <li data-id="${category.id}" class="list-group-item child">
+                    <button class="btn btn-link category child-category" data-id="${category.id}" data-name="${category.name}">
+                        ${category.name}
+                    </button>
+                </li>`;
         },
 
         getRandomHash() {
@@ -130,7 +119,27 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 .toString(16)
                 .substring(1);
         },
-        
+
+        getFullEntity(url, params, callback, container) {
+            if (url) {
+                container = container || [];
+
+                let options = params || {};
+                options.maxSize = options.maxSize || 200;
+                options.offset = options.offset || 0;
+
+                this.ajaxGetRequest(url, options).then(response => {
+                    container = container.concat(response.list || []);
+                    options.offset = container.length;
+                    if (response.total > container.length || response.total === -1) {
+                        this.getFullEntity(url, options, callback, container);
+                    } else {
+                        callback(container);
+                    }
+                });
+            }
+        },
+
         fold(id) {
             let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
             button.find('span.fa-chevron-right').removeClass('hidden');
@@ -138,9 +147,71 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         unfold(id) {
-            let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
-            button.find('span.fa-chevron-right').addClass('hidden');
-            button.find('span.fa-chevron-down').removeClass('hidden');
+            this.setupCategoryTree(id, () => {
+                let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
+                button.find('span.fa-chevron-right').addClass('hidden');
+                button.find('span.fa-chevron-down').removeClass('hidden');
+            });
+        },
+
+        setupCategoryTree(id, callback) {
+            let category = this.categoryTrees.find(item => item.id === id);
+            if (!category) {
+                this.getTreeCategories(id, categories => {
+                    category = this.buildCategoryTree(id, categories);
+                    this.buildCategoryHtml(id, category);
+                    callback();
+                });
+            } else {
+                this.buildCategoryHtml(id, category);
+                callback();
+            }
+        },
+
+        getTreeCategories(id, callback) {
+            this.getFullEntity('Category', {
+                select: 'name,categoryParentId,categoryRoute',
+                where: [
+                    {
+                        type: 'contains',
+                        attribute: 'categoryRoute',
+                        value: id
+                    }
+                ]
+            }, categories => {
+                callback(categories);
+            });
+        },
+
+        buildCategoryTree(id, categories) {
+            let root = this.rootCategories.find(item => item.id === id);
+
+            let setChilds = (category, categories) => {
+                let childs = categories.filter(item => item.categoryParentId === category.id);
+                if (childs.length) {
+                    childs.forEach(child => setChilds(child, categories));
+                }
+                category.childs = childs;
+                if (!this.categoryTrees.some(item => item.id === category.id)) {
+                    this.categoryTrees.push(category);
+                }
+            };
+            setChilds(root, categories);
+
+            return root;
+        },
+
+        buildCategoryHtml(id, category) {
+            if (!category.htmlLoaded) {
+                let html = '';
+                category.childs.forEach(category => {
+                    html += category.childs.length ? this.getParentHtml(category) : this.getChildHtml(category);
+                });
+                let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
+                let listEl = button.parent().find(`.panel-collapse[data-id="${id}"] .list-group-tree`);
+                listEl.append(html);
+                category.htmlLoaded = true;
+            }
         },
 
     })

@@ -38,7 +38,7 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
                 view.render();
                 view.listenTo(view, 'select-category', data => {
                     let defaultAdvanced = this.searchManager.get().advanced;
-                    let advanced = _.extend(Espo.Utils.cloneDeep(defaultAdvanced), {categories: data});
+                    let advanced = _.extend(Espo.Utils.cloneDeep(defaultAdvanced), data);
                     this.searchManager.set(_.extend(this.searchManager.get(), {advanced: advanced}));
                     this.collection.where = this.searchManager.getWhere();
                     this.searchManager.set(_.extend(this.searchManager.get(), {advanced: defaultAdvanced}));
