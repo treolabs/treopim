@@ -42,6 +42,9 @@ class V4Dot0Dot0 extends AbstractMigration
 
         // migrate channel attribute values
         $this->migrateChannelAttributeValues();
+
+        // migrate product family attributes
+        $this->migrateProductFamilyAttributes();
     }
 
     /**
@@ -64,7 +67,7 @@ class V4Dot0Dot0 extends AbstractMigration
     /**
      * Migrate channel attribute values
      */
-    protected function migrateChannelAttributeValues()
+    protected function migrateChannelAttributeValues(): void
     {
         $sql
             = "SELECT cpav.*, p.id as product_id, a.id as attribute_id   
@@ -105,6 +108,40 @@ class V4Dot0Dot0 extends AbstractMigration
                     ->getEntityManager()
                     ->getRepository('ProductAttributeValue')
                     ->relate($entity, 'channels', $this->getEntityManager()->getEntity('Channel', $row['channel_id']));
+            }
+        }
+    }
+
+    /**
+     * Migrate product family attribute
+     */
+    protected function migrateProductFamilyAttributes(): void
+    {
+        $sql
+            = "SELECT pfal.*   
+                FROM product_family_attribute_linker AS pfal 
+                JOIN product_family AS pf ON pf.id=pfal.product_family_id 
+                JOIN attribute AS a ON a.id=pfal.attribute_id 
+                WHERE pfal.deleted=0 AND pf.deleted=0 AND a.deleted=0";
+
+        $sth = $this
+            ->getEntityManager()
+            ->getPDO()
+            ->prepare($sql);
+        $sth->execute();
+
+        $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
+        if (!empty($data)) {
+            foreach ($data as $row) {
+                $entity = $this->getEntityManager()->getEntity('ProductFamilyAttribute');
+                $entity->set('productFamilyId', $row['product_family_id']);
+                $entity->set('attributeId', $row['attribute_id']);
+                $entity->set('isRequired', $row['is_required']);
+                $entity->set('scope', 'Global');
+                $entity->set('createdById', 'system');
+                $entity->set('createdAt', date("Y-m-d H:i:s"));
+
+                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true]);
             }
         }
     }
