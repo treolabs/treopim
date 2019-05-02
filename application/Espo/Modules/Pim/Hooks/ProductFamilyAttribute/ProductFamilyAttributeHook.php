@@ -42,6 +42,11 @@ class ProductFamilyAttributeHook extends BaseHook
      */
     public function beforeSave(Entity $entity, $options = [])
     {
+        // exit
+        if (!empty($options['skipValidation'])) {
+            return true;
+        }
+
         if (empty($productFamily = $entity->get('productFamily')) || empty($attribute = $entity->get('attribute'))) {
             throw new BadRequest($this->exception('ProductFamily and Attribute cannot be empty'));
         }
@@ -57,8 +62,8 @@ class ProductFamilyAttributeHook extends BaseHook
      */
     public function afterSave(Entity $entity, $options = [])
     {
-        // create product attribute value
-        $this->createProductAttributeValues($entity);
+        // update product attribute value
+        $this->updateProductAttributeValues($entity);
     }
 
     /**
@@ -109,7 +114,7 @@ class ProductFamilyAttributeHook extends BaseHook
      *
      * @return bool
      */
-    protected function createProductAttributeValues(Entity $entity): bool
+    protected function updateProductAttributeValues(Entity $entity): bool
     {
         // get products
         $products = $this
@@ -123,32 +128,50 @@ class ProductFamilyAttributeHook extends BaseHook
             return true;
         }
 
-        // prepare exists
-        $exists = [];
-        $data = $this
+        // get exists
+        $exists = $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
-            ->where(['productFamilyAttributeId' => $entity->get('id')])
+            ->where(
+                [
+                    'productId'   => array_column($products->toArray(), 'id'),
+                    'attributeId' => $entity->get('attributeId')
+                ]
+            )
             ->find();
-        if (count($data) > 0) {
-            foreach ($data as $item) {
-                $exists[$item->get('productId') . '_' . $item->get('attributeId') . '_' . $item->get('scope')] = $item;
-            }
-        }
 
         foreach ($products as $product) {
-            // prepare key
-            $key = $product->get('id') . '_' . $entity->get('attributeId') . '_' . $entity->get('scope');
+            // prepare product attribute value
+            $productAttributeValue = null;
 
-            if (isset($exists[$key])) {
-                $productAttributeValue = $exists[$key];
-            } else {
+            // find related
+            foreach ($exists as $exist) {
+                if ($exist->get('productFamilyAttributeId') == $entity->get('id') && $product->get('id') == $exist->get('productId')) {
+                    $productAttributeValue = $exist;
+                    break;
+                }
+            }
+
+            // find not related
+            if (empty($productAttributeValue)) {
+                foreach ($exists as $exist) {
+                    if ($product->get('id') == $exist->get('productId')
+                        && $entity->get('attributeId') == $exist->get('attributeId')
+                        && $entity->get('scope') == $exist->get('scope')) {
+                        $productAttributeValue = $exist;
+                        break;
+                    }
+                }
+            }
+
+            // create new product attribute value if it needs
+            if (empty($productAttributeValue)) {
                 $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
                 $productAttributeValue->set('productId', $product->get('id'));
                 $productAttributeValue->set('attributeId', $entity->get('attributeId'));
-                $productAttributeValue->set('scope', $entity->get('scope'));
             }
 
+            $productAttributeValue->set('scope', $entity->get('scope'));
             $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
             $productAttributeValue->set('isRequired', $entity->get('isRequired'));
             $productAttributeValue->set('channelsIds', $entity->get('channelsIds'));

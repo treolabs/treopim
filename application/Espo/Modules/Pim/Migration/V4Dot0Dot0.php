@@ -46,11 +46,6 @@ class V4Dot0Dot0 extends AbstractMigration
         // migrate product family attributes
         $this->migrateProductFamilyAttributes();
 
-        // migrate pf relation
-        echo '<pre>';
-        print_r('123');
-        die();
-
         // switch isRequired params
         $this->switchIsRequiredParams();
     }
@@ -149,7 +144,7 @@ class V4Dot0Dot0 extends AbstractMigration
                 $entity->set('createdById', 'system');
                 $entity->set('createdAt', date("Y-m-d H:i:s"));
 
-                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true]);
+                $this->getEntityManager()->saveEntity($entity, ['skipValidation' => true]);
             }
         }
     }
