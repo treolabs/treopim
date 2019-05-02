@@ -46,6 +46,11 @@ class V4Dot0Dot0 extends AbstractMigration
         // migrate product family attributes
         $this->migrateProductFamilyAttributes();
 
+        // migrate pf relation
+        echo '<pre>';
+        print_r('123');
+        die();
+
         // switch isRequired params
         $this->switchIsRequiredParams();
     }
@@ -167,28 +172,10 @@ class V4Dot0Dot0 extends AbstractMigration
             return true;
         }
 
-        $productAttributeValues = $this
-            ->getEntityManager()
-            ->getRepository('ProductAttributeValue')
-            ->where(
-                [
-                    'attributeId'     => array_column($productFamilyAttributes->toArray(), 'attributeId'),
-                    'productFamilyId' => array_column($productFamilyAttributes->toArray(), 'productFamilyId'),
-                    'isRequired'      => false
-                ]
-            )
-            ->find();
-
-        // exit
-        if (count($productAttributeValues) == 0) {
-            return true;
-        }
-
         foreach ($productFamilyAttributes as $productFamilyAttribute) {
-            foreach ($productAttributeValues as $productAttributeValue) {
-                if ($productAttributeValue->get('attributeId') == $productFamilyAttribute->get('attributeId')
-                    && $productAttributeValue->get('productFamilyId') == $productFamilyAttribute->get('productFamilyId')
-                    && $productAttributeValue->get('scope') == $productFamilyAttribute->get('scope')) {
+            $productAttributeValues = $productFamilyAttribute->get('productAttributeValues');
+            if (count($productAttributeValues) > 0) {
+                foreach ($productAttributeValues as $productAttributeValue) {
                     $productAttributeValue->set('isRequired', true);
                     $this->getEntityManager()->saveEntity($productAttributeValue, ['skipAll' => true]);
                 }

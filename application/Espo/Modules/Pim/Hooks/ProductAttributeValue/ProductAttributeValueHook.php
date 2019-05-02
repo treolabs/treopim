@@ -80,7 +80,7 @@ class ProductAttributeValueHook extends BaseHook
             return true;
         }
 
-        if (!empty($entity->get('productFamily'))) {
+        if (!empty($entity->get('productFamilyAttribute'))) {
             throw new BadRequest($this->exception('Product Family attribute cannot be deleted'));
         }
     }

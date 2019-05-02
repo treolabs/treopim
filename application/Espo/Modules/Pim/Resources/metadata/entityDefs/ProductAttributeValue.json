@@ -12,7 +12,7 @@
       "type": "link",
       "required": true
     },
-    "productFamily": {
+    "productFamilyAttribute": {
       "type": "link"
     },
     "isRequired": {
@@ -81,10 +81,10 @@
       "type": "belongsTo",
       "entity": "Product"
     },
-    "productFamily": {
+    "productFamilyAttribute": {
       "type": "belongsTo",
       "foreign": "productAttributeValues",
-      "entity": "ProductFamily"
+      "entity": "ProductFamilyAttribute"
     },
     "attribute": {
       "type": "belongsTo",

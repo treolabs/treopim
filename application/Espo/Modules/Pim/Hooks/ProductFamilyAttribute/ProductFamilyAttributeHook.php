@@ -128,13 +128,7 @@ class ProductFamilyAttributeHook extends BaseHook
         $data = $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
-            ->where(
-                [
-                    'productId'   => array_column($products->toArray(), 'id'),
-                    'attributeId' => $entity->get('attributeId'),
-                    'scope'       => $entity->get('scope')
-                ]
-            )
+            ->where(['productFamilyAttributeId' => $entity->get('id')])
             ->find();
         if (count($data) > 0) {
             foreach ($data as $item) {
@@ -155,7 +149,7 @@ class ProductFamilyAttributeHook extends BaseHook
                 $productAttributeValue->set('scope', $entity->get('scope'));
             }
 
-            $productAttributeValue->set('productFamilyId', $entity->get('productFamilyId'));
+            $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
             $productAttributeValue->set('isRequired', $entity->get('isRequired'));
             $productAttributeValue->set('channelsIds', $entity->get('channelsIds'));
 
@@ -175,18 +169,15 @@ class ProductFamilyAttributeHook extends BaseHook
         $records = $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
-            ->where(
-                [
-                    'attributeId'     => $entity->get('attributeId'),
-                    'scope'           => $entity->get('scope'),
-                    'productFamilyId' => $entity->get('productFamilyId')
-                ]
-            )
+            ->where(['productFamilyAttributeId' => $entity->get('id')])
             ->find();
 
         if (count($records) > 0) {
             foreach ($records as $record) {
-                $this->getEntityManager()->removeEntity($record, ['skipProductAttributeValueHook' => true]);
+                $record->set('productFamilyAttributeId', null);
+                $record->set('deleted', true);
+
+                $this->getEntityManager()->saveEntity($record, ['skipProductAttributeValueHook' => true]);
             }
         }
 
