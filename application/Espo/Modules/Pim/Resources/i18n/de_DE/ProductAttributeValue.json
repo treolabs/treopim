@@ -7,6 +7,7 @@
     "product": "Produkt",
     "productAttribute": "Produktattribut",
     "attribute": "Attribut",
+    "isRequired": "Ist Erforderlich",
     "value": "Wert",
     "scope": "Umfang",
     "channels": "Kanale"

@@ -48,6 +48,11 @@ class ProductAttributeValueHook extends BaseHook
      */
     public function beforeSave(Entity $entity, $options = [])
     {
+        // exit
+        if (!empty($options['skipProductAttributeValueHook'])) {
+            return true;
+        }
+
         if (empty($product = $entity->get('product')) || empty($category = $entity->get('attribute'))) {
             throw new BadRequest($this->exception('Product and Attribute cannot be empty'));
         }
@@ -68,6 +73,11 @@ class ProductAttributeValueHook extends BaseHook
      */
     public function afterSave(Entity $entity, $options = [])
     {
+        // exit
+        if (!empty($options['skipProductAttributeValueHook'])) {
+            return true;
+        }
+
         // create note
         $this->createNote($entity);
     }

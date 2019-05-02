@@ -7,6 +7,7 @@
     "productAttribute": "Product attribute",
     "product": "Product",
     "attribute": "Attribute",
+    "isRequired": "Is required",
     "value": "Value",
     "scope": "Scope",
     "channels": "Channels"
