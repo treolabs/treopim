@@ -45,6 +45,9 @@ class V4Dot0Dot0 extends AbstractMigration
 
         // migrate product family attributes
         $this->migrateProductFamilyAttributes();
+
+        // switch isRequired params
+        $this->switchIsRequiredParams();
     }
 
     /**
@@ -144,5 +147,54 @@ class V4Dot0Dot0 extends AbstractMigration
                 $this->getEntityManager()->saveEntity($entity, ['skipAll' => true]);
             }
         }
+    }
+
+    /**
+     * Switch isRequired params
+     *
+     * @return bool
+     */
+    protected function switchIsRequiredParams(): bool
+    {
+        $productFamilyAttributes = $this
+            ->getEntityManager()
+            ->getRepository('ProductFamilyAttribute')
+            ->where(['isRequired' => true])
+            ->find();
+
+        // exit
+        if (count($productFamilyAttributes) == 0) {
+            return true;
+        }
+
+        $productAttributeValues = $this
+            ->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->where(
+                [
+                    'attributeId'     => array_column($productFamilyAttributes->toArray(), 'attributeId'),
+                    'productFamilyId' => array_column($productFamilyAttributes->toArray(), 'productFamilyId'),
+                    'isRequired'      => false
+                ]
+            )
+            ->find();
+
+        // exit
+        if (count($productAttributeValues) == 0) {
+            return true;
+        }
+
+        foreach ($productFamilyAttributes as $productFamilyAttribute) {
+            foreach ($productAttributeValues as $productAttributeValue) {
+                if ($productAttributeValue->get('attributeId') == $productFamilyAttribute->get('attributeId')
+                    && $productAttributeValue->get('productFamilyId') == $productFamilyAttribute->get('productFamilyId')
+                    && $productAttributeValue->get('scope') == $productFamilyAttribute->get('scope')) {
+                    $productAttributeValue->set('isRequired', true);
+                    $this->getEntityManager()->saveEntity($productAttributeValue, ['skipAll' => true]);
+                }
+            }
+        }
+
+        return true;
     }
 }
