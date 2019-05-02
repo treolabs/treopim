@@ -159,6 +159,7 @@ class ProductFamilyAttributeHook extends BaseHook
                         && $entity->get('attributeId') == $exist->get('attributeId')
                         && $entity->get('scope') == $exist->get('scope')) {
                         $productAttributeValue = $exist;
+                        $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
                         break;
                     }
                 }
@@ -169,10 +170,10 @@ class ProductFamilyAttributeHook extends BaseHook
                 $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
                 $productAttributeValue->set('productId', $product->get('id'));
                 $productAttributeValue->set('attributeId', $entity->get('attributeId'));
+                $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
             }
 
             $productAttributeValue->set('scope', $entity->get('scope'));
-            $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
             $productAttributeValue->set('isRequired', $entity->get('isRequired'));
             $productAttributeValue->set('channelsIds', $entity->get('channelsIds'));
 
