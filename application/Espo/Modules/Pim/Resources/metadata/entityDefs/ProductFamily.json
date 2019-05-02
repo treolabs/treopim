@@ -95,6 +95,13 @@
       "layoutFiltersDisabled": true,
       "noLoad": true,
       "importDisabled": true
+    },
+    "productFamilyAttributes": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
     }
   },
   "links": {
@@ -130,6 +137,11 @@
       "foreign": "productFamily",
       "entity": "ProductAttributeValue",
       "layoutRelationshipsDisabled": true
+    },
+    "productFamilyAttributes": {
+      "type": "hasMany",
+      "foreign": "productFamily",
+      "entity": "ProductFamilyAttribute"
     }
   },
   "collection": {

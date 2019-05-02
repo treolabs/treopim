@@ -30,7 +30,8 @@
     "ProductPrice": "Product Price",
     "Tax": "Tax",
     "ProductSerie": "Product Serie",
-    "ProductCategory": "Product Category"
+    "ProductCategory": "Product Category",
+    "ProductFamilyAttribute": "ProductFamily Attribute"
   },
   "scopeNamesPlural": {
     "Association": "Associations",
@@ -53,7 +54,8 @@
     "ProductPrice": "Product Prices",
     "Tax": "Taxes",
     "ProductSerie": "Product Series",
-    "ProductCategory": "Product Categories"
+    "ProductCategory": "Product Categories",
+    "ProductFamilyAttribute": "ProductFamily Attributes"
   },
   "fields": {
     "productFamily": "Product Family",

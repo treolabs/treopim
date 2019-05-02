@@ -5,11 +5,15 @@
   "acl": false,
   "aclPortal": false,
   "customizable": false,
-  "importable": true,
-  "notifications": true,
+  "importable": false,
+  "notifications": false,
   "stream": false,
   "disabled": false,
   "type": "Base",
   "module": "Pim",
-  "object": true
+  "object": false,
+  "hasAssignedUser": false,
+  "hasTeam": false,
+  "hasOwner": false,
+  "statusField": null
 }

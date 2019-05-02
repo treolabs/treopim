@@ -23,7 +23,8 @@
     "typeValueEnUs": "Werttyp EnUs",
     "typeValueEsEs": "Werttyp EsEs",
     "typeValueFrFr": "Werttyp FrFr",
-    "type": "Typ"
+    "type": "Typ",
+    "productFamilyAttributes": "Produktfamilie Attribute"
   },
   "options": {
     "type": {
@@ -56,7 +57,8 @@
     "productAttributes": "Produktattribute",
     "productAttributeValues": "Werte der Produktattribute",
     "channelProductAttributeValues": "Kanal von",
-    "productFamilies": "Produktfamilien"
+    "productFamilies": "Produktfamilien",
+    "productFamilyAttributes": "Produktfamilie Attribute"
   },
   "labels": {
     "Create Attribute": "Attribut erstellen",

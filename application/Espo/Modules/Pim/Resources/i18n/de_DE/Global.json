@@ -19,7 +19,8 @@
     "Attribute": "Attribute",
     "Currency": "Währung",
     "ProductSerie": "Product Serie",
-    "Catalog": "Katalog"
+    "Catalog": "Katalog",
+    "ProductFamilyAttribute": "Produktfamilie Attribute"
   },
   "scopeNamesPlural": {
     "ProductAttributeValue": "Produktattributwert",
@@ -44,7 +45,8 @@
     "EmailAddress": "E-Mail Addresse",
     "ProductSerie": "Product Series",
     "AssociatedProduct": "Assoziierte Produkt",
-    "Catalog": "Kataloge"
+    "Catalog": "Kataloge",
+    "ProductFamilyAttribute": "Produktfamilie Attribute"
   },
   "fields": {
     "productFamily": "Artikel-Familien",
