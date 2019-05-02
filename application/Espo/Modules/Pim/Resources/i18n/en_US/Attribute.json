@@ -12,7 +12,7 @@
     "channelProductAttributeValues": "Channel Product Attribute Values",
     "isRequired": "Required",
     "isMultiChannel": "Required for Channels",
-    "productFamilyAttributes": "ProductFamily Attributes"
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "options": {
     "type": {
@@ -44,7 +44,7 @@
     "productAttributeValues": "Product Attribute Values",
     "channelProductAttributeValues": "Channel Product Attribute Values",
     "productFamilies": "Product families",
-    "productFamilyAttributes": "ProductFamily Attributes"
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "labels": {
     "Create Attribute": "Create Attribute",

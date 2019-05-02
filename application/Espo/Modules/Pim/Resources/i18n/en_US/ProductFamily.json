@@ -6,13 +6,13 @@
     "isActive": "Active",
     "productFamilyTemplate": "Copy Attributes from",
     "productFamilies": "Product Families",
-    "productFamilyAttributes": "ProductFamily Attributes"
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "links": {
     "products": "Products",
     "productFamilyTemplate": "Copy Attributes from",
     "productFamilies": "Product Families",
-    "productFamilyAttributes": "ProductFamily Attributes"
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "labels": {
     "Create ProductFamily": "Create Product family",

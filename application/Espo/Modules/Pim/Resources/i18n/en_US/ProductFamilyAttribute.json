@@ -1,18 +1,18 @@
 {
   "fields": {
-    "productFamily": "ProductFamily",
+    "productFamily": "Product Family",
     "attribute": "Attribute",
     "isRequired": "Is required",
     "channels": "Channels",
     "scope": "Scope"
   },
   "links": {
-    "productFamily": "ProductFamily",
+    "productFamily": "Product Family",
     "attribute": "Attribute",
     "channels": "Channels"
   },
   "labels": {
-    "Create ProductFamilyAttribute": "Create ProductFamily Attribute"
+    "Create ProductFamilyAttribute": "Create Product Family Attribute"
   },
   "options": {
     "scope": {
