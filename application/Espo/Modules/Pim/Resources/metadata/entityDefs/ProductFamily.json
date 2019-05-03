@@ -76,17 +76,6 @@
       "exportDisabled": true,
       "isCustom": false
     },
-    "productFamilyTemplate": {
-      "type": "link",
-      "required": false,
-      "notStorable": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "layoutListDisabled": true,
-      "entity": "ProductFamily",
-      "exportDisabled": true,
-      "view": "pim:views/product-family/fields/product-family-template"
-    },
     "productFamilyAttributes": {
       "type": "linkMultiple",
       "layoutListDisabled": true,

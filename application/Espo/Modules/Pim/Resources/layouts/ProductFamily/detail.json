@@ -19,12 +19,6 @@
       ],
       [
         {
-          "name": "productFamilyTemplate",
-          "fullWidth": true
-        }
-      ],
-      [
-        {
           "name": "description",
           "fullWidth": true
         }

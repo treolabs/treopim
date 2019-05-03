@@ -53,39 +53,4 @@ class ProductFamilyHook extends AbstractHook
             );
         }
     }
-
-    /**
-     * After Save Entity hook
-     *
-     * @param Entity $entity
-     * @param array  $options
-     */
-    public function afterSave(Entity $entity, $options = [])
-    {
-        $this->setParentAttributes($entity);
-    }
-
-    /**
-     * Set attributes from parent ProductFamily
-     *
-     * @param Entity $entity
-     */
-    protected function setParentAttributes(Entity $entity)
-    {
-        if ($entity->isNew()) {
-            // prepare repository
-            $repository = $this->getEntityManager()->getRepository('ProductFamily');
-
-            // get parent
-            $parent = $repository
-                ->where(['id' => $entity->get('productFamilyTemplateId')])
-                ->findOne();
-
-            if (!empty($parent) && !empty($attributes = $parent->get('attributes'))) {
-                foreach ($attributes as $attribute) {
-                    $repository->relate($entity, 'attributes', $attribute);
-                }
-            }
-        }
-    }
 }

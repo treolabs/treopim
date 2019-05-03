@@ -23,12 +23,7 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Services;
 
 use Espo\Core\Exceptions\Forbidden;
-use Espo\Core\Exceptions\Error;
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Exceptions\NotFound;
-use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
-use Espo\Orm\EntityManager;
 use Espo\Core\Utils\Util;
 use Slim\Http\Request;
 use \PDO;
@@ -199,48 +194,6 @@ class Product extends AbstractService
         }
 
         return $result;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function duplicateLinks(Entity $product, Entity $duplicatingProduct)
-    {
-        // prepare links
-        foreach ($this->getInjection('metadata')->get('entityDefs.Product.fields', []) as $field => $row) {
-            if (!empty($row['type']) && $row['type'] == 'linkMultiple') {
-                $links[] = $field;
-            }
-        }
-
-        if (!empty($links)) {
-            foreach ($links as $link) {
-                // prepare method name
-                $methodName = 'duplicate' . ucfirst($link);
-
-                // call customm method
-                if (method_exists($this, $methodName)) {
-                    try {
-                        $this->{$methodName}($product, $duplicatingProduct);
-                    } catch (\Throwable $e) {
-                        $GLOBALS['log']->error($e->getMessage());
-                    }
-
-                    continue 1;
-                }
-
-                $data = $duplicatingProduct->get($link);
-                if (count($data) > 0) {
-                    foreach ($data as $item) {
-                        try {
-                            $this->getEntityManager()->getRepository('Product')->relate($product, $link, $item);
-                        } catch (\Throwable $e) {
-                            $GLOBALS['log']->error($e->getMessage());
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
