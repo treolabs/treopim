@@ -176,6 +176,9 @@ class ProductFamilyAttributeHook extends BaseHook
                 $productAttributeValue->set('productId', $product->get('id'));
                 $productAttributeValue->set('attributeId', $entity->get('attributeId'));
                 $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
+                $productAttributeValue->set('ownerUserId', $entity->get('ownerUserId'));
+                $productAttributeValue->set('assignedUserId', $entity->get('assignedUserId'));
+                $productAttributeValue->set('teamsIds', $entity->get('teamsIds'));
             }
 
             $productAttributeValue->set('scope', $entity->get('scope'));
