@@ -22,8 +22,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-search', 'view
 
         template: 'pim:product/record/catalog-tree-panel/category-search',
 
-        AUTOCOMPLETE_RESULT_MAX_COUNT: 7,
-
         data() {
             return {
                 scope: this.scope
@@ -32,42 +30,53 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-search', 'view
 
         setup() {
             this.scope = this.options.scope || this.scope;
-            this.lookupData = [];
-            this.options.categories.forEach(category => {
-                let firstParentId;
-                if (category.categoryRoute) {
-                    firstParentId = category.categoryRoute.split('|').find(element => element);
-                }
-                this.options.catalogs.forEach(catalog => {
-                    if (catalog.categoryId === category.id || (firstParentId && catalog.categoryId === firstParentId)) {
-                        category.catalogId = catalog.id;
-                        this.lookupData.push({
-                            value: category.name,
-                            data: Espo.Utils.cloneDeep(category)
-                        });
-                    }
-                });
-            });
         },
 
         afterRender() {
             if (this.el) {
                 this.$el.find('input').autocomplete({
+                    serviceUrl: function () {
+                        return this.getAutocompleteUrl();
+                    }.bind(this),
                     paramName: 'q',
                     minChars: 1,
                     autoSelectFirst: true,
-                    lookup: this.lookupData,
-                    formatResult: function (suggestion, value) {
-                        let category = suggestion.data;
-                        let catalog = this.options.catalogs.find(catalog => catalog.id === category.catalogId);
-                        return catalog.name + ' > ' + category.name;
+                    transformResult: function (json) {
+                        let response = JSON.parse(json);
+                        let list = [];
+                        response.list.forEach(category => {
+                            let firstParentId;
+                            if (category.categoryRoute) {
+                                firstParentId = category.categoryRoute.split('|').find(element => element);
+                            }
+                            this.options.catalogs.forEach(catalog => {
+                                if ((catalog.categoriesIds || []).includes(category.id) || (firstParentId && (catalog.categoriesIds || []).includes(firstParentId))) {
+                                    let modifiedItem = Espo.Utils.cloneDeep(category);
+                                    modifiedItem.value = catalog.name + ' > ' + modifiedItem.name;
+                                    modifiedItem.catalogId = catalog.id;
+                                    list.push(modifiedItem);
+                                }
+                            });
+                        });
+                        return {
+                            suggestions: list
+                        };
                     }.bind(this),
-                    onSelect: function (suggestion) {
+                    onSelect: function (category) {
                         this.$el.find('input').val('');
-                        this.trigger('category-search-select', suggestion.data);
+                        this.trigger('category-search-select', category);
                     }.bind(this)
                 });
             }
         },
+
+        getAutocompleteUrl() {
+            let url = 'Category?sortBy=createdAt';
+            let where = [];
+            where.push({type: 'bool', value: ['onlyActive']});
+            url += '&' + $.param({'where': where});
+            return url;
+        }
+
     })
 );
