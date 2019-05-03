@@ -22,12 +22,15 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Services;
 
+use Espo\Core\Templates\Services\Base;
+use Espo\ORM\Entity;
+
 /**
  * Class ProductFamily
  *
  * @author r.ratsun@treolabs.com
  */
-class ProductFamily extends \Espo\Core\Templates\Services\Base
+class ProductFamily extends Base
 {
     /**
      * Get count not empty product family attributes
@@ -59,5 +62,36 @@ class ProductFamily extends \Espo\Core\Templates\Services\Base
         }
 
         return $count;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $this->addDependency('serviceFactory');
+    }
+
+    /**
+     * @param Entity $entity
+     * @param Entity $duplicatingEntity
+     */
+    protected function duplicateProductFamilyAttributes(Entity $entity, Entity $duplicatingEntity)
+    {
+        if (!empty($productFamilyAttributes = $duplicatingEntity->get('productFamilyAttributes')->toArray())) {
+            // get service
+            $service = $this->getInjection('serviceFactory')->create('ProductFamilyAttribute');
+
+            foreach ($productFamilyAttributes as $productFamilyAttribute) {
+                // prepare data
+                $data = $service->getDuplicateAttributes($productFamilyAttribute['id']);
+                $data->productFamilyId = $entity->get('id');
+
+                // create entity
+                $service->createEntity($data);
+            }
+        }
     }
 }
