@@ -10,21 +10,25 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-Espo.define('pim:views/catalog/record/panels/categories', ['views/record/panels/relationship', 'views/record/panels/bottom'],
-    (Dep, BottomPanel) => Dep.extend({
+Espo.define('pim:views/product/record/panels/product-categories', ['views/record/panels/relationship', 'views/record/panels/bottom', 'search-manager'],
+    (Dep, BottomPanel, SearchManager) => Dep.extend({
 
         boolFilterData: {
-            notEntity() {
-                return (this.collection || []).map(model => model.id);
+            notLinkedProductCategories() {
+                return 'Global';
             },
-            onlyRootCategory() {
+            onlyCatalogCategories() {
+                return true;
+            },
+            onlyChildCategory() {
                 return true;
             }
         },
@@ -96,6 +100,8 @@ Espo.define('pim:views/catalog/record/panels/categories', ['views/record/panels/
                 }
                 data.boolFilterListCallback = 'getSelectBoolFilterList';
                 data.boolFilterDataCallback = 'getSelectBoolFilterData';
+                data.afterSelectCallback = 'createProductCategory';
+                data.scope = 'Category';
 
                 this.actionList.unshift({
                     label: 'Select',
@@ -172,6 +178,26 @@ Espo.define('pim:views/catalog/record/panels/categories', ['views/record/panels/
             }, this);
 
             this.setupFilterActions();
+        },
+
+        createProductCategory(selectObj) {
+            Promise.all(selectObj.map(categoryModel => {
+                this.getModelFactory().create(this.scope, model => {
+                    model.setRelate({
+                        model: this.model,
+                        link: this.model.defs.links[this.link].foreign
+                    });
+                    model.setRelate({
+                        model: categoryModel,
+                        link: categoryModel.defs.links[this.link].foreign
+                    });
+                    model.set({scope: 'Global'});
+                    return model.save();
+                });
+            })).then(() => {
+                this.notify('Linked', 'success');
+                this.collection.fetch();
+            });
         },
 
         getSelectBoolFilterList() {

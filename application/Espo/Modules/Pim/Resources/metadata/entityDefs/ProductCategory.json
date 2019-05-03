@@ -10,7 +10,8 @@
     },
     "category": {
       "type": "link",
-      "required": true
+      "required": true,
+      "view": "pim:views/product-category/fields/category"
     },
     "scope": {
       "type": "enum",

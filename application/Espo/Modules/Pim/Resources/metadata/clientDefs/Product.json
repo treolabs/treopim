@@ -64,7 +64,14 @@
       ]
     },
     "productCategories": {
-      "select": false,
+      "view": "pim:views/product/record/panels/product-categories",
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "onlyActive",
+        "notLinkedProductCategories",
+        "onlyCatalogCategories",
+        "onlyChildCategory"
+      ],
       "rowActionsView": "views/record/row-actions/relationship-no-unlink"
     },
     "productImages": {
