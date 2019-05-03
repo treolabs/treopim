@@ -4,13 +4,11 @@
     "description": "Description",
     "code": "Code",
     "isActive": "Active",
-    "productFamilyTemplate": "Copy Attributes from",
     "productFamilies": "Product Families",
     "productFamilyAttributes": "Product Family Attributes"
   },
   "links": {
     "products": "Products",
-    "productFamilyTemplate": "Copy Attributes from",
     "productFamilies": "Product Families",
     "productFamilyAttributes": "Product Family Attributes"
   },

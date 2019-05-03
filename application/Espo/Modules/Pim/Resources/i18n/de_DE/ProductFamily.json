@@ -1,32 +1,14 @@
 {
   "fields": {
-    "isRequired": "Erforderlich",
-    "isMultiChannel": "Erforderlich für Channels",
     "code": "Code",
-    "createdAt": "erstellt am",
-    "createdBy": "erstellt von",
-    "descriptionDeDe": "BeschreibungEnUs",
-    "descriptionEnUs": "BeschreibungEnUs",
-    "descriptionEsEs": "BeschreibungEsEs",
-    "descriptionFrFr": "BeschreibungFrFr",
     "description": "BeschreibungDeDe",
     "isActive": "Aktiv",
-    "modifiedAt": "geändert am",
-    "modifiedBy": "geändert von",
-    "nameDeDe": "NameDeDe",
-    "nameEnUs": "NameEnUs",
-    "nameEsEs": "NameEsEs",
-    "nameFrFr": "NameFrFr",
     "productFamilies": "Produktfamilien",
-    "productFamilyTemplate": "Vorlage der Produktfamilie",
     "products": "Produkte",
     "productFamilyAttributes": "Produktfamilie Attribute"
   },
   "links": {
-    "createdBy": "erstellt von",
-    "modifiedBy": "geändert von",
     "productFamilies": "Produktfamilien",
-    "productFamilyTemplate": "Vorlage der Produktfamilie",
     "products": "Produkte",
     "attributes": "Attribute",
     "productFamilyAttributes": "Produktfamilie Attribute"
