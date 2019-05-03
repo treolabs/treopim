@@ -55,6 +55,10 @@ class ProductFamilyAttributeHook extends BaseHook
             throw new BadRequest($this->exception('Such record already exists'));
         }
 
+        if ($this->hasSuchProduct($entity)) {
+            throw new BadRequest($this->exception('Product Family has Product with same Attribute property'));
+        }
+
         // clearing channels ids
         if ($entity->get('scope') == 'Global') {
             $entity->set('channelsIds', []);
@@ -168,6 +172,10 @@ class ProductFamilyAttributeHook extends BaseHook
             )
             ->find();
 
+        // prepare channels for entity
+        $channels = $entity->get('channelsIds');
+        sort($channels);
+
         foreach ($products as $product) {
             // prepare product attribute value
             $productAttributeValue = null;
@@ -183,10 +191,16 @@ class ProductFamilyAttributeHook extends BaseHook
             // find not related
             if (empty($productAttributeValue)) {
                 foreach ($exists as $exist) {
+                    // prepare channels for exist
+                    $existChannels = array_column($exist->get('channels')->toArray(), 'id');
+                    sort($existChannels);
+
                     if ($product->get('id') == $exist->get('productId')
                         && $entity->get('attributeId') == $exist->get('attributeId')
                         && $entity->get('scope') == $exist->get('scope')
-                        && empty($exist->get('productFamilyAttributeId'))) {
+                        && empty($exist->get('productFamilyAttributeId'))
+                        && ($entity->get('scope') == 'Global' || ($entity->get('scope') == 'Channel' && $channels == $existChannels))) {
+
                         $productAttributeValue = $exist;
                         $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
                         break;
@@ -238,6 +252,51 @@ class ProductFamilyAttributeHook extends BaseHook
         }
 
         return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    protected function hasSuchProduct(Entity $entity): bool
+    {
+        // get products
+        if (empty($products = $entity->get('productFamily')->get('products')->toArray())) {
+            return false;
+        }
+
+        // get product attribute values
+        $productAttributeValues = $this
+            ->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->where(['productId' => array_column($products, 'id')])
+            ->find();
+
+        if (count($productAttributeValues) == 0) {
+            return false;
+        }
+
+        foreach ($productAttributeValues as $productAttributeValue) {
+            if (empty($productAttributeValue->get('productFamilyAttributeId'))
+                && $productAttributeValue->get('scope') == $entity->get('scope')
+                && $productAttributeValue->get('attributeId') == $entity->get('attributeId')
+            ) {
+                if ($entity->get('scope') == 'Global') {
+                    return true;
+                }
+
+                if ($entity->get('scope') == 'Channel') {
+                    foreach ($productAttributeValue->get('channels')->toArray() as $channel) {
+                        if (in_array($channel['id'], $entity->get('channelsIds'))) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
