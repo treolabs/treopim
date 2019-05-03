@@ -9,9 +9,7 @@
     "name": "Attribute Name",
     "products": "Products",
     "productAttributeValues": "Product Attribute Values",
-    "channelProductAttributeValues": "Channel Product Attribute Values",
     "isRequired": "Required",
-    "isMultiChannel": "Required for Channels",
     "productFamilyAttributes": "Product Family Attributes"
   },
   "options": {
@@ -42,7 +40,6 @@
     "productAttributes": "Product attributes",
     "products": "Products",
     "productAttributeValues": "Product Attribute Values",
-    "channelProductAttributeValues": "Channel Product Attribute Values",
     "productFamilies": "Product families",
     "productFamilyAttributes": "Product Family Attributes"
   },

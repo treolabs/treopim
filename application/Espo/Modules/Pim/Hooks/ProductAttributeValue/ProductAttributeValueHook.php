@@ -61,6 +61,17 @@ class ProductAttributeValueHook extends BaseHook
             throw new BadRequest($this->exception('Such record already exists'));
         }
 
+        if (!$entity->isNew() && !empty($entity->get('productFamilyAttribute'))) {
+            if ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('isRequired') || $entity->isAttributeChanged('channelsIds')) {
+                throw new BadRequest($this->exception('Product Family attribute cannot be changed'));
+            }
+        }
+
+        // clearing channels ids
+        if ($entity->get('scope') == 'Global') {
+            $entity->set('channelsIds', []);
+        }
+
         // storing data
         if (!$entity->isNew()) {
             $this->beforeSaveData = $this->getEntityManager()->getEntity('ProductAttributeValue', $entity->get('id'))->toArray();

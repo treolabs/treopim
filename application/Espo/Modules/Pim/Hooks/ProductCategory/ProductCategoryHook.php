@@ -64,6 +64,11 @@ class ProductCategoryHook extends BaseHook
         if (!$this->isCategoryInCatalog($category, $catalog)) {
             throw new BadRequest($this->exception('Category should be in catalog trees'));
         }
+
+        // clearing channels ids
+        if ($entity->get('scope') == 'Global') {
+            $entity->set('channelsIds', []);
+        }
     }
 
     /**

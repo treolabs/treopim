@@ -54,6 +54,11 @@ class ProductFamilyAttributeHook extends BaseHook
         if (!$this->isUnique($entity)) {
             throw new BadRequest($this->exception('Such record already exists'));
         }
+
+        // clearing channels ids
+        if ($entity->get('scope') == 'Global') {
+            $entity->set('channelsIds', []);
+        }
     }
 
     /**
