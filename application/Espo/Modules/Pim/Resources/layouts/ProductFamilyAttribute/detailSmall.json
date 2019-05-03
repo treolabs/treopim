@@ -3,9 +3,11 @@
     "rows": [
       [
         {
-          "name": "attribute"
+          "name": "scope"
         },
-        false
+        {
+          "name": "channels"
+        }
       ],
       [
         {
@@ -15,11 +17,9 @@
       ],
       [
         {
-          "name": "scope"
+          "name": "attribute"
         },
-        {
-          "name": "channels"
-        }
+        false
       ]
     ],
     "style": "default",

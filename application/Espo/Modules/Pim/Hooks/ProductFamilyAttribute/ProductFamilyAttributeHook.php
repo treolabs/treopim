@@ -98,18 +98,41 @@ class ProductFamilyAttributeHook extends BaseHook
      */
     protected function isUnique(Entity $entity): bool
     {
-        $count = $this
-            ->getEntityManager()
-            ->getRepository('ProductFamilyAttribute')
-            ->where(
-                [
-                    'id!='            => $entity->get('id'),
-                    'productFamilyId' => $entity->get('productFamilyId'),
-                    'attributeId'     => $entity->get('attributeId'),
-                    'scope'           => $entity->get('scope'),
-                ]
-            )
-            ->count();
+        // prepare count
+        $count = 0;
+
+        if ($entity->get('scope') == 'Global') {
+            $count = $this
+                ->getEntityManager()
+                ->getRepository('ProductFamilyAttribute')
+                ->where(
+                    [
+                        'id!='            => $entity->get('id'),
+                        'productFamilyId' => $entity->get('productFamilyId'),
+                        'attributeId'     => $entity->get('attributeId'),
+                        'scope'           => 'Global',
+                    ]
+                )
+                ->count();
+        }
+
+        if ($entity->get('scope') == 'Channel') {
+            $count = $this
+                ->getEntityManager()
+                ->getRepository('ProductFamilyAttribute')
+                ->distinct()
+                ->join('channels')
+                ->where(
+                    [
+                        'id!='            => $entity->get('id'),
+                        'productFamilyId' => $entity->get('productFamilyId'),
+                        'attributeId'     => $entity->get('attributeId'),
+                        'scope'           => 'Channel',
+                        'channels.id'     => $entity->get('channelsIds'),
+                    ]
+                )
+                ->count();
+        }
 
         return empty($count);
     }
@@ -162,7 +185,8 @@ class ProductFamilyAttributeHook extends BaseHook
                 foreach ($exists as $exist) {
                     if ($product->get('id') == $exist->get('productId')
                         && $entity->get('attributeId') == $exist->get('attributeId')
-                        && $entity->get('scope') == $exist->get('scope')) {
+                        && $entity->get('scope') == $exist->get('scope')
+                        && empty($exist->get('productFamilyAttributeId'))) {
                         $productAttributeValue = $exist;
                         $productAttributeValue->set('productFamilyAttributeId', $entity->get('id'));
                         break;
