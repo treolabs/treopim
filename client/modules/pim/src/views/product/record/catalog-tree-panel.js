@@ -26,6 +26,8 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         categories: [],
 
+        rootCategoriesIds: [],
+
         events: {
             'click .category-buttons button[data-action="selectAll"]': function (e) {
                 this.selectCategoryButtonApplyFilter($(e.currentTarget), {type: 'anyOf', category: {}});
@@ -49,15 +51,33 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             this.scope = this.options.scope || this.scope;
             this.wait(true);
 
-            Promise.all([this.ajaxGetRequest('Catalog'), this.ajaxGetRequest('Category')]).then(response => {
-                this.catalogs = response[0].list || [];
-                let categoryList = this.categories = response[1].list || [];
-                categoryList = this.getCategoryTree(this.catalogs, categoryList);
-                this.catalogs.forEach(catalog => {
-                    catalog.categoryTree = categoryList.find(category => catalog.categoryId === category.id);
+            this.getFullEntity('Catalog', {select: 'name,categoriesIds,categoriesNames'}, catalogs => {
+                this.catalogs = catalogs;
+                this.rootCategoriesIds = this.getRootCategoriesIds();
+                this.getFullEntity('Category', {
+                    select: 'name,categoryParentId',
+                    where: [
+                        {
+                            type: 'or',
+                            value: [
+                                {
+                                    type: 'in',
+                                    attribute: 'id',
+                                    value: this.rootCategoriesIds
+                                },
+                                {
+                                    type: 'in',
+                                    attribute: 'categoryParentId',
+                                    value: this.rootCategoriesIds
+                                }
+                            ]
+                        }
+                    ]
+                }, categories => {
+                    this.categories = categories;
+                    this.setupPanels();
+                    this.wait(false);
                 });
-                this.setupPanels();
-                this.wait(false);
             });
 
             this.listenTo(this, 'resetFilters', () => {
@@ -65,10 +85,44 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             });
         },
 
+        getFullEntity(url, params, callback, container) {
+            if (url) {
+                container = container || [];
+
+                let options = params || {};
+                options.maxSize = options.maxSize || 200;
+                options.offset = options.offset || 0;
+
+                this.ajaxGetRequest(url, options).then(response => {
+                    container = container.concat(response.list || []);
+                    options.offset = container.length;
+                    if (response.total > container.length || response.total === -1) {
+                        this.getFullEntity(url, options, callback, container);
+                    } else {
+                        callback(container);
+                    }
+                });
+            }
+        },
+
+        getRootCategoriesIds() {
+            let categories = [];
+            this.catalogs.forEach(catalog => {
+                if (catalog.categoriesIds) {
+                    catalog.categoriesIds.forEach(id => {
+                        if (!categories.includes(id)) {
+                            categories.push(id);
+                        }
+                    });
+                }
+            });
+            return categories;
+        },
+
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
-            if ($(window).width() <= 767) {
+            if ($(window).width() <= 767 || !!this.getStorage().get('catalog-tree-panel', this.scope)) {
                 this.actionCollapsePanel();
             }
         },
@@ -83,45 +137,11 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             }
         },
 
-        getCategoryTree(catalogList, categoryList) {
-            let rootCategories = categoryList.filter(item => catalogList.find(catalog => catalog.categoryId === item.id));
-            categoryList = categoryList.filter(item => !!item.categoryParentId);
-
-            let getParentsWithChildren = (parents) => {
-                if (parents.length) {
-                    let children = [];
-                    categoryList.forEach(item => {
-                        if (parents.find(parent => parent.id === item.categoryParentId)) {
-                            children.push(item);
-                        }
-                    });
-
-                    if (children.length) {
-                        children = getParentsWithChildren(children);
-                    }
-
-                    children.forEach(child => {
-                        let parent = parents.find(parent => parent.id === child.categoryParentId);
-                        if (parent) {
-                            parent.children = parent.children || [];
-                            if (!parent.children.find(item => item.id === child.id)) {
-                                parent.children.push(child);
-                            }
-                        }
-                    });
-                }
-                return parents;
-            };
-
-            return getParentsWithChildren(rootCategories);
-        },
-
         setupPanels() {
             this.createView('categorySearch', 'pim:views/product/record/catalog-tree-panel/category-search', {
                 el: '.catalog-tree-panel > .category-panel > .category-search',
                 scope: this.scope,
-                catalogs: this.catalogs,
-                categories: this.categories
+                catalogs: this.catalogs
             }, view => {
                 view.render();
                 this.listenTo(view, 'category-search-select', category => {
@@ -130,19 +150,18 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             });
 
             this.catalogs.forEach(catalog => {
-                if (catalog.categoryTree) {
-                    this.createView('category-tree-' + catalog.id, 'pim:views/product/record/catalog-tree-panel/category-tree', {
+                if (catalog.categoriesIds && catalog.categoriesIds.length) {
+                    this.createView(`category-tree-${catalog.id}`, 'pim:views/product/record/catalog-tree-panel/category-tree', {
                         name: catalog.id,
-                        el: `.catalog-tree-panel > .category-panel > .category-tree > .panel[data-name="${catalog.id}"]`,
+                        el: `${this.options.el} > .category-panel > .category-tree > .panel[data-name="${catalog.id}"]`,
                         scope: this.scope,
-                        catalog: catalog
+                        catalog: catalog,
+                        categories: this.categories
                     }, view => {
                         view.render();
-                        view.listenTo(view, 'category-tree-select', ((categoryId, catalogId) => {
-                            let category = this.categories.find(category => category.id === categoryId) || {};
-                            category.catalogId = catalogId;
+                        view.listenTo(view, 'category-tree-select', category => {
                             this.selectCategory(category);
-                        }));
+                        });
                     });
                 }
             });
@@ -165,20 +184,36 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             let data = {};
             if (type === 'isEmpty') {
                 data = {
-                    type: 'isNotLinked',
-                    data: {
-                        type: type
+                    categories: {
+                        type: 'isNotLinked',
+                        data: {
+                            type: type
+                        }
                     }
                 };
             } else if (type === 'anyOf') {
-                data = {
-                    type: 'linkedWith',
-                    value: category.id ? [category.id] : [],
-                    nameHash: category.id ? {[category.id]: category.name} : {},
-                    data: {
-                        type: type
-                    }
-                };
+                if (category.id) {
+                    data = {
+                        categories: {
+                            type: 'linkedWith',
+                            value: [category.id],
+                            nameHash: {[category.id]: category.name},
+                            data: {
+                                type: type
+                            }
+                        },
+                        catalog: {
+                            type: 'equals',
+                            field: 'catalogId',
+                            value: category.catalogId,
+                            data: {
+                                type: 'is',
+                                idValue: category.catalogId,
+                                nameValue: (this.catalogs.find(catalog => catalog.id === category.catalogId) || {}).name
+                            }
+                        }
+                    };
+                }
             }
             this.trigger('select-category', data);
         },
@@ -218,6 +253,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 this.$el.addClass('col-xs-12 col-lg-3');
                 listContainer.removeClass('hidden-catalog-tree-panel');
                 listContainer.addClass('col-xs-12 col-lg-9');
+                this.getStorage().set('catalog-tree-panel', this.scope, '');
             } else {
                 categoryPanel.addClass('hidden');
                 button.addClass('collapsed');
@@ -227,6 +263,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 this.$el.addClass('catalog-tree-panel-hidden');
                 listContainer.removeClass('col-xs-12 col-lg-9');
                 listContainer.addClass('hidden-catalog-tree-panel');
+                this.getStorage().set('catalog-tree-panel', this.scope, 'collapsed');
             }
             $(window).trigger('resize');
         },
@@ -234,9 +271,9 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         getCatalogDataList: function () {
             let arr = [];
             this.catalogs.forEach(catalog => {
-                if (catalog.categoryTree) {
+                if (catalog.categoriesIds && catalog.categoriesIds.length) {
                     arr.push({
-                        key: 'category-tree-' + catalog.id,
+                        key: `category-tree-${catalog.id}`,
                         name: catalog.id
                     });
                 }
