@@ -87,6 +87,7 @@ class Category extends AbstractSelectManager
     {
         $data = $this->getSelectCondition('notLinkedProductCategories');
 
+        // prepare product categories
         $productCategories = $this
             ->getEntityManager()
             ->getRepository('ProductCategory')
@@ -109,6 +110,7 @@ class Category extends AbstractSelectManager
      */
     protected function boolFilterHasOnlyChildCategory(&$result)
     {
+        // prepare parent categories ids
         $parentCategories = $this
             ->getEntityManager()
             ->getRepository('Category')
