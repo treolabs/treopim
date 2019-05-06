@@ -108,7 +108,7 @@ class Category extends AbstractSelectManager
     /**
      * @param $result
      */
-    protected function boolFilterHasOnlyChildCategory(&$result)
+    protected function boolFilterHasNoChildCategory(&$result)
     {
         // prepare parent categories ids
         $parentCategories = $this
