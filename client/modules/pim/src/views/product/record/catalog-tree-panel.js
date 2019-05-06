@@ -30,7 +30,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         events: {
             'click .category-buttons button[data-action="selectAll"]': function (e) {
-                this.selectCategoryButtonApplyFilter($(e.currentTarget), {type: 'anyOf', category: {}});
+                this.selectCategoryButtonApplyFilter($(e.currentTarget), {type: 'anyOf'});
             },
             'click .category-buttons button[data-action="selectWithoutCategory"]': function (e) {
                 this.selectCategoryButtonApplyFilter($(e.currentTarget), {type: 'isEmpty'});
@@ -133,7 +133,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 this.actionCollapsePanel(true);
             }
             if (filterParams) {
-                this.applyCategoryFilter(filterParams.type, filterParams.category);
+                this.applyCategoryFilter(filterParams.type);
             }
         },
 
@@ -183,37 +183,33 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         applyCategoryFilter(type, category) {
             let data = {};
             if (type === 'isEmpty') {
-                data = {
-                    categories: {
+                data.advanced = {
+                    productCategories: {
                         type: 'isNotLinked',
                         data: {
                             type: type
                         }
                     }
                 };
-            } else if (type === 'anyOf') {
-                if (category.id) {
-                    data = {
-                        categories: {
-                            type: 'linkedWith',
-                            value: [category.id],
-                            nameHash: {[category.id]: category.name},
-                            data: {
-                                type: type
-                            }
-                        },
-                        catalog: {
-                            type: 'equals',
-                            field: 'catalogId',
-                            value: category.catalogId,
-                            data: {
-                                type: 'is',
-                                idValue: category.catalogId,
-                                nameValue: (this.catalogs.find(catalog => catalog.id === category.catalogId) || {}).name
-                            }
+            } else if (type === 'anyOf' && category) {
+                data.bool = {
+                    linkedWithCategory: true
+                };
+                data.boolData = {
+                    linkedWithCategory: category.id
+                };
+                data.advanced = {
+                    catalog: {
+                        type: 'equals',
+                        field: 'catalogId',
+                        value: category.catalogId,
+                        data: {
+                            type: 'is',
+                            idValue: category.catalogId,
+                            nameValue: (this.catalogs.find(catalog => catalog.id === category.catalogId) || {}).name
                         }
-                    };
-                }
+                    }
+                };
             }
             this.trigger('select-category', data);
         },
