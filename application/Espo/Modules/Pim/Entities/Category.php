@@ -81,19 +81,20 @@ class Category extends \Espo\Core\Templates\Entities\Base
 
         // prepare where
         $where = [
-            [
-                'OR' => [
-                    ['categories.id' => $this->get('id')],
-                    ['categories.categoryRoute*' => "%|" . $this->get('id') . "|%"]
-                ]
-            ]
+            'productCategories.categoryId' => [$this->get('id')]
         ];
+
+        $categoryChildren = $this->getChildren();
+
+        if (count($categoryChildren) > 0) {
+            array_merge($where['productCategories.categoryId'], array_column($categoryChildren->toArray(), 'id'));
+        }
 
         return $this
             ->getEntityManager()
             ->getRepository('Product')
             ->distinct()
-            ->join('categories')
+            ->join('productCategories')
             ->where($where)
             ->find();
     }
