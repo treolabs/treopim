@@ -91,7 +91,6 @@ class Category extends AbstractSelectManager
         $productCategories = $this
             ->getEntityManager()
             ->getRepository('ProductCategory')
-            ->distinct()
             ->select(['categoryId'])
             ->where([
                 'productId' => $data['productId'],
