@@ -33,6 +33,23 @@ use Espo\Core\Exceptions\BadRequest;
 class CatalogHook extends \Espo\Modules\Pim\Core\Hooks\AbstractHook
 {
     /**
+     * Before save
+     *
+     * @param Entity $entity
+     * @param array $options
+     *
+     * @throws BadRequest
+     */
+    public function beforeSave(Entity $entity, array $options = [])
+    {
+        if (!$this->isCodeValid($entity)) {
+            throw new BadRequest(
+                $this->translate('Code is invalid', 'exceptions', 'Global')
+            );
+        }
+    }
+
+    /**
      * @param Entity $entity
      * @param array  $options
      * @param array  $hookData
