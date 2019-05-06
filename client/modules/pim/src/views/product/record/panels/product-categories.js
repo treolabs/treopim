@@ -23,10 +23,13 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
 
         boolFilterData: {
             notLinkedProductCategories() {
-                return 'Global';
+                return {
+                    productId: this.model.id,
+                    scope: 'Global'
+                };
             },
             onlyCatalogCategories() {
-                return true;
+                return this.model.get('catalogId');
             },
             onlyChildCategory() {
                 return true;
