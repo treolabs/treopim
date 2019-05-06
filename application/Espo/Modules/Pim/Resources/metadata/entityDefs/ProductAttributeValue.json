@@ -43,6 +43,11 @@
       "importDisabled": true,
       "noLoad": false
     },
+    "isCustom": {
+      "type": "bool",
+      "default": false,
+      "notStorable": true
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true

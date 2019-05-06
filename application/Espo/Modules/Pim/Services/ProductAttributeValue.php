@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Services;
 
+use Espo\ORM\Entity;
 use Espo\Core\Utils\Json;
 
 /**
@@ -31,6 +32,34 @@ use Espo\Core\Utils\Json;
  */
 class ProductAttributeValue extends AbstractService
 {
+    /**
+     * @inheritdoc
+     */
+    public function getSelectAttributeList($params)
+    {
+        // prepare select attributes list
+        $attributeList = parent::getSelectAttributeList($params);
+        $attributeList[] = 'productFamilyAttributeId';
+
+        return $attributeList;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareEntityForOutput(Entity $entity)
+    {
+        parent::prepareEntityForOutput($entity);
+
+        // prepare is custom field
+        $isCustom = true;
+
+        if (!empty($productFamilyAttribute = $entity->get('productFamilyAttribute')) && !empty($productFamilyAttribute->get('productFamily'))) {
+            $isCustom = false;
+        }
+        $entity->set('isCustom', $isCustom);
+    }
+
     /**
      * @inheritdoc
      */
