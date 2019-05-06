@@ -1,7 +1,6 @@
 {
   "fields": {
     "name": "Channel",
-    "catalog": "Catalog",
     "products": "Products",
     "active": "Active",
     "notActive": "Not Active"
