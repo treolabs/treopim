@@ -22,9 +22,9 @@
     "withoutAnyCategory",
     "withoutProductAttributes",
     "withoutImageAssets",
-    "notLinkedWithCategory",
     "notLinkedWithProductSerie",
-    "onlyCatalogProducts"
+    "onlyCatalogProducts",
+    "linkedWithCategory"
   ],
   "hiddenBoolFilterList": [
     "notEntity",
@@ -38,7 +38,8 @@
     "notLinkedWithProductFamily",
     "notLinkedWithPackaging",
     "notLinkedWithProductSerie",
-    "onlyCatalogProducts"
+    "onlyCatalogProducts",
+    "linkedWithCategory"
   ],
   "disabledMassActions": [
     "merge"
