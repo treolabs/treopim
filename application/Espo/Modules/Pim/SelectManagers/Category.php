@@ -107,10 +107,21 @@ class Category extends AbstractSelectManager
     /**
      * @param $result
      */
-    protected function boolFilterOnlyChildCategory(&$result)
+    protected function boolFilterHasOnlyChildCategory(&$result)
     {
-        $result['whereClause'][] = [
-            'categoryParentId!=' => null
-        ];
+        $parentCategories = $this
+            ->getEntityManager()
+            ->getRepository('Category')
+            ->distinct()
+            ->select(['id'])
+            ->join('categories')
+            ->find()
+            ->toArray();
+
+        if (!empty($parentCategories)) {
+            $result['whereClause'][] = [
+                'id!=' => array_column($parentCategories, 'id')
+            ];
+        }
     }
 }
