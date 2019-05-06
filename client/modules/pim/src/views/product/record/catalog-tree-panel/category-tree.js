@@ -59,19 +59,11 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             this.categories = this.options.categories || [];
             this.catalog = this.options.catalog;
 
-            let rootCategoriesIds = [];
-            this.categories.forEach(category => {
-                if (category.categoryParentId) {
-                    rootCategoriesIds.push(category.categoryParentId);
-                }
-            });
-            this.rootCategories = this.categories.filter(category => {
-                return rootCategoriesIds.includes(category.id) && (this.catalog.categoriesIds || []).includes(category.id);
-            });
+            this.rootCategories = this.categories.filter(category => (this.catalog.categoriesIds || []).includes(category.id));
         },
 
         selectCategory(id) {
-            let category = this.categoryTrees.find(item => item.id === id);
+            let category = this.categoryTrees.find(item => item.id === id) || this.rootCategories.find(item => item.id === id);
             category.catalogId = this.catalog.id;
             this.trigger('category-tree-select', category);
         },
