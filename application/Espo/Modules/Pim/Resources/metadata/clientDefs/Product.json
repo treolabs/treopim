@@ -75,7 +75,8 @@
         "hasNoChildCategory"
       ],
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "modalEditView": "pim:views/product-category/modals/edit-in-product"
+      "modalEditView": "pim:views/product-category/modals/edit-in-product",
+      "layout": "listForProductCategoriesInProduct"
     },
     "productImages": {
       "label": "Image",
