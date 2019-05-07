@@ -585,4 +585,26 @@ class Product extends AbstractSelectManager
             }
         }
     }
+
+    /**
+     * @param array $result
+     */
+    protected function boolFilterLinkedWithCategory(array &$result)
+    {
+        // prepare category
+        $category = $this
+            ->getEntityManager()
+            ->getEntity('Category', (string)$this->getSelectCondition('linkedWithCategory'));
+
+        if (!empty($category)) {
+            // get category tree products
+            $products = $category->getTreeProducts();
+
+            if (count($products) > 0) {
+                $result['whereClause'][] = [
+                    'id' => array_column($products->toArray(), 'id')
+                ];
+            }
+        }
+    }
 }
