@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Hooks\ProductCategory;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\ORM\Entity;
 use Espo\Core\Hooks\Base as BaseHook;
+use Espo\ORM\Entity;
 
 /**
  * Class ProductCategoryHook
@@ -63,6 +63,11 @@ class ProductCategoryHook extends BaseHook
 
         if (!$this->isCategoryInCatalog($category, $catalog)) {
             throw new BadRequest($this->exception('Category should be in catalog trees'));
+        }
+
+        // clearing channels ids
+        if ($entity->get('scope') == 'Global') {
+            $entity->set('channelsIds', []);
         }
     }
 

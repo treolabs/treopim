@@ -2,9 +2,10 @@
   "fields": {
     "name": {
       "type": "varchar",
-      "readonly": true
+      "required": true,
+      "trim": true
     },
-    "product": {
+    "productFamily": {
       "type": "link",
       "required": true
     },
@@ -12,25 +13,14 @@
       "type": "link",
       "required": true
     },
-    "productFamilyAttribute": {
-      "type": "link"
-    },
     "isRequired": {
       "type": "bool",
       "default": false
     },
-    "value": {
-      "type": "text",
-      "rows": 4,
-      "lengthOfCut": 400,
-      "isMultilang": true
-    },
-    "data": {
-      "type": "jsonObject"
-    },
     "scope": {
       "type": "enum",
       "required": true,
+      "fontSize": 1,
       "options": [
         "Global",
         "Channel"
@@ -40,17 +30,19 @@
     "channels": {
       "type": "linkMultiple",
       "required": true,
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
       "importDisabled": true,
-      "noLoad": false
+      "noLoad": true
     },
-    "isCustom": {
-      "type": "bool",
-      "default": false,
-      "notStorable": true
-    },
-    "attributeType": {
-      "type": "varchar",
-      "notStorable": true
+    "productAttributeValues": {
+      "type": "linkMultiple",
+      "layoutListDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
     },
     "createdAt": {
       "type": "datetime",
@@ -70,11 +62,6 @@
       "readOnly": true,
       "view": "views/fields/user"
     },
-    "ownerUser": {
-      "type": "link",
-      "required": true,
-      "view": "views/fields/owner-user"
-    },
     "assignedUser": {
       "type": "link",
       "required": true,
@@ -86,34 +73,33 @@
     }
   },
   "links": {
-    "product": {
+    "productFamily": {
       "type": "belongsTo",
-      "entity": "Product"
-    },
-    "productFamilyAttribute": {
-      "type": "belongsTo",
-      "foreign": "productAttributeValues",
-      "entity": "ProductFamilyAttribute"
+      "foreign": "productFamilyAttributes",
+      "entity": "ProductFamily"
     },
     "attribute": {
       "type": "belongsTo",
+      "foreign": "productFamilyAttributes",
       "entity": "Attribute"
     },
     "channels": {
       "type": "hasMany",
-      "relationName": "productAttributeValueChannel",
-      "foreign": "productAttributeValues",
+      "relationName": "productFamilyAttributeChannel",
+      "foreign": "productFamilyAttributes",
       "entity": "Channel"
+    },
+    "productAttributeValues": {
+      "type": "hasMany",
+      "foreign": "productFamilyAttribute",
+      "entity": "ProductAttributeValue",
+      "layoutRelationshipsDisabled": true
     },
     "createdBy": {
       "type": "belongsTo",
       "entity": "User"
     },
     "modifiedBy": {
-      "type": "belongsTo",
-      "entity": "User"
-    },
-    "ownerUser": {
       "type": "belongsTo",
       "entity": "User"
     },
@@ -128,16 +114,18 @@
       "layoutRelationshipsDisabled": true
     }
   },
+  "collection": {
+    "sortBy": "createdAt",
+    "asc": false,
+    "textFilterFields": [
+      "name"
+    ],
+    "fullTextSearch": false
+  },
   "indexes": {
     "name": {
       "columns": [
         "name",
-        "deleted"
-      ]
-    },
-    "ownerUser": {
-      "columns": [
-        "ownerUserId",
         "deleted"
       ]
     },

@@ -24,14 +24,14 @@ namespace Espo\Modules\Pim\Entities;
 use Espo\Core\Templates\Entities\Base;
 
 /**
- * Class Attribute
+ * Class ProductFamilyAttribute
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends Base
+class ProductFamilyAttribute extends Base
 {
     /**
      * @var string
      */
-    protected $entityType = "Attribute";
+    protected $entityType = "ProductFamilyAttribute";
 }

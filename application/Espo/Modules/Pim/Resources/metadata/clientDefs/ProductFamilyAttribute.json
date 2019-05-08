@@ -3,12 +3,9 @@
   "boolFilterList": [
     "onlyMy"
   ],
-  "disabledMassActions": [
-    "merge"
-  ],
-  "recordViews": {
-    "list": "pim:views/record/list"
-  },
+  "kanbanViewMode": false,
+  "color": null,
+  "iconClass": null,
   "dynamicLogic": {
     "fields": {
       "channels": {
@@ -18,16 +15,6 @@
               "type": "equals",
               "attribute": "scope",
               "value": "Channel"
-            }
-          ]
-        }
-      },
-      "value": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "isNotEmpty",
-              "attribute": "attributeId"
             }
           ]
         }

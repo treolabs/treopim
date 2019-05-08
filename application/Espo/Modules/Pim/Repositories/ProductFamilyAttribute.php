@@ -19,19 +19,15 @@
  */
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Entities;
+namespace Espo\Modules\Pim\Repositories;
 
-use Espo\Core\Templates\Entities\Base;
+use Espo\Core\Templates\Repositories\Base;
 
 /**
- * Class Attribute
+ * Class ProductFamilyAttribute
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends Base
+class ProductFamilyAttribute extends Base
 {
-    /**
-     * @var string
-     */
-    protected $entityType = "Attribute";
 }

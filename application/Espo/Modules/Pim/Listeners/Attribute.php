@@ -22,6 +22,7 @@ namespace Espo\Modules\Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
+use Treo\Listeners\AbstractListener;
 use PDO;
 
 /**
@@ -29,7 +30,7 @@ use PDO;
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends AbstractPimListener
+class Attribute extends AbstractListener
 {
     /**
      * @param array $data
@@ -44,16 +45,6 @@ class Attribute extends AbstractPimListener
                 ->getEntityManager()
                 ->getEntity('Attribute', $data['params']['id']);
 
-            if ($this->hasProductFamily($attribute)) {
-                throw new BadRequest(
-                    $this->getLanguage()->translate(
-                        'Attribute is used in product families. Please, update product families first',
-                        'exceptions',
-                        'Attribute'
-                    )
-                );
-            }
-
             if ($this->hasProduct($attribute)) {
                 throw new BadRequest(
                     $this->getLanguage()->translate(
@@ -63,22 +54,6 @@ class Attribute extends AbstractPimListener
                     )
                 );
             }
-        }
-
-        return $data;
-    }
-
-    /**
-     * After action create entity
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    public function afterActionCreate(array $data): array
-    {
-        if (isset($data['data']->productsIds)) {
-            $this->setProductAttributeValueUser((array)$data['result']->id, $data['data']->productsIds);
         }
 
         return $data;
@@ -103,96 +78,6 @@ class Attribute extends AbstractPimListener
 
         return $data;
     }
-
-    /**
-     * @param array $data
-     *
-     * @return array
-     */
-    public function beforeActionListLinked(array $data): array
-    {
-        if ($data['params']['link'] == 'productFamilyAttributes') {
-            // get where
-            $where = $data['request']->get('where', []);
-
-            // prepare where
-            $where[] = [
-                'type'      => 'notIn',
-                'attribute' => 'productFamilyId',
-                'value'     => $this->getDeletedProductFamiliesIds()
-            ];
-
-            // set where
-            $data['request']->setQuery('where', $where);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Before action remove link
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    public function beforeActionRemoveLink(array $data): array
-    {
-        if (!empty($data['data']->id) && $data['params']['link'] == 'productFamilies') {
-            $this->removeProductAttributeValue($data['data']->id, $data['params']['id']);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Get ids of deleted product families
-     *
-     * @return array
-     */
-    protected function getDeletedProductFamiliesIds(): array
-    {
-        $sth = $this
-            ->getEntityManager()
-            ->getPDO()
-            ->prepare("SELECT id FROM product_family WHERE deleted = 1");
-        $sth->execute();
-        $data = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-        return (!empty($data)) ? array_column($data, 'id') : [];
-    }
-
-
-    /**
-     * Is attribute used in product families
-     *
-     * @param Entity $entity
-     *
-     * @return bool
-     */
-    protected function hasProductFamily(Entity $entity): bool
-    {
-        // prepare attribute id
-        $attributeId = $entity->get('id');
-
-        $sql
-            = "SELECT
-                  COUNT(f.id) as total
-                FROM product_family AS f
-                  JOIN product_family_attribute_linker AS fa 
-                    ON f.id = fa.product_family_id
-                WHERE f.deleted = 0 AND fa.deleted = 0 AND fa.attribute_id = '{$attributeId}'";
-
-        // execute
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
-
-        // get data
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
-
-        return !empty($data['total']);
-    }
-
 
     /**
      * Is attribute used in products

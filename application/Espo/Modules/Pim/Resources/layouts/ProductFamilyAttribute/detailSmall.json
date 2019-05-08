@@ -1,7 +1,5 @@
 [
   {
-    "label": "",
-    "style": "default",
     "rows": [
       [
         {
@@ -13,16 +11,18 @@
       ],
       [
         {
-          "name": "attribute"
+          "name": "isRequired"
         },
         false
       ],
       [
         {
-          "name": "value"
+          "name": "attribute"
         },
         false
       ]
-    ]
+    ],
+    "style": "default",
+    "label": ""
   }
 ]

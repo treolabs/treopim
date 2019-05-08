@@ -110,23 +110,16 @@
       "tooltip": false,
       "importDisabled": true
     },
-    "products": {
+    "productAttributeValues": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "importDisabled": true,
       "noLoad": true
-    },
-    "productFamilies": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "noLoad": true,
-      "importDisabled": true
     },
     "sortOrder": {
       "type": "int",
@@ -157,6 +150,16 @@
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true
+    },
+    "productFamilyAttributes": {
+      "type": "linkMultiple",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
     }
   },
   "links": {
@@ -188,26 +191,17 @@
       "entity": "AttributeGroup",
       "audited": false
     },
-    "products": {
+    "productAttributeValues": {
       "type": "hasMany",
-      "relationName": "ProductAttributeValue",
-      "foreign": "attributes",
-      "entity": "Product"
+      "foreign": "attribute",
+      "entity": "ProductAttributeValue",
+      "layoutRelationshipsDisabled": true
     },
-    "productFamilies": {
+    "productFamilyAttributes": {
       "type": "hasMany",
-      "foreign": "attributes",
-      "entity": "ProductFamily",
-      "relationName": "ProductFamilyAttributeLinker",
-      "audited": false,
-      "additionalColumns": {
-        "isRequired": {
-          "type": "bool"
-        },
-        "isMultiChannel": {
-          "type": "bool"
-        }
-      }
+      "foreign": "attribute",
+      "entity": "ProductFamilyAttribute",
+      "layoutRelationshipsDisabled": true
     }
   },
   "collection": {

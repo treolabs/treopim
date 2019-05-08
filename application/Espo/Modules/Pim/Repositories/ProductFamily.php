@@ -33,18 +33,6 @@ class ProductFamily extends \Espo\Core\Templates\Repositories\Base
     /**
      * @inheritdoc
      */
-    public function findRelated(Entity $entity, $relationName, array $params = [])
-    {
-        if ($relationName == 'attributes' && !empty($params['select'])) {
-            $params['select'] = $this->getEntityManager()->getRepository('Attribute')->prepareSelect($params['select']);
-        }
-
-        return parent::findRelated($entity, $relationName, $params);
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function afterRemove(Entity $entity, array $options = [])
     {
         parent::afterRemove($entity, $options);

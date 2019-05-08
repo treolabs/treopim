@@ -1,8 +1,8 @@
 [
-    {
-        "name": "attributes"
-    },
-    {
-        "name": "products"
-    }
+  {
+    "name": "productFamilyAttributes"
+  },
+  {
+    "name": "products"
+  }
 ]

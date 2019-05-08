@@ -21,38 +21,13 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Controllers;
 
-use Espo\Core\Exceptions\NotFound;
 use Espo\Core\Templates\Controllers\Base;
 
 /**
- * ProductAttributeValue controller
+ * Class ProductAttributeValue
  *
  * @author r.ratsun@treolabs.com
  */
 class ProductAttributeValue extends Base
 {
-    /**
-     * @param $params
-     * @param $data
-     * @param $request
-     *
-     * @return array|void
-     * @throws NotFound
-     */
-    public function actionList($params, $data, $request)
-    {
-        throw new NotFound();
-    }
-
-    /**
-     * @param $params
-     * @param $data
-     * @param $request
-     *
-     * @throws NotFound
-     */
-    public function actionCreate($params, $data, $request)
-    {
-        throw new NotFound();
-    }
 }

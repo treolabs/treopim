@@ -7,12 +7,16 @@
     "product": "Produkt",
     "productAttribute": "Produktattribut",
     "attribute": "Attribut",
-    "value": "Wert"
+    "isRequired": "Ist Erforderlich",
+    "value": "Wert",
+    "scope": "Umfang",
+    "channels": "Kanale"
   },
   "links": {
     "product": "Produkt",
     "productAttribute": "Produktattribut",
-    "attribute": "Attribut"
+    "attribute": "Attribut",
+    "channels": "Kanale"
   },
   "labels": {
     "Create ProductAttributeValue": "Wert der Produktattribut erstellen"

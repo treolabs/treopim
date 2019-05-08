@@ -9,10 +9,8 @@
     "name": "Attribute Name",
     "products": "Products",
     "productAttributeValues": "Product Attribute Values",
-    "productFamilyAttributes": "Product family attributes",
-    "channelProductAttributeValues": "Channel Product Attribute Values",
     "isRequired": "Required",
-    "isMultiChannel": "Required for Channels"
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "options": {
     "type": {
@@ -42,9 +40,8 @@
     "productAttributes": "Product attributes",
     "products": "Products",
     "productAttributeValues": "Product Attribute Values",
-    "productFamilyAttributes": "Product family attributes",
-    "channelProductAttributeValues": "Channel Product Attribute Values",
-    "productFamilies": "Product families"
+    "productFamilies": "Product families",
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "labels": {
     "Create Attribute": "Create Attribute",
