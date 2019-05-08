@@ -26,11 +26,11 @@ use Treo\Core\Migration\AbstractMigration;
 use Espo\Core\Utils\Util;
 
 /**
- * Migration class for version 4.0.0
+ * Migration class for version 3.1.0
  *
  * @author r.ratsun@treolabs.com
  */
-class V4Dot0Dot0 extends AbstractMigration
+class V3Dot1Dot0 extends AbstractMigration
 {
     /**
      * Up to current
