@@ -41,6 +41,19 @@ class Product extends Base
     }
 
     /**
+     * @return array
+     */
+    public function getAllowedProductIds(): array
+    {
+        $data = $this
+            ->select(['id'])
+            ->where(['type' => array_keys($this->getMetadata()->get('pim.productType', []))])
+            ->find();
+
+        return array_column($data->toArray(), 'id');
+    }
+
+    /**
      * @inheritdoc
      */
     protected function afterSave(Entity $entity, array $options = [])

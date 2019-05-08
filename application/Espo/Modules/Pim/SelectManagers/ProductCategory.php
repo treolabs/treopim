@@ -38,27 +38,12 @@ class ProductCategory extends AbstractSelectManager
     {
         // filtering by product types
         $params['where'][] = [
-            'type'      => 'notIn',
+            'type'      => 'in',
             'attribute' => 'productId',
-            'value'     => $this->getNotAllowedProductIds()
+            'value'     => $this->getEntityManager()->getRepository('Product')->getAllowedProductIds()
         ];
 
         // call parent
         return parent::getSelectParams($params, $withAcl, $checkWherePermission);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getNotAllowedProductIds(): array
-    {
-        $data = $this
-            ->getEntityManager()
-            ->getRepository('Product')
-            ->select(['id'])
-            ->where(['type!=' => array_keys($this->getMetadata()->get('pim.productType', []))])
-            ->find();
-
-        return array_column($data->toArray(), 'id');
     }
 }

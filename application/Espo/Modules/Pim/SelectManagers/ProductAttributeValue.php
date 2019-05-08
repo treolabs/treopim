@@ -50,6 +50,13 @@ class ProductAttributeValue extends AbstractSelectManager
             }
         }
 
+        // filtering by product types
+        $params['where'][] = [
+            'type'      => 'in',
+            'attribute' => 'productId',
+            'value'     => $this->getEntityManager()->getRepository('Product')->getAllowedProductIds()
+        ];
+
         return parent::getSelectParams($params, $withAcl, $checkWherePermission);
     }
 
