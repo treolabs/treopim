@@ -31,5 +31,34 @@ use Espo\Modules\Pim\Core\SelectManagers\AbstractSelectManager;
  */
 class ProductCategory extends AbstractSelectManager
 {
+    /**
+     * @inheritdoc
+     */
+    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    {
+        // filtering by product types
+        $params['where'][] = [
+            'type'      => 'notIn',
+            'attribute' => 'productId',
+            'value'     => $this->getNotAllowedProductIds()
+        ];
 
+        // call parent
+        return parent::getSelectParams($params, $withAcl, $checkWherePermission);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getNotAllowedProductIds(): array
+    {
+        $data = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->select(['id'])
+            ->where(['type!=' => array_keys($this->getMetadata()->get('pim.productType', []))])
+            ->find();
+
+        return array_column($data->toArray(), 'id');
+    }
 }
