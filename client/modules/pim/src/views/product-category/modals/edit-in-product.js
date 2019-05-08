@@ -18,26 +18,14 @@
  *
  */
 
-Espo.define('pim:views/product-category/fields/category', 'treo-core:views/fields/filtered-link',
+Espo.define('pim:views/product-category/modals/edit-in-product', 'views/modals/edit',
     Dep => Dep.extend({
 
-        createDisabled: true,
+        createRecordView: function (model, callback) {
+            let productModel = this.options.relate.model;
+            model.catalogId = productModel.get('catalogId');
 
-        selectBoolFilterList:  ["onlyActive", "notLinkedProductCategories", "onlyCatalogCategories", "hasNoChildCategory"],
-
-        boolFilterData: {
-            notLinkedProductCategories() {
-                return {
-                    productId: this.model.get('productId'),
-                    scope: this.model.get('scope')
-                };
-            },
-            onlyCatalogCategories() {
-                return this.model.catalogId;
-            },
-            hasNoChildCategory() {
-                return true;
-            }
+            Dep.prototype.createRecordView.call(this, model, callback);
         },
 
     })

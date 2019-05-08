@@ -22,9 +22,9 @@
     "withoutAnyCategory",
     "withoutProductAttributes",
     "withoutImageAssets",
-    "notLinkedWithCategory",
     "notLinkedWithProductSerie",
-    "onlyCatalogProducts"
+    "onlyCatalogProducts",
+    "linkedWithCategory"
   ],
   "hiddenBoolFilterList": [
     "notEntity",
@@ -38,7 +38,8 @@
     "notLinkedWithProductFamily",
     "notLinkedWithPackaging",
     "notLinkedWithProductSerie",
-    "onlyCatalogProducts"
+    "onlyCatalogProducts",
+    "linkedWithCategory"
   ],
   "disabledMassActions": [
     "merge"
@@ -60,14 +61,16 @@
     },
     "productCategories": {
       "view": "pim:views/product/record/panels/product-categories",
+      "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
         "onlyActive",
         "notLinkedProductCategories",
         "onlyCatalogCategories",
-        "onlyChildCategory"
+        "hasNoChildCategory"
       ],
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink"
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
+      "modalEditView": "pim:views/product-category/modals/edit-in-product"
     },
     "productImages": {
       "label": "Image",

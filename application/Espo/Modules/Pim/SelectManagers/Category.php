@@ -79,4 +79,50 @@ class Category extends AbstractSelectManager
             'categoryRoute!*' => "%|$categoryId|%"
         ];
     }
+
+    /**
+     * @param array $result
+     */
+    protected function boolFilterNotLinkedProductCategories(array &$result)
+    {
+        $data = $this->getSelectCondition('notLinkedProductCategories');
+
+        // prepare product categories
+        $productCategories = $this
+            ->getEntityManager()
+            ->getRepository('ProductCategory')
+            ->select(['categoryId'])
+            ->where([
+                'productId' => $data['productId'],
+                'scope' => $data['scope']
+            ])
+            ->find()
+            ->toArray();
+
+        if (!empty($productCategories)) {
+            $result['whereClause'][] = ['id!=' => array_column($productCategories, 'categoryId')];
+        }
+    }
+
+    /**
+     * @param $result
+     */
+    protected function boolFilterHasNoChildCategory(&$result)
+    {
+        // prepare parent categories ids
+        $parentCategories = $this
+            ->getEntityManager()
+            ->getRepository('Category')
+            ->distinct()
+            ->select(['id'])
+            ->join('categories')
+            ->find()
+            ->toArray();
+
+        if (!empty($parentCategories)) {
+            $result['whereClause'][] = [
+                'id!=' => array_column($parentCategories, 'id')
+            ];
+        }
+    }
 }
