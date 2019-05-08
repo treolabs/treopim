@@ -600,11 +600,9 @@ class Product extends AbstractSelectManager
             // get category tree products
             $products = $category->getTreeProducts();
 
-            if (count($products) > 0) {
-                $result['whereClause'][] = [
-                    'id' => array_column($products->toArray(), 'id')
-                ];
-            }
+            $result['whereClause'][] = [
+                'id' => count($products > 0) ? array_column($products->toArray(), 'id') : []
+            ];
         }
     }
 }
