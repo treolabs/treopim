@@ -235,7 +235,8 @@
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
-      "importDisabled": true
+      "importDisabled": true,
+      "view": "pim:views/product/fields/product-categories"
     },
     "createdAt": {
       "type": "datetime",

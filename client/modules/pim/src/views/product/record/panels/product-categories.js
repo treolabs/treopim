@@ -171,7 +171,12 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                             buttonsDisabled: true,
                             el: this.options.el + ' .list-container'
                         }, function (view) {
-                            view.render();
+                            view.getSelectAttributeList(function (selectAttributeList) {
+                                if (selectAttributeList) {
+                                    collection.data.select = selectAttributeList.join(',');
+                                }
+                                collection.fetch();
+                            }.bind(this));
                         });
                     }, this);
                     collection.fetch();
