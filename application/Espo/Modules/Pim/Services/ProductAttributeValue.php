@@ -39,7 +39,9 @@ class ProductAttributeValue extends AbstractService
     {
         // prepare select attributes list
         $attributeList = parent::getSelectAttributeList($params);
+
         $attributeList[] = 'productFamilyAttributeId';
+        $attributeList[] = 'attributeType';
 
         return $attributeList;
     }
@@ -51,13 +53,8 @@ class ProductAttributeValue extends AbstractService
     {
         parent::prepareEntityForOutput($entity);
 
-        // prepare is custom field
-        $isCustom = true;
-
-        if (!empty($productFamilyAttribute = $entity->get('productFamilyAttribute')) && !empty($productFamilyAttribute->get('productFamily'))) {
-            $isCustom = false;
-        }
-        $entity->set('isCustom', $isCustom);
+        $entity->set('isCustom', $this->isCustom($entity));
+        $entity->set('attributeType', $entity->get('attribute')->get('type'));
     }
 
     /**
@@ -73,5 +70,23 @@ class ProductAttributeValue extends AbstractService
         }
 
         return parent::updateEntity($id, $data);
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    private function isCustom(Entity $entity): bool
+    {
+        // prepare is custom field
+        $isCustom = true;
+
+        if (!empty($productFamilyAttribute = $entity->get('productFamilyAttribute'))
+            && !empty($productFamilyAttribute->get('productFamily'))) {
+            $isCustom = false;
+        }
+
+        return $isCustom;
     }
 }

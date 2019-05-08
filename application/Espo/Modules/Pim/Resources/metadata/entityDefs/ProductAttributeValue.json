@@ -48,6 +48,10 @@
       "default": false,
       "notStorable": true
     },
+    "attributeType": {
+      "type": "varchar",
+      "notStorable": true
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
