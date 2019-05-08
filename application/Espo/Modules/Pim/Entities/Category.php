@@ -87,7 +87,8 @@ class Category extends \Espo\Core\Templates\Entities\Base
         $categoryChildren = $this->getChildren();
 
         if (count($categoryChildren) > 0) {
-            array_merge($where['productCategories.categoryId'], array_column($categoryChildren->toArray(), 'id'));
+            $where['productCategories.categoryId'] =
+                array_merge($where['productCategories.categoryId'], array_column($categoryChildren->toArray(), 'id'));
         }
 
         return $this
