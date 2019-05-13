@@ -53,7 +53,7 @@ class ProductAttributeValueHook extends BaseHook
             return true;
         }
 
-        if (empty($product = $entity->get('product')) || empty($category = $entity->get('attribute'))) {
+        if (empty($entity->get('product')) || empty($entity->get('attribute'))) {
             throw new BadRequest($this->exception('Product and Attribute cannot be empty'));
         }
 
