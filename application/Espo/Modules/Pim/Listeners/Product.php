@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Listeners;
 
+use Espo\Core\Utils\Util;
 use Treo\Listeners\AbstractListener;
 
 /**
@@ -42,7 +43,6 @@ class Product extends AbstractListener
             $attributes = $this
                 ->getEntityManager()
                 ->getRepository('Attribute')
-                ->select(['id', 'typeValue'])
                 ->where([
                     'id' => array_column($data['result']['list'], 'attributeId')
                 ])
@@ -53,6 +53,14 @@ class Product extends AbstractListener
                     foreach ($data['result']['list'] as $key => $item) {
                         if ($item->attributeId == $attribute->get('id')) {
                             $data['result']['list'][$key]->typeValue = $attribute->get('typeValue');
+
+                            // for multiLang fields
+                            if ($this->getConfig()->get('isMultilangActive')) {
+                                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                                    $multiLangField =  Util::toCamelCase('typeValue_' . strtolower($locale));
+                                    $data['result']['list'][$key]->$multiLangField = $attribute->get($multiLangField);
+                                }
+                            }
                         }
                     }
                 }

@@ -24,6 +24,7 @@ namespace Espo\Modules\Pim\Listeners;
 
 use Espo\Core\Exceptions\Error;
 use Treo\Listeners\AbstractListener;
+use Espo\Core\Utils\Util;
 
 /**
  * Class ProductAttributeValue
@@ -46,6 +47,14 @@ class ProductAttributeValue extends AbstractListener
 
             if (!empty($attribute)) {
                 $data['result']->typeValue = $attribute->get('typeValue');
+
+                // for multiLang fields
+                if ($this->getConfig()->get('isMultilangActive')) {
+                    foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                        $multiLangField =  Util::toCamelCase('typeValue_' . strtolower($locale));
+                        $data['result']->$multiLangField = $attribute->get($multiLangField);
+                    }
+                }
             }
         }
 
