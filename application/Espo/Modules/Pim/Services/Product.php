@@ -200,63 +200,44 @@ class Product extends AbstractService
      * @param Entity $product
      * @param Entity $duplicatingProduct
      */
-    protected function duplicateAttributes(Entity $product, Entity $duplicatingProduct)
+    protected function duplicateProductAttributeValues(Entity $product, Entity $duplicatingProduct)
     {
-        // delete old
-        if (!empty($attributes = $product->getProductAttributes())) {
-            foreach ($attributes as $attribute) {
-                $this->getEntityManager()->removeEntity($attribute);
+        // get data for duplicating
+        $rows = $duplicatingProduct->get('productAttributeValues');
+
+        if (count($rows) > 0) {
+            $service = $this->getServiceFactory()->create('ProductAttributeValue');
+
+            foreach ($rows as $item) {
+                $data = $service->getDuplicateAttributes($item->get('id'));
+                $data->productId = $product->get('id');
+
+                $service->createEntity($data);
             }
-        }
-        if (!empty($attributes = $product->getProductChannelAttributes())) {
-            foreach ($attributes as $attribute) {
-                $this->getEntityManager()->removeEntity($attribute);
-            }
-        }
-
-        // get attributes
-        if (empty($attributes = $duplicatingProduct->getProductAttributes())) {
-            return false;
-        }
-
-        // copy attributes
-        foreach ($attributes as $attribute) {
-            // prepare data
-            $data = $attribute->toArray();
-            $data['id'] = Util::generateId();
-            $data['productId'] = $product->get('id');
-
-            // prepare entity
-            $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
-            $entity->set($data);
-
-            // save
-            $this->getEntityManager()->saveEntity($entity);
-
-            // prepare attribute ids
-            $ids[$data['attributeId']] = $data['id'];
-        }
-
-        // get channel attributes
-        if (empty($attributes = $duplicatingProduct->getProductChannelAttributes())) {
-            return false;
-        }
-
-        // copy channel attributes
-        foreach ($attributes as $attribute) {
-            // prepare data
-            $data = $attribute->toArray();
-            $data['id'] = Util::generateId();
-            $data['productAttributeId'] = $ids[$attribute->get('productAttribute')->get('attributeId')];
-
-            // prepare entity
-            $entity = $this->getEntityManager()->getEntity('ChannelProductAttributeValue');
-            $entity->set($data);
-
-            // save
-            $this->getEntityManager()->saveEntity($entity);
         }
     }
+
+    /**
+     * @param Entity $product
+     * @param Entity $duplicatingProduct
+     */
+    protected function duplicateProductCategories(Entity $product, Entity $duplicatingProduct)
+    {
+        // get data for duplicating
+        $rows = $duplicatingProduct->get('productCategories');
+
+        if (count($rows) > 0) {
+            $service = $this->getServiceFactory()->create('ProductCategory');
+
+            foreach ($rows as $item) {
+                $data = $service->getDuplicateAttributes($item->get('id'));
+                $data->productId = $product->get('id');
+
+                $service->createEntity($data);
+            }
+        }
+    }
+
 
     /**
      * @param Entity $product
