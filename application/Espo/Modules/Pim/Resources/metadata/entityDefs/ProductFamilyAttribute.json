@@ -11,7 +11,8 @@
     },
     "attribute": {
       "type": "link",
-      "required": true
+      "required": true,
+      "view": "pim:views/product-family-attribute/fields/attribute"
     },
     "isRequired": {
       "type": "bool",

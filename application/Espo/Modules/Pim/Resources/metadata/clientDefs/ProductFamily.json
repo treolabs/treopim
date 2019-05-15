@@ -17,8 +17,12 @@
   },
   "relationshipPanels": {
     "productFamilyAttributes": {
-      "select": false,
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink"
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "notLinkedProductFamilyAttributes"
+      ],
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
+      "view": "pim:views/product-family/record/panels/product-family-attributes"
     },
     "products": {
       "view": "pim:views/product-family/record/panels/products",

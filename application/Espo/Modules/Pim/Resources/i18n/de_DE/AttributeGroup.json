@@ -27,6 +27,9 @@
     "labels": {
         "Create AttributeGroup": "Attributgruppe erstellen"
     },
+    "messages": {
+        "unlinkAttributeGroupConfirmation": "Möchten Sie die Verknüpfung aller Attribute der Attributgruppe wirklich aufheben?"
+    },
     "exceptions": {
         "Attribute group is linked with attribute(s). Please, unlink attribute(s) first": "Attributgruppe ist mit Attribut(en) verknüpft. Bitte heben Sie zuerst die Verknüpfung mit den Attribut(en) auf"
     }

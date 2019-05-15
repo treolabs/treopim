@@ -143,14 +143,6 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true
     },
-    "isMultiChannel": {
-      "notStorable": true,
-      "type": "bool",
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true
-    },
     "productFamilyAttributes": {
       "type": "linkMultiple",
       "layoutListDisabled": true,

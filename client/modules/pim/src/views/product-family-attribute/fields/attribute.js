@@ -17,28 +17,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/attribute/record/row-actions/relationship-no-view', 'views/record/row-actions/relationship',
+Espo.define('pim:views/product-family-attribute/fields/attribute', 'treo-core:views/fields/filtered-link',
     Dep => Dep.extend({
 
-        getActionList() {
-            var list = [];
-            if (this.getAcl().check('Attribute', 'edit')) {
-                list.push({
-                    action: 'quickEdit',
-                    label: 'Edit',
-                    data: {
-                        id: this.model.id,
-                    }
-                });
-            }
-            list.push({
-                action: 'unlinkRelated',
-                label: 'Unlink',
-                data: {
-                    id: this.model.id
+        selectBoolFilterList:  ['notLinkedProductFamilyAttributes'],
+
+        boolFilterData: {
+            notLinkedProductFamilyAttributes() {
+                return {
+                    productFamilyId: this.model.get('productFamilyId'),
+                    scope: this.model.get('scope')
                 }
-            });
-            return list;
+            }
         }
 
     })

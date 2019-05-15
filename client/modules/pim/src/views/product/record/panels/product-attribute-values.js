@@ -17,10 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/panels/relationship', 'views/record/panels/bottom', 'search-manager'],
+Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/record/panels/relationship', 'views/record/panels/bottom', 'search-manager'],
     (Dep, BottomPanel, SearchManager) => Dep.extend({
 
-        template: 'pim:product-family/record/panels/attributes',
+        template: 'pim:product/record/panels/product-attribute-values',
 
         groupKey: 'attributeGroupId',
 
@@ -34,8 +34,11 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
         },
 
         boolFilterData: {
-            notLinkedWithProductFamily() {
-                return this.model.id;
+            notLinkedProductAttributeValues() {
+                return {
+                    productId: this.model.id,
+                    scope: 'Global'
+                }
             }
         },
 
@@ -95,7 +98,7 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                 this.filter = this.getStoredFilter();
             }
 
-            if (this.getAcl().check('Attribute', 'create') && !~['User', 'Team'].indexOf()) {
+            if (this.defs.create && this.getAcl().check('ProductAttributeValue', 'create')) {
                 this.buttonList.push({
                     title: 'Create',
                     action: this.defs.createAction || 'createRelated',
@@ -109,20 +112,33 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                 });
             }
 
-            if (this.defs.select) {
+            if (this.defs.select && this.getAcl().check('ProductAttributeValue', 'create')) {
+                var data = {link: this.link};
+                if (this.defs.selectPrimaryFilterName) {
+                    data.primaryFilterName = this.defs.selectPrimaryFilterName;
+                }
+                if (this.defs.selectBoolFilterList) {
+                    data.boolFilterList = this.defs.selectBoolFilterList;
+                }
+                data.boolFilterListCallback = 'getSelectBoolFilterList';
+                data.boolFilterDataCallback = 'getSelectBoolFilterData';
+                data.afterSelectCallback = 'createProductAttributeValue';
+                data.scope = 'Attribute';
+
                 this.actionList.unshift({
                     label: 'Select',
                     action: this.defs.selectAction || 'selectRelated',
-                    data: {
-                        link: this.link,
-                        boolFilterListCallback: 'getSelectBoolFilterList',
-                        boolFilterDataCallback: 'getSelectBoolFilterData',
-                        boolFilterList: this.defs.selectBoolFilterList,
-                        primaryFilterName: this.defs.selectPrimaryFilterName || null
-                    },
+                    data: data,
                     acl: 'edit',
                     aclScope: this.model.name
                 });
+
+                if (this.getAcl().check('AttributeGroup', 'read')) {
+                    this.actionList.push({
+                        label: 'Select Attribute Group',
+                        action: 'selectAttributeGroup'
+                    });
+                }
             }
 
             this.setupActions();
@@ -182,23 +198,113 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
 
                 this.setFilter(this.filter);
 
-                this.listenTo(this.model, 'update-all after:relate after:unrelate', () => {
+                this.listenTo(this.model, 'change:productFamilyId update-all after:relate after:unrelate', () => {
                     this.actionRefresh();
-                });
-
-                this.listenTo(collection, 'change:isRequired change:isMultiChannel', model => {
-                    this.notify('Saving...');
-                    this.ajaxPutRequest('ProductFamily/action/updateAttribute', {
-                        attributeId: model.id,
-                        productFamilyId: this.model.id,
-                        ...model.changed
-                    }).then(() => this.notify('Saved', 'success'));
                 });
 
                 this.fetchCollectionGroups(() => this.wait(false));
             }, this);
 
             this.setupFilterActions();
+        },
+
+        createProductAttributeValue(selectObj) {
+            let promises = [];
+            selectObj.forEach(attributeModel => {
+                this.getModelFactory().create(this.scope, model => {
+                    model.setRelate({
+                        model: this.model,
+                        link: this.model.defs.links[this.link].foreign
+                    });
+                    model.setRelate({
+                        model: attributeModel,
+                        link: attributeModel.defs.links[this.link].foreign
+                    });
+                    model.set({
+                        assignedUserId: this.getUser().id,
+                        assignedUserName: this.getUser().get('name'),
+                        scope: 'Global'
+                    });
+                    promises.push(model.save());
+                });
+            });
+            Promise.all(promises).then(() => {
+                this.notify('Linked', 'success');
+                this.actionRefresh();
+            });
+        },
+
+        actionSelectAttributeGroup() {
+            const scope = 'AttributeGroup';
+            const viewName = this.getMetadata().get(['clientDefs', scope, 'modalViews', 'select']) || 'views/modals/select-records';
+
+            this.notify('Loading...');
+            this.createView('dialog', viewName, {
+                scope: scope,
+                multiple: true,
+                createButton: false,
+                massRelateEnabled: false,
+                boolFilterList: ['withNotLinkedAttributesToProduct'],
+                boolFilterData: {withNotLinkedAttributesToProduct: this.model.id},
+                whereAdditional: [
+                    {
+                        type: 'isLinked',
+                        attribute: 'attributes'
+                    }
+                ]
+            }, dialog => {
+                dialog.render();
+                this.notify(false);
+                dialog.once('select', selectObj => {
+                    if (!Array.isArray(selectObj)) {
+                        return;
+                    }
+                    let boolFilterList = this.getSelectBoolFilterList() || [];
+                    this.getFullEntityList('Attribute', {
+                        where: [
+                            {
+                                type: 'bool',
+                                value: boolFilterList,
+                                data: this.getSelectBoolFilterData(boolFilterList)
+                            },
+                            {
+                                attribute: 'attributeGroupId',
+                                type: 'in',
+                                value: selectObj.map(model => model.id)
+                            }
+                        ]
+                    }, list => {
+                        let models = [];
+                        list.forEach(attributes => {
+                            this.getModelFactory().create('Attribute', model => {
+                                model.set(attributes);
+                                models.push(model);
+                            });
+                        });
+                        this.createProductAttributeValue(models);
+                    });
+                });
+            });
+        },
+
+        getFullEntityList(url, params, callback, container) {
+            if (url) {
+                container = container || [];
+
+                let options = params || {};
+                options.maxSize = options.maxSize || 200;
+                options.offset = options.offset || 0;
+
+                this.ajaxGetRequest(url, options).then(response => {
+                    container = container.concat(response.list || []);
+                    options.offset = container.length;
+                    if (response.total > container.length || response.total === -1) {
+                        this.getFullEntity(url, options, callback, container);
+                    } else {
+                        callback(container);
+                    }
+                });
+            }
         },
 
         afterRender() {
@@ -227,7 +333,7 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                     this.groups = [];
                     this.groups = this.getGroupsFromCollection();
 
-                    let valueKey = this.groups.map(group => group.key);
+                    let valueKeys = this.groups.map(group => group.key);
 
                     this.getCollectionFactory().create('AttributeGroup', collection => {
                         this.attributeGroupCollection = collection;
@@ -238,7 +344,7 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                             {
                                 attribute: 'id',
                                 type: 'in',
-                                value: valueKey
+                                value: valueKeys
                             }
                         ];
 
@@ -287,7 +393,7 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
         getGroupsFromCollection() {
             let groups = [];
 
-            (this.collection.models || []).forEach(model => {
+            this.collection.forEach(model => {
                 let key = model.get(this.groupKey);
                 if (key === null) {
                     key = this.noGroup.key;
@@ -298,13 +404,16 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                 }
                 let group = groups.find(item => item.key === key);
                 if (group) {
+                    group.editable = group.editable && model.get('isCustom');
                     group.rowList.push(model.id);
+                    group.rowList.sort((a, b) => this.collection.get(a).get('sortOrder') - this.collection.get(b).get('sortOrder'));
                 } else {
                     groups.push({
                         key: key,
                         id: key !== this.noGroup.key ? key : null,
                         label: label,
-                        rowList: [model.id]
+                        rowList: [model.id],
+                        editable: model.get('isCustom')
                     });
                 }
             });
@@ -319,19 +428,6 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                         collection.add(this.collection.get(id));
                     });
 
-                    collection.whereAdditional = [
-                        {
-                            type: 'linkedWith',
-                            attribute: 'productFamilies',
-                            value: [this.model.id]
-                        },
-                        {
-                            type: group.key === 'no_group' ? 'isNull' : 'equals',
-                            attribute: 'attributeGroupId',
-                            value: group.key === 'no_group' ? null : group.key
-                        },
-                    ];
-
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
                     this.createView(group.key, viewName, {
@@ -344,21 +440,18 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
                     }, view => {
-                        const setFieldsEditMode = () => {
+                        this.listenTo(view, 'after:render', () => {
                             (view.rowList || []).forEach(id => {
                                 const rowView = view.getView(id);
                                 if (rowView) {
-                                    ['isRequired', 'isMultiChannel'].forEach(field => {
-                                        const fieldView = rowView.getView(`${field}Field`);
-                                        if (fieldView) {
-                                            fieldView.setMode('edit');
-                                            fieldView.reRender();
-                                        }
-                                    });
+                                    const fieldView = rowView.getView('isRequiredField');
+                                    if (fieldView) {
+                                        fieldView.setMode('edit');
+                                        fieldView.reRender();
+                                    }
                                 }
                             });
-                        };
-                        this.listenTo(view, 'after:render', setFieldsEditMode);
+                        });
                         view.render();
                     });
                 });
@@ -381,70 +474,6 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
             return this.defs.selectBoolFilterList || null
         },
 
-        setupActions() {
-           Dep.prototype.setupActions.call(this);
-
-           if (this.getAcl().check(this.model, 'edit')) {
-               this.actionList.push({
-                   label: 'Select Attribute Group',
-                   action: 'selectAttributeGroup'
-               });
-           }
-        },
-
-        actionSelectAttributeGroup() {
-            const scope= 'AttributeGroup';
-            const viewName = this.getMetadata().get(['clientDefs', scope, 'modalViews', 'select']) || 'views/modals/select-records';
-
-            this.notify('Loading...');
-            this.createView('dialog', viewName, {
-                scope: scope,
-                multiple: true,
-                createButton: false,
-                massRelateEnabled: false,
-                whereAdditional: [
-                    {
-                        type: 'isLinked',
-                        attribute: 'attributes'
-                    }
-                ]
-            }, dialog => {
-                dialog.render();
-                this.notify(false);
-                dialog.once('select', selectObj => {
-                    if (!Array.isArray(selectObj)) {
-                        return;
-                    }
-                    const boolFilterList = this.getSelectBoolFilterList() || [];
-                    const data = {
-                        massRelate: true,
-                        where: [
-                            {
-                                type: 'bool',
-                                value: boolFilterList,
-                                data: this.getSelectBoolFilterData(boolFilterList)
-                            },
-                            {
-                                attribute: 'attributeGroupId',
-                                type: 'in',
-                                value: selectObj.map(model => model.id)
-                            }
-                        ]
-                    };
-
-                    this.notify('Saving...', 'success');
-                    this.ajaxPostRequest(`${this.model.name}/${this.model.id}/${this.link}`, data).then(response => {
-                        if (response) {
-                            this.notify('Linked', 'success');
-                            this.actionRefresh();
-                        } else {
-                            this.notify('Error occurred', 'error');
-                        }
-                    });
-                });
-            });
-        },
-
         actionRefresh() {
             this.fetchCollectionGroups(() => this.reRender());
         },
@@ -461,7 +490,7 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
             }
 
             this.confirm({
-                message: this.translate('unlinkAttributeGroupConfirmation', 'messages', this.model.name),
+                message: this.translate('unlinkAttributeGroupConfirmation', 'messages', 'AttributeGroup'),
                 confirmText: this.translate('Unlink')
             }, function () {
                 this.notify('Unlinking...');
@@ -483,52 +512,6 @@ Espo.define('pim:views/product-family/record/panels/attributes', ['views/record/
                     }.bind(this),
                 });
             }, this);
-        },
-
-        actionUnlinkRelated: function (data) {
-            var id = data.id;
-
-            this.ajaxGetRequest(`ProductFamily/${this.model.id}/productsCount`, {attributeId: id}).then(response => {
-                Espo.TreoUi.confirmWithBody('', {
-                    message: this.translate('unlinkRecordConfirmation', 'messages'),
-                    confirmText: this.translate('Unlink'),
-                    cancelText: this.translate('Cancel'),
-                    body: this.getUnlinkHtml(response)
-                }, function () {
-                    var model = this.collection.get(id);
-                    this.notify('Unlinking...');
-                    $.ajax({
-                        url: this.collection.url,
-                        type: 'DELETE',
-                        data: JSON.stringify({
-                            id: id
-                        }),
-                        contentType: 'application/json',
-                        success: function () {
-                            this.notify('Unlinked', 'success');
-                            this.collection.fetch();
-                            this.model.trigger('after:unrelate');
-                        }.bind(this),
-                        error: function () {
-                            this.notify('Error occurred', 'error');
-                        }.bind(this),
-                    });
-                }, this);
-            });
-        },
-
-        getUnlinkHtml(count) {
-            return `
-                <div class="row">
-                    <div class="col-xs-12">
-                        <span class="confirm-message">${this.translate('removeRecordConfirmation', 'messages')}</span>
-                    </div>
-                    <div class="col-xs-12">
-                        <div style="margin-top: 15px;">
-                            <span class="product-counts-message">${this.translate('productsCountWithAttribute', 'messages', 'Attribute').replace('{count}', count)}</span>
-                        </div>
-                    </div>
-                </div>`;
         }
 
     })

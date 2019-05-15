@@ -18,7 +18,6 @@
     "Select Attribute Group": "Wählen Sie die Attributgruppe aus"
   },
   "messages": {
-    "Can't remove system Product Family": "Das System Produktfamilie kann nicht entfernt werden",
-    "unlinkAttributeGroupConfirmation": "Möchten Sie die Verknüpfung aller Attribute der Attributgruppe wirklich aufheben?"
+    "Can't remove system Product Family": "Das System Produktfamilie kann nicht entfernt werden"
   }
 }

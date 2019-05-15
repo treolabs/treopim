@@ -56,8 +56,12 @@
   "massRelationView": "pim:views/product/modals/select-entity-and-records",
   "relationshipPanels": {
     "productAttributeValues": {
-      "select": false,
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink"
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "notLinkedProductAttributeValues"
+      ],
+      "rowActionsView": "pim:views/product-attribute-value/record/row-actions/relationship-no-unlink-in-product",
+      "view": "pim:views/product/record/panels/product-attribute-values"
     },
     "productCategories": {
       "view": "pim:views/product/record/panels/product-categories",
