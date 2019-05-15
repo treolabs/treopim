@@ -202,17 +202,19 @@ class Product extends AbstractService
      */
     protected function duplicateProductAttributeValues(Entity $product, Entity $duplicatingProduct)
     {
-        // get data for duplicating
-        $rows = $duplicatingProduct->get('productAttributeValues');
+        if ($duplicatingProduct->get('productFamilyId') == $product->get('productFamilyId')) {
+            // get data for duplicating
+            $rows = $duplicatingProduct->get('productAttributeValues');
 
-        if (count($rows) > 0) {
-            $service = $this->getServiceFactory()->create('ProductAttributeValue');
+            if (count($rows) > 0) {
+                $service = $this->getServiceFactory()->create('ProductAttributeValue');
 
-            foreach ($rows as $item) {
-                $data = $service->getDuplicateAttributes($item->get('id'));
-                $data->productId = $product->get('id');
+                foreach ($rows as $item) {
+                    $data = $service->getDuplicateAttributes($item->get('id'));
+                    $data->productId = $product->get('id');
 
-                $service->createEntity($data);
+                    $service->createEntity($data);
+                }
             }
         }
     }
