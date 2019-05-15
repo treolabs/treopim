@@ -206,7 +206,6 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                     this.notify('Saving...');
                     model.save().then(() => {
                         this.notify('Saved', 'success');
-                        this.actionRefresh();
                     });
                 });
 

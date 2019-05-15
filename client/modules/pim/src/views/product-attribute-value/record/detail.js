@@ -23,6 +23,10 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
         setup() {
             Dep.prototype.setup.call(this);
 
+            this.handleValueModelDefsUpdating();
+        },
+
+        handleValueModelDefsUpdating() {
             if (this.model.get('attributeId')) {
                 this.updateValueDefsInModel();
             }

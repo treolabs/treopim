@@ -17,46 +17,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product-attribute-value/record/detail-small', 'views/record/detail-small',
-    Dep => Dep.extend({
+Espo.define('pim:views/product-attribute-value/record/detail-small', ['pim:views/product-attribute-value/record/detail', 'views/record/detail-small'],
+    (Detail, Dep) => Dep.extend({
 
         setup() {
             Dep.prototype.setup.call(this);
 
-            if (this.model.get('attributeId')) {
-                this.updateValueDefsInModel();
-            }
-            this.listenTo(this.model, 'change:attributeId', () => {
-                if (this.model.get('attributeId')) {
-                    this.updateValueDefsInModel();
-                    this.clearView('middle');
-                    this.gridLayout = null;
-                    this.createMiddleView(() => this.reRender());
-                }
-            });
+            Detail.prototype.handleValueModelDefsUpdating.call(this);
         },
 
         updateValueDefsInModel() {
-            let type = this.model.get('attributeType');
-            let typeValue = this.model.get('typeValue');
-            if (type) {
-                let fieldDefs = {
-                    type: type,
-                    options: typeValue,
-                    view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
-                    required: !!this.model.get('isRequired')
-                };
-                if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(type)) {
-                    fieldDefs.isMultilang = true;
-                    this.getFieldManager().getActualAttributeList(type, 'typeValue').splice(1).forEach(item => {
-                        fieldDefs[`options${item.replace('typeValue', '')}`] = this.model.get(item);
-                    });
-                }
-                if (type === 'unit') {
-                    fieldDefs.measure = (typeValue || ['Length'])[0];
-                }
-                this.model.defs.fields.value = fieldDefs;
-            }
+            Detail.prototype.updateValueDefsInModel.call(this);
         }
 
     })
