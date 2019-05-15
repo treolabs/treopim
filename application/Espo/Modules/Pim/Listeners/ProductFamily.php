@@ -42,7 +42,6 @@ class ProductFamily extends AbstractListener
             $attributes = $this
                 ->getEntityManager()
                 ->getRepository('Attribute')
-                ->select(['id', 'attributeGroupId', 'attributeGroupName'])
                 ->where([
                     'id' => array_column($data['result']['list'], 'attributeId')
                 ])
