@@ -33,7 +33,7 @@ use Espo\Core\Utils\Util;
 class V3Dot1Dot0 extends AbstractMigration
 {
     /**
-     * Up to current
+     * @inheritdoc
      */
     public function up(): void
     {
@@ -90,6 +90,13 @@ class V3Dot1Dot0 extends AbstractMigration
         $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
         if (!empty($data)) {
+            // delete previous
+            $sth = $this
+                ->getEntityManager()
+                ->getPDO()
+                ->prepare("DELETE FROM product_attribute_value WHERE scope='Channel'");
+            $sth->execute();
+
             foreach ($data as $row) {
                 $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
                 $entity->set('productId', $row['product_id']);
@@ -134,7 +141,15 @@ class V3Dot1Dot0 extends AbstractMigration
         $sth->execute();
 
         $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
+
         if (!empty($data)) {
+            // delete previous
+            $sth = $this
+                ->getEntityManager()
+                ->getPDO()
+                ->prepare("DELETE FROM product_family_attribute WHERE 1");
+            $sth->execute();
+
             foreach ($data as $row) {
                 $entity = $this->getEntityManager()->getEntity('ProductFamilyAttribute');
                 $entity->set('productFamilyId', $row['product_family_id']);
@@ -144,7 +159,7 @@ class V3Dot1Dot0 extends AbstractMigration
                 $entity->set('createdById', 'system');
                 $entity->set('createdAt', date("Y-m-d H:i:s"));
 
-                $this->getEntityManager()->saveEntity($entity, ['skipValidation' => true]);
+                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true]);
             }
         }
     }
