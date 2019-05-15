@@ -158,6 +158,16 @@
             }
           ]
         }
+      },
+      "productFamily": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
       }
     }
   }

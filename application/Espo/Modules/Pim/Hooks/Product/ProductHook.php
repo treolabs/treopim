@@ -57,6 +57,17 @@ class ProductHook extends BaseHook
     }
 
     /**
+     * @param Entity $entity
+     * @param array  $options
+     */
+    public function afterSave(Entity $entity, $options = [])
+    {
+        if (!empty($entity->get('productFamily'))) {
+            $this->updateProductAttributesByProductFamily($entity);
+        }
+    }
+
+    /**
      * @param Entity $product
      * @param string $field
      *
@@ -121,6 +132,57 @@ class ProductHook extends BaseHook
             }
         }
         return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    protected function updateProductAttributesByProductFamily(Entity $entity): bool
+    {
+        // get product family
+        $productFamily = $entity->get('productFamily');
+
+        // get product family attributes
+        $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
+
+        if ($entity->isNew()) {
+            if (count($productFamilyAttributes) > 0) {
+                foreach ($productFamilyAttributes as $productFamilyAttribute) {
+                    // create
+                    $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                    $productAttributeValue->set(
+                        [
+                            'productId'                => $entity->get('id'),
+                            'attributeId'              => $productFamilyAttribute->get('attributeId'),
+                            'productFamilyAttributeId' => $productFamilyAttribute->get('id'),
+                            'isRequired'               => $productFamilyAttribute->get('isRequired'),
+                            'scope'                    => $productFamilyAttribute->get('scope')
+                        ]
+                    );
+                    // save
+                    $this->getEntityManager()->saveEntity($productAttributeValue);
+
+                    // relate channels if it needs
+                    if ($productFamilyAttribute->get('scope') == 'Channel') {
+                        $channels = $productFamilyAttribute->get('channels');
+                        if (count($channels) > 0) {
+                            foreach ($channels as $channel) {
+                                $this
+                                    ->getEntityManager()
+                                    ->getRepository('ProductAttributeValue')
+                                    ->relate($productAttributeValue, 'channels', $channel);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
