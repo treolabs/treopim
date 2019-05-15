@@ -53,6 +53,8 @@ class Product extends AbstractListener
                     foreach ($data['result']['list'] as $key => $item) {
                         if ($item->attributeId == $attribute->get('id')) {
                             $data['result']['list'][$key]->typeValue = $attribute->get('typeValue');
+                            $data['result']['list'][$key]->attributeGroupId = $attribute->get('attributeGroupId');
+                            $data['result']['list'][$key]->attributeGroupName = $attribute->get('attributeGroupName');
 
                             // for multiLang fields
                             if ($this->getConfig()->get('isMultilangActive')) {
