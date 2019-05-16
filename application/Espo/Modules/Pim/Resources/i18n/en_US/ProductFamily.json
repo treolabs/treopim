@@ -17,7 +17,6 @@
     "Select Attribute Group": "Select Attribute Group"
   },
   "messages": {
-    "Can't remove system Product Family": "Can't remove system Product Family",
-    "unlinkAttributeGroupConfirmation": "Are you sure you want to unlink all Attribute Group's Attributes?"
+    "Can't remove system Product Family": "Can't remove system Product Family"
   }
 }

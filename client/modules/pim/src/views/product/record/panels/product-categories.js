@@ -189,7 +189,8 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
         },
 
         createProductCategory(selectObj) {
-            Promise.all(selectObj.map(categoryModel => {
+            let promises = [];
+            selectObj.forEach(categoryModel => {
                 this.getModelFactory().create(this.scope, model => {
                     model.setRelate({
                         model: this.model,
@@ -199,12 +200,17 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                         model: categoryModel,
                         link: categoryModel.defs.links[this.link].foreign
                     });
-                    model.set({scope: 'Global'});
-                    return model.save();
+                    model.set({
+                        assignedUserId: this.getUser().id,
+                        assignedUserName: this.getUser().get('name'),
+                        scope: 'Global'
+                    });
+                    promises.push(model.save());
                 });
-            })).then(() => {
+            });
+            Promise.all(promises).then(() => {
                 this.notify('Linked', 'success');
-                this.collection.fetch();
+                this.actionRefresh();
             });
         },
 

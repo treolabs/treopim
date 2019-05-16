@@ -13,6 +13,9 @@
     "labels": {
         "Create AttributeGroup": "Create Attribute Group"
     },
+    "messages": {
+        "unlinkAttributeGroupConfirmation": "Are you sure you want to unlink all Attribute Group's Attributes?"
+    },
     "exceptions": {
         "Attribute group is linked with attribute(s). Please, unlink attribute(s) first": "Attribute group is linked with attribute(s). Please, unlink attribute(s) first"
     }

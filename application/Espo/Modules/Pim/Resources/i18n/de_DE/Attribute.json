@@ -5,7 +5,6 @@
     "name": "Attributname",
     "channelProductAttributeValues": "Attributwerte des Produktkanals",
     "isRequired": "Ist Erforderlich",
-    "isMultiChannel": "Ist Multichannel",
     "createdAt": "erstellt am",
     "createdBy": "erstellt von",
     "isSystem": "Ist das System",

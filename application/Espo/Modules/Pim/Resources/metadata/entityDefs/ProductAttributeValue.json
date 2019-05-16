@@ -10,7 +10,8 @@
     },
     "attribute": {
       "type": "link",
-      "required": true
+      "required": true,
+      "view": "pim:views/product-attribute-value/fields/attribute"
     },
     "productFamilyAttribute": {
       "type": "link"
@@ -23,7 +24,8 @@
       "type": "text",
       "rows": 4,
       "lengthOfCut": 400,
-      "isMultilang": true
+      "isMultilang": true,
+      "view": "pim:views/product-attribute-value/fields/value-container"
     },
     "data": {
       "type": "jsonObject"
