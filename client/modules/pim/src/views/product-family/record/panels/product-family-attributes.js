@@ -433,6 +433,17 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                         collection.add(this.collection.get(id));
                     });
 
+                    collection.url = `ProductFamily/${this.model.id}/productFamilyAttributes`;
+                    collection.where = [
+                        {
+                            type: 'bool',
+                            value: ['linkedWithAttributeGroup'],
+                            data: {
+                                linkedWithAttributeGroup: group.key
+                            }
+                        }
+                    ];
+
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
                     this.createView(group.key, viewName, {
