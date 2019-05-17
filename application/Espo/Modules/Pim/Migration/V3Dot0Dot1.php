@@ -218,7 +218,7 @@ class V3Dot0Dot1 extends AbstractMigration
      *
      * @return mixed
      */
-    private function execute(string $sql)
+    protected function execute(string $sql)
     {
         $sth = $this
             ->getEntityManager()
@@ -234,7 +234,7 @@ class V3Dot0Dot1 extends AbstractMigration
      *
      * @return mixed
      */
-    private function fetchAll(string $sql)
+    protected function fetchAll(string $sql)
     {
         return $this
             ->execute($sql)

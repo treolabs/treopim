@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Migration;
 
-use Treo\Core\Migration\AbstractMigration;
 use Espo\Core\Utils\Util;
 
 /**
@@ -30,24 +29,25 @@ use Espo\Core\Utils\Util;
  *
  * @author r.ratsun@treolabs.com
  */
-class V3Dot1Dot0 extends AbstractMigration
+class V3Dot1Dot0 extends V3Dot0Dot1
 {
     /**
      * @inheritdoc
      */
     public function up(): void
     {
-        // drop triggers
         $this->dropTriggers();
+        $this->channelAttributeValueUp();
+        $this->productFamilyAttributesUp();
+    }
 
-        // migrate channel attribute values
-        $this->migrateChannelAttributeValues();
-
-        // migrate product family attributes
-        $this->migrateProductFamilyAttributes();
-
-        // switch isRequired params
-        $this->switchIsRequiredParams();
+    /**
+     * @inheritdoc
+     */
+    public function down(): void
+    {
+        $this->channelAttributeValueDown();
+        $this->productFamilyAttributesDown();
     }
 
     /**
@@ -60,17 +60,13 @@ class V3Dot1Dot0 extends AbstractMigration
         $sql .= "DROP TRIGGER IF EXISTS trigger_after_insert_product;";
         $sql .= "DROP TRIGGER IF EXISTS trigger_after_update_product;";
 
-        $sth = $this
-            ->getEntityManager()
-            ->getPDO()
-            ->prepare($sql);
-        $sth->execute();
+        $this->execute($sql);
     }
 
     /**
-     * Migrate channel attribute values
+     * Migrate attribute value up
      */
-    protected function migrateChannelAttributeValues(): void
+    protected function channelAttributeValueUp()
     {
         $sql
             = "SELECT cpav.*, p.id as product_id, a.id as attribute_id   
@@ -81,24 +77,11 @@ class V3Dot1Dot0 extends AbstractMigration
                 JOIN attribute AS a ON a.id=pav.attribute_id  
                 WHERE cpav.deleted=0 AND c.deleted=0 AND pav.deleted=0 AND p.deleted=0 AND a.deleted=0";
 
-        $sth = $this
-            ->getEntityManager()
-            ->getPDO()
-            ->prepare($sql);
-        $sth->execute();
-
-        $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        if (!empty($data)) {
-            // delete previous
-            $sth = $this
-                ->getEntityManager()
-                ->getPDO()
-                ->prepare("DELETE FROM product_attribute_value WHERE scope='Channel'");
-            $sth->execute();
-
+        if (!empty($data = $this->fetchAll($sql))) {
+            // prepare repository
+            $repository = $this->getEntityManager()->getRepository('ProductAttributeValue');
             foreach ($data as $row) {
-                $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                $entity = $repository->get();
                 $entity->set('productId', $row['product_id']);
                 $entity->set('attributeId', $row['attribute_id']);
                 $entity->set('scope', 'Channel');
@@ -110,22 +93,27 @@ class V3Dot1Dot0 extends AbstractMigration
                         $entity->set(Util::toCamelCase($key), $value);
                     }
                 }
-
-                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true]);
+                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true, 'skipProductAttributeValueHook' => true]);
 
                 // relate
-                $this
-                    ->getEntityManager()
-                    ->getRepository('ProductAttributeValue')
-                    ->relate($entity, 'channels', $this->getEntityManager()->getEntity('Channel', $row['channel_id']));
+                $repository->relate($entity, 'channels', $row['channel_id']);
             }
         }
     }
 
     /**
-     * Migrate product family attribute
+     * Migrate attribute value down
      */
-    protected function migrateProductFamilyAttributes(): void
+    protected function channelAttributeValueDown()
+    {
+        $this->execute("DELETE FROM product_attribute_value WHERE scope='Channel'");
+        $this->execute("DELETE FROM product_attribute_value_channel WHERE 1");
+    }
+
+    /**
+     * Migrate product family attribute up
+     */
+    protected function productFamilyAttributesUp(): void
     {
         $sql
             = "SELECT pfal.*   
@@ -134,22 +122,7 @@ class V3Dot1Dot0 extends AbstractMigration
                 JOIN attribute AS a ON a.id=pfal.attribute_id 
                 WHERE pfal.deleted=0 AND pf.deleted=0 AND a.deleted=0";
 
-        $sth = $this
-            ->getEntityManager()
-            ->getPDO()
-            ->prepare($sql);
-        $sth->execute();
-
-        $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        if (!empty($data)) {
-            // delete previous
-            $sth = $this
-                ->getEntityManager()
-                ->getPDO()
-                ->prepare("DELETE FROM product_family_attribute WHERE 1");
-            $sth->execute();
-
+        if (!empty($data = $this->fetchAll($sql))) {
             foreach ($data as $row) {
                 $entity = $this->getEntityManager()->getEntity('ProductFamilyAttribute');
                 $entity->set('productFamilyId', $row['product_family_id']);
@@ -159,39 +132,27 @@ class V3Dot1Dot0 extends AbstractMigration
                 $entity->set('createdById', 'system');
                 $entity->set('createdAt', date("Y-m-d H:i:s"));
 
-                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true]);
+                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true, 'skipValidation' => true]);
+
+                // prepare update sql
+                $sql
+                    = "UPDATE product_attribute_value
+                       SET product_family_attribute_id='" . $entity->get('id') . "', is_required=" . $row['is_required'] . "
+                       WHERE scope='Global' 
+                         AND attribute_id='" . $entity->get('attributeId') . "'
+                         AND product_id IN (SELECT id FROM product WHERE product_family_id='" . $entity->get('productFamilyId') . "')";
+
+                $this->execute($sql);
             }
         }
     }
 
     /**
-     * Switch isRequired params
-     *
-     * @return bool
+     * Migrate product family attribute down
      */
-    protected function switchIsRequiredParams(): bool
+    protected function productFamilyAttributesDown(): void
     {
-        $productFamilyAttributes = $this
-            ->getEntityManager()
-            ->getRepository('ProductFamilyAttribute')
-            ->where(['isRequired' => true])
-            ->find();
-
-        // exit
-        if (count($productFamilyAttributes) == 0) {
-            return true;
-        }
-
-        foreach ($productFamilyAttributes as $productFamilyAttribute) {
-            $productAttributeValues = $productFamilyAttribute->get('productAttributeValues');
-            if (count($productAttributeValues) > 0) {
-                foreach ($productAttributeValues as $productAttributeValue) {
-                    $productAttributeValue->set('isRequired', true);
-                    $this->getEntityManager()->saveEntity($productAttributeValue, ['skipAll' => true]);
-                }
-            }
-        }
-
-        return true;
+        $this->execute("DELETE FROM product_family_attribute WHERE 1");
+        $this->execute("UPDATE product_attribute_value SET product_family_attribute_id=NULL WHERE 1");
     }
 }
