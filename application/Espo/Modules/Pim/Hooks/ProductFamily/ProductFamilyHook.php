@@ -53,4 +53,19 @@ class ProductFamilyHook extends AbstractHook
             );
         }
     }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     * @param array  $data
+     */
+    public function afterUnrelate(Entity $entity, array $options = [], array $data = [])
+    {
+        if ($data['relationName'] == 'productFamilyAttributes') {
+            $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->removeCollectionByProductFamilyAttribute($data['foreignEntity']->get('id'));
+        }
+    }
 }

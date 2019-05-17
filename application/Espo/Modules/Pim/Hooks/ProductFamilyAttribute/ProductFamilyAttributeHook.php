@@ -81,7 +81,10 @@ class ProductFamilyAttributeHook extends BaseHook
      */
     public function afterRemove(Entity $entity, $options = [])
     {
-        $this->removeProductAttributeValues($entity);
+        $this
+            ->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->removeCollectionByProductFamilyAttribute($entity->get('id'));
     }
 
     /**
@@ -224,31 +227,6 @@ class ProductFamilyAttributeHook extends BaseHook
             $productAttributeValue->set('channelsIds', $entity->get('channelsIds'));
 
             $this->getEntityManager()->saveEntity($productAttributeValue, ['skipProductAttributeValueHook' => true]);
-        }
-
-        return true;
-    }
-
-    /**
-     * @param Entity $entity
-     *
-     * @return bool
-     */
-    protected function removeProductAttributeValues(Entity $entity): bool
-    {
-        $records = $this
-            ->getEntityManager()
-            ->getRepository('ProductAttributeValue')
-            ->where(['productFamilyAttributeId' => $entity->get('id')])
-            ->find();
-
-        if (count($records) > 0) {
-            foreach ($records as $record) {
-                $record->set('productFamilyAttributeId', null);
-                $record->set('deleted', true);
-
-                $this->getEntityManager()->saveEntity($record, ['skipProductAttributeValueHook' => true]);
-            }
         }
 
         return true;

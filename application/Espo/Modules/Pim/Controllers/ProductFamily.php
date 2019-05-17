@@ -59,7 +59,11 @@ class ProductFamily extends AbstractController
         }
 
         return $this
-            ->getRecordService()
-            ->getLinkedProductAttributesCount($params['productFamilyId'], $request->get('attributeId'));
+            ->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->join('productFamilyAttribute')
+            ->join('product')
+            ->where(['productFamilyAttribute.id' => $request->get('attributeId'), 'product.deleted' => 0])
+            ->count();
     }
 }

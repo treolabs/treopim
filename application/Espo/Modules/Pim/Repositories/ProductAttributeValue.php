@@ -30,4 +30,13 @@ use Espo\Core\Templates\Repositories\Base;
  */
 class ProductAttributeValue extends Base
 {
+    /**
+     * @param string $productFamilyAttributeId
+     */
+    public function removeCollectionByProductFamilyAttribute(string $productFamilyAttributeId)
+    {
+        $this
+            ->where(['productFamilyAttributeId' => $productFamilyAttributeId])
+            ->removeCollection(['skipProductAttributeValueHook' => true]);
+    }
 }
