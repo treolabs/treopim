@@ -57,14 +57,17 @@ class ProductAttributeValueHook extends BaseHook
             throw new BadRequest($this->exception('Product and Attribute cannot be empty'));
         }
 
-        if (!$this->isUnique($entity)) {
-            throw new BadRequest($this->exception('Such record already exists'));
-        }
-
         if (!$entity->isNew() && !empty($entity->get('productFamilyAttribute'))) {
-            if ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('isRequired') || $entity->isAttributeChanged('channelsIds')) {
+            if ($entity->isAttributeChanged('scope')
+                || $entity->isAttributeChanged('isRequired')
+                || $entity->isAttributeChanged('channelsIds')
+                || $entity->isAttributeChanged('attributeId')) {
                 throw new BadRequest($this->exception('Product Family attribute cannot be changed'));
             }
+        }
+
+        if (!$this->isUnique($entity)) {
+            throw new BadRequest($this->exception('Such record already exists'));
         }
 
         // clearing channels ids
