@@ -161,17 +161,46 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function channelsUp()
     {
-        $products = $this->fetchAll("SELECT id FROM product");
-        $channels = $this->fetchAll("SELECT id FROM channel");
+        $sql
+            = "SELECT
+                     p.id             AS productId,
+                     c.id             AS categoryId,
+                     c.category_route AS categoryRoute
+                FROM product_category_linker AS pcl
+                JOIN category AS c ON c.id=pcl.category_id AND c.deleted=0
+                JOIN product AS p ON p.id=pcl.product_id AND p.deleted=0
+                WHERE pcl.deleted = 0";
 
-        if (!empty($products) && !empty($channels)) {
-            $sql = "";
-            foreach ($products as $product) {
-                foreach ($channels as $channel) {
-                    $sql .= "INSERT INTO product_channel (product_id, channel_id) VALUES ('" . $product['id'] . "', '" . $channel['id'] . "');";
+        $productCategories = [];
+        foreach ($this->fetchAll($sql) as $row) {
+            if (empty($productCategories[$row['productId']])) {
+                $productCategories[$row['productId']] = [];
+            }
+            $categoryIds = [$row['categoryId']];
+            foreach (explode("|", (string)$row['categoryRoute']) as $part) {
+                if (!empty($part)) {
+                    $categoryIds[] = $part;
                 }
             }
-            $this->execute($sql);
+            $productCategories[$row['productId']] = array_merge($productCategories[$row['productId']], $categoryIds);
+        }
+
+        $insertSql = "";
+        foreach ($productCategories as $productId => $categories) {
+            $sql
+                = "SELECT 
+                        channel.id as channelId
+                   FROM channel
+                   JOIN catalog ON catalog.id=channel.catalog_id AND catalog.deleted=0 AND catalog.category_id IN ('" . implode("','", $categories) . "')
+                   WHERE channel.deleted = 0";
+
+            foreach ($this->fetchAll($sql) as $row) {
+                $insertSql .= "INSERT INTO product_channel (product_id, channel_id) VALUES ('$productId', '" . $row['channelId'] . "');";
+            }
+        }
+
+        if (!empty($insertSql)) {
+            $this->execute($insertSql);
         }
     }
 
