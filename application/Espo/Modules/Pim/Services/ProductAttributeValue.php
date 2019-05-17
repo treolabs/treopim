@@ -54,7 +54,7 @@ class ProductAttributeValue extends AbstractService
         parent::prepareEntityForOutput($entity);
 
         $entity->set('isCustom', $this->isCustom($entity));
-        $entity->set('attributeType', $entity->get('attribute')->get('type'));
+        $entity->set('attributeType', (!empty($entity->get('attribute'))) ? $entity->get('attribute')->get('type') : null);
     }
 
     /**
