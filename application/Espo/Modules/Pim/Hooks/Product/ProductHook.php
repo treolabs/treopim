@@ -62,7 +62,7 @@ class ProductHook extends BaseHook
      */
     public function afterSave(Entity $entity, $options = [])
     {
-        if (!empty($entity->get('productFamily'))) {
+        if (!empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
             $this->updateProductAttributesByProductFamily($entity);
         }
     }

@@ -207,13 +207,6 @@ class Product extends AbstractService
             $rows = $duplicatingProduct->get('productAttributeValues');
 
             if (count($rows) > 0) {
-                // delete old
-                $this
-                    ->getEntityManager()
-                    ->getRepository('ProductAttributeValue')
-                    ->where(['productId' => $product->get('id')])
-                    ->removeCollection(['skipAll' => true, 'skipProductAttributeValueHook' => true]);
-
                 $service = $this->getServiceFactory()->create('ProductAttributeValue');
 
                 foreach ($rows as $item) {
