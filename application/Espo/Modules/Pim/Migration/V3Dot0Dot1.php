@@ -39,6 +39,7 @@ class V3Dot0Dot1 extends AbstractMigration
         $this->catalogCategoryUp();
         $this->productCategoryUp();
         $this->masterCatalogUp();
+        $this->channelsUp();
     }
 
     /**
@@ -49,6 +50,7 @@ class V3Dot0Dot1 extends AbstractMigration
         $this->catalogCategoryDown();
         $this->productCategoryDown();
         $this->masterCatalogDown();
+        $this->channelsDown();
     }
 
     /**
@@ -56,28 +58,17 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function catalogCategoryUp(): void
     {
-        $categories = $this
-            ->getEntityManager()
-            ->getRepository('Category')
-            ->where(['categoryParentId' => null])
-            ->find();
+        $categories = $this->fetchAll("SELECT id FROM category WHERE category_parent_id IS NULL");
+        $catalogs = $this->fetchAll("SELECT id FROM treopim_local.catalog");
 
-        if (count($categories) > 0) {
-            $catalogs = $this
-                ->getEntityManager()
-                ->getRepository('Catalog')
-                ->find();
-
-            if (count($catalogs) > 0) {
+        if (!empty($categories) && !empty($catalogs)) {
+            $sql = "";
+            foreach ($categories as $category) {
                 foreach ($catalogs as $catalog) {
-                    foreach ($categories as $category) {
-                        $this
-                            ->getEntityManager()
-                            ->getRepository('Catalog')
-                            ->relate($catalog, 'categories', $category);
-                    }
+                    $sql .= "INSERT INTO catalog_category (catalog_id, category_id) VALUES ('" . $catalog['id'] . "', '" . $category['id'] . "');";
                 }
             }
+            $this->execute($sql);
         }
     }
 
@@ -163,6 +154,33 @@ class V3Dot0Dot1 extends AbstractMigration
     {
         $this->execute("DELETE FROM catalog WHERE code='main_catalog_migration'");
         $this->execute("UPDATE product SET catalog_id=NULL WHERE 1");
+    }
+
+    /**
+     * Migrate channels up
+     */
+    protected function channelsUp()
+    {
+        $products = $this->fetchAll("SELECT id FROM product");
+        $channels = $this->fetchAll("SELECT id FROM channel");
+
+        if (!empty($products) && !empty($channels)) {
+            $sql = "";
+            foreach ($products as $product) {
+                foreach ($channels as $channel) {
+                    $sql .= "INSERT INTO product_channel (product_id, channel_id) VALUES ('" . $product['id'] . "', '" . $channel['id'] . "');";
+                }
+            }
+            $this->execute($sql);
+        }
+    }
+
+    /**
+     * Migrate channels down
+     */
+    protected function channelsDown()
+    {
+        $this->execute("DELETE FROM product_channel WHERE 1");
     }
 
 
