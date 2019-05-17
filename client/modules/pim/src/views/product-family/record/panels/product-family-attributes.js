@@ -443,6 +443,7 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                             }
                         }
                     ];
+                    collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames';
 
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
