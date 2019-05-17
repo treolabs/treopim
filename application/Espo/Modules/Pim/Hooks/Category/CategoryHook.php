@@ -40,7 +40,7 @@ class CategoryHook extends BaseHook
      * @throws BadRequest
      */
     public function beforeSave(Entity $entity, $params = [])
-    {
+   {
         // is code valid
         if (!$this->isCodeValid($entity)) {
             throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
@@ -50,7 +50,8 @@ class CategoryHook extends BaseHook
             throw new BadRequest($this->exception('Category has linked products'));
         }
 
-        if (count($entity->get('catalogs')) > 0 && !empty($entity->get('categoryParent'))) {
+        if ((count($entity->get('catalogs')) > 0 || !empty($entity->get('catalogsIds')))
+            && !empty($entity->get('categoryParent'))) {
             throw new BadRequest($this->translate('Only root category can be linked with catalog', 'exceptions', 'Catalog'));
         }
     }
