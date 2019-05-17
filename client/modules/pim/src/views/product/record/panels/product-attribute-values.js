@@ -434,7 +434,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                             type: 'bool',
                             value: ['linkedWithAttributeGroup'],
                             data: {
-                                linkedWithAttributeGroup: group.key
+                                linkedWithAttributeGroup: group.key !== 'no_group' ? group.key : null
                             }
                         }
                     ];
