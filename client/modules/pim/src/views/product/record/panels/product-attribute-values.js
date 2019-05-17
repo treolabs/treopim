@@ -440,18 +440,6 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
                     }, view => {
-                        this.listenTo(view, 'after:render', () => {
-                            (view.rowList || []).forEach(id => {
-                                const rowView = view.getView(id);
-                                if (rowView) {
-                                    const fieldView = rowView.getView('isRequiredField');
-                                    if (fieldView) {
-                                        fieldView.setMode('edit');
-                                        fieldView.reRender();
-                                    }
-                                }
-                            });
-                        });
                         view.render();
                     });
                 });
