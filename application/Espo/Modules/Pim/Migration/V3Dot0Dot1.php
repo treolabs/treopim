@@ -32,9 +32,67 @@ use Treo\Core\Migration\AbstractMigration;
 class V3Dot0Dot1 extends AbstractMigration
 {
     /**
-     * Up to current
+     * @inheritdoc
      */
     public function up(): void
+    {
+        $this->catalogCategoryUp();
+        $this->productCategoryUp();
+        $this->masterCatalogUp();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function down(): void
+    {
+        $this->catalogCategoryDown();
+        $this->productCategoryDown();
+        $this->masterCatalogDown();
+    }
+
+    /**
+     * Migrate catalog categories up
+     */
+    protected function catalogCategoryUp(): void
+    {
+        $categories = $this
+            ->getEntityManager()
+            ->getRepository('Category')
+            ->where(['categoryParentId' => null])
+            ->find();
+
+        if (count($categories) > 0) {
+            $catalogs = $this
+                ->getEntityManager()
+                ->getRepository('Catalog')
+                ->find();
+
+            if (count($catalogs) > 0) {
+                foreach ($catalogs as $catalog) {
+                    foreach ($categories as $category) {
+                        $this
+                            ->getEntityManager()
+                            ->getRepository('Catalog')
+                            ->relate($catalog, 'categories', $category);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Migrate product categories down
+     */
+    protected function productCategoryDown(): void
+    {
+        $this->execute("DELETE FROM product_category WHERE 1");
+    }
+
+    /**
+     * Migrate product categories up
+     */
+    protected function productCategoryUp(): void
     {
         $sql
             = "SELECT pcl.* 
@@ -43,15 +101,7 @@ class V3Dot0Dot1 extends AbstractMigration
                 JOIN category AS c ON c.id=pcl.category_id 
                 WHERE pcl.deleted=0 AND p.deleted=0 AND c.deleted=0";
 
-        $sth = $this
-            ->getEntityManager()
-            ->getPDO()
-            ->prepare($sql);
-        $sth->execute();
-
-        $data = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        if (!empty($data)) {
+        if (!empty($data = $this->fetchAll($sql))) {
             foreach ($data as $row) {
                 $entity = $this->getEntityManager()->getEntity('ProductCategory');
                 $entity->set('productId', $row['product_id']);
@@ -63,5 +113,84 @@ class V3Dot0Dot1 extends AbstractMigration
                 $this->getEntityManager()->saveEntity($entity, ['skipAll' => true]);
             }
         }
+    }
+
+    /**
+     * Migrate catelog categories down
+     */
+    protected function catalogCategoryDown(): void
+    {
+        $this->execute("DELETE FROM catalog_category WHERE 1");
+    }
+
+    /**
+     * Migrate master catalog up
+     */
+    protected function masterCatalogUp(): void
+    {
+        $catalog = $this->getEntityManager()->getEntity('Catalog');
+        $catalog->set(
+            [
+                'name'        => 'Main catalog',
+                'code'        => 'main_catalog_migration',
+                'description' => 'Auto generated catalog by migration.',
+                'isActive'    => true,
+            ]
+        );
+        $this->getEntityManager()->saveEntity($catalog);
+
+        $this->execute("UPDATE product SET catalog_id='" . $catalog->get('id') . "' WHERE 1");
+
+        $categories = $this
+            ->getEntityManager()
+            ->getRepository('Category')
+            ->where(['categoryParentId' => null])
+            ->find();
+        if (count($categories) > 0) {
+            foreach ($categories as $category) {
+                $this
+                    ->getEntityManager()
+                    ->getRepository('Catalog')
+                    ->relate($catalog, 'categories', $category);
+            }
+        }
+    }
+
+    /**
+     * Migrate master catalog down
+     */
+    protected function masterCatalogDown(): void
+    {
+        $this->execute("DELETE FROM catalog WHERE code='main_catalog_migration'");
+        $this->execute("UPDATE product SET catalog_id=NULL WHERE 1");
+    }
+
+
+    /**
+     * @param string $sql
+     *
+     * @return mixed
+     */
+    private function execute(string $sql)
+    {
+        $sth = $this
+            ->getEntityManager()
+            ->getPDO()
+            ->prepare($sql);
+        $sth->execute();
+
+        return $sth;
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @return mixed
+     */
+    private function fetchAll(string $sql)
+    {
+        return $this
+            ->execute($sql)
+            ->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
