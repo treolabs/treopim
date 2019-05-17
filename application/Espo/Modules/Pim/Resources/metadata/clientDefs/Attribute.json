@@ -4,11 +4,13 @@
   "boolFilterList": [
     "onlyMy",
     "notLinkedWithProductFamily",
-    "notLinkedWithProduct"
+    "notLinkedWithProduct",
+    "notLinkedProductFamilyAttributes"
   ],
   "hiddenBoolFilterList": [
     "notLinkedWithProductFamily",
-    "notLinkedWithProduct"
+    "notLinkedWithProduct",
+    "notLinkedProductFamilyAttributes"
   ],
   "disabledMassActions": [
     "merge"
