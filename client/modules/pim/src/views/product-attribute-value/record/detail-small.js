@@ -26,8 +26,8 @@ Espo.define('pim:views/product-attribute-value/record/detail-small', ['pim:views
             Detail.prototype.handleValueModelDefsUpdating.call(this);
         },
 
-        updateValueDefsInModel() {
-            Detail.prototype.updateValueDefsInModel.call(this);
+        updateModelDefs() {
+            Detail.prototype.updateModelDefs.call(this);
         }
 
     })
