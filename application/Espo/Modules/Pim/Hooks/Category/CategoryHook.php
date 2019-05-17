@@ -40,7 +40,7 @@ class CategoryHook extends BaseHook
      * @throws BadRequest
      */
     public function beforeSave(Entity $entity, $params = [])
-   {
+    {
         // is code valid
         if (!$this->isCodeValid($entity)) {
             throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
