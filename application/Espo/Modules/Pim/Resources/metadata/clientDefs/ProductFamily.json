@@ -29,7 +29,7 @@
       "selectBoolFilterList": [
         "notLinkedWithProductFamily"
       ],
-      "selectAction": "selectRelatedEntity",
+      "select": false,
       "createAction": "createRelatedConfigured",
       "rowActionsView": "views/record/row-actions/relationship-no-unlink"
     }
