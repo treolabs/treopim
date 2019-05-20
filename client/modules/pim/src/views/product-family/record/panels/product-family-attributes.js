@@ -439,7 +439,10 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                             type: 'bool',
                             value: ['linkedWithAttributeGroup'],
                             data: {
-                                linkedWithAttributeGroup: group.key !== 'no_group' ? group.key : null
+                                linkedWithAttributeGroup: {
+                                    productFamilyId: this.model.id,
+                                    attributeGroupId: group.key !== 'no_group' ? group.key : null
+                                }
                             }
                         }
                     ];
