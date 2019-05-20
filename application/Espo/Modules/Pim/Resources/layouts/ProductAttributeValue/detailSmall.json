@@ -5,17 +5,17 @@
     "rows": [
       [
         {
+          "name": "attribute"
+        },
+        false
+      ],
+      [
+        {
           "name": "scope"
         },
         {
           "name": "channels"
         }
-      ],
-      [
-        {
-          "name": "attribute"
-        },
-        false
       ],
       [
         {

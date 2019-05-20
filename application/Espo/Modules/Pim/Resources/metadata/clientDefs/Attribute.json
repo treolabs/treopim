@@ -3,11 +3,9 @@
   "iconClass": "fas fa-sort-amount-down",
   "boolFilterList": [
     "onlyMy",
-    "notLinkedWithProductFamily",
     "notLinkedWithProduct"
   ],
   "hiddenBoolFilterList": [
-    "notLinkedWithProductFamily",
     "notLinkedWithProduct"
   ],
   "disabledMassActions": [
