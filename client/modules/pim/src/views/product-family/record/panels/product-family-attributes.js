@@ -402,11 +402,11 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
 
             this.collection.forEach(model => {
                 let key = model.get(this.groupKey);
-                if (key === null) {
+                if (key === null || typeof key === 'undefined') {
                     key = this.noGroup.key;
                 }
                 let label = model.get(this.groupLabel);
-                if (label === null) {
+                if (label === null || typeof label === 'undefined') {
                     label = this.translate(this.noGroup.label, 'labels', 'Global');
                 }
                 let group = groups.find(item => item.key === key);
