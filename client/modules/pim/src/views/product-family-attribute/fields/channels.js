@@ -26,7 +26,7 @@ Espo.define('pim:views/product-family-attribute/fields/channels', 'treo-core:vie
             notLinkedWithAttributesInProductFamily() {
                 return {
                     productFamilyId: this.model.get('productFamilyId'),
-                    scope: this.model.get('scope')
+                    attributeId: this.model.get('attributeId')
                 }
             }
         },
