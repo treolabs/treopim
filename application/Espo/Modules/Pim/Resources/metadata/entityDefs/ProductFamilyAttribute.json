@@ -34,7 +34,8 @@
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
-      "noLoad": true
+      "noLoad": true,
+      "view": "pim:views/product-family-attribute/fields/channels"
     },
     "productAttributeValues": {
       "type": "linkMultiple",
