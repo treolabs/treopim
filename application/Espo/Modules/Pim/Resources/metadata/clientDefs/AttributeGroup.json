@@ -3,10 +3,12 @@
     "iconClass": "far fa-object-group",
     "boolFilterList": [
         "onlyMy",
-        "withNotLinkedAttributesToProductFamily"
+        "withNotLinkedAttributesToProductFamily",
+        "withNotLinkedAttributesToProduct"
     ],
     "hiddenBoolFilterList": [
-        "withNotLinkedAttributesToProductFamily"
+        "withNotLinkedAttributesToProductFamily",
+        "withNotLinkedAttributesToProduct"
     ],
     "disabledMassActions": [
         "merge"
