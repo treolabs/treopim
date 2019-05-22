@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Listeners;
 
+use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
 use Treo\Listeners\AbstractListener;
 
@@ -40,6 +41,8 @@ class Product extends AbstractListener
     public function afterActionListLinked(array $data): array
     {
         if ($data['params']['link'] == 'productAttributeValues' && !empty($data['result']['list'])) {
+            $data['result']['list'] = $this->prepareArrayType($data['result']['list']);
+
             $attributes = $this
                 ->getEntityManager()
                 ->getRepository('Attribute')
@@ -76,5 +79,29 @@ class Product extends AbstractListener
         }
 
         return $data;
+    }
+
+    /**
+     * @param array $result
+     *
+     * @return array
+     */
+    protected function prepareArrayType(array $result): array
+    {
+        foreach ($result as $key => $item) {
+            if (in_array($item->attributeType, ['array', 'arrayMultiLang', 'multiEnum', 'multiEnumMultiLang'])) {
+                $result[$key]->value = Json::decode($item->value, true);
+
+                // for multiLang fields
+                if ($this->getConfig()->get('isMultilangActive')) {
+                    foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                        $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
+                        $result[$key]->$multiLangField = Json::decode($item->$multiLangField, true);
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }
