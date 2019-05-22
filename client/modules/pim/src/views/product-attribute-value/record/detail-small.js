@@ -28,6 +28,14 @@ Espo.define('pim:views/product-attribute-value/record/detail-small', ['pim:views
 
         updateModelDefs() {
             Detail.prototype.updateModelDefs.call(this);
+        },
+
+        fetch() {
+            return Dep.prototype.fetch.call(this);
+        },
+
+        getAdditionalFieldData(view, data) {
+            return Detail.prototype.getAdditionalFieldData.call(this, view, data);
         }
 
     })
