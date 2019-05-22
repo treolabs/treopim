@@ -22,7 +22,12 @@
         "notLinkedProductFamilyAttributes"
       ],
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "view": "pim:views/product-family/record/panels/product-family-attributes"
+      "view": "pim:views/product-family/record/panels/product-family-attributes",
+      "aclScopesList": [
+        "Attribute",
+        "AttributeGroup",
+        "ProductFamilyAttribute"
+      ]
     },
     "products": {
       "view": "pim:views/product-family/record/panels/products",
