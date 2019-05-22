@@ -123,4 +123,32 @@ class ProductAttributeValue extends AbstractSelectManager
 
         return $where;
     }
+
+    /**
+     * @param array $result
+     */
+    protected function boolFilterLinkedWithAttributeGroup(array &$result)
+    {
+        $data = (array)$this->getSelectCondition('linkedWithAttributeGroup');
+
+        if (isset($data['productId'])) {
+            $attributes = $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->select(['id'])
+                ->distinct()
+                ->join('attribute')
+                ->where([
+                    'productId' => $data['productId'],
+                    'attribute.attributeGroupId'
+                        => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
+                ])
+                ->find()
+                ->toArray();
+
+            $result['whereClause'][] = [
+                'id' => array_column($attributes, 'id')
+            ];
+        }
+    }
 }

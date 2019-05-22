@@ -43,11 +43,12 @@
       "type": "linkMultiple",
       "required": true,
       "importDisabled": true,
-      "noLoad": false
+      "noLoad": false,
+      "view": "pim:views/product-attribute-value/fields/channels"
     },
     "isCustom": {
       "type": "bool",
-      "default": false,
+      "default": true,
       "notStorable": true
     },
     "attributeType": {

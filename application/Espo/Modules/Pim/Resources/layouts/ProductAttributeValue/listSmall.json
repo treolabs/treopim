@@ -6,6 +6,9 @@
     "name": "value"
   },
   {
+    "name": "isRequired"
+  },
+  {
     "name": "scope"
   },
   {

@@ -28,11 +28,11 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
 
         handleValueModelDefsUpdating() {
             if (this.model.get('attributeId')) {
-                this.updateValueDefsInModel();
+                this.updateModelDefs();
             }
             this.listenTo(this.model, 'change:attributeId', () => {
                 if (this.model.get('attributeId')) {
-                    this.updateValueDefsInModel();
+                    this.updateModelDefs();
                     this.clearView('middle');
                     this.gridLayout = null;
                     this.createMiddleView(() => this.reRender());
@@ -40,7 +40,7 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
             });
         },
 
-        updateValueDefsInModel() {
+        updateModelDefs() {
             let type = this.model.get('attributeType');
             let typeValue = this.model.get('typeValue');
             if (type) {
@@ -60,6 +60,8 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                     fieldDefs.measure = (typeValue || ['Length'])[0];
                 }
                 this.model.defs.fields.value = fieldDefs;
+                this.model.defs.fields.scope.readOnly = this.model.defs.fields.attribute.readOnly =
+                    this.model.defs.fields.channels.readOnly = !this.model.get('isCustom');
             }
         }
 

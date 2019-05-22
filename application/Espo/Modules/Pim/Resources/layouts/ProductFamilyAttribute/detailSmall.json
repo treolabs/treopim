@@ -3,6 +3,12 @@
     "rows": [
       [
         {
+          "name": "attribute"
+        },
+        false
+      ],
+      [
+        {
           "name": "scope"
         },
         {
@@ -12,12 +18,6 @@
       [
         {
           "name": "isRequired"
-        },
-        false
-      ],
-      [
-        {
-          "name": "attribute"
         },
         false
       ]

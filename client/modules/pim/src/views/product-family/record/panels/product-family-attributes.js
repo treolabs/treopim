@@ -402,11 +402,11 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
 
             this.collection.forEach(model => {
                 let key = model.get(this.groupKey);
-                if (key === null) {
+                if (key === null || typeof key === 'undefined') {
                     key = this.noGroup.key;
                 }
                 let label = model.get(this.groupLabel);
-                if (label === null) {
+                if (label === null || typeof label === 'undefined') {
                     label = this.translate(this.noGroup.label, 'labels', 'Global');
                 }
                 let group = groups.find(item => item.key === key);
@@ -432,6 +432,21 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                     group.rowList.forEach(id => {
                         collection.add(this.collection.get(id));
                     });
+
+                    collection.url = `ProductFamily/${this.model.id}/productFamilyAttributes`;
+                    collection.where = [
+                        {
+                            type: 'bool',
+                            value: ['linkedWithAttributeGroup'],
+                            data: {
+                                linkedWithAttributeGroup: {
+                                    productFamilyId: this.model.id,
+                                    attributeGroupId: group.key !== 'no_group' ? group.key : null
+                                }
+                            }
+                        }
+                    ];
+                    collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames';
 
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 

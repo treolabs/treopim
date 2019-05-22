@@ -428,6 +428,21 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         collection.add(this.collection.get(id));
                     });
 
+                    collection.url = `Product/${this.model.id}/productAttributeValues`;
+                    collection.where = [
+                        {
+                            type: 'bool',
+                            value: ['linkedWithAttributeGroup'],
+                            data: {
+                                linkedWithAttributeGroup: {
+                                    productId: this.model.id,
+                                    attributeGroupId: group.key !== 'no_group' ? group.key : null
+                                }
+                            }
+                        }
+                    ];
+                    collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames';
+
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
                     this.createView(group.key, viewName, {
@@ -440,18 +455,6 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
                     }, view => {
-                        this.listenTo(view, 'after:render', () => {
-                            (view.rowList || []).forEach(id => {
-                                const rowView = view.getView(id);
-                                if (rowView) {
-                                    const fieldView = rowView.getView('isRequiredField');
-                                    if (fieldView) {
-                                        fieldView.setMode('edit');
-                                        fieldView.reRender();
-                                    }
-                                }
-                            });
-                        });
                         view.render();
                     });
                 });
@@ -475,6 +478,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         actionRefresh() {
+            this.getMetadata().fetch();
             this.fetchCollectionGroups(() => this.reRender());
         },
 

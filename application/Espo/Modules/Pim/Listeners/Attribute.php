@@ -40,12 +40,7 @@ class Attribute extends AbstractListener
     public function beforeActionDelete(array $data): array
     {
         if (empty($data['data']->force) && !empty($data['params']['id'])) {
-            // get attribute
-            $attribute = $this
-                ->getEntityManager()
-                ->getEntity('Attribute', $data['params']['id']);
-
-            if ($this->hasProduct($attribute)) {
+            if ($this->hasProduct($data['params']['id'])) {
                 throw new BadRequest(
                     $this->getLanguage()->translate(
                         'Attribute is used in products. Please, update products first',
@@ -82,16 +77,18 @@ class Attribute extends AbstractListener
     /**
      * Is attribute used in products
      *
-     * @param Entity $entity
+     * @param string $attributeId
      *
      * @return bool
      */
-    protected function hasProduct(Entity $entity): bool
+    protected function hasProduct(string $attributeId): bool
     {
         $count = $this
             ->getEntityManager()
-            ->getRepository('Attribute')
-            ->findRelated($entity, 'products')
+            ->getRepository('ProductAttributeValue')
+            ->where([
+                'attributeId' => $attributeId
+            ])
             ->count();
 
         return !empty($count);

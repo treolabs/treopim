@@ -207,13 +207,13 @@ class Product extends AbstractService
             $rows = $duplicatingProduct->get('productAttributeValues');
 
             if (count($rows) > 0) {
-                $service = $this->getServiceFactory()->create('ProductAttributeValue');
-
                 foreach ($rows as $item) {
-                    $data = $service->getDuplicateAttributes($item->get('id'));
-                    $data->productId = $product->get('id');
+                    $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                    $entity->set($item->toArray());
+                    $entity->id = Util::generateId();
+                    $entity->set('productId', $product->get('id'));
 
-                    $service->createEntity($data);
+                    $this->getEntityManager()->saveEntity($entity, ['skipProductAttributeValueHook' => true]);
                 }
             }
         }
