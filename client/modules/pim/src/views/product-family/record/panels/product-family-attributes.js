@@ -448,6 +448,10 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                     ];
                     collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames';
 
+                    this.listenTo(collection, 'sync', () => {
+                        collection.models.sort((a, b) => a.get('sortOrder') - b.get('sortOrder'));
+                    });
+
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
                     this.createView(group.key, viewName, {
