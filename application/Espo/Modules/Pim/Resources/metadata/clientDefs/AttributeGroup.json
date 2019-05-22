@@ -2,7 +2,13 @@
     "controller": "controllers/record",
     "iconClass": "far fa-object-group",
     "boolFilterList": [
-        "onlyMy"
+        "onlyMy",
+        "withNotLinkedAttributesToProductFamily",
+        "withNotLinkedAttributesToProduct"
+    ],
+    "hiddenBoolFilterList": [
+        "withNotLinkedAttributesToProductFamily",
+        "withNotLinkedAttributesToProduct"
     ],
     "disabledMassActions": [
         "merge"

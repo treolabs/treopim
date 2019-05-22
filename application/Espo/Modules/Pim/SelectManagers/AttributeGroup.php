@@ -47,9 +47,11 @@ class AttributeGroup extends AbstractSelectManager
             ->find()
             ->toArray();
 
-        $result['whereClause'][] = [
-            'id' => $this->getNotLinkedAttributeGroups($productAttributes)
-        ];
+        if (count($productAttributes) > 0) {
+            $result['whereClause'][] = [
+                'id' => $this->getNotLinkedAttributeGroups($productAttributes)
+            ];
+        }
     }
 
     /**
@@ -69,9 +71,11 @@ class AttributeGroup extends AbstractSelectManager
             ->find()
             ->toArray();
 
-        $result['whereClause'][] = [
-            'id' => $this->getNotLinkedAttributeGroups($productFamilyAttributes)
-        ];
+        if (count($productFamilyAttributes) > 0) {
+            $result['whereClause'][] = [
+                'id' => $this->getNotLinkedAttributeGroups($productFamilyAttributes)
+            ];
+        }
     }
 
     /**
@@ -86,23 +90,21 @@ class AttributeGroup extends AbstractSelectManager
         // prepare result
         $result = [];
 
-        if (count($attributes) > 0) {
-            // get all attribute groups
-            $attributeGroups = $this
-                ->getEntityManager()
-                ->getRepository('AttributeGroup')
-                ->select(['id'])
-                ->find();
+        // get all attribute groups
+        $attributeGroups = $this
+            ->getEntityManager()
+            ->getRepository('AttributeGroup')
+            ->select(['id'])
+            ->find();
 
-            foreach ($attributeGroups as $attributeGroup) {
-                $attr = $attributeGroup->get('attributes')->toArray();
+        foreach ($attributeGroups as $attributeGroup) {
+            $attr = $attributeGroup->get('attributes')->toArray();
 
-                if (!empty(array_diff(
-                    array_column($attr, 'id'),
-                    array_column($attributes, 'attributeId')
-                ))) {
-                    $result[] = $attributeGroup->get('id');
-                }
+            if (!empty(array_diff(
+                array_column($attr, 'id'),
+                array_column($attributes, 'attributeId')
+            ))) {
+                $result[] = $attributeGroup->get('id');
             }
         }
 
