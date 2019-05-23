@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Listeners;
 
-use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
 use Treo\Listeners\AbstractListener;
 

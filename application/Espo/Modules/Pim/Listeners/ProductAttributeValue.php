@@ -25,7 +25,6 @@ namespace Espo\Modules\Pim\Listeners;
 use Espo\Core\Exceptions\Error;
 use Treo\Listeners\AbstractListener;
 use Espo\Core\Utils\Util;
-use Espo\Core\Utils\Json;
 
 /**
  * Class ProductAttributeValue
