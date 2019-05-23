@@ -220,8 +220,6 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function execute(string $sql)
     {
-        $GLOBALS['log']->warning($sql);
-
         $sth = $this
             ->getEntityManager()
             ->getPDO()
