@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
 
 /**
  * Migration class for version 2.12.1

@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
 
 use Espo\Core\Utils\Util;
 

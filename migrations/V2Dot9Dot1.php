@@ -20,20 +20,40 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
+
+use Treo\Core\Migration\AbstractMigration;
 
 /**
- * Migration class for version 1.7.5
+ * Migration class for version 2.9.1
  *
  * @author r.zablodskiy@treolabs.com
  */
-class V1Dot7Dot5 extends V1Dot7Dot1
+class V2Dot9Dot1 extends AbstractMigration
 {
     /**
      * Up to current
      */
     public function up(): void
     {
-        parent::up();
+        $attributes = $this
+            ->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->distinct()
+            ->join('attribute')
+            ->where([
+                'attribute.type' => ['array', 'multiEnum', 'arrayMultiLang', 'multiEnumMultiLang']
+            ])
+            ->find();
+
+        if (count($attributes) > 0) {
+            foreach ($attributes as $attribute) {
+                if (!empty($value = $attribute->get('value'))) {
+                    $attribute->set('value', json_encode(json_decode($value), JSON_UNESCAPED_UNICODE));
+
+                    $this->getEntityManager()->saveEntity($attribute);
+                }
+            }
+        }
     }
 }

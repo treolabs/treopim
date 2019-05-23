@@ -20,27 +20,23 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
 
 use Treo\Core\Migration\AbstractMigration;
 
 /**
- * Migration class for version 2.6.0
+ * Migration class for version 2.3.0
  *
- * @author r.ratsun@treolabs.com
+ * @author r.zablodskiy@treolabs.com
  */
-class V2Dot6Dot0 extends AbstractMigration
+class V2Dot3Dot0 extends AbstractMigration
 {
     /**
      * Up to current
      */
     public function up(): void
     {
-        // drop old trigger
-        $sth = $this
-            ->getEntityManager()
-            ->getPDO()
-            ->prepare("DROP TRIGGER IF EXISTS trigger_before_insert_product_attribute_value");
-        $sth->execute();
+        $this->getConfig()->set('PimTriggers', false);
+        $this->getConfig()->save();
     }
 }

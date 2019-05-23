@@ -20,53 +20,77 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
 
 use Treo\Core\Migration\AbstractMigration;
 use Espo\Core\Utils\Json;
 
 /**
- * Migration class for version 2.9.8
+ * Migration class for version 2.2.4
  *
  * @author r.zablodskiy@treolabs.com
  */
-class V2Dot9Dot8 extends AbstractMigration
+class V2Dot2Dot4 extends AbstractMigration
 {
     /**
      * Up to current
      */
     public function up(): void
     {
+        $this->parseArrayMultiLangNoteData();
+    }
+
+    /**
+     * Parse arrayMultiLang values in Note entity
+     */
+    protected function parseArrayMultiLangNoteData(): void
+    {
         $attributes = $this
             ->getEntityManager()
             ->getRepository('Attribute')
             ->select(['id'])
             ->where([
-                'type' => 'text'
+                'type' => 'arrayMultiLang'
             ])
-            ->find();
+            ->find()
+            ->toArray();
 
-        if (count($attributes) > 0) {
+        if (!empty($attributes)) {
+            $attributes = array_column($attributes, 'id');
+
             $notes = $this
                 ->getEntityManager()
                 ->getRepository('Note')
+                ->select(['id', 'data'])
                 ->where([
-                    'attributeId' => array_column($attributes->toArray(), 'id')
+                    'attributeId' => $attributes
                 ])
                 ->find();
 
             if (count($notes) > 0) {
+                $sql = '';
                 foreach ($notes as $note) {
-                    if (!empty($note->get('data'))) {
-                        $data = Json::decode(Json::encode($note->get('data')), true);
+                    $data = Json::decode(Json::encode($note->get('data')), true);
 
-                        foreach ($data['fields'] as $field) {
-                            $data['attributes']['was'][$field] = (string)$data['attributes']['was'][$field];
+                    foreach ($data['attributes']['was'] as $key => $value) {
+                        if (!empty($value)) {
+                            $data['attributes']['was'][$key] = Json::decode($value, true);
                         }
-
-                        $note->set('data', Json::encode($data));
-                        $this->getEntityManager()->saveEntity($note);
                     }
+
+                    $sql .= sprintf(
+                        "UPDATE note SET data='%s' WHERE id='%s' AND deleted=0;",
+                        Json::encode($data),
+                        $note->get('id')
+                    );
+                }
+
+                if (!empty($sql)) {
+                    $sth = $this
+                        ->getEntityManager()
+                        ->getPDO()
+                        ->prepare($sql);
+                    $sth->execute();
                 }
             }
         }
