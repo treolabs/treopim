@@ -3,10 +3,12 @@
   "iconClass": "fas fa-sort-amount-down",
   "boolFilterList": [
     "onlyMy",
-    "notLinkedWithProduct"
+    "notLinkedWithProduct",
+    "notLinkedProductFamilyAttributes"
   ],
   "hiddenBoolFilterList": [
-    "notLinkedWithProduct"
+    "notLinkedWithProduct",
+    "notLinkedProductFamilyAttributes"
   ],
   "disabledMassActions": [
     "merge"
