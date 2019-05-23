@@ -44,8 +44,6 @@ class ProductAttributeValue extends AbstractListener
     public function afterActionRead(array $data): array
     {
         if (isset($data['result']->attributeId)) {
-            $data['result'] = $this->prepareArrayType($data['result']);
-
             $attribute = $this->getEntityManager()->getEntity('Attribute', $data['result']->attributeId);
 
             if (!empty($attribute)) {
@@ -62,27 +60,5 @@ class ProductAttributeValue extends AbstractListener
         }
 
         return $data;
-    }
-
-    /**
-     * @param \stdClass $result
-     *
-     * @return \stdClass
-     */
-    protected function prepareArrayType(\stdClass $result): \stdClass
-    {
-        if (in_array($result->attributeType, ['array', 'arrayMultiLang', 'multiEnum', 'multiEnumMultiLang'])) {
-            $result->value = Json::decode($result->value, true);
-
-            // for multiLang fields
-            if ($this->getConfig()->get('isMultilangActive')) {
-                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                    $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
-                    $result->$multiLangField = Json::decode($result->$multiLangField, true);
-                }
-            }
-        }
-
-        return $result;
     }
 }
