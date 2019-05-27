@@ -4,10 +4,12 @@
   "boolFilterList": [
     "onlyMy",
     "notLinkedWithProduct",
+    "notLinkedProductAttributeValues",
     "notLinkedProductFamilyAttributes"
   ],
   "hiddenBoolFilterList": [
     "notLinkedWithProduct",
+    "notLinkedProductAttributeValues",
     "notLinkedProductFamilyAttributes"
   ],
   "disabledMassActions": [
