@@ -29,7 +29,7 @@
       "default": "PIM"
     },
     "description": {
-      "default": "PIM module for Treo Core."
+      "default": "PIM module for TreoCore."
     },
     "tags": [
       "manage",
