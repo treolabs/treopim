@@ -30,6 +30,12 @@
     },
     "description": {
       "default": "PIM module for Treo Core."
-    }
+    },
+    "tags": [
+      "manage",
+      "products",
+      "channels",
+      "attributes"
+    ]
   }
 }
