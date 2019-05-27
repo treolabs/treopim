@@ -20,53 +20,30 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
 
 use Treo\Core\Migration\AbstractMigration;
 use Espo\Modules\Pim\Hooks\Category\CategoryTreeHook;
 
 /**
- * Migration class for version 1.7.0
+ * Migration class for version 1.7.1
  *
  * @author r.ratsun@treolabs.com
  */
-class V1Dot7Dot0 extends AbstractMigration
+class V1Dot7Dot1 extends AbstractMigration
 {
     /**
      * Up to current
      */
     public function up(): void
     {
-        $this->unlinkProduct();
-
-        $this->refreshCategoryRoute();
-    }
-
-    /**
-     * Unlink product from categories with children categories
-     */
-    protected function unlinkProduct(): void
-    {
-        // prepare sql
-        $sql
-            = "UPDATE product_category_linker SET deleted = 1 
-               WHERE 
-                  deleted = 0 
-                 AND 
-                  category_id IN 
-                   (SELECT DISTINCT category_parent_id 
-                    FROM category 
-                    WHERE category_parent_id IS NOT NULL AND deleted = 0)";
-
-        // execute
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
+        $this->refreshCategoryRouteName();
     }
 
     /**
      * Refresh all category routes
      */
-    protected function refreshCategoryRoute(): void
+    protected function refreshCategoryRouteName(): void
     {
         $categories = $this
             ->getEntityManager()
@@ -75,10 +52,10 @@ class V1Dot7Dot0 extends AbstractMigration
 
         $sql = '';
         foreach ($categories as $category) {
-            if (!empty($route = CategoryTreeHook::getCategoryRoute($category))) {
+            if (!empty($route = CategoryTreeHook::getCategoryRoute($category, true))) {
                 // prepare id
                 $id = $category->get('id');
-                $sql .= "UPDATE category SET category_route='{$route}' WHERE id='{$id}';";
+                $sql .= "UPDATE category SET category_route_name='{$route}' WHERE id='{$id}';";
             }
         }
 

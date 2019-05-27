@@ -20,23 +20,20 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
-
-use Treo\Core\Migration\AbstractMigration;
+namespace Treo\Migrations\Pim;
 
 /**
- * Migration class for version 2.5.4
+ * Migration class for version 1.7.5
  *
- * @author r.ratsun@treolabs.com
+ * @author r.zablodskiy@treolabs.com
  */
-class V2Dot5Dot4 extends AbstractMigration
+class V1Dot7Dot5 extends V1Dot7Dot1
 {
     /**
      * Up to current
      */
     public function up(): void
     {
-        $this->getConfig()->set('PimTriggers', false);
-        $this->getConfig()->save();
+        parent::up();
     }
 }

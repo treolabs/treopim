@@ -20,16 +20,16 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
 
 use Treo\Core\Migration\AbstractMigration;
 
 /**
- * Migration class for version 2.3.0
+ * Migration class for version 2.9.4
  *
- * @author r.zablodskiy@treolabs.com
+ * @author r.ratsun@treolabs.com
  */
-class V2Dot3Dot0 extends AbstractMigration
+class V2Dot9Dot4 extends AbstractMigration
 {
     /**
      * Up to current

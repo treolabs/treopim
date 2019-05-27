@@ -63,6 +63,30 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                 this.model.defs.fields.scope.readOnly = this.model.defs.fields.attribute.readOnly =
                     this.model.defs.fields.channels.readOnly = !this.model.get('isCustom');
             }
+        },
+
+        fetch() {
+            let data = Dep.prototype.fetch.call(this);
+            let view = this.getFieldView('value');
+            if (view) {
+                _.extend(data, this.getAdditionalFieldData(view, data));
+            }
+            return data;
+        },
+
+        getAdditionalFieldData(view, data) {
+            let additionalData = false;
+            if (view.type === 'unit') {
+                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
+                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
+                actualFieldDefs.forEach((field, i) => {
+                    if (field) {
+                        additionalData = additionalData || {};
+                        additionalData[field] = data[actualFieldValues[i]];
+                    }
+                });
+            }
+            return {data: additionalData ? additionalData : null};
         }
 
     })

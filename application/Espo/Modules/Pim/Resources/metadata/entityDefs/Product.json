@@ -237,6 +237,7 @@
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true,
       "noLoad": true,
       "importDisabled": true,
       "view": "pim:views/product/fields/product-categories"

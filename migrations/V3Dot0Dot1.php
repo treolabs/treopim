@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace Espo\Modules\Pim\Migration;
+namespace Treo\Migrations\Pim;
 
 use Treo\Core\Migration\AbstractMigration;
 
@@ -59,7 +59,7 @@ class V3Dot0Dot1 extends AbstractMigration
     protected function catalogCategoryUp(): void
     {
         $categories = $this->fetchAll("SELECT id FROM category WHERE category_parent_id IS NULL");
-        $catalogs = $this->fetchAll("SELECT id FROM treopim_local.catalog");
+        $catalogs = $this->fetchAll("SELECT id FROM catalog");
 
         if (!empty($categories) && !empty($catalogs)) {
             $sql = "";

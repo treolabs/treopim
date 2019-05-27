@@ -3,9 +3,11 @@
   "iconClass": "far fa-object-group",
   "boolFilterList": [
     "onlyMy",
+    "withNotLinkedAttributesToProductFamily",
     "withNotLinkedAttributesToProduct"
   ],
   "hiddenBoolFilterList": [
+    "withNotLinkedAttributesToProductFamily",
     "withNotLinkedAttributesToProduct"
   ],
   "disabledMassActions": [

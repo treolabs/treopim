@@ -24,6 +24,7 @@ namespace Espo\Modules\Pim\Services;
 
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Json;
+use Espo\Core\Utils\Util;
 
 /**
  * ProductAttributeValue service
@@ -55,6 +56,8 @@ class ProductAttributeValue extends AbstractService
 
         $entity->set('isCustom', $this->isCustom($entity));
         $entity->set('attributeType', (!empty($entity->get('attribute'))) ? $entity->get('attribute')->get('type') : null);
+
+        $this->prepareArrayType($entity);
     }
 
     /**
@@ -88,5 +91,28 @@ class ProductAttributeValue extends AbstractService
         }
 
         return $isCustom;
+    }
+
+    /**
+     * Convert array attributes value to needed format
+     *
+     * @param Entity $entity
+     */
+    protected function prepareArrayType(Entity $entity)
+    {
+        $type = $entity->get('attributeType');
+
+        if (in_array($type, ['array', 'arrayMultiLang', 'multiEnum', 'multiEnumMultiLang'])) {
+            $entity->set('value', Json::decode($entity->get('value'), true));
+
+            // for multiLang fields
+            if ($this->getConfig()->get('isMultilangActive')
+                && in_array($type, ['arrayMultiLang', 'multiEnumMultiLang'])) {
+                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                    $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
+                    $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-/*
+<?php
+/**
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -17,27 +18,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product-attribute-value/record/edit-small', ['pim:views/product-attribute-value/record/detail', 'views/record/edit-small'],
-    (Detail, Dep) => Dep.extend({
+declare(strict_types=1);
 
-        setup() {
-            Dep.prototype.setup.call(this);
+namespace Treo\Migrations\Pim;
 
-            Detail.prototype.handleValueModelDefsUpdating.call(this);
-        },
-
-        updateModelDefs() {
-            Detail.prototype.updateModelDefs.call(this);
-        },
-
-        fetch() {
-            return Detail.prototype.fetch.call(this);
-        },
-
-        getAdditionalFieldData(view, data) {
-            return Detail.prototype.getAdditionalFieldData.call(this, view, data);
-        }
-
-    })
-);
-
+/**
+ * Migration class for version 2.12.0
+ *
+ * @author r.ratsun@treolabs.com
+ */
+class V2Dot12Dot0 extends \Treo\Core\Migration\AbstractMigration
+{
+    /**
+     * Up to current
+     */
+    public function up(): void
+    {
+        $this->getConfig()->set('PimTriggers', false);
+        $this->getConfig()->save();
+    }
+}
