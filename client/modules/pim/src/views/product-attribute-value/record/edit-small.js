@@ -28,6 +28,14 @@ Espo.define('pim:views/product-attribute-value/record/edit-small', ['pim:views/p
 
         updateModelDefs() {
             Detail.prototype.updateModelDefs.call(this);
+        },
+
+        fetch() {
+            return Detail.prototype.fetch.call(this);
+        },
+
+        getAdditionalFieldData(view, data) {
+            return Detail.prototype.getAdditionalFieldData.call(this, view, data);
         }
 
     })

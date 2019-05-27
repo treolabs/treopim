@@ -327,6 +327,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         }
                     }
                 });
+                list.push('data');
                 this.collection.data.select = list.join(',');
                 this.collection.reset();
                 this.fetchCollectionPart(() => {
@@ -441,7 +442,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                             }
                         }
                     ];
-                    collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames';
+                    collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames,data';
 
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
