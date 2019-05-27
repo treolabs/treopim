@@ -61,7 +61,12 @@
         "notLinkedProductAttributeValues"
       ],
       "rowActionsView": "pim:views/product-attribute-value/record/row-actions/relationship-no-unlink-in-product",
-      "view": "pim:views/product/record/panels/product-attribute-values"
+      "view": "pim:views/product/record/panels/product-attribute-values",
+      "aclScopesList": [
+        "Attribute",
+        "AttributeGroup",
+        "ProductAttributeValue"
+      ]
     },
     "productCategories": {
       "view": "pim:views/product/record/panels/product-categories",
