@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Listeners;
 
 use Espo\Core\Exceptions\Error;
+use Espo\Core\Utils\Json;
 use Treo\Listeners\AbstractListener;
 use Espo\Core\Utils\Util;
 
@@ -54,6 +55,30 @@ class ProductAttributeValue extends AbstractListener
                         $multiLangField =  Util::toCamelCase('typeValue_' . strtolower($locale));
                         $data['result']->$multiLangField = $attribute->get($multiLangField);
                     }
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    public function beforeActionCreate(array $data): array
+    {
+        if (is_array($data['data']->value)) {
+            $data['data']->value = Json::encode($data['data']->value);
+        }
+
+        // for multiLang fields
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
+                if (isset($data['data']->$multiLangField) && is_array($data['data']->$multiLangField)) {
+                    $data['data']->$multiLangField = Json::encode($data['data']->$multiLangField);
                 }
             }
         }

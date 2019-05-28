@@ -214,10 +214,11 @@ class ProductAttributeValueHook extends BaseHook
             $result['fields'][] = $fieldName;
             if (in_array($attribute->get('type'), $arrayTypes)) {
                 $result['attributes']['was'][$fieldName] = Json::decode($this->beforeSaveData['value'], true);
+                $result['attributes']['became'][$fieldName] = Json::decode($entity->get('value'), true);
             } else {
                 $result['attributes']['was'][$fieldName] = $this->beforeSaveData['value'];
+                $result['attributes']['became'][$fieldName] = $entity->get('value');
             }
-            $result['attributes']['became'][$fieldName] = $entity->get('value');
 
             if ($entity->isAttributeChanged('data')) {
                 $result['attributes']['was'][$fieldName . 'Unit'] = $this->beforeSaveData['data']->unit;
@@ -238,10 +239,12 @@ class ProductAttributeValueHook extends BaseHook
                     if (in_array($attribute->get('type'), $arrayTypes)) {
                         $result['attributes']['was'][$localeFieldName]
                             = Json::decode($this->beforeSaveData[$field], true);
+                        $result['attributes']['became'][$localeFieldName]
+                            = Json::decode($entity->get($field), true);
                     } else {
                         $result['attributes']['was'][$localeFieldName] = $this->beforeSaveData[$field];
+                        $result['attributes']['became'][$localeFieldName] = $entity->get($field);
                     }
-                    $result['attributes']['became'][$localeFieldName] = $entity->get($field);
                 }
             }
         }
