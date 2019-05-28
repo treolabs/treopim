@@ -2,5 +2,9 @@
   "views/login": [
     "__APPEND__",
     "pim"
+  ],
+  "views/header": [
+    "__APPEND__",
+    "pim"
   ]
 }
