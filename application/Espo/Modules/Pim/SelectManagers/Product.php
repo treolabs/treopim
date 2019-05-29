@@ -23,6 +23,7 @@ namespace Espo\Modules\Pim\SelectManagers;
 use Espo\Modules\Pim\Core\SelectManagers\AbstractSelectManager;
 use Espo\Modules\Pim\Services\GeneralStatisticsDashlet;
 use Espo\Modules\Pim\Services\Product as ProductService;
+use Treo\Core\EventManager\Event;
 
 /**
  * Product select manager
@@ -41,7 +42,8 @@ class Product extends AbstractSelectManager
             $params['where'] = $this->getEntityManager()
                 ->getContainer()
                 ->get('eventManager')
-                ->triggered('ProductSelectManager', 'modifyWhere', $params['where']);
+                ->dispatch('ProductSelectManager', 'modifyWhere', new Event(['where' => $params['where']]))
+                ->getArgument('where');
 
             foreach ($params['where'] as $i => $p) {
                 if (!empty($p['attribute']) && $p['attribute'] == 'categories') {

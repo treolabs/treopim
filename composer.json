@@ -18,8 +18,7 @@
     }
   ],
   "require": {
-    "treolabs/espocore": "^1.3.3",
-    "treolabs/treocore": "^3.14.0",
+    "treolabs/treocore": "^3.16.0",
     "treo-module/coloredfields": "^1.5.1",
     "treo-module/multilang": "^1.11.1"
   },
@@ -29,13 +28,7 @@
       "default": "PIM"
     },
     "description": {
-      "default": "PIM module for TreoCore."
-    },
-    "tags": [
-      "manage",
-      "products",
-      "channels",
-      "attributes"
-    ]
+      "default": "PIM module for Treo Core."
+    }
   }
 }
