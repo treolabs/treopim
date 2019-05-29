@@ -69,6 +69,11 @@
       "isEmpty": "Ist leer",
       "isNotEmpty": "Ist nicht leer",
       "notEquals": "Nicht gleich"
+    },
+    "channelsFilter": {
+      "": "Alle Scopes",
+      "onlyGlobalScope": "Nur globaler Scope",
+      "anyChannel": "Irgendein Kanäle"
     }
   },
   "labels": {

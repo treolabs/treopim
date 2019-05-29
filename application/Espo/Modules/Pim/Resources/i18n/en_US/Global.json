@@ -57,6 +57,13 @@
     "ProductCategory": "Product Categories",
     "ProductFamilyAttribute": "Product Family Attributes"
   },
+  "options": {
+    "channelsFilter": {
+      "": "All Scopes",
+      "onlyGlobalScope": "Only Global Scope",
+      "anyChannel": "Any Channel"
+    }
+  },
   "fields": {
     "productFamily": "Product Family",
     "productStatus": "Product Status",

@@ -202,6 +202,10 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     this.actionRefresh();
                 });
 
+                this.listenTo(this.model, 'overview-filters-changed', () => {
+                    this.applyOverviewFilters();
+                });
+
                 this.fetchCollectionGroups(() => this.wait(false));
             }, this);
 
@@ -423,6 +427,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         buildGroups() {
+            let count = 0;
             this.groups.forEach(group => {
                 this.getCollectionFactory().create(this.scope, collection => {
                     group.rowList.forEach(id => {
@@ -460,10 +465,102 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
                     }, view => {
-                        view.render();
+                        view.render(() => {
+                            count++;
+                            if (count === this.groups.length) {
+                                this.applyOverviewFilters();
+                            }
+                        });
                     });
                 });
             });
+        },
+
+        applyOverviewFilters() {
+            let currentFieldFilter = (this.model.advancedEntityView || {}).fieldsFilter;
+            let currentLocaleFilter = (this.model.advancedEntityView || {}).localesFilter;
+            let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
+            let showGenericFields = (this.model.advancedEntityView || {}).showGenericFields;
+
+            let fields = this.getValueFields();
+            Object.keys(fields).forEach(name => {
+                let fieldView = fields[name];
+                let hide = !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
+                if (currentChannelFilter) {
+                    if (currentChannelFilter === 'onlyGlobalScope') {
+                        hide = hide || fieldView.model.get('scope') !== 'Global';
+                    } else if (currentChannelFilter === 'anyChannel') {
+                        hide = hide || fieldView.model.get('scope') !== 'Channel';
+                    } else {
+                        hide = hide || !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter);
+                    }
+                }
+                if (currentLocaleFilter && this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length &&
+                    ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang'].includes(fieldView.model.get('attributeType'))) {
+                    let hiddenLocales = currentLocaleFilter ? this.getConfig().get('inputLanguageList').filter(lang => lang !== currentLocaleFilter) : [];
+                    fieldView.setHiddenLocales(hiddenLocales);
+                    let langFieldNameList = fieldView.getLangFieldNameList();
+                    langFieldNameList = langFieldNameList.filter(field => {
+                        return this.checkFieldValue(currentFieldFilter, fieldView.model.get(field), fieldView.model.get('isRequired'));
+                    });
+                    fieldView.langFieldNameList = langFieldNameList;
+                    fieldView.hideMainOption = !showGenericFields || !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
+                    hide = !fieldView.langFieldNameList.length && fieldView.hideMainOption;
+                    fieldView.reRender();
+                }
+                this.controlRowVisibility(fieldView, name, hide);
+            });
+        },
+
+        getValueFields() {
+            let fields = {};
+            this.groups.forEach(group => {
+                let groupView = this.getView(group.key);
+                if (groupView) {
+                    groupView.rowList.forEach(row => {
+                        let rowView = groupView.getView(row);
+                        if (rowView) {
+                            let containerView = rowView.getView('valueField');
+                            if (containerView) {
+                                let fieldView = containerView.getView('valueField');
+                                fieldView.groupKey = group.key;
+                                fields[row] = fieldView;
+                            }
+                        }
+                    });
+                }
+            });
+            return fields;
+        },
+
+        checkFieldValue(currentFieldFilter, value, required) {
+            let check = !currentFieldFilter;
+            if (currentFieldFilter === 'empty') {
+                check = value === null || value === '' || (Array.isArray(value) && !value.length);
+            }
+            if (currentFieldFilter === 'emptyAndRequired') {
+                check = (value === null || value === '' || (Array.isArray(value) && !value.length)) && required;
+            }
+            return check;
+        },
+
+        controlRowVisibility(fieldView, rowId, hide) {
+            let groupView = this.getView(fieldView.groupKey);
+            let rowView = groupView.getView(rowId);
+            if (hide) {
+                rowView.$el.addClass('hidden');
+            } else {
+                rowView.$el.removeClass('hidden');
+            }
+            this.controlGroupVisibility(groupView);
+        },
+
+        controlGroupVisibility(groupView) {
+            if (groupView.$el.find('.list-row.hidden').size() === (groupView.rowList || []).length) {
+                groupView.$el.parent().addClass('hidden');
+            } else {
+                groupView.$el.parent().removeClass('hidden');
+            }
         },
 
         getSelectBoolFilterData(boolFilterList) {
