@@ -176,7 +176,7 @@ class ProductFamilyAttributeHook extends BaseHook
             ->find();
 
         // prepare channels for entity
-        $channels = $entity->get('channelsIds');
+        $channels = array_column($entity->get('channels')->toArray(), 'id');
         sort($channels);
 
         foreach ($products as $product) {

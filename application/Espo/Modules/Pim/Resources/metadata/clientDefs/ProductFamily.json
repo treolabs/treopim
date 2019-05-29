@@ -8,6 +8,7 @@
     "merge"
   ],
   "views": {
+    "detail": "pim:views/detail",
     "list": "pim:views/list"
   },
   "recordViews": {

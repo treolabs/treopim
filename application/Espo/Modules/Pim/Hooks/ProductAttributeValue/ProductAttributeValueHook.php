@@ -176,14 +176,16 @@ class ProductAttributeValueHook extends BaseHook
      */
     protected function createNote(Entity $entity)
     {
-        $note = $this->getEntityManager()->getEntity('Note');
-        $note->set('type', 'Update');
-        $note->set('parentId', $entity->get('productId'));
-        $note->set('parentType', 'Product');
-        $note->set('data', $this->getNoteData($entity));
-        $note->set('attributeId', $entity->get('attributeId'));
+        if (!empty($data = $this->getNoteData($entity))) {
+            $note = $this->getEntityManager()->getEntity('Note');
+            $note->set('type', 'Update');
+            $note->set('parentId', $entity->get('productId'));
+            $note->set('parentType', 'Product');
+            $note->set('data', $data);
+            $note->set('attributeId', $entity->get('attributeId'));
 
-        $this->getEntityManager()->saveEntity($note);
+            $this->getEntityManager()->saveEntity($note);
+        }
     }
 
     /**
@@ -214,10 +216,11 @@ class ProductAttributeValueHook extends BaseHook
             $result['fields'][] = $fieldName;
             if (in_array($attribute->get('type'), $arrayTypes)) {
                 $result['attributes']['was'][$fieldName] = Json::decode($this->beforeSaveData['value'], true);
+                $result['attributes']['became'][$fieldName] = Json::decode($entity->get('value'), true);
             } else {
                 $result['attributes']['was'][$fieldName] = $this->beforeSaveData['value'];
+                $result['attributes']['became'][$fieldName] = $entity->get('value');
             }
-            $result['attributes']['became'][$fieldName] = $entity->get('value');
 
             if ($entity->isAttributeChanged('data')) {
                 $result['attributes']['was'][$fieldName . 'Unit'] = $this->beforeSaveData['data']->unit;
@@ -238,10 +241,12 @@ class ProductAttributeValueHook extends BaseHook
                     if (in_array($attribute->get('type'), $arrayTypes)) {
                         $result['attributes']['was'][$localeFieldName]
                             = Json::decode($this->beforeSaveData[$field], true);
+                        $result['attributes']['became'][$localeFieldName]
+                            = Json::decode($entity->get($field), true);
                     } else {
                         $result['attributes']['was'][$localeFieldName] = $this->beforeSaveData[$field];
+                        $result['attributes']['became'][$localeFieldName] = $entity->get($field);
                     }
-                    $result['attributes']['became'][$localeFieldName] = $entity->get($field);
                 }
             }
         }

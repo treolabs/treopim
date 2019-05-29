@@ -28,13 +28,7 @@
       "default": "PIM"
     },
     "description": {
-      "default": "PIM module for TreoCore."
-    },
-    "tags": [
-      "manage",
-      "products",
-      "channels",
-      "attributes"
-    ]
+      "default": "PIM module for Treo Core."
+    }
   }
 }

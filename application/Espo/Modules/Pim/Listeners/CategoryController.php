@@ -24,13 +24,14 @@ namespace Espo\Modules\Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
 use Treo\Listeners\AbstractListener;
+use Treo\Core\EventManager\Event;
 
 /**
- * Listener Category
+ * Class CategoryController
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Category extends AbstractListener
+class CategoryController extends AbstractListener
 {
     /**
      * @var string
@@ -38,12 +39,13 @@ class Category extends AbstractListener
     protected $entityType = 'Category';
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionUpdate(array $data): array
+    public function beforeActionUpdate(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (isset($data['data']->categoryParentId) && !empty($categoryParentId = $data['data']->categoryParentId)) {
             if ($this->getService($this->entityType)->isChildCategory($data['params']['id'], $categoryParentId)) {
                 $message = $this
@@ -53,17 +55,13 @@ class Category extends AbstractListener
                 throw new BadRequest($message);
             }
         }
-
-        return $data;
     }
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionPatch(array $data): array
+    public function beforeActionPatch(Event $event)
     {
-        return $this->beforeActionUpdate($data);
+        $this->beforeActionUpdate($event);
     }
 }

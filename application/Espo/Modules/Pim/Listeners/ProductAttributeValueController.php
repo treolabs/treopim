@@ -22,26 +22,26 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Listeners;
 
-use Espo\Core\Exceptions\Error;
+use Espo\Core\Utils\Json;
 use Treo\Listeners\AbstractListener;
 use Espo\Core\Utils\Util;
+use Treo\Core\EventManager\Event;
 
 /**
- * Class ProductAttributeValue
+ * Class ProductAttributeValueController
  *
  * @author r.zablodskiy@treolabs.com
  */
-class ProductAttributeValue extends AbstractListener
+class ProductAttributeValueController extends AbstractListener
 {
     /**
-     * @param array $data
-     *
-     * @return array
-     *
-     * @throws Error
+     * @param Event $event
      */
-    public function afterActionRead(array $data): array
+    public function afterActionRead(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (isset($data['result']->attributeId)) {
             $attribute = $this->getEntityManager()->getEntity('Attribute', $data['result']->attributeId);
 
@@ -51,13 +51,40 @@ class ProductAttributeValue extends AbstractListener
                 // for multiLang fields
                 if ($this->getConfig()->get('isMultilangActive')) {
                     foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                        $multiLangField =  Util::toCamelCase('typeValue_' . strtolower($locale));
+                        $multiLangField = Util::toCamelCase('typeValue_' . strtolower($locale));
                         $data['result']->$multiLangField = $attribute->get($multiLangField);
                     }
                 }
             }
+
+            // set data
+            $event->setArgument('result', $data['result']);
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function beforeActionCreate(Event $event)
+    {
+        // get data
+        $data = $event->getArguments();
+
+        if (is_array($data['data']->value)) {
+            $data['data']->value = Json::encode($data['data']->value);
         }
 
-        return $data;
+        // for multiLang fields
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                $multiLangField = Util::toCamelCase('value_' . strtolower($locale));
+                if (isset($data['data']->$multiLangField) && is_array($data['data']->$multiLangField)) {
+                    $data['data']->$multiLangField = Json::encode($data['data']->$multiLangField);
+                }
+            }
+        }
+
+        // set data
+        $event->setArgument('result', $data['result']);
     }
 }

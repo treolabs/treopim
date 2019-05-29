@@ -21,24 +21,24 @@
 namespace Espo\Modules\Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\ORM\Entity;
 use Treo\Listeners\AbstractListener;
-use PDO;
+use Treo\Core\EventManager\Event;
 
 /**
- * Attribute listener
+ * Class AttributeController
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends AbstractListener
+class AttributeController extends AbstractListener
 {
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionDelete(array $data): array
+    public function beforeActionDelete(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (empty($data['data']->force) && !empty($data['params']['id'])) {
             if ($this->hasProduct($data['params']['id'])) {
                 throw new BadRequest(
@@ -50,17 +50,16 @@ class Attribute extends AbstractListener
                 );
             }
         }
-
-        return $data;
     }
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionMassDelete(array $data): array
+    public function beforeActionMassDelete(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (empty($data['data']->force)) {
             throw new BadRequest(
                 $this->getLanguage()->translate(
@@ -70,8 +69,6 @@ class Attribute extends AbstractListener
                 )
             );
         }
-
-        return $data;
     }
 
     /**
@@ -86,9 +83,7 @@ class Attribute extends AbstractListener
         $count = $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
-            ->where([
-                'attributeId' => $attributeId
-            ])
+            ->where(['attributeId' => $attributeId])
             ->count();
 
         return !empty($count);

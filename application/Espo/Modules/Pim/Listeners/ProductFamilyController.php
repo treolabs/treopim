@@ -22,59 +22,48 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Listeners;
 
-use Espo\Core\Utils\Util;
 use Treo\Listeners\AbstractListener;
+use Treo\Core\EventManager\Event;
 
 /**
- * Class Product
+ * Class ProductFamilyController
  *
  * @author r.zablodskiy@treolabs.com
  */
-class Product extends AbstractListener
+class ProductFamilyController extends AbstractListener
 {
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function afterActionListLinked(array $data): array
+    public function afterActionListLinked(Event $event)
     {
-        if ($data['params']['link'] == 'productAttributeValues' && !empty($data['result']['list'])) {
+        // get data
+        $data = $event->getArguments();
+
+        if ($data['params']['link'] == 'productFamilyAttributes' && !empty($data['result']['list'])) {
             $attributes = $this
                 ->getEntityManager()
                 ->getRepository('Attribute')
-                ->where([
-                    'id' => array_column($data['result']['list'], 'attributeId')
-                ])
+                ->where(['id' => array_column($data['result']['list'], 'attributeId')])
                 ->find();
 
             if (count($attributes) > 0) {
                 foreach ($attributes as $attribute) {
                     foreach ($data['result']['list'] as $key => $item) {
                         if ($item->attributeId == $attribute->get('id')) {
-                            // add type value to result
-                            $data['result']['list'][$key]->typeValue = $attribute->get('typeValue');
-
-                            // add attribute group
+                            // add to attribute group to result
                             $data['result']['list'][$key]->attributeGroupId = $attribute->get('attributeGroupId');
                             $data['result']['list'][$key]->attributeGroupName = $attribute->get('attributeGroupName');
 
                             // add sort order
                             $data['result']['list'][$key]->sortOrder = $attribute->get('sortOrder');
-
-                            // for multiLang fields
-                            if ($this->getConfig()->get('isMultilangActive')) {
-                                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                                    $multiLangField =  Util::toCamelCase('typeValue_' . strtolower($locale));
-                                    $data['result']['list'][$key]->$multiLangField = $attribute->get($multiLangField);
-                                }
-                            }
                         }
                     }
                 }
             }
-        }
 
-        return $data;
+            // set data
+            $event->setArgument('result', $data['result']);
+        }
     }
 }

@@ -52,9 +52,10 @@ class Catalog extends Base
     }
 
     /**
-     * @inheritdoc
+     * @param Entity $entity
+     * @param Entity $duplicatingEntity
      */
-    protected function duplicateLinks(Entity $entity, Entity $duplicatingEntity)
+    protected function duplicateProducts(Entity $entity, Entity $duplicatingEntity)
     {
         if (!empty($products = $duplicatingEntity->get('products'))) {
             // get language

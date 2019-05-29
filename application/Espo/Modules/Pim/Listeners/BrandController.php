@@ -22,21 +22,23 @@ namespace Espo\Modules\Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
 use Treo\Listeners\AbstractListener;
+use Treo\Core\EventManager\Event;
 
 /**
- * Brand listener
+ * Class BrandController
  *
  * @author r.ratsun@treolabs.com
  */
-class Brand extends AbstractListener
+class BrandController extends AbstractListener
 {
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionDelete(array $data): array
+    public function beforeActionDelete(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (empty($data['data']->force) && !empty($data['params']['id'])) {
             $products = $this
                 ->getEntityManager()
@@ -54,17 +56,16 @@ class Brand extends AbstractListener
                 );
             }
         }
-
-        return $data;
     }
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionMassDelete(array $data): array
+    public function beforeActionMassDelete(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (empty($data['data']->force)) {
             throw new BadRequest(
                 $this->getLanguage()->translate(
@@ -74,7 +75,5 @@ class Brand extends AbstractListener
                 )
             );
         }
-
-        return $data;
     }
 }

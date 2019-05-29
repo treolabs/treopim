@@ -1,4 +1,5 @@
-/*
+<?php
+/**
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -17,20 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product-family-attribute/fields/attribute', 'treo-core:views/fields/filtered-link',
-    Dep => Dep.extend({
+namespace Espo\Modules\Pim\Listeners;
 
-        selectBoolFilterList:  ['notLinkedProductFamilyAttributes'],
-
-        boolFilterData: {
-            notLinkedProductFamilyAttributes() {
-                return {
-                    productFamilyId: this.model.get('productFamilyId'),
-                    scope: this.model.get('scope')
-                }
-            }
-        }
-
-    })
-);
-
+/**
+ * Class CategoryImageController
+ *
+ * @author r.ratsun@treolabs.com
+ */
+class CategoryImageController extends ProductImageController
+{
+}

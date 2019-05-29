@@ -214,6 +214,16 @@ class Product extends AbstractService
                     $entity->set('productId', $product->get('id'));
 
                     $this->getEntityManager()->saveEntity($entity, ['skipProductAttributeValueHook' => true]);
+
+                    // relate channels
+                    if (count($item->get('channels')) > 0) {
+                        foreach ($item->get('channels') as $channel) {
+                            $this
+                                ->getEntityManager()
+                                ->getRepository('ProductAttributeValue')
+                                ->relate($entity, 'channels', $channel);
+                        }
+                    }
                 }
             }
         }
