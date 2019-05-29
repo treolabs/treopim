@@ -23,28 +23,28 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Listeners;
 
 use Treo\Listeners\AbstractListener;
+use Treo\Core\EventManager\Event;
 
 /**
- * Class ProductFamily
+ * Class ProductFamilyController
  *
  * @author r.zablodskiy@treolabs.com
  */
-class ProductFamily extends AbstractListener
+class ProductFamilyController extends AbstractListener
 {
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function afterActionListLinked(array $data): array
+    public function afterActionListLinked(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if ($data['params']['link'] == 'productFamilyAttributes' && !empty($data['result']['list'])) {
             $attributes = $this
                 ->getEntityManager()
                 ->getRepository('Attribute')
-                ->where([
-                    'id' => array_column($data['result']['list'], 'attributeId')
-                ])
+                ->where(['id' => array_column($data['result']['list'], 'attributeId')])
                 ->find();
 
             if (count($attributes) > 0) {
@@ -61,8 +61,9 @@ class ProductFamily extends AbstractListener
                     }
                 }
             }
-        }
 
-        return $data;
+            // set data
+            $event->setArgument('result', $data['result']);
+        }
     }
 }
