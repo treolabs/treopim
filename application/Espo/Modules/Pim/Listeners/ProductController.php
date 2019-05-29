@@ -36,6 +36,21 @@ class ProductController extends AbstractListener
     /**
      * @param Event $event
      */
+    public function beforeActionList(Event $event)
+    {
+        // get where
+        $where = $event->getArgument('request')->get('where', []);
+
+        // prepare where
+        $where = $this->prepareForAttributes($where);
+
+        // set where
+        $event->getArgument('request')->setQuery('where', $where);
+    }
+
+    /**
+     * @param Event $event
+     */
     public function afterActionListLinked(Event $event)
     {
         // get data
@@ -75,5 +90,127 @@ class ProductController extends AbstractListener
             }
             $event->setArgument('result', $data['result']);
         }
+    }
+
+    /**
+     * @param array $where
+     *
+     * @return array
+     */
+    public function prepareForAttributes(array $data): array
+    {
+        foreach ($data as $k => $row) {
+            // check if exists array by key value
+            $isValueArray = !empty($row['value']) && is_array($row['value']);
+            if (empty($row['isAttribute']) && $isValueArray) {
+                $data[$k]['value'] = $this->prepareForAttributes($row['value']);
+            } elseif (!empty($row['isAttribute'])) {
+                // prepare attribute where
+                switch ($row['type']) {
+                    case 'isTrue':
+                        $where = [
+                            'type'  => 'and',
+                            'value' => [
+                                [
+                                    'type'      => 'equals',
+                                    'attribute' => 'attributeId',
+                                    'value'     => $row['attribute']
+                                ],
+                                [
+                                    'type'      => 'equals',
+                                    'attribute' => 'value',
+                                    'value'     => 'TreoBoolIsTrue'
+                                ]
+                            ]
+                        ];
+                        break;
+                    case 'isFalse':
+                        $where = [
+                            'type'  => 'and',
+                            'value' => [
+                                [
+                                    'type'      => 'equals',
+                                    'attribute' => 'attributeId',
+                                    'value'     => $row['attribute']
+                                ],
+                                [
+                                    'type'  => 'or',
+                                    'value' => [
+                                        [
+                                            'type'      => 'isNull',
+                                            'attribute' => 'value'
+                                        ],
+                                        [
+                                            'type'      => 'equals',
+                                            'attribute' => 'value',
+                                            'value'     => 'TreoBoolIsFalse'
+                                        ]
+                                    ]
+                                ],
+                            ]
+                        ];
+                        break;
+                    default:
+                        $where = [
+                            'type'  => 'and',
+                            'value' => [
+                                [
+                                    'type'      => 'equals',
+                                    'attribute' => 'attributeId',
+                                    'value'     => $row['attribute']
+                                ],
+                                [
+                                    'type'      => $row['type'],
+                                    'attribute' => 'value',
+                                    'value'     => $row['value']
+                                ]
+                            ]
+                        ];
+                        break;
+                }
+
+                $productWhere = [
+                    'type'      => 'equals',
+                    'attribute' => 'id',
+                    'value'     => $this->getProductIds([$where])
+                ];
+
+                // prepare where clause
+                $data[$k] = $productWhere;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get products filtered by attributes
+     *
+     * @param array $where
+     *
+     * @return array
+     */
+    protected function getProductIds(array $where = []): array
+    {
+        // prepare result
+        $result = ['empty-id-filter'];
+
+        // get data
+        $data = $this
+            ->getContainer()
+            ->get('serviceFactory')
+            ->create('ProductAttributeValue')
+            ->findEntities(['select' => ['productId'], 'where' => $where]);
+
+        if ($data['total'] > 0) {
+            $result = [];
+            foreach ($data['collection'] as $entity) {
+                if (!empty($entity->get('productId')) && !in_array($entity->get('productId'), $result)) {
+                    $result[] = $entity->get('productId');
+                }
+            }
+        }
+
+        return $result;
     }
 }
