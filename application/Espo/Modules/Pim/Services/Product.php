@@ -560,7 +560,7 @@ class Product extends AbstractService
 
             // trigger event
             if (!empty($attributeValue = $product->getProductAttribute($row->attributeId))) {
-                $this->triggered('Product', 'updateAttribute', [
+                $this->dispatch('ProductController', 'updateAttribute', [
                     'attributeValue' => $attributeValue,
                     'post' => Json::decode(Json::encode($row), true),
                     'productId' => $productId

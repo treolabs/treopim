@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "treolabs/treocore": "^3.13.3",
+    "treolabs/treocore": "^3.16.0",
     "treo-module/coloredfields": "^1.5.1",
     "treo-module/multilang": "^1.11.1"
   },

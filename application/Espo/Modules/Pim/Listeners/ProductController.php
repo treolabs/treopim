@@ -24,42 +24,40 @@ namespace Espo\Modules\Pim\Listeners;
 use Espo\Core\ORM\Entity;
 use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
+use Treo\Core\EventManager\Event;
 
 /**
- * Product listener
+ * Class ProductController
  *
  * @author r.ratsun@treolabs.com
  */
-class Product extends AbstractPimListener
+class ProductController extends AbstractPimListener
 {
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionList(array $data): array
+    public function beforeActionList(Event $event)
     {
         // get where
-        $where = $data['request']->get('where', []);
+        $where = $event->getArgument('request')->get('where', []);
 
         // prepare where
         $where = $this->prepareForProductType($where);
         $where = $this->prepareForAttributes($where);
 
         // set where
-        $data['request']->setQuery('where', $where);
-
-        return $data;
+        $event->getArgument('request')->setQuery('where', $where);
     }
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function updateAttribute(array $data): array
+    public function updateAttribute(Event $event)
     {
+        // get arguments
+        $data = $event->getArguments();
+
         if (isset($data['attributeValue']) && isset($data['post']) && isset($data['productId'])) {
             // create note
             if (!empty($noteData = $this->getNoteData($data['attributeValue'], $data['post']))) {
@@ -73,26 +71,23 @@ class Product extends AbstractPimListener
                 $this->getEntityManager()->saveEntity($note);
             }
         }
-
-        return $data;
     }
 
     /**
      * After create link
      *
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function afterActionCreateLink(array $data): array
+    public function afterActionCreateLink(Event $event)
     {
+        // get arguments
+        $data = $event->getArguments();
+
         if ($data['params']['link'] == 'attributes') {
             $attributeIds = $this->prepareAttributeIds(Json::decode(Json::encode($data['data']), true));
 
             $this->setProductAttributeValueUser($attributeIds, (array)$data['params']['id']);
         }
-
-        return $data;
     }
 
     /**

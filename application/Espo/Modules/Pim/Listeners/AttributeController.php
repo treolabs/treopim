@@ -23,21 +23,23 @@ namespace Espo\Modules\Pim\Listeners;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
 use PDO;
+use Treo\Core\EventManager\Event;
 
 /**
- * Attribute listener
+ * Class AttributeController
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends AbstractPimListener
+class AttributeController extends AbstractPimListener
 {
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionDelete(array $data): array
+    public function beforeActionDelete(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (empty($data['data']->force) && !empty($data['params']['id'])) {
             // get attribute
             $attribute = $this
@@ -64,33 +66,31 @@ class Attribute extends AbstractPimListener
                 );
             }
         }
-
-        return $data;
     }
 
     /**
      * After action create entity
      *
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function afterActionCreate(array $data): array
+    public function afterActionCreate(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (isset($data['data']->productsIds)) {
             $this->setProductAttributeValueUser((array)$data['result']->id, $data['data']->productsIds);
         }
-
-        return $data;
     }
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionMassDelete(array $data): array
+    public function beforeActionMassDelete(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (empty($data['data']->force)) {
             throw new BadRequest(
                 $this->getLanguage()->translate(
@@ -100,20 +100,16 @@ class Attribute extends AbstractPimListener
                 )
             );
         }
-
-        return $data;
     }
 
     /**
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionListLinked(array $data): array
+    public function beforeActionListLinked(Event $event)
     {
-        if ($data['params']['link'] == 'productFamilyAttributes') {
+        if ($event->getArgument('params')['link'] == 'productFamilyAttributes') {
             // get where
-            $where = $data['request']->get('where', []);
+            $where = $event->getArgument('request')->get('where', []);
 
             // prepare where
             $where[] = [
@@ -123,26 +119,23 @@ class Attribute extends AbstractPimListener
             ];
 
             // set where
-            $data['request']->setQuery('where', $where);
+            $event->getArgument('request')->setQuery('where', $where);
         }
-
-        return $data;
     }
 
     /**
      * Before action remove link
      *
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function beforeActionRemoveLink(array $data): array
+    public function beforeActionRemoveLink(Event $event)
     {
+        // get data
+        $data = $event->getArguments();
+
         if (!empty($data['data']->id) && $data['params']['link'] == 'productFamilies') {
             $this->removeProductAttributeValue($data['data']->id, $data['params']['id']);
         }
-
-        return $data;
     }
 
     /**

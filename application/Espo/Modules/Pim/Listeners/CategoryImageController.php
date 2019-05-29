@@ -20,34 +20,11 @@
 
 namespace Espo\Modules\Pim\Listeners;
 
-use Espo\Core\Utils\Util;
-use Treo\Listeners\AbstractListener;
-
 /**
- * ProductImage listener
+ * Class CategoryImageController
  *
  * @author r.ratsun@treolabs.com
  */
-class ProductImage extends AbstractListener
+class CategoryImageController extends ProductImageController
 {
-    /**
-     * @param array $data
-     *
-     * @return array
-     */
-    public function beforeActionCreate(array $data): array
-    {
-        if (empty($data['data']->name) && !empty($data['data']->imageName)) {
-            // prepare name
-            $name = explode(".", $data['data']->imageName);
-            $name = str_replace([' ', '-'], ['_', '_'], strtolower($name[0]));
-            $name = preg_replace('/[^a-z0-9_]/', "", $name);
-            $name .= $name . '_' . Util::generateId();
-
-            // set name
-            $data['data']->name = $name;
-        }
-
-        return $data;
-    }
 }

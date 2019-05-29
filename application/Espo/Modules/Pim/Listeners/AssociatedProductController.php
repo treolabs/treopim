@@ -22,40 +22,35 @@ namespace Espo\Modules\Pim\Listeners;
 
 use Treo\Listeners\AbstractListener;
 use PDO;
+use Treo\Core\EventManager\Event;
 
 /**
- * Class AssociatedProduct
+ * Class AssociatedProductController
  *
  * @author r.zablodskiy@treolabs.com
  */
-class AssociatedProduct extends AbstractListener
+class AssociatedProductController extends AbstractListener
 {
     /**
      * After action list
      *
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function afterActionList(array $data): array
+    public function afterActionList(Event $event)
     {
-        $data['result']['list'] = $this->setAssociatedProductsImage((array)$data['result']['list']);
-
-        return $data;
+        $result = $event->getArgument('result');
+        $result['list'] = $this->setAssociatedProductsImage((array)$result['list']);
+        $event->setArgument('result', $result);
     }
 
     /**
      * After action read
      *
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function afterActionRead(array $data): array
+    public function afterActionRead(Event $event)
     {
-        $data['result'] = $this->setAssociatedProductsImage((array)$data['result']);
-
-        return $data;
+        $event->setArgument('result', $this->setAssociatedProductsImage((array)$event->getArgument('result')));
     }
 
     /**
@@ -113,7 +108,7 @@ class AssociatedProduct extends AbstractListener
         $productIds = "'" . implode("','", $productIds) . "'";
         if (!empty($productIds)) {
             $sql
-                =  "SELECT
+                = "SELECT
                        pip.product_id AS productId,
                        pi.type AS imageType,
                        pi.image_id AS imageId,
@@ -133,7 +128,7 @@ class AssociatedProduct extends AbstractListener
             $sth = $this->getEntityManager()->getPDO()->prepare($sql);
             $sth->execute();
 
-            $result = $sth->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC|PDO::FETCH_UNIQUE);
+            $result = $sth->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
             return is_array($result) ? $result : [];
         }

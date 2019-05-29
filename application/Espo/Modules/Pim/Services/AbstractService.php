@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Services;
 
 use Espo\Core\Templates\Services\Base;
+use Treo\Core\EventManager\Event;
 
 /**
  * Class of AbstractService
@@ -92,16 +93,14 @@ abstract class AbstractService extends Base
     }
 
     /**
-     * Triggered event
-     *
      * @param string $target
      * @param string $action
      * @param array  $data
      *
      * @return array
      */
-    protected function triggered(string $target, string $action, array $data = []): array
+    protected function dispatch(string $target, string $action, array $data = []): array
     {
-        return $this->getInjection('eventManager')->triggered($target, $action, $data);
+        return $this->getInjection('eventManager')->dispatch($target, $action, new Event($data));
     }
 }

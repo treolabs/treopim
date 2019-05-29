@@ -21,72 +21,73 @@
 namespace Espo\Modules\Pim\Listeners;
 
 use Treo\Listeners\AbstractListener;
+use Treo\Core\EventManager\Event;
 
 /**
- * Stream listener
+ * Class StreamController
  *
  * @author r.zablodskiy@treolabs.com
  */
-class Stream extends AbstractListener
+class StreamController extends AbstractListener
 {
     /**
      * After action list
      *
-     * @param array $data
-     *
-     * @return array
+     * @param Event $event
      */
-    public function afterActionList(array $data): array
+    public function afterActionList(Event $event)
     {
-        $data = $this->prepareDataForUserStream($data);
-        $data = $this->injectAttributeType($data);
+        $result = $event->getArgument('result');
 
-        return $data;
+        $result = $this->prepareDataForUserStream($result);
+        $result = $this->injectAttributeType($result);
+
+        $event->setArgument('result', $result);
     }
 
     /**
      * Inject attribute type in data
      *
-     * @param array $data
+     * @param array $result
      *
      * @return array
      */
-    protected function injectAttributeType(array $data): array
+    protected function injectAttributeType(array $result): array
     {
-        if (isset($data['result']['list']) && is_array($data['result']['list'])) {
+        if (isset($result['list']) && is_array($result['list'])) {
             // find attributes
             $attributes = $this->getEntityManager()
                 ->getRepository('Attribute')
                 ->select(['id', 'type'])
-                ->where(['id' => array_column($data['result']['list'], 'attributeId')])
+                ->where(['id' => array_column($result['list'], 'attributeId')])
                 ->find();
 
             if (!empty($attributes)) {
                 $attributes = array_column($attributes->toArray(), 'type', 'id');
 
-                foreach ($data['result']['list'] as $key => $item) {
+                foreach ($result['list'] as $key => $item) {
                     if (isset($attributes[$item['attributeId']])) {
-                        $data['result']['list'][$key]['attributeType'] = $attributes[$item['attributeId']];
+                        $result['list'][$key]['attributeType'] = $attributes[$item['attributeId']];
                     }
                 }
             }
         }
 
-        return $data;
+        return $result;
     }
 
     /**
      * Prepare data for user stream panel in dashlet
      *
-     * @param array $data
+     * @param array $result
      *
      * @return array
      */
-    protected function prepareDataForUserStream(array $data): array
+    protected function prepareDataForUserStream(array $result): array
     {
-        if (!empty($data['result']['list']) && $data['params']['scope'] == 'User') {
+        if (!empty($result['list']) && $result['scope'] == 'User') {
             // prepare notes ids
-            $noteIds = array_column($data['result']['list'], 'id');
+            $noteIds = array_column($result['list'], 'id');
 
             if (!empty($noteIds)) {
                 // get notes attributeId field
@@ -102,15 +103,15 @@ class Stream extends AbstractListener
                     $items = array_column($items, 'attributeId', 'id');
 
                     // set attributeId field where needed in result
-                    foreach ($data['result']['list'] as $key => $value) {
+                    foreach ($result['list'] as $key => $value) {
                         if (isset($items[$value['id']])) {
-                            $data['result']['list'][$key]['attributeId'] = $items[$value['id']];
+                            $result['list'][$key]['attributeId'] = $items[$value['id']];
                         }
                     }
                 }
             }
         }
 
-        return $data;
+        return $result;
     }
 }
