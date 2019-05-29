@@ -1231,7 +1231,7 @@ class Product extends AbstractService
     protected function getDuplicatingLinkList(): array
     {
         // event call
-        $this->triggered('Product', 'getDuplicatingLinkList', ['productService' => $this]);
+        $this->dispatch('ProductController', 'getDuplicatingLinkList', ['productService' => $this]);
 
         return $this->duplicatingLinkList;
     }
