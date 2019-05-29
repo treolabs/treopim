@@ -176,14 +176,16 @@ class ProductAttributeValueHook extends BaseHook
      */
     protected function createNote(Entity $entity)
     {
-        $note = $this->getEntityManager()->getEntity('Note');
-        $note->set('type', 'Update');
-        $note->set('parentId', $entity->get('productId'));
-        $note->set('parentType', 'Product');
-        $note->set('data', $this->getNoteData($entity));
-        $note->set('attributeId', $entity->get('attributeId'));
+        if (!empty($data = $this->getNoteData($entity))) {
+            $note = $this->getEntityManager()->getEntity('Note');
+            $note->set('type', 'Update');
+            $note->set('parentId', $entity->get('productId'));
+            $note->set('parentType', 'Product');
+            $note->set('data', $data);
+            $note->set('attributeId', $entity->get('attributeId'));
 
-        $this->getEntityManager()->saveEntity($note);
+            $this->getEntityManager()->saveEntity($note);
+        }
     }
 
     /**
