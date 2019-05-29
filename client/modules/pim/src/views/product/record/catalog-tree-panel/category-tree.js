@@ -207,15 +207,14 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         buildCategoryHtml(id, category) {
-            if (!category.htmlLoaded) {
+            let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
+            let listEl = button.parent().find(`.panel-collapse[data-id="${id}"] .list-group-tree`);
+            if (category.childs.length && !listEl.find('li').size()) {
                 let html = '';
                 category.childs.forEach(category => {
                     html += category.childs.length ? this.getParentHtml(category) : this.getChildHtml(category);
                 });
-                let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
-                let listEl = button.parent().find(`.panel-collapse[data-id="${id}"] .list-group-tree`);
                 listEl.append(html);
-                category.htmlLoaded = true;
             }
         },
 
