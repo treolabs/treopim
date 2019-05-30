@@ -158,6 +158,10 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                     }, this);
                 }
 
+                this.listenTo(this.model, 'overview-filters-changed', () => {
+                    this.applyOverviewFilters();
+                });
+
                 var viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
                 this.once('after:render', function () {
@@ -177,6 +181,9 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                                 }
                                 collection.fetch();
                             }.bind(this));
+                            view.listenTo(view, 'after:render', () => {
+                                this.applyOverviewFilters();
+                            });
                         });
                     }, this);
                     collection.fetch();
@@ -186,6 +193,49 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
             }, this);
 
             this.setupFilterActions();
+        },
+
+        applyOverviewFilters() {
+            let rows = this.getListRows();
+            Object.keys(rows).forEach(name => {
+                let row = rows[name];
+                this.controlRowVisibility(row, this.updateCheckByChannelFilter(row));
+            });
+        },
+
+        updateCheckByChannelFilter(row) {
+            let hide = false;
+            let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
+            if (currentChannelFilter) {
+                if (currentChannelFilter === 'onlyGlobalScope') {
+                    hide = row.model.get('scope') !== 'Global';
+                } else {
+                    hide = (row.model.get('scope') === 'Channel' && !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
+                }
+            }
+            return hide;
+        },
+
+        controlRowVisibility(row, hide) {
+            if (hide) {
+                row.$el.addClass('hidden');
+            } else {
+                row.$el.removeClass('hidden');
+            }
+        },
+
+        getListRows() {
+            let fields = {};
+            let list = this.getView('list');
+            if (list) {
+                for (let row in list.nestedViews || {}) {
+                    let rowView = list.getView(row);
+                    if (rowView) {
+                        fields[row] = rowView;
+                    }
+                }
+            }
+            return fields;
         },
 
         createProductCategory(selectObj) {
