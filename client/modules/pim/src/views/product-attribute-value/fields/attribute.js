@@ -45,7 +45,7 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/
                 attributeType: model.get('type'),
                 typeValue: model.get('typeValue'),
             };
-            this.typeValueFields.forEach(item => attributes[item] = model.get(item));
+            (this.typeValueFields || []).forEach(item => attributes[item] = model.get(item));
             this.model.set(attributes);
         }
 
