@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Listeners;
 
+use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Exceptions\Error;
 use Espo\Core\Utils\Json;
 use Treo\Listeners\AbstractListener;
 use Espo\Core\Utils\Util;
@@ -86,5 +88,34 @@ class ProductAttributeValueController extends AbstractListener
 
         // set data
         $event->setArgument('result', $data['result']);
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @throws BadRequest
+     * @throws Error
+     */
+    public function beforeActionUpdate(Event $event)
+    {
+        // get data
+        $data = $event->getArguments();
+
+        if (isset($data['params']['id']) && isset($data['data']->productId)) {
+            $productAttribute = $this->getEntityManager()->getEntity('ProductAttributeValue', $data['params']['id']);
+
+            // check is ProductFamily attribute
+            if (!empty($productAttribute->get('productFamilyAttributeId'))) {
+                $message = $this
+                    ->getLanguage()
+                    ->translate(
+                        'You can\'t change product in attribute from Product Family',
+                        'exceptions',
+                        'ProductAttributeValue'
+                    );
+
+                throw new BadRequest($message);
+            }
+        }
     }
 }
