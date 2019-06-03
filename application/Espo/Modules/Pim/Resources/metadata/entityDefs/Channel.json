@@ -57,10 +57,6 @@
       "view": "pim:views/fields/currencies",
       "useFieldViewInImport": true
     },
-    "locales": {
-      "type": "multiEnum",
-      "view": "pim:views/channel/fields/locales"
-    },
     "code": {
       "type": "varchar",
       "layoutMassUpdateDisabled": true,

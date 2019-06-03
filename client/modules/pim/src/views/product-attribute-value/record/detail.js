@@ -74,6 +74,7 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
         },
 
         getAdditionalFieldData(view, data) {
+            let result = {};
             let additionalData = false;
             if (view.type === 'unit') {
                 let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
@@ -85,7 +86,10 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                     }
                 });
             }
-            return {data: additionalData ? additionalData : null};
+            if (additionalData) {
+                result.data = _.extend((data.data || {}), additionalData);
+            }
+            return result;
         }
 
     })

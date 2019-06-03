@@ -13,12 +13,6 @@
       ],
       [
         {
-          "name": "locales"
-        },
-        false
-      ],
-      [
-        {
           "name": "name"
         },
         {
