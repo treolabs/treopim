@@ -30,22 +30,50 @@ Espo.define('pim:views/fields/overview-channels-filter', 'treo-core:views/fields
             {
                 name: 'onlyGlobalScope',
                 selectable: true
-            },
-            {
-                name: 'anyChannel',
-                selectable: true
             }
         ],
 
+        relationships: ['productAttributeValues', 'productCategories'],
+
         setup() {
+            this.baseOptionList = Espo.Utils.cloneDeep(this.optionsList);
             this.wait(true);
-            this.getFullEntityList(`Product/${this.model.id}/productAttributeValues`, {select: 'channelsIds,channelsNames'}, list => {
-                this.setChannelsFromList(list);
-                this.prepareOptionsList();
-                this.wait(false);
-            });
+            this.updateChannels(this.relationships, () => this.wait(false));
 
             Dep.prototype.setup.call(this);
+
+            this.listenTo(this.model, 'attributes-updated categories-updated', () => {
+                this.updateChannels(this.relationships, () => this.reRender());
+            });
+        },
+
+        updateChannels(relationships, callback) {
+            this.channels = [];
+            this.optionsList = Espo.Utils.cloneDeep(this.baseOptionList);
+            let count = 0;
+            (relationships || []).forEach(name => {
+                this.getFullEntityList(`Product/${this.model.id}/${name}`, {select: 'channelsIds,channelsNames'}, list => {
+                    this.setChannelsFromList(list);
+                    this.prepareOptionsList();
+                    count++;
+                    if (count === (relationships || []).length && callback) {
+                        this.updateSelected();
+                        this.modelKey = this.options.modelKey || this.modelKey;
+                        this.setDataToModel({[this.name]: this.selected});
+                        callback();
+                    }
+                });
+            });
+        },
+
+        updateSelected() {
+            if (this.storageKey) {
+                let selected = ((this.getStorage().get(this.storageKey, this.scope) || {})[this.name] || {}).selected;
+                if (this.optionsList.find(option => option.name === selected)) {
+                    this.selected = selected;
+                }
+            }
+            this.selected = this.selected || (this.optionsList.find(option => option.selectable) || {}).name;
         },
 
         getFullEntityList(url, params, callback, container) {
@@ -69,12 +97,12 @@ Espo.define('pim:views/fields/overview-channels-filter', 'treo-core:views/fields
         },
 
         setChannelsFromList(list) {
-            list.forEach(attribute => {
-                (attribute.channelsIds || []).forEach(channelId => {
-                    if (!this.channels.find(item => item.id === channelId)) {
+            list.forEach(item => {
+                (item.channelsIds || []).forEach(channelId => {
+                    if (!this.channels.find(channel => channel.id === channelId)) {
                         this.channels.push({
                             id: channelId,
-                            name: (attribute.channelsNames || {})[channelId]
+                            name: (item.channelsNames || {})[channelId]
                         });
                     }
                 });

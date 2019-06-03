@@ -450,6 +450,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames,data';
 
                     this.listenTo(collection, 'sync', () => {
+                        this.model.trigger('attributes-updated');
                         collection.models.sort((a, b) => a.get('sortOrder') - b.get('sortOrder'));
                         this.applyOverviewFilters();
                     });
@@ -479,38 +480,51 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         applyOverviewFilters() {
             let currentFieldFilter = (this.model.advancedEntityView || {}).fieldsFilter;
-            let currentLocaleFilter = (this.model.advancedEntityView || {}).localesFilter;
-            let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
-            let showGenericFields = (this.model.advancedEntityView || {}).showGenericFields;
-
+            let attributesWithChannelScope = [];
             let fields = this.getValueFields();
             Object.keys(fields).forEach(name => {
                 let fieldView = fields[name];
                 let hide = !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
-                if (currentChannelFilter) {
-                    if (currentChannelFilter === 'onlyGlobalScope') {
-                        hide = hide || fieldView.model.get('scope') !== 'Global';
-                    } else if (currentChannelFilter === 'anyChannel') {
-                        hide = hide || fieldView.model.get('scope') !== 'Channel';
-                    } else {
-                        hide = hide || !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter);
-                    }
-                }
-                if (currentLocaleFilter && this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length &&
-                    ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang'].includes(fieldView.model.get('attributeType'))) {
-                    let hiddenLocales = currentLocaleFilter ? this.getConfig().get('inputLanguageList').filter(lang => lang !== currentLocaleFilter) : [];
-                    fieldView.setHiddenLocales(hiddenLocales);
-                    let langFieldNameList = fieldView.getLangFieldNameList();
-                    langFieldNameList = langFieldNameList.filter(field => {
-                        return this.checkFieldValue(currentFieldFilter, fieldView.model.get(field), fieldView.model.get('isRequired'));
-                    });
-                    fieldView.langFieldNameList = langFieldNameList;
-                    fieldView.hideMainOption = !showGenericFields || !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
-                    hide = !fieldView.langFieldNameList.length && fieldView.hideMainOption;
-                    fieldView.reRender();
-                }
+                hide = this.updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope);
+                hide = this.updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter);
                 this.controlRowVisibility(fieldView, name, hide);
             });
+            this.hideChannelAttributesWithGlobalScope(fields, attributesWithChannelScope);
+        },
+
+        updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope) {
+            let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
+            if (currentChannelFilter) {
+                if (currentChannelFilter === 'onlyGlobalScope') {
+                    hide = hide || fieldView.model.get('scope') !== 'Global';
+                } else {
+                    hide = hide || (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    if ((fieldView.model.get('channelsIds') || []).includes(currentChannelFilter)) {
+                        attributesWithChannelScope.push(fieldView.model.get('attributeId'));
+                    }
+                }
+            }
+            return hide;
+        },
+
+        updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter) {
+            let currentLocaleFilter = (this.model.advancedEntityView || {}).localesFilter;
+            let showGenericFields = (this.model.advancedEntityView || {}).showGenericFields;
+            if (currentLocaleFilter !== null && this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length &&
+                ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang'].includes(fieldView.model.get('attributeType'))) {
+                let hiddenLocales = currentLocaleFilter ? this.getConfig().get('inputLanguageList').filter(lang => lang !== currentLocaleFilter) : [];
+                fieldView.setHiddenLocales(hiddenLocales);
+                let langFieldNameList = fieldView.getLangFieldNameList();
+                langFieldNameList = langFieldNameList.filter(field => {
+                    return this.checkFieldValue(currentFieldFilter, fieldView.model.get(field), fieldView.model.get('isRequired'));
+                });
+                fieldView.langFieldNameList = langFieldNameList;
+                fieldView.hideMainOption = !showGenericFields ||
+                    !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
+                hide = hide || !fieldView.langFieldNameList.length && fieldView.hideMainOption;
+                fieldView.reRender();
+            }
+            return hide;
         },
 
         getValueFields() {
@@ -562,6 +576,15 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             } else {
                 groupView.$el.parent().removeClass('hidden');
             }
+        },
+
+        hideChannelAttributesWithGlobalScope(fields, attributesWithChannelScope) {
+            Object.keys(fields).forEach(name => {
+                let fieldView = fields[name];
+                if (attributesWithChannelScope.includes(fieldView.model.get('attributeId')) && fieldView.model.get('scope') === 'Global') {
+                    this.controlRowVisibility(fieldView, name, true);
+                }
+            });
         },
 
         getSelectBoolFilterData(boolFilterList) {

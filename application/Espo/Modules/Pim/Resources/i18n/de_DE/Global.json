@@ -72,8 +72,7 @@
     },
     "channelsFilter": {
       "": "Alle Scopes",
-      "onlyGlobalScope": "Nur globaler Scope",
-      "anyChannel": "Irgendein Kanäle"
+      "onlyGlobalScope": "Nur globaler Scope"
     }
   },
   "labels": {
