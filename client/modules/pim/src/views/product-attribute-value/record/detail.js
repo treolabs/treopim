@@ -27,12 +27,10 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
         },
 
         handleValueModelDefsUpdating() {
-            if (this.model.get('attributeId')) {
-                this.updateModelDefs();
-            }
+            this.updateModelDefs();
             this.listenTo(this.model, 'change:attributeId', () => {
+                this.updateModelDefs();
                 if (this.model.get('attributeId')) {
-                    this.updateModelDefs();
                     this.clearView('middle');
                     this.gridLayout = null;
                     this.createMiddleView(() => this.reRender());
@@ -41,30 +39,31 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
         },
 
         updateModelDefs() {
-            let type = this.model.get('attributeType');
-            let typeValue = this.model.get('typeValue');
-            if (type) {
-                let fieldDefs = {
-                    type: type,
-                    options: typeValue,
-                    view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
-                    required: !!this.model.get('isRequired')
-                };
-                if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(type)) {
-                    fieldDefs.isMultilang = true;
-                    this.getFieldManager().getActualAttributeList(type, 'typeValue').splice(1).forEach(item => {
-                        fieldDefs[`options${item.replace('typeValue', '')}`] = this.model.get(item);
-                    });
+            this.model.defs.fields.scope.readOnly = this.model.defs.fields.attribute.readOnly =
+                this.model.defs.fields.channels.readOnly = !this.model.get('isCustom');
+            if (this.model.get('attributeId')) {
+                let type = this.model.get('attributeType');
+                let typeValue = this.model.get('typeValue');
+                if (type) {
+                    let fieldDefs = {
+                        type: type,
+                        options: typeValue,
+                        view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
+                        required: !!this.model.get('isRequired')
+                    };
+                    if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(type)) {
+                        fieldDefs.isMultilang = true;
+                        this.getFieldManager().getActualAttributeList(type, 'typeValue').splice(1).forEach(item => {
+                            fieldDefs[`options${item.replace('typeValue', '')}`] = this.model.get(item);
+                        });
+                    }
+                    if (type === 'unit') {
+                        fieldDefs.measure = (typeValue || ['Length'])[0];
+                    }
+                    this.model.defs.fields.value = fieldDefs;
                 }
-                if (type === 'unit') {
-                    fieldDefs.measure = (typeValue || ['Length'])[0];
-                }
-                this.model.defs.fields.value = fieldDefs;
-                this.model.defs.fields.scope.readOnly = this.model.defs.fields.attribute.readOnly =
-                    this.model.defs.fields.channels.readOnly = !this.model.get('isCustom');
             }
         },
-
         fetch() {
             let data = Dep.prototype.fetch.call(this);
             let view = this.getFieldView('value');
