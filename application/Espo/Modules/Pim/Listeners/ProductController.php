@@ -43,8 +43,17 @@ class ProductController extends AbstractPimListener
         $where = $event->getArgument('request')->get('where', []);
 
         // prepare where
-        $where = $this->prepareForProductType($where);
-        $where = $this->prepareForAttributes($where);
+        $where = $this
+            ->getContainer()
+            ->get('eventManager')
+            ->dispatch('ProductController', 'prepareForProductType', new Event(['where' => $where]))
+            ->getArgument('where');
+
+        $where = $this
+            ->getContainer()
+            ->get('eventManager')
+            ->dispatch('ProductController', 'prepareForAttributes', new Event(['where' => $where]))
+            ->getArgument('where');
 
         // set where
         $event->getArgument('request')->setQuery('where', $where);
@@ -195,12 +204,12 @@ class ProductController extends AbstractPimListener
     }
 
     /**
-     * @param array $where
-     *
-     * @return array
+     * @param Event $event
      */
-    public function prepareForProductType(array $where): array
+    public function prepareForProductType(Event $event)
     {
+        $where = $event->getArgument('where');
+
         // prepare types
         $types = $this
             ->getContainer()
@@ -214,22 +223,63 @@ class ProductController extends AbstractPimListener
             'value'     => array_keys($types)
         ];
 
-        return $where;
+        $event->setArgument('where', $where);
     }
 
     /**
+     * @param Event $event
+     */
+    public function prepareForAttributes(Event $event)
+    {
+        $data = $event->getArgument('where');
+
+        $event->setArgument('where', $this->prepareAttributesWhere($data));
+    }
+
+    /**
+     * Get products filtered by attributes
+     *
      * @param array $where
      *
      * @return array
      */
-    public function prepareForAttributes(array $data): array
+    protected function getProductIds(array $where = []): array
+    {
+        // prepare result
+        $result = ['empty-id-filter'];
+
+        // get data
+        $data = $this
+            ->getContainer()
+            ->get('serviceFactory')
+            ->create('ProductAttributeValue')
+            ->findEntities(['where' => $where]);
+
+        if ($data['total'] > 0) {
+            $result = [];
+            foreach ($data['collection'] as $entity) {
+                if (!empty($entity->get('product')) && !in_array($entity->get('productId'), $result)) {
+                    $result[] = $entity->get('productId');
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function prepareAttributesWhere(array $data): array
     {
         foreach ($data as $k => $row) {
             // check if exists array by key value
             $isValueArray = !empty($row['value']) && is_array($row['value']);
 
             if (empty($row['isAttribute']) && $isValueArray) {
-                $data[$k]['value'] = $this->prepareForAttributes($row['value']);
+                $data[$k]['value'] = $this->prepareAttributesWhere($row['value']);
             } elseif (!empty($row['isAttribute'])) {
                 // prepare attribute where
                 switch ($row['type']) {
@@ -310,36 +360,5 @@ class ProductController extends AbstractPimListener
         }
 
         return $data;
-    }
-
-    /**
-     * Get products filtered by attributes
-     *
-     * @param array $where
-     *
-     * @return array
-     */
-    protected function getProductIds(array $where = []): array
-    {
-        // prepare result
-        $result = ['empty-id-filter'];
-
-        // get data
-        $data = $this
-            ->getContainer()
-            ->get('serviceFactory')
-            ->create('ProductAttributeValue')
-            ->findEntities(['where' => $where]);
-
-        if ($data['total'] > 0) {
-            $result = [];
-            foreach ($data['collection'] as $entity) {
-                if (!empty($entity->get('product')) && !in_array($entity->get('productId'), $result)) {
-                    $result[] = $entity->get('productId');
-                }
-            }
-        }
-
-        return $result;
     }
 }
