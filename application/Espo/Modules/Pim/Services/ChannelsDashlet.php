@@ -45,26 +45,26 @@ class ChannelsDashlet extends AbstractDashletService
         // get data
         $data = $this
             ->getEntityManager()
-            ->getRepository('Product')
-            ->getChannelsArray([]);
+            ->getRepository('Channel')
+            ->find();
 
-        if (!empty($data)) {
+        if (count($data) > 0) {
             $channels = [];
             foreach ($data as $row) {
-                $channels[$row['channelId']]['channelId'] = $row['channelId'];
-                $channels[$row['channelId']]['channelName'] = $row['channelName'];
-                $channels[$row['channelId']]['catalogId'] = $row['catalogId'];
-                $channels[$row['channelId']]['catalogName'] = $row['catalogName'];
-                $channels[$row['channelId']]['products'][$row['productId']] = $row;
+                $channels[$row->get('id')]['channelId'] = $row->get('id');
+                $channels[$row->get('id')]['channelName'] = $row->get('name');
+                $channels[$row->get('id')]['products'] = array_column($row->get('products')->toArray(), 'isActive');
             }
 
             foreach ($channels as $row) {
                 // prepare counts
                 $count = count($row['products']);
                 $active = 0;
-                foreach ($row['products'] as $v) {
-                    if (!empty($v['productIsActive'])) {
-                        $active++;
+                if ($count > 0) {
+                    foreach ($row['products'] as $v) {
+                        if ($v) {
+                            $active++;
+                        }
                     }
                 }
                 $inActive = $count - $active;
@@ -72,8 +72,6 @@ class ChannelsDashlet extends AbstractDashletService
                 $result['list'][] = [
                     'id'          => $row['channelId'],
                     'name'        => $row['channelName'],
-                    'catalogId'   => $row['catalogId'],
-                    'catalogName' => $row['catalogName'],
                     'products'    => $count,
                     'active'      => $active,
                     'notActive'   => $inActive

@@ -209,18 +209,23 @@ class Attribute extends AbstractService
         $result = false;
 
         if (!empty($ids)) {
-            // prepare ids
-            $ids = implode("','", $ids);
-
-            // prepare sql
-            $sql = sprintf("DELETE FROM product_family_attribute_linker WHERE attribute_id IN ('%s');", $ids);
-            $sql .= sprintf("DELETE FROM product_attribute_value WHERE attribute_id IN ('%s');", $ids);
-
-            $sth = $this
+            // remove from product families
+            $this
                 ->getEntityManager()
-                ->getPDO()
-                ->prepare($sql);
-            $sth->execute();
+                ->getRepository('ProductFamilyAttribute')
+                ->where([
+                    'attributeId' => $ids
+                ])
+                ->removeCollection();
+
+            // remove from products
+            $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->where([
+                    'attributeId' => $ids
+                ])
+                ->removeCollection();
 
             // prepare result
             $result = true;

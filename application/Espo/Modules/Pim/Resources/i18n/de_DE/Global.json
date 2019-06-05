@@ -1,7 +1,6 @@
 {
   "scopeNames": {
     "ProductAttributeValue": "Produktattributwert",
-    "ChannelProductAttributeValue": "Produktattributwert (kanalspezifisch)",
     "Product": "Produkt",
     "ProductFamily": "Produktfamilie",
     "Category": "Kategorie",
@@ -20,11 +19,11 @@
     "Attribute": "Attribute",
     "Currency": "Währung",
     "ProductSerie": "Product Serie",
-    "Catalog": "Katalog"
+    "Catalog": "Katalog",
+    "ProductFamilyAttribute": "Produktfamilie Attribute"
   },
   "scopeNamesPlural": {
     "ProductAttributeValue": "Produktattributwert",
-    "ChannelProductAttributeValue": "Produktattributwert (kanalspezifisch)",
     "Product": "Produkte",
     "ProductFamily": "Produktfamilien",
     "Category": "Kategorien",
@@ -46,7 +45,8 @@
     "EmailAddress": "E-Mail Addresse",
     "ProductSerie": "Product Series",
     "AssociatedProduct": "Assoziierte Produkt",
-    "Catalog": "Kataloge"
+    "Catalog": "Kataloge",
+    "ProductFamilyAttribute": "Produktfamilie Attribute"
   },
   "fields": {
     "productFamily": "Artikel-Familien",
@@ -69,6 +69,10 @@
       "isEmpty": "Ist leer",
       "isNotEmpty": "Ist nicht leer",
       "notEquals": "Nicht gleich"
+    },
+    "channelsFilter": {
+      "": "Alle Scopes",
+      "onlyGlobalScope": "Nur globaler Scope"
     }
   },
   "labels": {

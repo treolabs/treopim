@@ -11,29 +11,28 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Listeners;
 
-use Espo\Core\ORM\Entity;
-use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
+use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
 
 /**
  * Class ProductController
  *
- * @author r.ratsun@treolabs.com
+ * @author r.zablodskiy@treolabs.com
  */
-class ProductController extends AbstractPimListener
+class ProductController extends AbstractListener
 {
-
     /**
      * @param Event $event
      */
@@ -62,145 +61,45 @@ class ProductController extends AbstractPimListener
     /**
      * @param Event $event
      */
-    public function updateAttribute(Event $event)
+    public function afterActionListLinked(Event $event)
     {
-        // get arguments
+        // get data
         $data = $event->getArguments();
 
-        if (isset($data['attributeValue']) && isset($data['post']) && isset($data['productId'])) {
-            // create note
-            if (!empty($noteData = $this->getNoteData($data['attributeValue'], $data['post']))) {
-                $note = $this->getEntityManager()->getEntity('Note');
-                $note->set('type', 'Update');
-                $note->set('parentId', $data['productId']);
-                $note->set('parentType', 'Product');
-                $note->set('data', $noteData);
-                $note->set('attributeId', $data['post']['attributeId']);
-
-                $this->getEntityManager()->saveEntity($note);
-            }
-        }
-    }
-
-    /**
-     * After create link
-     *
-     * @param Event $event
-     */
-    public function afterActionCreateLink(Event $event)
-    {
-        // get arguments
-        $data = $event->getArguments();
-
-        if ($data['params']['link'] == 'attributes') {
-            $attributeIds = $this->prepareAttributeIds(Json::decode(Json::encode($data['data']), true));
-
-            $this->setProductAttributeValueUser($attributeIds, (array)$data['params']['id']);
-        }
-    }
-
-    /**
-     * Prepare attributes ids data
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function prepareAttributeIds(array $data): array
-    {
-        $ids = [];
-
-        if (isset($data['ids'])) {
-            $ids = $data['ids'];
-        } elseif (isset($data['where'])) {
-            $selectManager = $this
-                ->getContainer()
-                ->get('selectManagerFactory')
-                ->create('Product');
-
-            $result = $this
+        if ($data['params']['link'] == 'productAttributeValues' && !empty($data['result']['list'])) {
+            $attributes = $this
                 ->getEntityManager()
                 ->getRepository('Attribute')
-                ->select(['id'])
-                ->find($selectManager->getSelectParams(['where' => $data['where']]))
-                ->toArray();
+                ->where(['id' => array_column($data['result']['list'], 'attributeId')])
+                ->find();
 
-            if (!empty($result)) {
-                $ids = array_column($result, 'id');
-            }
-        }
+            if (count($attributes) > 0) {
+                foreach ($attributes as $attribute) {
+                    foreach ($data['result']['list'] as $key => $item) {
+                        if ($item->attributeId == $attribute->get('id')) {
+                            // add type value to result
+                            $data['result']['list'][$key]->typeValue = $attribute->get('typeValue');
 
-        return $ids;
-    }
+                            // add attribute group
+                            $data['result']['list'][$key]->attributeGroupId = $attribute->get('attributeGroupId');
+                            $data['result']['list'][$key]->attributeGroupName = $attribute->get('attributeGroupName');
 
-    /**
-     * Get note data
-     *
-     * @param Entity $attributeValue
-     * @param array  $post
-     *
-     * @return array
-     */
-    protected function getNoteData(Entity $attributeValue, array $post): array
-    {
-        // get attribute
-        $attribute = $this
-            ->getEntityManager()
-            ->getEntity('Attribute', $attributeValue->get('attributeId'));
+                            // add sort order
+                            $data['result']['list'][$key]->sortOrder = $attribute->get('sortOrder');
 
-        // prepare field name
-        $fieldName = $this->getLanguage()->translate('Attribute', 'custom', 'ProductAttributeValue');
-        $fieldName .= ' ' . $attribute->get('name');
-
-        // prepare result
-        $result = [];
-
-        $arrayTypes = ['array', 'arrayMultiLang', 'enum', 'enumMultiLang', 'multiEnum', 'multiEnumMultiLang'];
-
-        // for value
-        if ($post['value'] != $attributeValue->get('value')
-            || (isset($post['data']['unit']) && $post['data']['unit'] != $attributeValue->get('data')->unit)) {
-            $result['fields'][] = $fieldName;
-
-            if (in_array($attribute->get('type'), $arrayTypes)) {
-                $result['attributes']['was'][$fieldName] = Json::decode($attributeValue->get('value'), true);
-            } else {
-                $result['attributes']['was'][$fieldName] = $attributeValue->get('value');
-            }
-
-            $result['attributes']['became'][$fieldName] = $post['value'];
-
-            if (isset($post['data']['unit'])) {
-                $result['attributes']['was'][$fieldName . 'Unit'] = $attributeValue->get('data')->unit;
-                $result['attributes']['became'][$fieldName . 'Unit'] = $post['data']['unit'];
-            }
-        }
-
-        // for multilang value
-        if ($this->getConfig()->get('isMultilangActive')) {
-            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                // prepare field
-                $field = Util::toCamelCase('value_' . strtolower($locale));
-
-                if (isset($post[$field]) && $post[$field] != $attributeValue->get($field)) {
-                    // prepare field name
-                    $localeFieldName = $fieldName . " ($locale)";
-
-                    $result['fields'][] = $localeFieldName;
-
-                    if (in_array($attribute->get('type'), $arrayTypes)) {
-                        $result['attributes']['was'][$localeFieldName]
-                            = Json::decode($attributeValue->get($field), true);
-                    } else {
-                        $result['attributes']['was'][$localeFieldName] = $attributeValue->get($field);
+                            // for multiLang fields
+                            if ($this->getConfig()->get('isMultilangActive')) {
+                                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                                    $multiLangField = Util::toCamelCase('typeValue_' . strtolower($locale));
+                                    $data['result']['list'][$key]->$multiLangField = $attribute->get($multiLangField);
+                                }
+                            }
+                        }
                     }
-
-                    $result['attributes']['became'][$localeFieldName] = $post[$field];
                 }
             }
+            $event->setArgument('result', $data['result']);
         }
-
-        return $result;
     }
 
     /**
@@ -277,7 +176,6 @@ class ProductController extends AbstractPimListener
         foreach ($data as $k => $row) {
             // check if exists array by key value
             $isValueArray = !empty($row['value']) && is_array($row['value']);
-
             if (empty($row['isAttribute']) && $isValueArray) {
                 $data[$k]['value'] = $this->prepareAttributesWhere($row['value']);
             } elseif (!empty($row['isAttribute'])) {
@@ -299,7 +197,6 @@ class ProductController extends AbstractPimListener
                                 ]
                             ]
                         ];
-
                         break;
                     case 'isFalse':
                         $where = [
@@ -326,7 +223,6 @@ class ProductController extends AbstractPimListener
                                 ],
                             ]
                         ];
-
                         break;
                     default:
                         $where = [
@@ -344,7 +240,6 @@ class ProductController extends AbstractPimListener
                                 ]
                             ]
                         ];
-
                         break;
                 }
 

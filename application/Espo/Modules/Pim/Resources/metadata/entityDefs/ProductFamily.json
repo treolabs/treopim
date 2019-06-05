@@ -76,45 +76,15 @@
       "exportDisabled": true,
       "isCustom": false
     },
-    "attributes": {
+    "productFamilyAttributes": {
       "type": "linkMultiple",
-      "layoutDetailDisabled": true,
       "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
-    },
-    "productFamilyTemplate": {
-      "type": "link",
-      "required": false,
-      "notStorable": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "layoutListDisabled": true,
-      "entity": "ProductFamily",
-      "exportDisabled": true,
-      "view": "pim:views/product-family/fields/product-family-template"
-    },
-    "productAttributeValues": {
-      "type": "linkMultiple",
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "noLoad": true,
-      "importDisabled": true
-    },
-    "isRequired": {
-      "notStorable": true,
-      "type": "bool",
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true
-    },
-    "isMultiChannel": {
-      "notStorable": true,
-      "type": "bool",
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true
     }
   },
   "links": {
@@ -145,17 +115,10 @@
       "foreign": "productFamily",
       "entity": "Product"
     },
-    "attributes": {
-      "type": "hasMany",
-      "foreign": "productFamilies",
-      "entity": "Attribute",
-      "relationName": "ProductFamilyAttributeLinker"
-    },
-    "productAttributeValues": {
+    "productFamilyAttributes": {
       "type": "hasMany",
       "foreign": "productFamily",
-      "entity": "ProductAttributeValue",
-      "layoutRelationshipsDisabled": true
+      "entity": "ProductFamilyAttribute"
     }
   },
   "collection": {

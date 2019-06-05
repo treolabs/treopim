@@ -21,12 +21,14 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Entities;
 
+use Espo\Core\Templates\Entities\Base;
+
 /**
  * Class Attribute
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends \Espo\Core\Templates\Entities\Base
+class Attribute extends Base
 {
     /**
      * @var string

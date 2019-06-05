@@ -1,12 +1,10 @@
 {
   "fields": {
-    "categories": "Product Categories",
-    "productAttributes": "Product attributes",
+    "categories": "Categories",
     "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
-    "attributes": "Attributes",
-    "productAttributeValues": "Product Attribute Values",
+    "productAttributeValues": "Product Attributes",
     "productFamily": "Product Family",
     "brand": "Brand",
     "associatedRelatedProduct": "Associated Related Product",
@@ -20,7 +18,6 @@
     "productTypePackages": "Product Type Packages",
     "productPackages": "Product Packages",
     "productTypeConfigurables": "Product Type Configurables",
-    "channelProductAttributeValues": "Channel Product Attribute Values",
     "amount": "Amount",
     "channelProducts": "Product Channels",
     "price": "Purchase Price",
@@ -34,18 +31,18 @@
     "image": "Main Image",
     "tag": "Tag",
     "longDescription": "Long Description",
-    "attachments": "Attachments",
     "productSerie": "Product Serie",
-    "association": "Association"
+    "association": "Association",
+    "catalog": "Catalog",
+    "channels": "Channels",
+    "productCategories": "Product Categories"
   },
   "links": {
     "categories": "Product Categories",
-    "productAttributes": "Product attributes",
     "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
-    "attributes": "Attributes",
-    "productAttributeValues": "Product Attribute Values",
+    "productAttributeValues": "Product Attributes",
     "productFamily": "Product Family",
     "brand": "Brand",
     "associatedRelatedProduct": "Associated Related Product",
@@ -55,10 +52,12 @@
     "productTypePackages": "Product Type Packages",
     "productPackages": "Product Packages",
     "productTypeConfigurables": "Product Type Configurables",
-    "channelProductAttributeValues": "Channel Product Attribute Values",
     "channelProducts": "Product Channels",
     "tax": "Tax",
-    "packaging": "Packaging"
+    "packaging": "Packaging",
+    "catalog": "Catalog",
+    "channels": "Channels",
+    "productCategories": "Product Categories"
   },
   "labels": {
     "Create Product": "Create Product",

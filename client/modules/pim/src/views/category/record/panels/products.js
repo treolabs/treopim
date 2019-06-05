@@ -23,6 +23,9 @@ Espo.define('pim:views/category/record/panels/products', 'views/record/panels/re
         boolFilterData: {
             notLinkedWithCategory() {
                 return this.model.id;
+            },
+            onlyCatalogProducts() {
+                return true;
             }
         },
 

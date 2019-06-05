@@ -10,13 +10,13 @@ Sowohl beim Verkauf unserer Premium-Module als auch bei deren Wartung und Suppor
 
 ## Was kostet die Implementierung von TreoPIM?
 
-Diese Frage lässt sich pauschal nicht beantworten, denn jeder Anwender hat eigene Besonderheiten und Aufgaben, die mithilfe von TreoPIM zu lösen sind. Wir, die TreoLabs GmbH, nehmen Projekte mit einem Projektbudget ab EUR 3.000 netto zzgl. Erwerb notwendiger Module an.
+Diese Frage lässt sich pauschal nicht beantworten, denn jeder Anwender hat eigene Besonderheiten und Aufgaben, die mithilfe von TreoPIM zu lösen sind. Wir, die TreoLabs GmbH, nehmen Projekte mit einem Projektbudget ab EUR 10.000 netto inkl. Erwerb notwendiger Module an.
 
 
 
 ## Wie hoch ist der Stundensatz von TreoLabs GmbH?
 
-Unsere Leistungen werden mit einem Stundensatz ab EUR 45 netto abgerechnet. Der Stundensatz hängt vom Sitz der Ressourcen ab, die bei der Projektumsetzung involviert werden. Die Stundensätze für die in Deutschland ansässigen Fachkräfte sind höher als die für die in der Ukraine ansässigen Fachkräfte.
+Unsere Leistungen werden mit einem Stundensatz ab EUR 50 netto abgerechnet. Der Stundensatz hängt vom Sitz der Ressourcen ab, die bei der Projektumsetzung involviert werden. Die Stundensätze für die in Deutschland ansässigen Fachkräfte sind höher als die für die in der Ukraine ansässigen Fachkräfte.
 
 
 

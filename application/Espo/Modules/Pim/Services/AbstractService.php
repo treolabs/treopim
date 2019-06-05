@@ -75,6 +75,7 @@ abstract class AbstractService extends Base
         // add dependencies
         $this->addDependency('language');
         $this->addDependency('eventManager');
+        $this->addDependency('metadata');
     }
 
     /**

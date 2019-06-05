@@ -5,7 +5,6 @@
     "name": "Attributname",
     "channelProductAttributeValues": "Attributwerte des Produktkanals",
     "isRequired": "Ist Erforderlich",
-    "isMultiChannel": "Ist Multichannel",
     "createdAt": "erstellt am",
     "createdBy": "erstellt von",
     "isSystem": "Ist das System",
@@ -17,14 +16,14 @@
     "nameFrFr": "Name FrFr",
     "productAttributes": "Produktattribute",
     "productAttributeValues": "Werte des Produktattributes",
-    "productFamilyAttributes": "Attribute der Produktfamilie",
     "products": "Produkte",
     "typeValue": "Werttyp",
     "typeValueDeDe": "Werttyp DeDe",
     "typeValueEnUs": "Werttyp EnUs",
     "typeValueEsEs": "Werttyp EsEs",
     "typeValueFrFr": "Werttyp FrFr",
-    "type": "Typ"
+    "type": "Typ",
+    "productFamilyAttributes": "Produktfamilie Attribute"
   },
   "options": {
     "type": {
@@ -56,9 +55,9 @@
     "products": "Produkte",
     "productAttributes": "Produktattribute",
     "productAttributeValues": "Werte der Produktattribute",
-    "productFamilyAttributes": "Attribute der Produktfamilie",
     "channelProductAttributeValues": "Kanal von",
-    "productFamilies": "Produktfamilien"
+    "productFamilies": "Produktfamilien",
+    "productFamilyAttributes": "Produktfamilie Attribute"
   },
   "labels": {
     "Create Attribute": "Attribut erstellen",

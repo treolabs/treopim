@@ -5,14 +5,6 @@
     "rows": [
       [
         {
-          "name": "name"
-        },
-        {
-          "name": "image"
-        }
-      ],
-      [
-        {
           "name": "isActive"
         },
         {
@@ -21,11 +13,29 @@
       ],
       [
         {
-          "name": "configurableProduct"
+          "name": "name"
         },
         {
-          "name": "sku"
+          "name": "image"
         }
+      ],
+      [
+        {
+          "name": "configurableProduct"
+        },
+        false
+      ],
+      [
+        {
+          "name": "sku"
+        },
+        false
+      ],
+      [
+        {
+          "name": "catalog"
+        },
+        false
       ],
       [
         {

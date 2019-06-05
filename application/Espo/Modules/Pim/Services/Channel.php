@@ -185,9 +185,10 @@ class Channel extends AbstractService
      */
     protected function getCategoryChildren(string $id): array
     {
-        // get data
-        $data = $this->getEntityManager()->getRepository('Category')->getChildren($id, ['id']);
+        if (empty($category = $this->getEntityManager()->getEntity('Category', $id))) {
+            return [];
+        }
 
-        return (!empty($data)) ? array_column($data->toArray(), 'id') : [];
+        return array_column($category->getChildren()->toArray(), 'id');
     }
 }

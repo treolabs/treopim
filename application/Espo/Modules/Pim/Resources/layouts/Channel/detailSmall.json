@@ -13,14 +13,6 @@
       ],
       [
         {
-          "name": "catalog"
-        },
-        {
-          "name": "locales"
-        }
-      ],
-      [
-        {
           "name": "name"
         },
         {

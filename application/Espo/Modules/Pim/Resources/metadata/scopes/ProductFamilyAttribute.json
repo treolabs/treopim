@@ -2,8 +2,8 @@
   "entity": false,
   "layouts": false,
   "tab": false,
-  "acl": false,
-  "aclPortal": false,
+  "acl": true,
+  "aclPortal": true,
   "customizable": false,
   "importable": true,
   "notifications": true,
@@ -11,5 +11,9 @@
   "disabled": false,
   "type": "Base",
   "module": "Pim",
-  "object": true
+  "object": false,
+  "hasAssignedUser": true,
+  "hasTeam": true,
+  "hasOwner": true,
+  "statusField": null
 }

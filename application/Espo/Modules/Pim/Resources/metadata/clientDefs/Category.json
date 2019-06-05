@@ -1,81 +1,102 @@
 {
-    "controller": "pim:controllers/record-tree",
-    "iconClass": "fas fa-th",
-    "boolFilterList": [
-        "onlyMy",
-        "onlyChildCategory",
-        "notEntity",
-        "notChildCategory",
-        "notLinkedWithChannel",
-        "notLinkedWithProduct"
-    ],
-    "hiddenBoolFilterList": [
-        "onlyChildCategory",
-        "notEntity",
-        "notChildCategory",
-        "notLinkedWithChannel",
-        "notLinkedWithProduct"
-    ],
-    "disabledMassActions": [
-        "merge"
-    ],
-    "views": {
-        "list": "pim:views/category/list",
-        "detail": "pim:views/category/detail"
+  "controller": "pim:controllers/record-tree",
+  "iconClass": "fas fa-th",
+  "boolFilterList": [
+    "onlyMy",
+    "hasNoChildCategory",
+    "notEntity",
+    "notChildCategory",
+    "notLinkedWithProduct",
+    "linkedWithCatalog",
+    "onlyRootCategory",
+    "onlyCatalogCategories",
+    "notLinkedProductCategories"
+  ],
+  "hiddenBoolFilterList": [
+    "hasNoChildCategory",
+    "notEntity",
+    "notChildCategory",
+    "notLinkedWithProduct",
+    "linkedWithCatalog",
+    "onlyRootCategory",
+    "onlyCatalogCategories",
+    "notLinkedProductCategories"
+  ],
+  "disabledMassActions": [
+    "merge"
+  ],
+  "views": {
+    "list": "pim:views/category/list",
+    "detail": "pim:views/category/detail"
+  },
+  "recordViews": {
+    "list": "pim:views/category/record/list",
+    "listTree": "pim:views/category/record/list-tree",
+    "detail": "pim:views/category/record/detail"
+  },
+  "relationshipPanels": {
+    "categoryImages": {
+      "view": "pim:views/category/record/panels/category-images",
+      "recordListView": "pim:views/category-image/record/list-in-category",
+      "modalDetailView": "pim:views/category-image/modals/detail-in-category",
+      "modalEditView": "pim:views/category-image/modals/edit-in-category",
+      "layout": "listForCategoryImagesInCategory",
+      "detailLayout": "detailForCategoryImagesInCategory",
+      "createAction": "createRelatedCategoryImage",
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "notLinkedWithCategory"
+      ],
+      "recordsPerPage": 200
     },
-    "recordViews": {
-        "list": "pim:views/category/record/list",
-        "listTree": "pim:views/category/record/list-tree",
-        "detail": "pim:views/category/record/detail"
-    },
-    "relationshipPanels": {
-        "categoryImages": {
-            "view": "pim:views/category/record/panels/category-images",
-            "recordListView": "pim:views/category-image/record/list-in-category",
-            "modalDetailView": "pim:views/category-image/modals/detail-in-category",
-            "modalEditView": "pim:views/category-image/modals/edit-in-category",
-            "layout": "listForCategoryImagesInCategory",
-            "detailLayout": "detailForCategoryImagesInCategory",
-            "createAction": "createRelatedCategoryImage",
-            "selectAction": "selectRelatedEntity",
-            "selectBoolFilterList": ["notLinkedWithCategory"],
-            "recordsPerPage": 200
-        },
-        "products": {
-            "view": "pim:views/category/record/panels/products",
-            "layout": "listForProductsInCategory",
-            "recordListView": "pim:views/record/list-with-model-edit-check",
-            "rowActionsView": "views/record/row-actions/relationship-unlink-only",
-            "createAction": "createRelatedConfigured",
-            "selectAction": "selectRelatedEntity",
-            "selectBoolFilterList": ["onlyActive", "notLinkedWithCategory"]
-        },
-        "channels": {
-            "view": "pim:views/category/record/panels/channels",
-            "selectAction": "selectRelatedEntity",
-            "selectBoolFilterList": ["notLinkedWithCategory"]
-        }
-    },
-    "menu": {
-        "listTree": {
-            "buttons": [
-                {
-                    "label": "List View",
-                    "link": "#Category",
-                    "acl": "read",
-                    "style": "default"
-                }
-            ]
-        },
-        "list": {
-            "buttons": [
-                {
-                    "label": "Tree View",
-                    "link": "#Category/listTree",
-                    "acl": "read",
-                    "style": "default"
-                }
-            ]
-        }
+    "products": {
+      "view": "pim:views/category/record/panels/products",
+      "layout": "listForProductsInCategory",
+      "recordListView": "pim:views/record/list-with-model-edit-check",
+      "rowActionsView": "views/record/row-actions/relationship-unlink-only",
+      "createAction": "createRelatedConfigured",
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "onlyActive",
+        "notLinkedWithCategory",
+        "onlyCatalogProducts"
+      ]
     }
+  },
+  "menu": {
+    "listTree": {
+      "buttons": [
+        {
+          "label": "List View",
+          "link": "#Category",
+          "acl": "read",
+          "style": "default"
+        }
+      ]
+    },
+    "list": {
+      "buttons": [
+        {
+          "label": "Tree View",
+          "link": "#Category/listTree",
+          "acl": "read",
+          "style": "default"
+        }
+      ]
+    }
+  },
+  "dynamicLogic": {
+    "panels": {
+      "catalogs": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isEmpty",
+              "attribute": "categoryRouteName"
+            }
+          ]
+        }
+      }
+    }
+  }
 }

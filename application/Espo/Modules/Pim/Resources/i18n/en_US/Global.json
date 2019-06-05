@@ -25,13 +25,13 @@
     "Pricing": "Pricing",
     "Product": "Product",
     "ProductAttributeValue": "Product Attribute Value",
-    "ChannelProductAttributeValue": "Product Attribute Value (channel specific)",
     "ProductFamily": "Product Family",
-    "ProductFamilyAttribute": "ProductFamilyAttribute",
     "ProductImage": "Product Image",
     "ProductPrice": "Product Price",
     "Tax": "Tax",
-    "ProductSerie": "Product Serie"
+    "ProductSerie": "Product Serie",
+    "ProductCategory": "Product Category",
+    "ProductFamilyAttribute": "Product Family Attribute"
   },
   "scopeNamesPlural": {
     "Association": "Associations",
@@ -49,13 +49,19 @@
     "Pricing": "Pricings",
     "Product": "Products",
     "ProductAttributeValue": "Product Attribute Value",
-    "ChannelProductAttributeValue": "Product Attribute Value (channel specific)",
     "ProductFamily": "Product Families",
-    "ProductFamilyAttribute": "ProductFamilyAttribute",
     "ProductImage": "Product Images",
     "ProductPrice": "Product Prices",
     "Tax": "Taxes",
-    "ProductSerie": "Product Series"
+    "ProductSerie": "Product Series",
+    "ProductCategory": "Product Categories",
+    "ProductFamilyAttribute": "Product Family Attributes"
+  },
+  "options": {
+    "channelsFilter": {
+      "": "All Scopes",
+      "onlyGlobalScope": "Only Global Scope"
+    }
   },
   "fields": {
     "productFamily": "Product Family",

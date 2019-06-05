@@ -6,19 +6,20 @@
     "isActive": "Active",
     "categoryParent": "Parent Category",
     "categories": "Categories",
-    "products": "Products",
     "channels": "Channels",
     "categoryImages": "Category Images",
     "image": "Main Image",
-    "categoryRouteName": "Сategory Tree"
+    "categoryRouteName": "Сategory Tree",
+    "scope": "Scope",
+    "productCategories": "Product Categories"
   },
   "links": {
     "categoryParent": "Parent Category",
     "categories": "Categories",
-    "products": "Products",
     "channels": "Channels",
     "categoryImages": "Category Images",
-    "catalogs": "Catalogs"
+    "catalogs": "Catalogs",
+    "productCategories": "Product Categories"
   },
   "labels": {
     "Create Category": "Create Category"

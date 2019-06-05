@@ -10,23 +10,50 @@
     },
     "attribute": {
       "type": "link",
-      "required": true
+      "required": true,
+      "view": "pim:views/product-attribute-value/fields/attribute"
     },
-    "productFamily": {
+    "productFamilyAttribute": {
       "type": "link"
+    },
+    "isRequired": {
+      "type": "bool",
+      "default": false
     },
     "value": {
       "type": "text",
       "rows": 4,
       "lengthOfCut": 400,
-      "isMultilang": true
-    },
-    "channelProductAttributes": {
-      "type": "linkMultiple",
-      "noLoad": true
+      "isMultilang": true,
+      "view": "pim:views/product-attribute-value/fields/value-container"
     },
     "data": {
       "type": "jsonObject"
+    },
+    "scope": {
+      "type": "enum",
+      "required": true,
+      "options": [
+        "Global",
+        "Channel"
+      ],
+      "default": "Global"
+    },
+    "channels": {
+      "type": "linkMultiple",
+      "required": true,
+      "importDisabled": true,
+      "noLoad": false,
+      "view": "pim:views/product-attribute-value/fields/channels"
+    },
+    "isCustom": {
+      "type": "bool",
+      "default": true,
+      "notStorable": true
+    },
+    "attributeType": {
+      "type": "varchar",
+      "notStorable": true
     },
     "createdAt": {
       "type": "datetime",
@@ -66,19 +93,20 @@
       "type": "belongsTo",
       "entity": "Product"
     },
-    "productFamily": {
+    "productFamilyAttribute": {
       "type": "belongsTo",
       "foreign": "productAttributeValues",
-      "entity": "ProductFamily"
+      "entity": "ProductFamilyAttribute"
     },
     "attribute": {
       "type": "belongsTo",
       "entity": "Attribute"
     },
-    "channelProductAttributes": {
+    "channels": {
       "type": "hasMany",
-      "foreign": "productAttribute",
-      "entity": "ChannelProductAttributeValue"
+      "relationName": "productAttributeValueChannel",
+      "foreign": "productAttributeValues",
+      "entity": "Channel"
     },
     "createdBy": {
       "type": "belongsTo",

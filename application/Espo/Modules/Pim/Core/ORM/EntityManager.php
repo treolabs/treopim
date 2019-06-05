@@ -44,12 +44,4 @@ class EntityManager extends \Treo\Core\ORM\EntityManager
 
         return $this->query;
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getMysqlMapperClassName(): string
-    {
-        return MysqlMapper::class;
-    }
 }

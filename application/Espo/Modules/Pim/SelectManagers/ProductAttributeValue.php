@@ -50,6 +50,13 @@ class ProductAttributeValue extends AbstractSelectManager
             }
         }
 
+        // filtering by product types
+        $params['where'][] = [
+            'type'      => 'in',
+            'attribute' => 'productId',
+            'value'     => $this->getEntityManager()->getRepository('Product')->getAllowedProductIds()
+        ];
+
         return parent::getSelectParams($params, $withAcl, $checkWherePermission);
     }
 
@@ -115,5 +122,33 @@ class ProductAttributeValue extends AbstractSelectManager
         }
 
         return $where;
+    }
+
+    /**
+     * @param array $result
+     */
+    protected function boolFilterLinkedWithAttributeGroup(array &$result)
+    {
+        $data = (array)$this->getSelectCondition('linkedWithAttributeGroup');
+
+        if (isset($data['productId'])) {
+            $attributes = $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->select(['id'])
+                ->distinct()
+                ->join('attribute')
+                ->where([
+                    'productId' => $data['productId'],
+                    'attribute.attributeGroupId'
+                        => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
+                ])
+                ->find()
+                ->toArray();
+
+            $result['whereClause'][] = [
+                'id' => array_column($attributes, 'id')
+            ];
+        }
     }
 }

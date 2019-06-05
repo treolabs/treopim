@@ -23,20 +23,17 @@ declare(strict_types=1);
 namespace Espo\Modules\Pim\Hooks\Product;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Modules\Pim\Core\Hooks\AbstractHook;
 use Espo\ORM\Entity;
-use Espo\Core\Exceptions\Error;
+use Espo\Modules\Pim\Core\Hooks\AbstractHook as BaseHook;
 
 /**
- * ProductHook hook
+ * Class ProductHook
  *
- * @author r.ratsun <r.ratsun@treolabs.com>
+ * @author r.ratsun@treolabs.com
  */
-class ProductHook extends AbstractHook
+class ProductHook extends BaseHook
 {
     /**
-     * Before save action
-     *
      * @param Entity $entity
      * @param array  $options
      *
@@ -44,14 +41,148 @@ class ProductHook extends AbstractHook
      */
     public function beforeSave(Entity $entity, $options = [])
     {
-        // SKU validation
-        if (!$this->isUnique($entity, 'sku')) {
+        // is sku valid
+        if (!$this->isSkuUnique($entity)) {
             if (isset($options['isImport']) && $options['isImport']) {
                 $entity->setIsNew(false);
             } else {
                 throw new BadRequest($this->exception('Product with such SKU already exist'));
             }
         }
+
+        if ($entity->isAttributeChanged('catalogId')) {
+            // is product categories in selected catalog
+            $this->isProductCategoriesInSelectedCatalog($entity);
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     */
+    public function afterSave(Entity $entity, $options = [])
+    {
+        if (empty($options['skipProductFamilyHook']) && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
+            $this->updateProductAttributesByProductFamily($entity);
+        }
+    }
+
+    /**
+     * @param Entity $product
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function isSkuUnique(Entity $product): bool
+    {
+        $products = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->where(['sku' => $product->get('sku'), 'catalogId' => $product->get('catalogId')])
+            ->find();
+
+        if (count($products) > 0) {
+            foreach ($products as $item) {
+                if ($item->get('id') != $product->get('id')) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     * @throws BadRequest
+     */
+    protected function isProductCategoriesInSelectedCatalog(Entity $entity): bool
+    {
+        // get product categories
+        $productCategories = $this
+            ->getEntityManager()
+            ->getRepository('ProductCategory')
+            ->where(['productId' => $entity->get('id')])
+            ->find();
+
+        if (count($productCategories) > 0) {
+            // get catalog categories ids
+            $catalogCategories = array_column($entity->get('catalog')->get('categories')->toArray(), 'id');
+
+            foreach ($productCategories as $productCategory) {
+                // get category
+                if (empty($category = $productCategory->get('category'))) {
+                    throw new BadRequest($this->exception("No such category"));
+                }
+
+                if (empty($category->get('categoryParent'))) {
+                    $root = $category->get('id');
+                } else {
+                    $tree = explode("|", (string)$category->get('categoryRoute'));
+                    $root = null;
+                    if (!empty($tree[1])) {
+                        $root = $tree[1];
+                    }
+                }
+                if (!in_array($root, $catalogCategories)) {
+                    throw new BadRequest($this->exception("Some category cannot be linked with selected catalog"));
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    protected function updateProductAttributesByProductFamily(Entity $entity): bool
+    {
+        // get product family
+        $productFamily = $entity->get('productFamily');
+
+        // get product family attributes
+        $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
+
+        if ($entity->isNew()) {
+            if (count($productFamilyAttributes) > 0) {
+                foreach ($productFamilyAttributes as $productFamilyAttribute) {
+                    // create
+                    $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                    $productAttributeValue->set(
+                        [
+                            'productId'                => $entity->get('id'),
+                            'attributeId'              => $productFamilyAttribute->get('attributeId'),
+                            'productFamilyAttributeId' => $productFamilyAttribute->get('id'),
+                            'isRequired'               => $productFamilyAttribute->get('isRequired'),
+                            'scope'                    => $productFamilyAttribute->get('scope')
+                        ]
+                    );
+                    // save
+                    $this->getEntityManager()->saveEntity($productAttributeValue);
+
+                    // relate channels if it needs
+                    if ($productFamilyAttribute->get('scope') == 'Channel') {
+                        $channels = $productFamilyAttribute->get('channels');
+                        if (count($channels) > 0) {
+                            foreach ($channels as $channel) {
+                                $this
+                                    ->getEntityManager()
+                                    ->getRepository('ProductAttributeValue')
+                                    ->relate($productAttributeValue, 'channels', $channel);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

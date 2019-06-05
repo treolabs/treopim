@@ -22,30 +22,16 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Services;
 
+use Espo\Core\Templates\Services\Base;
+use Espo\ORM\Entity;
+
 /**
  * Class ProductFamily
  *
  * @author r.ratsun@treolabs.com
  */
-class ProductFamily extends \Espo\Core\Templates\Services\Base
+class ProductFamily extends Base
 {
-    /**
-     * @param \stdClass $data
-     *
-     * @return bool
-     */
-    public function updateAttribute(\stdClass $data): bool
-    {
-        // validation
-        if (!isset($data->attributeId) || !isset($data->productFamilyId)) {
-            return false;
-        }
-        // update
-        $this->updateProductFamilyArribute($data);
-
-        return true;
-    }
-
     /**
      * Get count not empty product family attributes
      *
@@ -65,11 +51,13 @@ class ProductFamily extends \Espo\Core\Templates\Services\Base
             $count = $this
                 ->getEntityManager()
                 ->getRepository('ProductAttributeValue')
-                ->where([
-                    'productFamilyId' => $productFamilyId,
-                    'attributeId' => $attributeId,
-                    'value!=' => ['null', '', 0, '0', '[]']
-                ])
+                ->where(
+                    [
+                        'productFamilyId' => $productFamilyId,
+                        'attributeId'     => $attributeId,
+                        'value!='         => ['null', '', 0, '0', '[]']
+                    ]
+                )
                 ->count();
         }
 
@@ -77,37 +65,33 @@ class ProductFamily extends \Espo\Core\Templates\Services\Base
     }
 
     /**
-     * @param \stdClass $data
-     *
-     * @return bool
+     * @inheritdoc
      */
-    protected function updateProductFamilyArribute(\stdClass $data): bool
+    protected function init()
     {
-        // prepare params
-        $params = [];
-        if (isset($data->isRequired)) {
-            $params[] = "is_required=" . (int)$data->isRequired;
-        }
-        if (isset($data->isMultiChannel)) {
-            $params[] = "is_multi_channel=" . (int)$data->isMultiChannel;
-        }
-        if (empty($params)) {
-            return false;
-        }
+        parent::init();
 
-        // prepare data
-        $param = implode(",", $params);
-        $attributeId = (string)$data->attributeId;
-        $productFamilyId = (string)$data->productFamilyId;
+        $this->addDependency('serviceFactory');
+    }
 
-        // update
-        $sql
-            = "UPDATE product_family_attribute_linker 
-                SET {$param} 
-                WHERE attribute_id='$attributeId' AND product_family_id='$productFamilyId'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
+    /**
+     * @param Entity $entity
+     * @param Entity $duplicatingEntity
+     */
+    protected function duplicateProductFamilyAttributes(Entity $entity, Entity $duplicatingEntity)
+    {
+        if (!empty($productFamilyAttributes = $duplicatingEntity->get('productFamilyAttributes')->toArray())) {
+            // get service
+            $service = $this->getInjection('serviceFactory')->create('ProductFamilyAttribute');
 
-        return true;
+            foreach ($productFamilyAttributes as $productFamilyAttribute) {
+                // prepare data
+                $data = $service->getDuplicateAttributes($productFamilyAttribute['id']);
+                $data->productFamilyId = $entity->get('id');
+
+                // create entity
+                $service->createEntity($data);
+            }
+        }
     }
 }

@@ -5,6 +5,26 @@
     "rows": [
       [
         {
+          "name": "scope"
+        },
+        {
+          "name": "channels"
+        }
+      ],
+      [
+        {
+          "name": "product"
+        },
+        false
+      ],
+      [
+        {
+          "name": "attribute"
+        },
+        false
+      ],
+      [
+        {
           "name": "value"
         },
         false

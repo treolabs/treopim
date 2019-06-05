@@ -37,14 +37,29 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
             }, view => {
                 view.render();
                 view.listenTo(view, 'select-category', data => {
-                    let defaultAdvanced = this.searchManager.get().advanced;
-                    let advanced = _.extend(Espo.Utils.cloneDeep(defaultAdvanced), {categories: data});
-                    this.searchManager.set(_.extend(this.searchManager.get(), {advanced: advanced}));
-                    this.collection.where = this.searchManager.getWhere();
-                    this.searchManager.set(_.extend(this.searchManager.get(), {advanced: defaultAdvanced}));
+                    this.updateCollectionWithCatalogTree(data);
                     this.collection.fetch();
                 });
             });
+        },
+
+        updateCollectionWithCatalogTree(data) {
+            let defaultFilters = this.searchManager.get();
+            let advanced = _.extend(Espo.Utils.cloneDeep(defaultFilters.advanced), data.advanced);
+            let bool = _.extend(Espo.Utils.cloneDeep(defaultFilters.bool), data.bool);
+            this.searchManager.set(_.extend(Espo.Utils.cloneDeep(defaultFilters), {advanced: advanced, bool: bool}));
+            this.collection.where = this.searchManager.getWhere();
+            let boolPart = this.collection.where.find(item => item.type === 'bool');
+            if (boolPart) {
+                let boolPartData = {};
+                boolPart.value.forEach(elem => {
+                    if (elem in data.boolData) {
+                        boolPartData[elem] = data.boolData[elem];
+                    }
+                });
+                boolPart.data = boolPartData;
+            }
+            this.searchManager.set(defaultFilters);
         },
 
         data() {

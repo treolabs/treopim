@@ -1,20 +1,23 @@
 {
   "fields": {
     "categories": "Categories",
-    "channelProductAttributeValues": "Channel product attribute values",
     "description": "Description",
     "isActive": "Active",
     "channelProducts": "Product Channels",
     "currencies": "Currencies",
     "category": "Category",
-    "catalog": "Catalog",
     "locales": "Locales",
-    "code": "Code"
+    "code": "Code",
+    "products": "Products",
+    "productCategories": "Product Categories",
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "links": {
     "categories": "Categories",
-    "channelProductAttributeValues": "Channel product attribute values",
-    "channelProducts": "Product Channels"
+    "channelProducts": "Product Channels",
+    "products": "Products",
+    "productCategories": "Product Categories",
+    "productFamilyAttributes": "Product Family Attributes"
   },
   "labels": {
     "Create Channel": "Create Channel"

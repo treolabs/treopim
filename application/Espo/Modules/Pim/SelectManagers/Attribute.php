@@ -48,43 +48,56 @@ class Attribute extends AbstractSelectManager
     }
 
     /**
-     * NotLinkedWithProductFamily filter
-     *
      * @param array $result
      */
-    protected function boolFilterNotLinkedWithProductFamily(&$result)
+    protected function boolFilterNotLinkedProductAttributeValues(array &$result)
     {
         // prepare data
-        $productFamilyId = (string)$this->getSelectCondition('notLinkedWithProductFamily');
+        $data = (array)$this->getSelectCondition('notLinkedProductAttributeValues');
 
-        foreach ($this->getProductFamilyAttributes($productFamilyId) as $row) {
+        if (isset($data['productId']) && isset($data['scope'])) {
+            // get linked to product attributes
+            $attributes = $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->select(['attributeId'])
+                ->where([
+                    'productId' => $data['productId'],
+                    'scope' => $data['scope']
+                ])
+                ->find()
+                ->toArray();
+
             $result['whereClause'][] = [
-                'id!=' => $row['attribute_id']
+                'id!=' => array_column($attributes, 'attributeId')
             ];
         }
     }
 
     /**
-     * Get product family attributes
-     *
-     * @param string $productFamilyId
-     *
-     * @return array
+     * @param array $result
      */
-    protected function getProductFamilyAttributes($productFamilyId)
+    protected function boolFilterNotLinkedProductFamilyAttributes(array &$result)
     {
-        $pdo = $this->getEntityManager()->getPDO();
+        // prepare data
+        $data = (array)$this->getSelectCondition('notLinkedProductFamilyAttributes');
 
-        $sql = 'SELECT
-          attribute_id
-        FROM
-          product_family_attribute_linker
-        WHERE
-          product_family_id =' . $pdo->quote($productFamilyId) . '
-          AND deleted = 0';
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
+        if (isset($data['productFamilyId']) && isset($data['scope'])) {
+            // get linked to product attributes
+            $attributes = $this
+                ->getEntityManager()
+                ->getRepository('ProductFamilyAttribute')
+                ->select(['attributeId'])
+                ->where([
+                    'productFamilyId' => $data['productFamilyId'],
+                    'scope' => $data['scope']
+                ])
+                ->find()
+                ->toArray();
 
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+            $result['whereClause'][] = [
+                'id!=' => array_column($attributes, 'attributeId')
+            ];
+        }
     }
 }

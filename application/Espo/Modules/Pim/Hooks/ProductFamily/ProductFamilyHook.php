@@ -55,37 +55,17 @@ class ProductFamilyHook extends AbstractHook
     }
 
     /**
-     * After Save Entity hook
-     *
      * @param Entity $entity
      * @param array  $options
+     * @param array  $data
      */
-    public function afterSave(Entity $entity, $options = [])
+    public function afterUnrelate(Entity $entity, array $options = [], array $data = [])
     {
-        $this->setParentAttributes($entity);
-    }
-
-    /**
-     * Set attributes from parent ProductFamily
-     *
-     * @param Entity $entity
-     */
-    protected function setParentAttributes(Entity $entity)
-    {
-        if ($entity->isNew()) {
-            // prepare repository
-            $repository = $this->getEntityManager()->getRepository('ProductFamily');
-
-            // get parent
-            $parent = $repository
-                ->where(['id' => $entity->get('productFamilyTemplateId')])
-                ->findOne();
-
-            if (!empty($parent) && !empty($attributes = $parent->get('attributes'))) {
-                foreach ($attributes as $attribute) {
-                    $repository->relate($entity, 'attributes', $attribute);
-                }
-            }
+        if ($data['relationName'] == 'productFamilyAttributes') {
+            $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->removeCollectionByProductFamilyAttribute($data['foreignEntity']->get('id'));
         }
     }
 }

@@ -1,15 +1,12 @@
 [
   {
-    "name": "attributes"
+    "name": "productAttributeValues"
   },
   {
-    "name": "channelProductAttributeValues"
+    "name": "productCategories"
   },
   {
-    "name": "categories"
-  },
-  {
-    "name": "Channels"
+    "name": "channels"
   },
   {
     "name": "productPrices"

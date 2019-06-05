@@ -21,11 +21,22 @@ declare(strict_types=1);
 
 namespace Espo\Modules\Pim\Repositories;
 
+use Espo\Core\Templates\Repositories\Base;
+
 /**
  * Class ProductAttributeValue
  *
  * @author r.ratsun@treolabs.com
  */
-class ProductAttributeValue extends \Espo\Core\Templates\Repositories\Base
+class ProductAttributeValue extends Base
 {
+    /**
+     * @param string $productFamilyAttributeId
+     */
+    public function removeCollectionByProductFamilyAttribute(string $productFamilyAttributeId)
+    {
+        $this
+            ->where(['productFamilyAttributeId' => $productFamilyAttributeId])
+            ->removeCollection(['skipProductAttributeValueHook' => true]);
+    }
 }

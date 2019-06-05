@@ -1,5 +1,8 @@
 [
   {
-    "name": "channels"
+    "name": "categories"
+  },
+  {
+    "name": "products"
   }
 ]

@@ -55,8 +55,6 @@ class CategoryController extends AbstractListener
                 throw new BadRequest($message);
             }
         }
-
-        return $data;
     }
 
     /**
