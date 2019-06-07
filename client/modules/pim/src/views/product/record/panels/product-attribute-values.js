@@ -210,6 +210,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     this.applyOverviewFilters();
                 });
 
+                this.getMetadata().fetch();
                 this.fetchCollectionGroups(() => this.wait(false));
             }, this);
 
