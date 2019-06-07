@@ -17,23 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/detail', 'pim:views/detail',
+Espo.define('pim:views/product-attribute-value/modals/detail', 'views/modals/detail',
     Dep => Dep.extend({
 
-        selectRelatedFilters: {},
-
-        selectBoolFilterLists: {
-            attributes: ['notLinkedWithProduct'],
-        },
-
-        boolFilterData: {
-            attributes: {
-                notLinkedWithProduct() {
-                    return this.model.id;
-                },
-            },
-        }
+        fullFormDisabled: true
 
     })
 );
-

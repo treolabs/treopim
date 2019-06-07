@@ -39,8 +39,7 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
         },
 
         updateModelDefs() {
-            this.model.defs.fields.scope.readOnly = this.model.defs.fields.attribute.readOnly =
-                this.model.defs.fields.channels.readOnly = !this.model.get('isCustom');
+            ['attribute', 'channels', 'product', 'scope'].forEach(field => this.model.defs.fields[field].readOnly = !this.model.get('isCustom'));
             if (this.model.get('attributeId')) {
                 let type = this.model.get('attributeType');
                 let typeValue = this.model.get('typeValue');

@@ -17,22 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/detail', 'pim:views/detail',
+Espo.define('pim:views/product-attribute-value/record/list', 'views/record/list',
     Dep => Dep.extend({
 
-        selectRelatedFilters: {},
+        massActionsDisabled: true,
 
-        selectBoolFilterLists: {
-            attributes: ['notLinkedWithProduct'],
-        },
-
-        boolFilterData: {
-            attributes: {
-                notLinkedWithProduct() {
-                    return this.model.id;
-                },
-            },
-        }
+        rowActionsView: 'views/record/row-actions/empty'
 
     })
 );
