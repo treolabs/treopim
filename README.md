@@ -77,7 +77,7 @@ Please ask, if you want to know more.
 
 ### Requirements
 
-* Unix-based system. Linux mint recommend
+* Unix-based system. Linux Mint recommend
 * PHP 7.1 or above (with pdo_mysql, openssl, json, zip, gd, mbstring, xml, curl,exif extensions)
 * MySQL 5.5.3 or above
 
@@ -87,7 +87,7 @@ Please ask, if you want to know more.
 
 ### Installation
 1. Install [TreoCore](https://github.com/treolabs/treocore#installation)
-2. Install Pim module by ModuleManager
+2. Install Pim module by module manager
      
 ## License
 
