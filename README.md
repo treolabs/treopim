@@ -86,7 +86,7 @@ Please ask, if you want to know more.
 * [Nginx server configuration](https://github.com/treolabs/treocore/blob/master/docs/en/administration/nginx-server-configuration.md)
 
 ### Installation
-1. Install [TreoCore] (https://github.com/treolabs/treocore#installation)
+1. Install [TreoCore](https://github.com/treolabs/treocore#installation)
 2. Install Pim module by ModuleManager
      
 ## License
