@@ -80,7 +80,9 @@
   },
   "labels": {
     "Add Field": "Add Filter",
-    "removeExplain": "Select this to unlink attribute from other Entities before removing"
+    "removeExplain": "Select this to unlink attribute from other Entities before removing",
+    "No Group": "No Group",
+    "Defined Attributes": "Defined Attributes"
   },
   "dashlets": {
     "GeneralStatistics": "General Statistics",

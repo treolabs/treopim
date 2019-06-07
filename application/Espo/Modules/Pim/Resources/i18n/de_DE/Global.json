@@ -84,7 +84,9 @@
     "Manage Folders": "Ordner verwalten",
     "New notifications": "Neue Benachrichtigungen",
     "Return to Application": "Zurück zur Anwendung",
-    "you": "sie"
+    "you": "sie",
+    "No Group": "Keine Gruppe",
+    "Defined Attributes": "Definierte Attribute"
   },
   "dashlets": {
     "GeneralStatistics": "Allgemeine Statistiken",

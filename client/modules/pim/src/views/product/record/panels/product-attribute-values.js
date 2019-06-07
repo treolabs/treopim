@@ -22,11 +22,15 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         template: 'pim:product/record/panels/product-attribute-values',
 
+        baseSelectFields: ['attributeId', 'attributeName', 'value', 'valueEnUs', 'valueDeDe', 'scope', 'channelsIds', 'channelsNames', 'data'],
+
         groupKey: 'attributeGroupId',
 
         groupLabel: 'attributeGroupName',
 
         groupScope: 'AttributeGroup',
+
+        groupsWithoutId: ['no_group'],
 
         noGroup: {
             key: 'no_group',
@@ -318,71 +322,55 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         fetchCollectionGroups(callback) {
-            this.getHelper().layoutManager.get(this.scope, this.layoutName, layout => {
-                let list = [];
-                layout.forEach(item => {
-                    if (item.name) {
-                        let field = item.name;
-                        let fieldType = this.getMetadata().get(['entityDefs', this.scope, 'fields', field, 'type']);
-                        if (fieldType) {
-                            this.getFieldManager().getAttributeList(fieldType, field).forEach(attribute => {
-                                list.push(attribute);
-                            });
+            this.collection.data.select = this.getSelectFields().join(',');
+            this.collection.reset();
+            this.fetchCollectionPart(() => {
+                this.groups = [];
+                this.groups = this.getGroupsFromCollection();
+
+                let valueKeys = this.groups.map(group => group.key);
+                this.getCollectionFactory().create('AttributeGroup', collection => {
+                    this.attributeGroupCollection = collection;
+                    collection.select = 'sortOrder';
+                    collection.maxSize = 200;
+                    collection.offset = 0;
+                    collection.whereAdditional = [
+                        {
+                            attribute: 'id',
+                            type: 'in',
+                            value: valueKeys
                         }
-                    }
-                });
-                list.push('data');
-                this.collection.data.select = list.join(',');
-                this.collection.reset();
-                this.fetchCollectionPart(() => {
-                    this.groups = [];
-                    this.groups = this.getGroupsFromCollection();
-
-                    let valueKeys = this.groups.map(group => group.key);
-
-                    this.getCollectionFactory().create('AttributeGroup', collection => {
-                        this.attributeGroupCollection = collection;
-                        collection.select = 'sortOrder';
-                        collection.maxSize = 200;
-                        collection.offset = 0;
-                        collection.whereAdditional = [
-                            {
-                                attribute: 'id',
-                                type: 'in',
-                                value: valueKeys
-                            }
-                        ];
-
-                        collection.fetch().then(() => {
-                            let orderArray = [];
-                            let noGroup;
-                            this.groups.forEach(item => {
-                                if (item.key === 'no_group') {
-                                    item.sortOrder = 0;
-                                    noGroup = item;
-                                } else {
-                                    this.attributeGroupCollection.forEach(model => {
-                                        if (model.id === item.key) {
-                                            item.sortOrder = model.get('sortOrder');
-                                        }
-                                    });
-                                }
-                                orderArray.push(item.sortOrder);
-                            });
-                            if (noGroup) {
-                                noGroup.sortOrder = Math.max(...orderArray) + 1;
-                            }
-                            this.groups.sort(function(a, b) {
-                                return a.sortOrder - b.sortOrder ;
-                            });
-
-                            if (callback) {
-                                callback();
-                            }
-                        });
+                    ];
+                    collection.fetch().then(() => {
+                        this.applySortingForAttributeGroups();
+                        if (callback) {
+                            callback();
+                        }
                     });
                 });
             });
+        },
+
+        applySortingForAttributeGroups() {
+            this.groups.forEach(item => {
+                let sortOder = 0;
+                let attributeGroup = this.attributeGroupCollection.find(model => model.id === item.key);
+                if (attributeGroup) {
+                    sortOder = attributeGroup.get('sortOrder');
+                }
+                item.sortOrder = item.sortOrder || sortOder;
+            });
+            let noGroup = this.groups.find(item => item.key === 'no_group');
+            if (noGroup) {
+                noGroup.sortOrder = Math.max(...this.groups.map(group => group.sortOrder)) + 1;
+            }
+            this.groups.sort(function (a, b) {
+                return a.sortOrder - b.sortOrder;
+            });
+        },
+
+        getSelectFields() {
+            return this.baseSelectFields || [];
         },
 
         fetchCollectionPart(callback) {
@@ -397,33 +385,43 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         getGroupsFromCollection() {
             let groups = [];
-
             this.collection.forEach(model => {
-                let key = model.get(this.groupKey);
-                if (key === null) {
-                    key = this.noGroup.key;
-                }
-                let label = model.get(this.groupLabel);
-                if (label === null) {
-                    label = this.translate(this.noGroup.label, 'labels', 'Global');
-                }
-                let group = groups.find(item => item.key === key);
-                if (group) {
-                    group.editable = group.editable && model.get('isCustom');
-                    group.rowList.push(model.id);
-                    group.rowList.sort((a, b) => this.collection.get(a).get('sortOrder') - this.collection.get(b).get('sortOrder'));
-                } else {
-                    groups.push({
-                        key: key,
-                        id: key !== this.noGroup.key ? key : null,
-                        label: label,
-                        rowList: [model.id],
-                        editable: model.get('isCustom')
-                    });
-                }
+                let params = this.getGroupParams(model);
+                this.setGroup(params, model, groups);
             });
-
             return groups;
+        },
+
+        getGroupParams(model) {
+            let key = model.get(this.groupKey);
+            if (key === null) {
+                key = this.noGroup.key;
+            }
+            let label = model.get(this.groupLabel);
+            if (label === null) {
+                label = this.translate(this.noGroup.label, 'labels', 'Global');
+            }
+            return {
+                key: key,
+                label: label
+            };
+        },
+
+        setGroup(params, model, groups) {
+            let group = groups.find(item => item.key === params.key);
+            if (group) {
+                group.editable = group.editable && model.get('isCustom');
+                group.rowList.push(model.id);
+                group.rowList.sort((a, b) => this.collection.get(a).get('sortOrder') - this.collection.get(b).get('sortOrder'));
+            } else {
+                groups.push({
+                    key: params.key,
+                    id: !this.groupsWithoutId.includes(params.key) ? params.key : null,
+                    label: params.label,
+                    rowList: [model.id],
+                    editable: model.get('isCustom')
+                });
+            }
         },
 
         buildGroups() {
@@ -447,7 +445,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                             }
                         }
                     ];
-                    collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames,data';
+                    collection.data.select = this.getSelectFields().join(',');
 
                     this.listenTo(collection, 'sync', () => {
                         this.model.trigger('attributes-updated');
@@ -457,7 +455,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
-                    this.createView(group.key, viewName, {
+                    let options = {
                         collection: collection,
                         layoutName: this.layoutName,
                         listLayout: this.listLayout,
@@ -466,7 +464,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         buttonsDisabled: true,
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
-                    }, view => {
+                    };
+                    this.createView(group.key, viewName, this.modifyListOptions(options), view => {
                         view.render(() => {
                             count++;
                             if (count === this.groups.length) {
@@ -476,6 +475,10 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     });
                 });
             });
+        },
+
+        modifyListOptions(options) {
+            return options;
         },
 
         applyOverviewFilters() {
