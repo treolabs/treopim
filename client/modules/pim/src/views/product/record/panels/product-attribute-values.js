@@ -514,7 +514,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             let currentLocaleFilter = (this.model.advancedEntityView || {}).localesFilter;
             let showGenericFields = (this.model.advancedEntityView || {}).showGenericFields;
             if (currentLocaleFilter !== null && this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length &&
-                ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang'].includes(fieldView.model.get('attributeType'))) {
+                ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang', 'wysiwygMultiLang'].includes(fieldView.model.get('attributeType'))) {
                 let hiddenLocales = currentLocaleFilter ? this.getConfig().get('inputLanguageList').filter(lang => lang !== currentLocaleFilter) : [];
                 fieldView.setHiddenLocales(hiddenLocales);
                 let langFieldNameList = fieldView.getLangFieldNameList();

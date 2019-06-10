@@ -28,7 +28,7 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
 
         selectedAttributesWithOneFilter: [],
 
-        multiLangFieldTypes: ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang'],
+        multiLangFieldTypes: ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang', 'wysiwygMultiLang'],
 
         data() {
             var data = Dep.prototype.data.call(this);
