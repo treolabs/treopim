@@ -432,20 +432,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         collection.add(this.collection.get(id));
                     });
 
-                    collection.url = `Product/${this.model.id}/productAttributeValues`;
-                    collection.where = [
-                        {
-                            type: 'bool',
-                            value: ['linkedWithAttributeGroup'],
-                            data: {
-                                linkedWithAttributeGroup: {
-                                    productId: this.model.id,
-                                    attributeGroupId: group.key !== 'no_group' ? group.key : null
-                                }
-                            }
-                        }
-                    ];
-                    collection.data.select = this.getSelectFields().join(',');
+                    this.setGroupCollectionDefs(group, collection);
 
                     this.listenTo(collection, 'sync', () => {
                         this.model.trigger('attributes-updated');
@@ -475,6 +462,23 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     });
                 });
             });
+        },
+
+        setGroupCollectionDefs(group, collection) {
+            collection.url = `Product/${this.model.id}/productAttributeValues`;
+            collection.where = [
+                {
+                    type: 'bool',
+                    value: ['linkedWithAttributeGroup'],
+                    data: {
+                        linkedWithAttributeGroup: {
+                            productId: this.model.id,
+                            attributeGroupId: group.key !== 'no_group' ? group.key : null
+                        }
+                    }
+                }
+            ];
+            collection.data.select = this.getSelectFields().join(',');
         },
 
         modifyListOptions(options) {
