@@ -22,7 +22,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         template: 'pim:product/record/panels/product-attribute-values',
 
-        baseSelectFields: ['attributeId', 'attributeName', 'value', 'valueEnUs', 'valueDeDe', 'scope', 'channelsIds', 'channelsNames', 'data'],
+        baseSelectFields: ['attributeId', 'attributeName', 'value', 'isRequired', 'scope', 'channelsIds', 'channelsNames', 'data'],
 
         groupKey: 'attributeGroupId',
 
@@ -201,7 +201,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 this.collection = collection;
 
                 this.setFilter(this.filter);
-
+                this.updateBaseSelectFields();
                 this.listenTo(this.model, 'change:productFamilyId update-all after:relate after:unrelate', () => {
                     this.actionRefresh();
                 });
@@ -215,6 +215,18 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             }, this);
 
             this.setupFilterActions();
+        },
+
+        updateBaseSelectFields() {
+            let inputLanguageList = this.getConfig().get('inputLanguageList') || [];
+            if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
+                inputLanguageList.forEach(lang => {
+                    let field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
+                    if (!this.baseSelectFields.includes(field)) {
+                        this.baseSelectFields.push(field);
+                    }
+                });
+            }
         },
 
         createProductAttributeValue(selectObj) {
