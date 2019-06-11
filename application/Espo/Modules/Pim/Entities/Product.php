@@ -278,19 +278,6 @@ class Product extends Base
     }
 
     /**
-     * @param $name
-     * @return bool
-     */
-    public function isAttributeChanged($name): bool{
-        $isCheck = parent::isAttributeChanged($name);
-        if ($isCheck && $this->get($name) == null && $this->getFetched($name) == null) {
-            $isCheck = false;
-        }
-        return $isCheck;
-    }
-
-
-    /**
      * @param string $locale
      *
      * @return null|string

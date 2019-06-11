@@ -190,7 +190,8 @@
     "tag": {
       "type": "multiEnum",
       "optionColors": {},
-      "audited": true
+      "audited": true,
+      "default": []
     },
     "scope": {
       "type": "enum",
