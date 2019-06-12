@@ -36,20 +36,6 @@ class ProductAttributeValue extends AbstractService
     /**
      * @inheritdoc
      */
-    public function getSelectAttributeList($params)
-    {
-        // prepare select attributes list
-        $attributeList = parent::getSelectAttributeList($params);
-
-        $attributeList[] = 'productFamilyAttributeId';
-        $attributeList[] = 'attributeType';
-
-        return $attributeList;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function prepareEntityForOutput(Entity $entity)
     {
         parent::prepareEntityForOutput($entity);
