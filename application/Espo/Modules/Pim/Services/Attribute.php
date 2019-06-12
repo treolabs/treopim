@@ -136,19 +136,23 @@ class Attribute extends AbstractService
     protected function getAttributesForFilter(): array
     {
         $sql
-            = "SELECT
-                  pf.id AS productFamilyId,
-                  pf.name AS productFamilyName,
-                  a.id AS attributeId,
-                  a.name AS attributeName,
-                  a.type AS attributeType,
-                  a.type_value AS attributeTypeValue
-               FROM
-                  (SELECT product_family_id, attribute_id FROM product_attribute_value WHERE deleted = 0 GROUP BY product_family_id , attribute_id) AS pav
-               JOIN
-                  attribute AS a ON a.id = pav.attribute_id AND a.deleted = 0
-               LEFT JOIN
-                  product_family AS pf ON pf.id = pav.product_family_id AND pf.deleted = 0";
+            = 'SELECT 
+                   pf.id        AS productFamilyId,
+                   pf.name      AS productFamilyName,
+                   a.id         AS attributeId,
+                   a.name       AS attributeName,
+                   a.type       AS attributeType,
+                   a.type_value AS attributeTypeValue
+                FROM (SELECT product_family_attribute_id, attribute_id
+                        FROM product_attribute_value
+                        WHERE deleted = 0
+                        GROUP BY product_family_attribute_id, attribute_id) AS pav
+                 LEFT JOIN
+                    product_family_attribute AS pfa ON pfa.id = pav.product_family_attribute_id AND pfa.deleted = 0
+                 LEFT JOIN
+                    product_family AS pf ON pf.id = pfa.product_family_id  AND pf.deleted = 0
+                 LEFT JOIN
+                    attribute AS a ON a.id = pfa.attribute_id AND a.deleted = 0;';
 
         $sth = $this->getEntityManager()->getPDO()->prepare($sql);
         $sth->execute();
