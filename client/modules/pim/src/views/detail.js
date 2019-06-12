@@ -28,9 +28,6 @@ Espo.define('pim:views/detail', 'views/detail',
                     if (rel.collection) {
                         rel.collection.fetch();
                     }
-                    if (typeof rel.updateGrid === 'function') {
-                        rel.updateGrid();
-                    }
                     if (typeof rel.setupList === 'function') {
                         rel.setupList();
                     }
