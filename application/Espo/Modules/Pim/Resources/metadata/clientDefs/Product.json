@@ -62,6 +62,7 @@
       ],
       "rowActionsView": "pim:views/product-attribute-value/record/row-actions/relationship-no-unlink-in-product",
       "view": "pim:views/product/record/panels/product-attribute-values",
+      "recordListView": "pim:views/product-attribute-value/record/list-in-product",
       "aclScopesList": [
         "Attribute",
         "AttributeGroup",
@@ -81,6 +82,10 @@
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "modalEditView": "pim:views/product-category/modals/edit-in-product",
       "layout": "listForProductCategoriesInProduct"
+    },
+    "channels": {
+      "createAction": "createRelatedConfigured",
+      "selectAction": "selectRelatedEntity"
     },
     "productImages": {
       "label": "Image",
