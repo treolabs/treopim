@@ -22,7 +22,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         template: 'pim:product/record/panels/product-attribute-values',
 
-        baseSelectFields: ['attributeId', 'attributeName', 'value', 'isRequired', 'scope', 'channelsIds', 'channelsNames', 'data'],
+        baseSelectFields: ['attributeId', 'attributeName', 'value', 'isRequired', 'scope', 'channelsIds', 'channelsNames', 'data', 'productFamilyAttributeId'],
 
         groupKey: 'attributeGroupId',
 
