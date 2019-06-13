@@ -26,11 +26,11 @@ use Treo\Core\Migration\AbstractMigration;
 use Treo\Core\Utils\Util;
 
 /**
- * Migration class for version 3.3.0
+ * Migration class for version 3.6.0
  *
  * @author r.ratsun@treolabs.com
  */
-class V3Dot3Dot0 extends AbstractMigration
+class V3Dot6Dot0 extends AbstractMigration
 {
     /**
      * @inheritdoc
