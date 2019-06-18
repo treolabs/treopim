@@ -226,7 +226,10 @@ class ProductFamilyAttributeHook extends BaseHook
             $productAttributeValue->set('isRequired', $entity->get('isRequired'));
             $productAttributeValue->set('channelsIds', $entity->get('channelsIds'));
 
-            $this->getEntityManager()->saveEntity($productAttributeValue, ['skipProductAttributeValueHook' => true]);
+            $this->getEntityManager()->saveEntity(
+                $productAttributeValue,
+                ['skipProductAttributeValueHook' => true, 'productFamilyAttributeChanged' => true]
+            );
         }
 
         return true;
