@@ -61,7 +61,7 @@ Espo.define('pim:views/detail', 'views/detail',
                 ((panelView || {}).defs || {}).modalEditView ||
                 this.getMetadata().get(['clientDefs', scope, 'modalViews', 'edit']) ||
                 'views/modals/edit';
-            debugger;
+
             this.createView('quickCreate', viewName, {
                 scope: scope,
                 relate: {
