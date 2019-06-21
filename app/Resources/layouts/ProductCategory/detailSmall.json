@@ -3,17 +3,17 @@
     "rows": [
       [
         {
-          "name": "category"
-        },
-        false
-      ],
-      [
-        {
           "name": "scope"
         },
         {
           "name": "channels"
         }
+      ],
+      [
+        {
+          "name": "category"
+        },
+        false
       ]
     ],
     "style": "default",
