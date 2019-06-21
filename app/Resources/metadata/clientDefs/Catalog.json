@@ -9,7 +9,8 @@
     "notEntity"
   ],
   "recordViews": {
-    "edit": "pim:views/catalog/record/edit"
+    "edit": "pim:views/catalog/record/edit",
+    "detail": "pim:views/catalog/record/detail"
   },
   "relationshipPanels": {
     "categories": {
