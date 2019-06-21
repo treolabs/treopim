@@ -137,7 +137,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
             }
 
             if (!attrs) {
-                this.afterNotModified(gridAttrs || gridPackages);
+                this.afterNotModified(gridPackages);
                 this.trigger('cancel:save');
                 return true;
             }
