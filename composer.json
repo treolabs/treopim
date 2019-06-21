@@ -18,9 +18,9 @@
     }
   ],
   "require": {
-    "treolabs/treocore": "~3.16.0",
+    "treolabs/treocore": "~3.16.2",
     "treo-module/coloredfields": "~1.6.1",
-    "treo-module/multilang": "~1.12.1"
+    "treo-module/multilang": "~1.12.3"
   },
   "extra": {
     "treoId": "Pim",
