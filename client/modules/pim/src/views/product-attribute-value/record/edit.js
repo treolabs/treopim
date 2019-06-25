@@ -30,6 +30,10 @@ Espo.define('pim:views/product-attribute-value/record/edit', ['pim:views/product
             Detail.prototype.updateModelDefs.call(this);
         },
 
+        changeFieldsReadOnlyStatus(fields, condition) {
+            Detail.prototype.changeFieldsReadOnlyStatus.call(this, fields, condition);
+        },
+
         fetch() {
             return Detail.prototype.fetch.call(this);
         },
