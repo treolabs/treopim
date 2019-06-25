@@ -213,6 +213,10 @@ class ProductFamilyAttributeHook extends BaseHook
 
             // create new product attribute value if it needs
             if (empty($productAttributeValue)) {
+                if ($product->get('type') == 'productVariant') {
+                    continue;
+                }
+
                 $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
                 $productAttributeValue->set('productId', $product->get('id'));
                 $productAttributeValue->set('attributeId', $entity->get('attributeId'));
