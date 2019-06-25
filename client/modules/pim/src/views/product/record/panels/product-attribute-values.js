@@ -420,7 +420,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             }
             let label = model.get(this.groupLabel);
             if (!label) {
-                label = this.translate(this.noGroup.label, 'labels', 'Global');
+                label = this.translate(this.noGroup.label, 'labels', 'Product');
             }
             return {
                 key: key,
