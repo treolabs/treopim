@@ -415,11 +415,11 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         getGroupParams(model) {
             let key = model.get(this.groupKey);
-            if (key === null) {
+            if (!key) {
                 key = this.noGroup.key;
             }
             let label = model.get(this.groupLabel);
-            if (label === null) {
+            if (!label) {
                 label = this.translate(this.noGroup.label, 'labels', 'Global');
             }
             return {
