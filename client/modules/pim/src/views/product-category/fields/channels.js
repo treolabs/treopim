@@ -26,7 +26,7 @@ Espo.define('pim:views/product-category/fields/channels', 'treo-core:views/field
             notLinkedWithCategoriesInProduct() {
                 return {
                     productId: this.model.get('productId'),
-                    attributeId: this.model.get('attributeId')
+                    categoryId: this.model.get('categoryId')
                 };
             }
         },
