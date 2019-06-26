@@ -73,9 +73,7 @@
         {
           "name": "uvp"
         },
-        {
-          "name": "singleCigar"
-        }
+        false
       ],
       [
         {

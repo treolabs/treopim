@@ -58,6 +58,8 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function catalogCategoryUp(): void
     {
+        $this->execute("DELETE FROM product_category WHERE 1");
+
         $categories = $this->fetchAll("SELECT id FROM category WHERE category_parent_id IS NULL");
         $catalogs = $this->fetchAll("SELECT id FROM catalog");
 
@@ -85,6 +87,8 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function productCategoryUp(): void
     {
+        $this->execute("DELETE FROM catalog_category WHERE 1");
+
         $sql
             = "SELECT pcl.* 
                 FROM product_category_linker AS pcl 
@@ -119,6 +123,8 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function masterCatalogUp(): void
     {
+        $this->execute("DELETE FROM catalog WHERE code='main_catalog_migration'");
+
         $catalog = $this->getEntityManager()->getEntity('Catalog');
         $catalog->set(
             [
@@ -161,6 +167,8 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function channelsUp()
     {
+        $this->execute("DELETE FROM product_channel WHERE 1");
+
         $sql
             = "SELECT
                      p.id             AS productId,

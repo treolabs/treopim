@@ -213,6 +213,10 @@ class ProductFamilyAttributeHook extends BaseHook
 
             // create new product attribute value if it needs
             if (empty($productAttributeValue)) {
+                if ($product->get('type') == 'productVariant') {
+                    continue;
+                }
+
                 $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
                 $productAttributeValue->set('productId', $product->get('id'));
                 $productAttributeValue->set('attributeId', $entity->get('attributeId'));
@@ -226,7 +230,10 @@ class ProductFamilyAttributeHook extends BaseHook
             $productAttributeValue->set('isRequired', $entity->get('isRequired'));
             $productAttributeValue->set('channelsIds', $entity->get('channelsIds'));
 
-            $this->getEntityManager()->saveEntity($productAttributeValue, ['skipProductAttributeValueHook' => true]);
+            $this->getEntityManager()->saveEntity(
+                $productAttributeValue,
+                ['skipProductAttributeValueHook' => true, 'productFamilyAttributeChanged' => true]
+            );
         }
 
         return true;

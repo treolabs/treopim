@@ -158,9 +158,9 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                 });
 
                 this.listenTo(this.model, 'productVariantImageChange', value => {
+                    this.defs.actionList = this.defs.buttonList = [];
                     if (value === 'parent') {
                         this.defs.create = this.defs.select = false;
-                        this.defs.actionList = this.defs.buttonList = [];
                         this.defs.readOnly = true;
                     } else if (value === 'individual') {
                         let panelDefs = this.getMetadata().get(['clientDefs', 'Product', 'relationshipPanels', this.panelName]);

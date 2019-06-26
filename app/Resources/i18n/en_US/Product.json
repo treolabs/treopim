@@ -70,7 +70,8 @@
     "Associated Products": "Associated Products",
     "Image": "Images",
     "withoutAnyCategory": "Without Any Category",
-    "typeCategoryToSearch": "Type category to search..."
+    "typeCategoryToSearch": "Type category to search...",
+    "No Group": "No Group"
   },
   "options": {
     "productStatus": {

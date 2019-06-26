@@ -24,7 +24,7 @@ namespace Pim\Services;
 
 use Espo\Core\Utils\Database\Schema\Utils;
 use Espo\Core\Utils\Util;
-use Espo\Modules\Multilang\Services\RevisionField as MultilangRevisionField;
+use Multilang\Services\RevisionField as MultilangRevisionField;
 use Espo\ORM\EntityCollection;
 use Espo\Core\Utils\Json;
 use Slim\Http\Request;
