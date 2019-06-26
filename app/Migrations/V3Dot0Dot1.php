@@ -62,7 +62,7 @@ class V3Dot0Dot1 extends AbstractMigration
         $catalogs = $this->fetchAll("SELECT id FROM catalog");
 
         if (!empty($categories) && !empty($catalogs)) {
-            $sql = "";
+            $sql = "DELETE FROM catalog_category WHERE 1;";
             foreach ($categories as $category) {
                 foreach ($catalogs as $catalog) {
                     $sql .= "INSERT INTO catalog_category (catalog_id, category_id) VALUES ('" . $catalog['id'] . "', '" . $category['id'] . "');";
@@ -185,7 +185,7 @@ class V3Dot0Dot1 extends AbstractMigration
             $productCategories[$row['productId']] = array_merge($productCategories[$row['productId']], $categoryIds);
         }
 
-        $insertSql = "";
+        $insertSql = "DELETE FROM product_channel WHERE 1;";
         foreach ($productCategories as $productId => $categories) {
             $sql
                 = "SELECT 
@@ -199,9 +199,7 @@ class V3Dot0Dot1 extends AbstractMigration
             }
         }
 
-        if (!empty($insertSql)) {
-            $this->execute($insertSql);
-        }
+        $this->execute($insertSql);
     }
 
     /**
