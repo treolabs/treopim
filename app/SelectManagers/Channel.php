@@ -109,4 +109,31 @@ class Channel extends AbstractSelectManager
             ];
         }
     }
+
+    /**
+     * @param $result
+     */
+    protected function boolFilterNotLinkedWithCategoriesInProduct(&$result)
+    {
+        $data = $this->getSelectCondition('notLinkedWithCategoriesInProduct');
+
+        $productCategories = $this
+            ->getEntityManager()
+            ->getRepository('Channel')
+            ->distinct()
+            ->join(['productCategories'])
+            ->select(['id'])
+            ->where([
+                'productCategories.productId' => $data['productId'],
+                'productCategories.categoryId' => $data['categoryId']
+            ])
+            ->find()
+            ->toArray();
+
+        if (count($productCategories) > 0) {
+            $result['whereClause'][] = [
+                'id!=' => array_column($productCategories, 'id')
+            ];
+        }
+    }
 }

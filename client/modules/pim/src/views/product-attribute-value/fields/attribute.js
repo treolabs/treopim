@@ -17,8 +17,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/link',
+Espo.define('pim:views/product-attribute-value/fields/attribute', 'treo-core:views/fields/filtered-link',
     Dep => Dep.extend({
+
+        createDisabled: true,
+
+        selectBoolFilterList: ["notLinkedProductAttributeValues"],
+
+        boolFilterData: {
+            notLinkedProductAttributeValues() {
+                return {
+                    productId: this.model.get('productId'),
+                    scope: this.model.get('scope')
+                }
+            }
+        },
 
         setup() {
             this.mandatorySelectAttributeList = ['type', 'typeValue'];
@@ -29,7 +42,6 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/
                 });
                 this.mandatorySelectAttributeList = this.mandatorySelectAttributeList.concat(this.typeValueFields);
             }
-            this.createDisabled = !this.getAcl().check('Attribute', 'create');
 
             Dep.prototype.setup.call(this);
         },
