@@ -34,7 +34,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             this.updateDataForValueField();
 
             let type = this.model.get('attributeType') || 'base';
-            this.createView('valueField', this.getFieldManager().getViewName(type), {
+            this.createView('valueField', this.getValueFieldView(type), {
                 el: `${this.options.el} > .field[data-name="valueField"]`,
                 model: this.model,
                 name: this.name,
@@ -50,6 +50,10 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         updateDataForValueField() {
             let data = this.model.get('data') || {};
             Object.keys(data).forEach(param => this.model.set({[`value${Espo.Utils.upperCaseFirst(param)}`]: data[param]}));
+        },
+
+        getValueFieldView(type) {
+            return this.getFieldManager().getViewName(type);
         }
 
     })

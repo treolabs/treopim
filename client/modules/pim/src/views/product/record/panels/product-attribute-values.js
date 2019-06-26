@@ -241,11 +241,19 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         model: attributeModel,
                         link: attributeModel.defs.links[this.link].foreign
                     });
-                    model.set({
+                    let attributes = {
                         assignedUserId: this.getUser().id,
                         assignedUserName: this.getUser().get('name'),
                         scope: 'Global'
-                    });
+                    };
+                    if (['enum', 'enumMultiLang'].includes(attributeModel.get('type'))) {
+                        attributes.value = (attributeModel.get('typeValue') || [])[0];
+                        if (this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length) {
+                            let typeValues = this.getFieldManager().getActualAttributeList(attributeModel.get('type'), 'typeValue').splice(1);
+                            typeValues.forEach(typeValue => attributes[typeValue.replace('typeValue', 'value')] = (attributeModel.get(typeValue) || [])[0]);
+                        }
+                    }
+                    model.set(attributes);
                     promises.push(model.save());
                 });
             });
@@ -407,12 +415,12 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         getGroupParams(model) {
             let key = model.get(this.groupKey);
-            if (key === null) {
+            if (!key) {
                 key = this.noGroup.key;
             }
             let label = model.get(this.groupLabel);
-            if (label === null) {
-                label = this.translate(this.noGroup.label, 'labels', 'Global');
+            if (!label) {
+                label = this.translate(this.noGroup.label, 'labels', 'Product');
             }
             return {
                 key: key,

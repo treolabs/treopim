@@ -23,6 +23,9 @@
     "detail": "pim:views/attribute/record/detail",
     "list": "pim:views/attribute/record/list"
   },
+  "modalViews": {
+    "select": "pim:views/attribute/modals/select-records"
+  },
   "dynamicLogic": {
     "fields": {
       "type": {

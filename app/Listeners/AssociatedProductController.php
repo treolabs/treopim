@@ -21,7 +21,6 @@
 namespace Pim\Listeners;
 
 use Treo\Listeners\AbstractListener;
-use PDO;
 use Treo\Core\EventManager\Event;
 
 /**
@@ -73,7 +72,9 @@ class AssociatedProductController extends AbstractListener
             }
         }
 
-        $images = $this->getDBAssociatedProductsMainImage($productIds);
+        $images = $this
+            ->getService('Product')
+            ->getDBAssociatedProductsMainImage($productIds);
 
         foreach ($result as $key => $item) {
             if ($images[$item->mainProductId]) {
@@ -90,47 +91,6 @@ class AssociatedProductController extends AbstractListener
                     ? $images[$item->relatedProductId]['imageLink'] : null;
 
             }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get product main image
-     *
-     * @param array $productIds
-     *
-     * @return array
-     */
-    protected function getDBAssociatedProductsMainImage(array $productIds): array
-    {
-        $result = [];
-        $productIds = "'" . implode("','", $productIds) . "'";
-        if (!empty($productIds)) {
-            $sql
-                = "SELECT
-                       pip.product_id AS productId,
-                       pi.type AS imageType,
-                       pi.image_id AS imageId,
-                       pi.image_link AS imageLink,
-                       pip.sort_order
-                    FROM product_image pi
-                      JOIN product_image_product pip
-                        ON pip.product_image_id = pi.id AND pip.deleted = 0 AND pip.id = (
-                          SELECT id
-                          FROM product_image_product
-                          WHERE product_id = pip.product_id
-                          ORDER BY sort_order, id
-                          LIMIT 1
-                        )
-                    WHERE pip.product_id IN ({$productIds}) AND pi.deleted = 0";
-
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $result = $sth->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
-
-            return is_array($result) ? $result : [];
         }
 
         return $result;
