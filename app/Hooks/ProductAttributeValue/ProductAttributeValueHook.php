@@ -182,7 +182,7 @@ class ProductAttributeValueHook extends BaseHook
             $note->set('parentId', $entity->get('productId'));
             $note->set('parentType', 'Product');
             $note->set('data', $data);
-            $note->set('attributeId', $entity->get('attributeId'));
+            $note->set('attributeId', $entity->get('id'));
 
             $this->getEntityManager()->saveEntity($note);
         }
