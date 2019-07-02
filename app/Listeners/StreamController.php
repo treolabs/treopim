@@ -55,16 +55,7 @@ class StreamController extends AbstractListener
     protected function injectAttributeType(array $result): array
     {
         if (isset($result['list']) && is_array($result['list'])) {
-            // find attributes
-            $attributes = $this->getEntityManager()
-                ->getRepository('Attribute')
-                ->select(['id', 'type'])
-                ->where(['id' => array_column($result['list'], 'attributeId')])
-                ->find();
-
-            if (!empty($attributes)) {
-                $attributes = array_column($attributes->toArray(), 'type', 'id');
-
+            if (!empty($attributes = $this->getAttributesType(array_column($result['list'], 'attributeId')))) {
                 foreach ($result['list'] as $key => $item) {
                     if (isset($attributes[$item['attributeId']])) {
                         $result['list'][$key]['attributeType'] = $attributes[$item['attributeId']];
@@ -110,6 +101,35 @@ class StreamController extends AbstractListener
                     }
                 }
             }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
+    protected function getAttributesType(array $ids): array
+    {
+        $result = [];
+
+        if (!empty($ids)) {
+            $productAttributesIds = implode("','", $ids);
+
+            $sql = "
+                    SELECT pav.id, a.type
+                    FROM product_attribute_value pav
+                    JOIN attribute a
+                        ON a.id = pav.attribute_id AND a.deleted = 0
+                    WHERE pav.id IN ('{$productAttributesIds}') AND pav.deleted = 0
+                ";
+
+            $sth = $this->getEntityManager()->getPdo()->prepare($sql);
+            $sth->execute();
+
+            $result = $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
         }
 
         return $result;
