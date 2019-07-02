@@ -80,6 +80,7 @@ class RevisionField extends MultilangRevisionField
                             // prepare field name
                             $fieldName = 'value';
                             $fieldName = empty($locale) ? $fieldName : $fieldName . '_' . strtolower($locale);
+                            $fieldName = Util::toCamelCase($fieldName);
 
                             // prepare data
                             $was = $became = [];
@@ -105,7 +106,7 @@ class RevisionField extends MultilangRevisionField
                                 "locale"   => $locale,
                                 "was"      => $was,
                                 "became"   => $became,
-                                "field"    => Util::toCamelCase($fieldName)
+                                "field"    => $fieldName
                             ];
                         }
                         $result['total'] = $result['total'] + 1;
