@@ -235,10 +235,14 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                     promises.push(model.save());
                 });
             });
-            Promise.all(promises).then(() => {
-                this.notify('Linked', 'success');
-                this.actionRefresh();
-            });
+            Promise.all(promises)
+                .then(() => {
+                    this.notify('Linked', 'success');
+                    this.actionRefresh();
+                })
+                .catch(() => {
+                    this.actionRefresh();
+                });
         },
 
         actionSelectAttributeGroup() {
