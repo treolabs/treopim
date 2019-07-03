@@ -80,6 +80,7 @@ class RevisionField extends MultilangRevisionField
                             // prepare field name
                             $fieldName = 'value';
                             $fieldName = empty($locale) ? $fieldName : $fieldName . '_' . strtolower($locale);
+                            $fieldName = Util::toCamelCase($fieldName);
 
                             // prepare data
                             $was = $became = [];
@@ -87,7 +88,7 @@ class RevisionField extends MultilangRevisionField
                             $was[$fieldName] = $data['attributes']['was'][$field];
                             $became[$fieldName] = $data['attributes']['became'][$field];
 
-                            if (isset($data['attributes']['became'][$field . 'Unit'])
+                            if (isset($data['attributes']['was'][$field . 'Unit'])
                                 && isset($data['attributes']['became'][$field . 'Unit'])) {
                                 $was[$fieldName . 'Unit'] = $data['attributes']['was'][$field . 'Unit'];
                                 $became[$fieldName . 'Unit'] =  $data['attributes']['became'][$field . 'Unit'];
@@ -105,7 +106,7 @@ class RevisionField extends MultilangRevisionField
                                 "locale"   => $locale,
                                 "was"      => $was,
                                 "became"   => $became,
-                                "field"    => Util::toCamelCase($fieldName)
+                                "field"    => $fieldName
                             ];
                         }
                         $result['total'] = $result['total'] + 1;

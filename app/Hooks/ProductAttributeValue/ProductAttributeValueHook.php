@@ -182,7 +182,7 @@ class ProductAttributeValueHook extends BaseHook
             $note->set('parentId', $entity->get('productId'));
             $note->set('parentType', 'Product');
             $note->set('data', $data);
-            $note->set('attributeId', $entity->get('attributeId'));
+            $note->set('attributeId', $entity->get('id'));
 
             $this->getEntityManager()->saveEntity($note);
         }
@@ -212,7 +212,9 @@ class ProductAttributeValueHook extends BaseHook
         $arrayTypes = ['array', 'arrayMultiLang', 'enum', 'enumMultiLang', 'multiEnum', 'multiEnumMultiLang'];
 
         // for value
-        if ($entity->isAttributeChanged('value') || ($entity->isAttributeChanged('data') && $this->beforeSaveData['data']['unit'] != $entity->get('data')->unit)) {
+        if ($entity->isAttributeChanged('value')
+            || ($entity->isAttributeChanged('data')
+                && $this->beforeSaveData['data']->unit != $entity->get('data')->unit)) {
             $result['fields'][] = $fieldName;
             if (in_array($attribute->get('type'), $arrayTypes)) {
                 $result['attributes']['was'][$fieldName] = Json::decode($this->beforeSaveData['value'], true);

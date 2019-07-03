@@ -21,6 +21,10 @@
 Espo.define('pim:views/product-attribute-value/record/list-in-product', 'views/record/list',
     Dep => Dep.extend({
 
+        pipelines: {
+            actionShowRevisionAttribute: ['clientDefs', 'ProductAttributeValue', 'actionShowRevisionAttribute']
+        },
+
         setup() {
             Dep.prototype.setup.call(this);
 
@@ -30,6 +34,8 @@ Espo.define('pim:views/product-attribute-value/record/list-in-product', 'views/r
                     panelView.model.trigger('after:attributesSave');
                 }
             });
+
+            this.runPipeline('actionShowRevisionAttribute');
         }
 
     })

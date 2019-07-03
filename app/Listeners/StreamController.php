@@ -55,16 +55,7 @@ class StreamController extends AbstractListener
     protected function injectAttributeType(array $result): array
     {
         if (isset($result['list']) && is_array($result['list'])) {
-            // find attributes
-            $attributes = $this->getEntityManager()
-                ->getRepository('Attribute')
-                ->select(['id', 'type'])
-                ->where(['id' => array_column($result['list'], 'attributeId')])
-                ->find();
-
-            if (!empty($attributes)) {
-                $attributes = array_column($attributes->toArray(), 'type', 'id');
-
+            if (!empty($attributes = $this->getAttributesType(array_column($result['list'], 'attributeId')))) {
                 foreach ($result['list'] as $key => $item) {
                     if (isset($attributes[$item['attributeId']])) {
                         $result['list'][$key]['attributeType'] = $attributes[$item['attributeId']];
@@ -109,6 +100,29 @@ class StreamController extends AbstractListener
                         }
                     }
                 }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
+    protected function getAttributesType(array $ids): array
+    {
+        $result = [];
+
+        $attributes = $this->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->where(['id' => $ids])
+            ->find();
+
+        if (count($attributes) > 0) {
+            foreach ($attributes as $attribute) {
+                $result[$attribute->get('id')] = $attribute->get('attribute')->get('type');
             }
         }
 
