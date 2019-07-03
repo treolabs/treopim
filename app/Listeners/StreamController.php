@@ -115,21 +115,15 @@ class StreamController extends AbstractListener
     {
         $result = [];
 
-        if (!empty($ids)) {
-            $productAttributesIds = implode("','", $ids);
+        $attributes = $this->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->where(['id' => $ids])
+            ->find();
 
-            $sql = "
-                    SELECT pav.id, a.type
-                    FROM product_attribute_value pav
-                    JOIN attribute a
-                        ON a.id = pav.attribute_id AND a.deleted = 0
-                    WHERE pav.id IN ('{$productAttributesIds}') AND pav.deleted = 0
-                ";
-
-            $sth = $this->getEntityManager()->getPdo()->prepare($sql);
-            $sth->execute();
-
-            $result = $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
+        if (count($attributes) > 0) {
+            foreach ($attributes as $attribute) {
+                $result[$attribute->get('id')] = $attribute->get('attribute')->get('type');
+            }
         }
 
         return $result;
