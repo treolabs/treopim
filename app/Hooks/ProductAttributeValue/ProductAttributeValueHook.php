@@ -209,7 +209,7 @@ class ProductAttributeValueHook extends BaseHook
         $result = [];
 
         // prepare array types
-        $arrayTypes = ['array', 'arrayMultiLang', 'enum', 'enumMultiLang', 'multiEnum', 'multiEnumMultiLang'];
+        $arrayTypes = ['array', 'arrayMultiLang', 'multiEnum', 'multiEnumMultiLang'];
 
         // for value
         if ($entity->isAttributeChanged('value')
@@ -224,7 +224,7 @@ class ProductAttributeValueHook extends BaseHook
                 $result['attributes']['became'][$fieldName] = $entity->get('value');
             }
 
-            if ($entity->isAttributeChanged('data')) {
+            if ($entity->get('attribute')->get('type') == 'unit') {
                 $result['attributes']['was'][$fieldName . 'Unit'] = $this->beforeSaveData['data']->unit;
                 $result['attributes']['became'][$fieldName . 'Unit'] = $entity->get('data')->unit;
             }
