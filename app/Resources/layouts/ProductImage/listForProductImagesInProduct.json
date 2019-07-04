@@ -21,15 +21,18 @@
     },
     {
         "name": "width",
-        "notSortable": true
+        "notSortable": true,
+        "width": 7
     },
     {
         "name": "height",
-        "notSortable": true
+        "notSortable": true,
+        "width": 7
     },
     {
         "name": "size",
-        "notSortable": true
+        "notSortable": true,
+        "width": 7
     },
     {
         "name": "imageType",
