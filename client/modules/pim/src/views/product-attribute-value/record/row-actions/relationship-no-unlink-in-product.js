@@ -20,6 +20,10 @@
 Espo.define('pim:views/product-attribute-value/record/row-actions/relationship-no-unlink-in-product', 'views/record/row-actions/relationship',
     Dep => Dep.extend({
 
+        pipelines: {
+            actionListPipe: ['clientDefs', 'ProductAttributeValue', 'actionListPipe']
+        },
+
         getActionList() {
             let list = [{
                 action: 'quickView',
@@ -51,6 +55,7 @@ Espo.define('pim:views/product-attribute-value/record/row-actions/relationship-n
                     }
                 });
             }
+            this.runPipeline('actionListPipe', list);
             return list;
         }
 

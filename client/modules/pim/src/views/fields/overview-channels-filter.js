@@ -37,6 +37,10 @@ Espo.define('pim:views/fields/overview-channels-filter', 'treo-core:views/fields
 
         setup() {
             this.baseOptionList = Espo.Utils.cloneDeep(this.optionsList);
+            this.relationships = this.relationships.filter(name => {
+                let foreignEntity = this.getMetadata().get(['entityDefs', 'Product', 'links', name, 'entity']);
+                return foreignEntity && this.getAcl().check(foreignEntity, 'read');
+            });
             this.wait(true);
             this.updateChannels(this.relationships, () => this.wait(false));
 
