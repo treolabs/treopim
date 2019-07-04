@@ -99,6 +99,18 @@ class ProductController extends AbstractListener
                 }
             }
             $event->setArgument('result', $data['result']);
+        } elseif ($data['params']['link'] == 'productImages' && !empty($data['result']['list'])) {
+            $productId = $data['params']['id'];
+            $imagesIds = array_column($data['result']['list'], 'id');
+            $channels = $this->getProductImageChannels($productId, $imagesIds);
+
+            foreach ($data['result']['list'] as $key => $value) {
+                if (isset($channels[$value->id])) {
+                    $data['result']['list'][$key]->channelsIds = array_column($channels[$value->id], 'id');
+                    $data['result']['list'][$key]->channelsNames = array_column($channels[$value->id], 'name');
+                }
+            }
+            $event->setArgument('result', $data['result']);
         }
     }
 
@@ -255,5 +267,31 @@ class ProductController extends AbstractListener
         }
 
         return $data;
+    }
+
+    /**
+     * @param string $productId
+     * @param array $imagesIds
+     *
+     * @return array
+     */
+    protected function getProductImageChannels(string $productId, array $imagesIds): array
+    {
+        $sql = "
+                SELECT pic.product_image_id ,ch.id, ch.name
+                FROM product_image_channel pic
+                JOIN channel AS ch
+                  ON ch.id = pic.channel_id AND ch.deleted = 0 
+                WHERE pic.product_image_id IN ('" . implode($imagesIds, "','") ."')  AND pic.product_id = '$productId'
+            ";
+
+        $sth = $this
+            ->getEntityManager()
+            ->getPDO()
+            ->prepare($sql);
+
+        $sth->execute();
+
+        return $sth->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_ASSOC);
     }
 }
