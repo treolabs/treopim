@@ -194,13 +194,15 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
 
         applyOverviewFilters() {
             let rows = this.getListRows();
+            let categoriesWithChannelScope = [];
             Object.keys(rows).forEach(name => {
                 let row = rows[name];
-                this.controlRowVisibility(row, this.updateCheckByChannelFilter(row));
+                this.controlRowVisibility(row, this.updateCheckByChannelFilter(row, categoriesWithChannelScope));
             });
+            this.hideChannelCategoriesWithGlobalScope(rows, categoriesWithChannelScope);
         },
 
-        updateCheckByChannelFilter(row) {
+        updateCheckByChannelFilter(row, categoriesWithChannelScope) {
             let hide = false;
             let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
             if (currentChannelFilter) {
@@ -208,6 +210,9 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                     hide = row.model.get('scope') !== 'Global';
                 } else {
                     hide = (row.model.get('scope') === 'Channel' && !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    if ((row.model.get('channelsIds') || []).includes(currentChannelFilter)) {
+                        categoriesWithChannelScope.push(row.model.get('categoryId'));
+                    }
                 }
             }
             return hide;
@@ -233,6 +238,15 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                 }
             }
             return fields;
+        },
+
+        hideChannelCategoriesWithGlobalScope(rows, categoriesWithChannelScope) {
+            Object.keys(rows).forEach(name => {
+                let row = rows[name];
+                if (categoriesWithChannelScope.includes(row.model.get('categoryId')) && row.model.get('scope') === 'Global') {
+                    this.controlRowVisibility(row, true);
+                }
+            });
         },
 
         createProductCategory(selectObj) {
