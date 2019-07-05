@@ -33,7 +33,7 @@ Espo.define('pim:views/fields/overview-channels-filter', 'treo-core:views/fields
             }
         ],
 
-        relationships: ['productAttributeValues', 'productCategories'],
+        relationships: ['productAttributeValues', 'productCategories', 'productImages'],
 
         setup() {
             this.baseOptionList = Espo.Utils.cloneDeep(this.optionsList);

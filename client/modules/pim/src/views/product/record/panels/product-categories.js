@@ -209,7 +209,7 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                 if (currentChannelFilter === 'onlyGlobalScope') {
                     hide = row.model.get('scope') !== 'Global';
                 } else {
-                    hide = (row.model.get('scope') === 'Channel' && !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    hide = (row.model.get('scope') !== 'Channel' || !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
                     if ((row.model.get('channelsIds') || []).includes(currentChannelFilter)) {
                         categoriesWithChannelScope.push(row.model.get('categoryId'));
                     }
