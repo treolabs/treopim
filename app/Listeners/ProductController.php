@@ -105,9 +105,16 @@ class ProductController extends AbstractListener
             $channels = $this->getProductImageChannels($productId, $imagesIds);
 
             foreach ($data['result']['list'] as $key => $value) {
-                if (isset($channels[$value->id])) {
-                    $data['result']['list'][$key]->channelsIds = array_column($channels[$value->id], 'id');
-                    $data['result']['list'][$key]->channelsNames = array_column($channels[$value->id], 'name');
+                if ($value->scope == 'Channel' && isset($channels[$value->id])) {
+                    $ids = $names = [];
+
+                    foreach ($channels[$value->id] as $item) {
+                        $ids[] = $item['id'];
+                        $names[$item['id']] = $item['name'];
+                    }
+
+                    $data['result']['list'][$key]->channelsIds = $ids;
+                    $data['result']['list'][$key]->channelsNames = $names;
                 }
             }
             $event->setArgument('result', $data['result']);
