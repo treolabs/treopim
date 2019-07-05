@@ -9,6 +9,11 @@
     },
     {
         "name": "scope",
+        "notSortable": true,
+        "width": 10
+    },
+    {
+        "name": "channels",
         "notSortable": true
     },
     {
@@ -36,6 +41,7 @@
     },
     {
         "name": "imageType",
-        "notSortable": true
+        "notSortable": true,
+        "width": 7
     }
 ]

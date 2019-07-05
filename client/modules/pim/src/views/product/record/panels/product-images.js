@@ -174,6 +174,8 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                     this.applyOverviewFilters();
                 });
 
+                this.extendCollectionModel();
+
                 var viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
                 this.once('after:render', function () {
@@ -204,6 +206,12 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
             this.setupFilterActions();
         },
 
+        extendCollectionModel() {
+            this.collection.model.prototype.defs.fields.channels = {
+                type: 'linkMultiple'
+            };
+        },
+
         applyOverviewFilters() {
             let rows = this.getListRows();
             Object.keys(rows).forEach(name => {
@@ -219,7 +227,7 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                 if (currentChannelFilter === 'onlyGlobalScope') {
                     hide = row.model.get('scope') !== 'Global';
                 } else {
-                    hide = (row.model.get('scope') === 'Channel' && !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    hide = (row.model.get('scope') !== 'Channel' || !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
                 }
             }
             return hide;
