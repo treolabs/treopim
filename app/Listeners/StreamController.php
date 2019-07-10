@@ -122,7 +122,9 @@ class StreamController extends AbstractListener
 
         if (count($attributes) > 0) {
             foreach ($attributes as $attribute) {
-                $result[$attribute->get('id')] = $attribute->get('attribute')->get('type');
+                if (!empty($attribute->get('attribute'))) {
+                    $result[$attribute->get('id')] = $attribute->get('attribute')->get('type');
+                }
             }
         }
 
