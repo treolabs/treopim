@@ -87,7 +87,10 @@ Please ask, if you want to know more.
 
 ### Installation
 1. Install [TreoCore](https://github.com/treolabs/treocore#installation)
-2. Install Pim module by Composer UI
+2. Install Pim module by Composer UI or by running:
+   ```
+   composer require treo-module/pim:*
+   ```
      
 ## License
 
