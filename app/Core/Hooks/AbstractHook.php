@@ -152,7 +152,7 @@ abstract class AbstractHook extends BaseHook
         if (count($catalog->get('products')) > 0) {
             foreach ($catalog->get('products') as $product) {
                 $categories = $product->get('categories');
-                if (count($categories) > 0) {
+                if (!empty($categories)) {
                     foreach ($categories as $row) {
                         if (in_array($category->get('id'), array_merge(explode("|", (string)$row->get('categoryRoute')), [$row->get('id')]))) {
                             throw new BadRequest($this->translate('There are few products that using current category tree', 'exceptions', 'Catalog'));
