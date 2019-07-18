@@ -1,6 +1,0 @@
-{
-  "views/login": [
-    "__APPEND__",
-    "pim"
-  ]
-}

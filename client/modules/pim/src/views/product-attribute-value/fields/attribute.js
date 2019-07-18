@@ -20,6 +20,8 @@
 Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/link',
     Dep => Dep.extend({
 
+        createDisabled: true,
+
         setup() {
             this.mandatorySelectAttributeList = ['type', 'typeValue'];
             let inputLanguageList = this.getConfig().get('inputLanguageList') || [];
@@ -29,7 +31,6 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/
                 });
                 this.mandatorySelectAttributeList = this.mandatorySelectAttributeList.concat(this.typeValueFields);
             }
-            this.createDisabled = !this.getAcl().check('Attribute', 'create');
 
             Dep.prototype.setup.call(this);
         },
@@ -45,7 +46,7 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/
                 attributeType: model.get('type'),
                 typeValue: model.get('typeValue'),
             };
-            this.typeValueFields.forEach(item => attributes[item] = model.get(item));
+            (this.typeValueFields || []).forEach(item => attributes[item] = model.get(item));
             this.model.set(attributes);
         }
 

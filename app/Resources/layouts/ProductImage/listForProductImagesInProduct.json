@@ -1,0 +1,47 @@
+[
+    {
+        "name": "image",
+        "notSortable": true
+    },
+    {
+        "name": "state",
+        "notSortable": true
+    },
+    {
+        "name": "scope",
+        "notSortable": true,
+        "width": 10
+    },
+    {
+        "name": "channels",
+        "notSortable": true
+    },
+    {
+        "name": "name",
+        "notSortable": true
+    },
+    {
+        "name": "alt",
+        "notSortable": true
+    },
+    {
+        "name": "width",
+        "notSortable": true,
+        "width": 7
+    },
+    {
+        "name": "height",
+        "notSortable": true,
+        "width": 7
+    },
+    {
+        "name": "size",
+        "notSortable": true,
+        "width": 7
+    },
+    {
+        "name": "imageType",
+        "notSortable": true,
+        "width": 7
+    }
+]

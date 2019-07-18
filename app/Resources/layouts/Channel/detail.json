@@ -1,0 +1,30 @@
+[
+  {
+    "label": "Overview",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "isActive"
+        },
+        {
+          "name": "code"
+        }
+      ],
+      [
+        {
+          "name": "name"
+        },
+        {
+          "name": "currencies"
+        }
+      ],
+      [
+        {
+          "name": "description",
+          "fullWidth": true
+        }
+      ]
+    ]
+  }
+]

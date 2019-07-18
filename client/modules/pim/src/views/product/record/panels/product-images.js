@@ -10,12 +10,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 Espo.define('pim:views/product/record/panels/product-images', ['views/record/panels/relationship', 'views/record/panels/bottom', 'search-manager'],
@@ -159,9 +158,9 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                 });
 
                 this.listenTo(this.model, 'productVariantImageChange', value => {
+                    this.defs.actionList = this.defs.buttonList = [];
                     if (value === 'parent') {
                         this.defs.create = this.defs.select = false;
-                        this.defs.actionList = this.defs.buttonList = [];
                         this.defs.readOnly = true;
                     } else if (value === 'individual') {
                         let panelDefs = this.getMetadata().get(['clientDefs', 'Product', 'relationshipPanels', this.panelName]);
@@ -170,6 +169,12 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                     }
                     this.trigger('panel:rebuild', this.defs);
                 });
+
+                this.listenTo(this.model, 'overview-filters-changed', () => {
+                    this.applyOverviewFilters();
+                });
+
+                this.extendCollectionModel();
 
                 var viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
@@ -186,6 +191,9 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                             dragableListRows: !this.defs.readOnly,
                             listRowsOrderSaveUrl: `ProductImage/${this.model.id}/sortOrder`
                         }, function (view) {
+                            view.listenTo(view, 'after:render', () => {
+                                this.applyOverviewFilters();
+                            });
                             view.render();
                         });
                     }, this);
@@ -198,44 +206,53 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
             this.setupFilterActions();
         },
 
-        setupButtonAndActionLists(force) {
-            if (force || this.defs.create) {
-                if (this.getAcl().check(this.scope, 'create') && !~['User', 'Team'].indexOf()) {
-                    this.buttonList.push({
-                        title: 'Create',
-                        action: this.defs.createAction || 'createRelated',
-                        link: this.link,
-                        acl: 'create',
-                        aclScope: this.scope,
-                        html: '<span class="fas fa-plus"></span>',
-                        data: {
-                            link: this.link,
-                            layout: this.defs.detailLayout
-                        }
-                    });
+        extendCollectionModel() {
+            this.collection.model.prototype.defs.fields.channels = {
+                type: 'linkMultiple'
+            };
+        },
+
+        applyOverviewFilters() {
+            let rows = this.getListRows();
+            Object.keys(rows).forEach(name => {
+                let row = rows[name];
+                this.controlRowVisibility(row, this.updateCheckByChannelFilter(row));
+            });
+        },
+
+        updateCheckByChannelFilter(row) {
+            let hide = false;
+            let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
+            if (currentChannelFilter) {
+                if (currentChannelFilter === 'onlyGlobalScope') {
+                    hide = row.model.get('scope') !== 'Global';
+                } else {
+                    hide = (row.model.get('scope') !== 'Channel' || !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
                 }
             }
+            return hide;
+        },
 
-            if (force || this.defs.select) {
-                var data = {link: this.link};
-                if (this.defs.selectPrimaryFilterName) {
-                    data.primaryFilterName = this.defs.selectPrimaryFilterName;
-                }
-                if (this.defs.selectBoolFilterList) {
-                    data.boolFilterList = this.defs.selectBoolFilterList;
-                }
-                data.boolFilterListCallback = 'getSelectBoolFilterList';
-                data.boolFilterDataCallback = 'getSelectBoolFilterData';
-                data.afterSelectCallback = 'setScopeAfterSelect';
-
-                this.actionList.unshift({
-                    label: 'Select',
-                    action: this.defs.selectAction || 'selectRelated',
-                    data: data,
-                    acl: 'edit',
-                    aclScope: this.model.name
-                });
+        controlRowVisibility(row, hide) {
+            if (hide) {
+                row.$el.addClass('hidden');
+            } else {
+                row.$el.removeClass('hidden');
             }
+        },
+
+        getListRows() {
+            let fields = {};
+            let list = this.getView('list');
+            if (list) {
+                for (let row in list.nestedViews || {}) {
+                    let rowView = list.getView(row);
+                    if (rowView) {
+                        fields[row] = rowView;
+                    }
+                }
+            }
+            return fields;
         },
 
         getSelectBoolFilterList() {

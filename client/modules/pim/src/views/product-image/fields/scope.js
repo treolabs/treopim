@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product-image/fields/scope', 'views/fields/enum',
+Espo.define('pim:views/product-image/fields/scope', 'colored-fields:views/fields/colored-enum',
     Dep => Dep.extend({
 
         fetch() {

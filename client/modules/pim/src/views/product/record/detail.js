@@ -24,7 +24,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
             Dep.prototype.setup.call(this);
 
             if (!this.model.isNew() && (this.type === 'detail' || this.type === 'edit') && this.getMetadata().get(['scopes', this.scope, 'advancedFilters'])) {
-                this.listenTo(this.model, 'attributes-rendered main-image-updated', () => {
+                this.listenTo(this.model, 'main-image-updated', () => {
                     this.applyOverviewFilters();
                 });
             }
@@ -82,39 +82,22 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
 
             data = _.extend(Espo.Utils.cloneDeep(beforeSaveAttributes), data);
 
-            let gridInitAttrs = false;
             let gridInitPackages = false;
-            let attributesView = false;
             let packageView = false;
             let bottomView = this.getView('bottom');
             if (bottomView) {
-                attributesView = bottomView.getView('attributes');
                 packageView = bottomView.getView('productTypePackages');
-                if (attributesView) {
-                    gridInitAttrs = attributesView.getInitAttributes();
-                }
                 if (packageView) {
                     gridInitPackages = packageView.getInitAttributes();
                 }
             }
 
             let attrs = false;
-            let gridAttrs = false;
             let gridPackages = false;
             if (model.isNew()) {
                 attrs = data;
             } else {
                 for (let name in data) {
-                    if (name !== 'id'&& gridInitAttrs && Object.keys(gridInitAttrs).indexOf(name) > -1) {
-                        if (data[name] === '') {
-                            data[name] = null;
-                        }
-                        if (!_.isEqual(gridInitAttrs[name], data[name])) {
-                            (gridAttrs || (gridAttrs = {}))[name] = data[name];
-                        }
-                        continue;
-                    }
-
                     if (name !== 'id'&& gridInitPackages && Object.keys(gridInitPackages).indexOf(name) > -1) {
                         if (!_.isEqual(gridInitPackages[name], data[name])) {
                             (gridPackages || (gridPackages = {}))[name] = data[name];
@@ -131,13 +114,6 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
 
             model.set(attrs, {silent: true});
 
-            let beforeSaveGridAttrs = false;
-            if (gridAttrs && attributesView) {
-                let gridModel = attributesView.getView('grid').model;
-                beforeSaveGridAttrs = gridModel.getClonedAttributes();
-                gridModel.set(gridAttrs, {silent: true})
-            }
-
             let beforeSaveGridPackages = false;
             if (gridPackages && packageView) {
                 let gridModel = packageView.getView('grid').model;
@@ -145,14 +121,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 gridModel.set(gridPackages, {silent: true})
             }
 
-
-            let productFamilyChanged = attrs && ('productFamilyId' in attrs);
-
-            if (this.validate(productFamilyChanged)) {
-                if (gridAttrs && attributesView && beforeSaveGridAttrs) {
-                    attributesView.getView('grid').model.attributes = beforeSaveGridAttrs;
-                }
-
+            if (this.validate()) {
                 if (gridPackages && packageView && beforeSaveGridPackages) {
                     packageView.getView('grid').model.attributes = beforeSaveGridPackages;
                 }
@@ -163,16 +132,12 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 return;
             }
 
-            if (gridAttrs && attributesView && !productFamilyChanged) {
-                attributesView.save();
-            }
-
             if (gridPackages && packageView) {
                 packageView.save();
             }
 
             if (!attrs) {
-                this.afterNotModified(gridAttrs || gridPackages);
+                this.afterNotModified(gridPackages);
                 this.trigger('cancel:save');
                 return true;
             }
@@ -238,34 +203,6 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 patch: !model.isNew()
             });
             return true;
-        },
-
-        validate(skipAttributes) {
-            let notValid = false;
-            let fields = this.getFields();
-
-            if (skipAttributes) {
-                let attributeFields = {};
-                let bottomView = this.getView('bottom');
-                if (bottomView) {
-                    let attributesView = bottomView.getView('attributes');
-                    if (attributesView) {
-                        attributeFields = attributesView.getFieldViews();
-                    }
-                }
-                for (let key in attributeFields) {
-                    delete fields[key];
-                }
-            }
-
-            for (let i in fields) {
-                if (fields[i].mode == 'edit') {
-                    if (!fields[i].disabled && !fields[i].readOnly) {
-                        notValid = fields[i].validate() || notValid;
-                    }
-                }
-            };
-            return notValid
         }
     })
 );

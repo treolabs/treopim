@@ -22,11 +22,15 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         template: 'pim:product/record/panels/product-attribute-values',
 
+        baseSelectFields: ['attributeId', 'attributeName', 'value', 'isRequired', 'scope', 'channelsIds', 'channelsNames', 'data', 'productFamilyAttributeId'],
+
         groupKey: 'attributeGroupId',
 
         groupLabel: 'attributeGroupName',
 
         groupScope: 'AttributeGroup',
+
+        groupsWithoutId: ['no_group'],
 
         noGroup: {
             key: 'no_group',
@@ -197,15 +201,32 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 this.collection = collection;
 
                 this.setFilter(this.filter);
-
-                this.listenTo(this.model, 'change:productFamilyId update-all after:relate after:unrelate', () => {
+                this.updateBaseSelectFields();
+                this.listenTo(this.model, 'updateAttributes change:productFamilyId update-all after:relate after:unrelate', () => {
                     this.actionRefresh();
                 });
 
+                this.listenTo(this.model, 'overview-filters-changed', () => {
+                    this.applyOverviewFilters();
+                });
+
+                this.getMetadata().fetch();
                 this.fetchCollectionGroups(() => this.wait(false));
             }, this);
 
             this.setupFilterActions();
+        },
+
+        updateBaseSelectFields() {
+            let inputLanguageList = this.getConfig().get('inputLanguageList') || [];
+            if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
+                inputLanguageList.forEach(lang => {
+                    let field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
+                    if (!this.baseSelectFields.includes(field)) {
+                        this.baseSelectFields.push(field);
+                    }
+                });
+            }
         },
 
         createProductAttributeValue(selectObj) {
@@ -220,11 +241,19 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         model: attributeModel,
                         link: attributeModel.defs.links[this.link].foreign
                     });
-                    model.set({
+                    let attributes = {
                         assignedUserId: this.getUser().id,
                         assignedUserName: this.getUser().get('name'),
                         scope: 'Global'
-                    });
+                    };
+                    if (['enum', 'enumMultiLang'].includes(attributeModel.get('type'))) {
+                        attributes.value = (attributeModel.get('typeValue') || [])[0];
+                        if (this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length) {
+                            let typeValues = this.getFieldManager().getActualAttributeList(attributeModel.get('type'), 'typeValue').splice(1);
+                            typeValues.forEach(typeValue => attributes[typeValue.replace('typeValue', 'value')] = (attributeModel.get(typeValue) || [])[0]);
+                        }
+                    }
+                    model.set(attributes);
                     promises.push(model.save());
                 });
             });
@@ -314,70 +343,55 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         fetchCollectionGroups(callback) {
-            this.getHelper().layoutManager.get(this.scope, this.layoutName, layout => {
-                let list = [];
-                layout.forEach(item => {
-                    if (item.name) {
-                        let field = item.name;
-                        let fieldType = this.getMetadata().get(['entityDefs', this.scope, 'fields', field, 'type']);
-                        if (fieldType) {
-                            this.getFieldManager().getAttributeList(fieldType, field).forEach(attribute => {
-                                list.push(attribute);
-                            });
+            this.collection.data.select = this.getSelectFields().join(',');
+            this.collection.reset();
+            this.fetchCollectionPart(() => {
+                this.groups = [];
+                this.groups = this.getGroupsFromCollection();
+
+                let valueKeys = this.groups.map(group => group.key);
+                this.getCollectionFactory().create('AttributeGroup', collection => {
+                    this.attributeGroupCollection = collection;
+                    collection.select = 'sortOrder';
+                    collection.maxSize = 200;
+                    collection.offset = 0;
+                    collection.whereAdditional = [
+                        {
+                            attribute: 'id',
+                            type: 'in',
+                            value: valueKeys
                         }
-                    }
-                });
-                this.collection.data.select = list.join(',');
-                this.collection.reset();
-                this.fetchCollectionPart(() => {
-                    this.groups = [];
-                    this.groups = this.getGroupsFromCollection();
-
-                    let valueKeys = this.groups.map(group => group.key);
-
-                    this.getCollectionFactory().create('AttributeGroup', collection => {
-                        this.attributeGroupCollection = collection;
-                        collection.select = 'sortOrder';
-                        collection.maxSize = 200;
-                        collection.offset = 0;
-                        collection.whereAdditional = [
-                            {
-                                attribute: 'id',
-                                type: 'in',
-                                value: valueKeys
-                            }
-                        ];
-
-                        collection.fetch().then(() => {
-                            let orderArray = [];
-                            let noGroup;
-                            this.groups.forEach(item => {
-                                if (item.key === 'no_group') {
-                                    item.sortOrder = 0;
-                                    noGroup = item;
-                                } else {
-                                    this.attributeGroupCollection.forEach(model => {
-                                        if (model.id === item.key) {
-                                            item.sortOrder = model.get('sortOrder');
-                                        }
-                                    });
-                                }
-                                orderArray.push(item.sortOrder);
-                            });
-                            if (noGroup) {
-                                noGroup.sortOrder = Math.max(...orderArray) + 1;
-                            }
-                            this.groups.sort(function(a, b) {
-                                return a.sortOrder - b.sortOrder ;
-                            });
-
-                            if (callback) {
-                                callback();
-                            }
-                        });
+                    ];
+                    collection.fetch().then(() => {
+                        this.applySortingForAttributeGroups();
+                        if (callback) {
+                            callback();
+                        }
                     });
                 });
             });
+        },
+
+        applySortingForAttributeGroups() {
+            this.groups.forEach(item => {
+                let sortOder = 0;
+                let attributeGroup = this.attributeGroupCollection.find(model => model.id === item.key);
+                if (attributeGroup) {
+                    sortOder = attributeGroup.get('sortOrder');
+                }
+                item.sortOrder = item.sortOrder || sortOder;
+            });
+            let noGroup = this.groups.find(item => item.key === 'no_group');
+            if (noGroup) {
+                noGroup.sortOrder = Math.max(...this.groups.map(group => group.sortOrder)) + 1;
+            }
+            this.groups.sort(function (a, b) {
+                return a.sortOrder - b.sortOrder;
+            });
+        },
+
+        getSelectFields() {
+            return this.baseSelectFields || [];
         },
 
         fetchCollectionPart(callback) {
@@ -392,60 +406,64 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         getGroupsFromCollection() {
             let groups = [];
-
             this.collection.forEach(model => {
-                let key = model.get(this.groupKey);
-                if (key === null) {
-                    key = this.noGroup.key;
-                }
-                let label = model.get(this.groupLabel);
-                if (label === null) {
-                    label = this.translate(this.noGroup.label, 'labels', 'Global');
-                }
-                let group = groups.find(item => item.key === key);
-                if (group) {
-                    group.editable = group.editable && model.get('isCustom');
-                    group.rowList.push(model.id);
-                    group.rowList.sort((a, b) => this.collection.get(a).get('sortOrder') - this.collection.get(b).get('sortOrder'));
-                } else {
-                    groups.push({
-                        key: key,
-                        id: key !== this.noGroup.key ? key : null,
-                        label: label,
-                        rowList: [model.id],
-                        editable: model.get('isCustom')
-                    });
-                }
+                let params = this.getGroupParams(model);
+                this.setGroup(params, model, groups);
             });
-
             return groups;
         },
 
+        getGroupParams(model) {
+            let key = model.get(this.groupKey);
+            if (!key) {
+                key = this.noGroup.key;
+            }
+            let label = model.get(this.groupLabel);
+            if (!label) {
+                label = this.translate(this.noGroup.label, 'labels', 'Product');
+            }
+            return {
+                key: key,
+                label: label
+            };
+        },
+
+        setGroup(params, model, groups) {
+            let group = groups.find(item => item.key === params.key);
+            if (group) {
+                group.editable = group.editable && model.get('isCustom');
+                group.rowList.push(model.id);
+                group.rowList.sort((a, b) => this.collection.get(a).get('sortOrder') - this.collection.get(b).get('sortOrder'));
+            } else {
+                groups.push({
+                    key: params.key,
+                    id: !this.groupsWithoutId.includes(params.key) ? params.key : null,
+                    label: params.label,
+                    rowList: [model.id],
+                    editable: model.get('isCustom')
+                });
+            }
+        },
+
         buildGroups() {
+            let count = 0;
             this.groups.forEach(group => {
                 this.getCollectionFactory().create(this.scope, collection => {
                     group.rowList.forEach(id => {
                         collection.add(this.collection.get(id));
                     });
 
-                    collection.url = `Product/${this.model.id}/productAttributeValues`;
-                    collection.where = [
-                        {
-                            type: 'bool',
-                            value: ['linkedWithAttributeGroup'],
-                            data: {
-                                linkedWithAttributeGroup: {
-                                    productId: this.model.id,
-                                    attributeGroupId: group.key !== 'no_group' ? group.key : null
-                                }
-                            }
-                        }
-                    ];
-                    collection.data.select = 'attributeId,attributeName,value,valueEnUs,valueDeDe,scope,channelsIds,channelsNames';
+                    this.setGroupCollectionDefs(group, collection);
+
+                    this.listenTo(collection, 'sync', () => {
+                        this.model.trigger('attributes-updated');
+                        collection.models.sort((a, b) => a.get('sortOrder') - b.get('sortOrder'));
+                        this.applyOverviewFilters();
+                    });
 
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
-                    this.createView(group.key, viewName, {
+                    let options = {
                         collection: collection,
                         layoutName: this.layoutName,
                         listLayout: this.listLayout,
@@ -454,10 +472,146 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         buttonsDisabled: true,
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
-                    }, view => {
-                        view.render();
+                    };
+                    this.createView(group.key, viewName, this.modifyListOptions(options), view => {
+                        view.render(() => {
+                            count++;
+                            if (count === this.groups.length) {
+                                this.applyOverviewFilters();
+                            }
+                        });
                     });
                 });
+            });
+        },
+
+        setGroupCollectionDefs(group, collection) {
+            collection.url = `Product/${this.model.id}/productAttributeValues`;
+            collection.where = [
+                {
+                    type: 'bool',
+                    value: ['linkedWithAttributeGroup'],
+                    data: {
+                        linkedWithAttributeGroup: {
+                            productId: this.model.id,
+                            attributeGroupId: group.key !== 'no_group' ? group.key : null
+                        }
+                    }
+                }
+            ];
+            collection.data.select = this.getSelectFields().join(',');
+        },
+
+        modifyListOptions(options) {
+            return options;
+        },
+
+        applyOverviewFilters() {
+            let currentFieldFilter = (this.model.advancedEntityView || {}).fieldsFilter;
+            let attributesWithChannelScope = [];
+            let fields = this.getValueFields();
+            Object.keys(fields).forEach(name => {
+                let fieldView = fields[name];
+                let hide = !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
+                hide = this.updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope);
+                hide = this.updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter);
+                this.controlRowVisibility(fieldView, name, hide);
+            });
+            this.hideChannelAttributesWithGlobalScope(fields, attributesWithChannelScope);
+        },
+
+        updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope) {
+            let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
+            if (currentChannelFilter) {
+                if (currentChannelFilter === 'onlyGlobalScope') {
+                    hide = hide || fieldView.model.get('scope') !== 'Global';
+                } else {
+                    hide = hide || (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    if ((fieldView.model.get('channelsIds') || []).includes(currentChannelFilter)) {
+                        attributesWithChannelScope.push(fieldView.model.get('attributeId'));
+                    }
+                }
+            }
+            return hide;
+        },
+
+        updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter) {
+            let currentLocaleFilter = (this.model.advancedEntityView || {}).localesFilter;
+            let showGenericFields = (this.model.advancedEntityView || {}).showGenericFields;
+            if (currentLocaleFilter !== null && this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length &&
+                ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang', 'wysiwygMultiLang'].includes(fieldView.model.get('attributeType'))) {
+                let hiddenLocales = currentLocaleFilter ? this.getConfig().get('inputLanguageList').filter(lang => lang !== currentLocaleFilter) : [];
+                fieldView.setHiddenLocales(hiddenLocales);
+                let langFieldNameList = fieldView.getLangFieldNameList();
+                langFieldNameList = langFieldNameList.filter(field => {
+                    return this.checkFieldValue(currentFieldFilter, fieldView.model.get(field), fieldView.model.get('isRequired'));
+                });
+                fieldView.langFieldNameList = langFieldNameList;
+                fieldView.hideMainOption = !showGenericFields ||
+                    !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
+                hide = hide || !fieldView.langFieldNameList.length && fieldView.hideMainOption;
+                fieldView.reRender();
+            }
+            return hide;
+        },
+
+        getValueFields() {
+            let fields = {};
+            this.groups.forEach(group => {
+                let groupView = this.getView(group.key);
+                if (groupView) {
+                    groupView.rowList.forEach(row => {
+                        let rowView = groupView.getView(row);
+                        if (rowView) {
+                            let containerView = rowView.getView('valueField');
+                            if (containerView) {
+                                let fieldView = containerView.getView('valueField');
+                                fieldView.groupKey = group.key;
+                                fields[row] = fieldView;
+                            }
+                        }
+                    });
+                }
+            });
+            return fields;
+        },
+
+        checkFieldValue(currentFieldFilter, value, required) {
+            let check = !currentFieldFilter;
+            if (currentFieldFilter === 'empty') {
+                check = value === null || value === '' || (Array.isArray(value) && !value.length);
+            }
+            if (currentFieldFilter === 'emptyAndRequired') {
+                check = (value === null || value === '' || (Array.isArray(value) && !value.length)) && required;
+            }
+            return check;
+        },
+
+        controlRowVisibility(fieldView, rowId, hide) {
+            let groupView = this.getView(fieldView.groupKey);
+            let rowView = groupView.getView(rowId);
+            if (hide) {
+                rowView.$el.addClass('hidden');
+            } else {
+                rowView.$el.removeClass('hidden');
+            }
+            this.controlGroupVisibility(groupView);
+        },
+
+        controlGroupVisibility(groupView) {
+            if (groupView.$el.find('.list-row.hidden').size() === (groupView.rowList || []).length) {
+                groupView.$el.parent().addClass('hidden');
+            } else {
+                groupView.$el.parent().removeClass('hidden');
+            }
+        },
+
+        hideChannelAttributesWithGlobalScope(fields, attributesWithChannelScope) {
+            Object.keys(fields).forEach(name => {
+                let fieldView = fields[name];
+                if (attributesWithChannelScope.includes(fieldView.model.get('attributeId')) && fieldView.model.get('scope') === 'Global') {
+                    this.controlRowVisibility(fieldView, name, true);
+                }
             });
         },
 

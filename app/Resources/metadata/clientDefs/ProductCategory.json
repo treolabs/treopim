@@ -1,0 +1,35 @@
+{
+  "controller": "controllers/record",
+  "boolFilterList": [
+    "onlyMy"
+  ],
+  "dynamicLogic": {
+    "fields": {
+      "channels": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "scope",
+              "value": "Channel"
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "categoryId"
+            }
+          ]
+        }
+      },
+      "scope": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "categoryId"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

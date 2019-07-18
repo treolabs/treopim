@@ -31,18 +31,29 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             this.name = this.options.name || this.defs.name;
             this.params = this.options.params || this.defs.params || {};
 
+            this.updateDataForValueField();
+
             let type = this.model.get('attributeType') || 'base';
-            this.createView('valueField', this.getFieldManager().getViewName(type), {
+            this.createView('valueField', this.getValueFieldView(type), {
                 el: `${this.options.el} > .field[data-name="valueField"]`,
                 model: this.model,
                 name: this.name,
-                mode: 'list',
+                mode: this.mode,
                 defs: this.defs,
                 params: this.params,
                 inlineEditDisabled: true
             }, view => {
                 view.render();
             });
+        },
+
+        updateDataForValueField() {
+            let data = this.model.get('data') || {};
+            Object.keys(data).forEach(param => this.model.set({[`value${Espo.Utils.upperCaseFirst(param)}`]: data[param]}));
+        },
+
+        getValueFieldView(type) {
+            return this.getFieldManager().getViewName(type);
         }
 
     })

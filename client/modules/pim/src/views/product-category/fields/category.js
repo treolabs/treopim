@@ -10,12 +10,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 Espo.define('pim:views/product-category/fields/category', 'treo-core:views/fields/filtered-link',
@@ -23,15 +22,9 @@ Espo.define('pim:views/product-category/fields/category', 'treo-core:views/field
 
         createDisabled: true,
 
-        selectBoolFilterList:  ["onlyActive", "notLinkedProductCategories", "onlyCatalogCategories", "hasNoChildCategory"],
+        selectBoolFilterList:  ["onlyActive", "onlyCatalogCategories", "hasNoChildCategory"],
 
         boolFilterData: {
-            notLinkedProductCategories() {
-                return {
-                    productId: this.model.get('productId'),
-                    scope: this.model.get('scope')
-                };
-            },
             onlyCatalogCategories() {
                 return this.model.catalogId;
             },

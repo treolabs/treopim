@@ -1,0 +1,51 @@
+{
+  "controller": "controllers/record",
+  "iconClass": "fas fa-share-square",
+  "quickCreate": true,
+  "quickCreateOptions": {
+    "fullFormDisabled": true
+  },
+  "boolFilterList": [
+    "onlyMy",
+    "notLinkedWithProduct",
+    "notEntity",
+    "linkedWithProduct",
+    "linkedWithCategory",
+    "notLinkedWithCategory",
+    "notLinkedWithAttributesInProduct",
+    "notLinkedWithAttributesInProductFamily",
+    "notLinkedWithCategoriesInProduct"
+  ],
+  "hiddenBoolFilterList": [
+    "notLinkedWithProduct",
+    "notEntity",
+    "linkedWithProduct",
+    "linkedWithCategory",
+    "notLinkedWithCategory",
+    "notLinkedWithAttributesInProduct",
+    "notLinkedWithAttributesInProductFamily",
+    "notLinkedWithCategoriesInProduct"
+  ],
+  "disabledMassActions": [
+    "merge"
+  ],
+  "views": {
+    "detail": "pim:views/detail",
+    "list": "pim:views/list"
+  },
+  "recordViews": {
+    "detail": "pim:views/record/detail",
+    "list": "pim:views/record/list"
+  },
+  "relationshipPanels": {
+    "pricings": {
+      "view": "pim:views/channel/record/panels/pricings",
+      "rowActionsView": "views/record/row-actions/relationship-unlink-only",
+      "layout": "listForPricingsInChannel",
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "notLinkedWithChannel"
+      ]
+    }
+  }
+}

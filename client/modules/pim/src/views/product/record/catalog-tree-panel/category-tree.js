@@ -74,14 +74,18 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 let hasChildren = this.categories.some(item => item.categoryParentId === category.id);
                 arr.push({
                     id: category.id,
-                    html: hasChildren ? this.getParentHtml(category) : this.getChildHtml(category)
+                    html: hasChildren ? this.getParentHtml(category, this.isRendered()) : this.getChildHtml(category)
                 });
             });
             return arr;
         },
 
-        getParentHtml(category) {
+        getParentHtml(category, fullLoad) {
             let hash = this.getRandomHash();
+            let html = '';
+            if (fullLoad) {
+                (category.childs || []).forEach(child => html += child.childs.length ? this.getParentHtml(child, true) : this.getChildHtml(child));
+            }
             return `
                 <li data-id="${category.id}" class="list-group-item child">
                     <button class="btn btn-link category category-icons" data-toggle="collapse" data-target=".category-${hash}" data-id="${category.id}" data-name="${category.name}">
@@ -92,7 +96,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                         ${category.name}
                     </button>
                     <div class="category-${hash} panel-collapse collapse" data-id="${category.id}">
-                        <ul class="list-group list-group-tree"></ul>
+                        <ul class="list-group list-group-tree">${html}</ul>
                     </div>
                 </li>`;
         },
@@ -183,6 +187,15 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 if (childs.length) {
                     childs.forEach(child => setChilds(child, categories));
                 }
+                childs.sort((a, b) => {
+                    if (a.childs.length && !b.childs.length) {
+                        return -1;
+                    } else if (!a.childs.length && b.childs.length) {
+                        return 1;
+                    } else {
+                        return a.name.localeCompare(b.name);
+                    }
+                });
                 category.childs = childs;
                 if (!this.categoryTrees.some(item => item.id === category.id)) {
                     this.categoryTrees.push(category);
@@ -194,15 +207,14 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         buildCategoryHtml(id, category) {
-            if (!category.htmlLoaded) {
+            let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
+            let listEl = button.parent().find(`.panel-collapse[data-id="${id}"] .list-group-tree`);
+            if (category.childs.length && !listEl.find('li').size()) {
                 let html = '';
                 category.childs.forEach(category => {
                     html += category.childs.length ? this.getParentHtml(category) : this.getChildHtml(category);
                 });
-                let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
-                let listEl = button.parent().find(`.panel-collapse[data-id="${id}"] .list-group-tree`);
                 listEl.append(html);
-                category.htmlLoaded = true;
             }
         },
 
