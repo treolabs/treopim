@@ -23,6 +23,8 @@ declare(strict_types=1);
 namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
+use Pim\Services\Category;
+use Pim\Services\ProductCategory;
 use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
 
@@ -63,5 +65,32 @@ class CategoryController extends AbstractListener
     public function beforeActionPatch(Event $event)
     {
         $this->beforeActionUpdate($event);
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function afterActionDelete(Event $event)
+    {
+        $categoryId = $event->getArgument('params')['id'];
+
+        $this->getService('Category')->removeProductCategoryByCategory($categoryId);
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function afterActionRemoveLink(Event $event)
+    {
+        // get data
+        $arguments = $event->getArguments();
+
+        if ($arguments['params']['link'] === 'catalogs') {
+
+            $categoryId = $arguments['params']['id'];
+            $catalogId = $arguments['data']->id;
+
+            $this->getService('ProductCategory')->removeProductCategory($categoryId, $catalogId);
+        }
     }
 }
