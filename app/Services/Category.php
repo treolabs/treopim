@@ -37,11 +37,11 @@ class Category extends Base
     protected $linkSelectParams
         = [
             'categoryImages' => [
-                'order'             => 'ASC',
-                'orderBy'           => 'category_image_category.sort_order',
+                'order' => 'ASC',
+                'orderBy' => 'category_image_category.sort_order',
                 'additionalColumns' => [
                     'sortOrder' => 'sortOrder',
-                    'scope'     => 'scope'
+                    'scope' => 'scope'
                 ]
             ]
         ];
@@ -81,5 +81,52 @@ class Category extends Base
         }
 
         return in_array($categoryId, explode("|", (string)$category->get('categoryRoute')));
+    }
+
+    /**
+     * Get id parent category and ids children category
+     *
+     * @param string $id
+     *
+     * @return array
+     * @throws \Espo\Core\Exceptions\Error
+     */
+    public function getIdsTree(string $id): array
+    {
+        /** @var \Pim\Entities\Category $category */
+        $category = $this->getEntityManager()->getEntity('Category', $id);
+
+        $categoriesIds = [];
+        $categoriesChild = $category->getChildren()->toArray();
+
+        if (!empty($categoriesChild)) {
+            $categoriesChild = $category->getChildren()->toArray();
+            $categoriesIds = array_column($categoriesChild, 'id');
+        }
+
+        $categoriesIds[] = $category->id;
+
+        return $categoriesIds;
+    }
+
+    /**
+     * Remove ProductCategory by ID category
+     *
+     * @param string $categoryId
+     */
+    public function removeProductCategoryByCategory(string $categoryId): void
+    {
+        $productsCategory = $this
+            ->getEntityManager()
+            ->getRepository('ProductCategory')
+            ->where(['categoryId' => $categoryId])
+            ->find()
+            ->toArray();
+
+        $serviceProduct = $this->getServiceFactory()->create('ProductCategory');
+
+        foreach ($productsCategory as $productCategory) {
+            $serviceProduct->deleteEntity($productCategory['id']);
+        }
     }
 }
