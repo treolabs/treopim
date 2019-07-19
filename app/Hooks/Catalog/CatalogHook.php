@@ -66,20 +66,6 @@ class CatalogHook extends \Pim\Core\Hooks\AbstractHook
     /**
      * @param Entity $entity
      * @param array  $options
-     * @param array  $hookData
-     *
-     * @throws BadRequest
-     */
-    public function beforeUnrelate(Entity $entity, array $options, array $hookData)
-    {
-        if ($hookData['relationName'] == 'categories') {
-            $this->catalogCategoryUnrelateValidation($entity, $hookData['foreignEntity']);
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param array  $options
      */
     public function afterRemove(Entity $entity, $options = [])
     {

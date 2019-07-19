@@ -72,14 +72,9 @@ class CategoryController extends AbstractListener
      */
     public function afterActionDelete(Event $event)
     {
-        // get data
-        $arguments = $event->getArguments();
-        /** @var Category $serviceCategory */
-        $serviceCategory = $this->getService('Category');
+        $categoryId = $event->getArgument('params')['id'];
 
-        $categoryId = $arguments['params']['id'];
-
-        $serviceCategory->removeProductCategoryByCategory($categoryId);
+        $this->getService('Category')->removeProductCategoryByCategory($categoryId);
     }
 
     /**
@@ -91,13 +86,11 @@ class CategoryController extends AbstractListener
         $arguments = $event->getArguments();
 
         if ($arguments['params']['link'] === 'catalogs') {
-            /** @var ProductCategory $serviceProductCategory */
-            $serviceProductCategory = $this->getService('ProductCategory');
 
             $categoryId = $arguments['params']['id'];
             $catalogId = $arguments['data']->id;
 
-            $serviceProductCategory->removeProductCategory($categoryId, $catalogId);
+            $this->getService('ProductCategory')->removeProductCategory($categoryId, $catalogId);
         }
     }
 }

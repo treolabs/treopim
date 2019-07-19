@@ -139,29 +139,4 @@ abstract class AbstractHook extends BaseHook
     {
         return $this->getInjection('language')->translate($key, $label, $scope);
     }
-
-    /**
-     * @param Entity $catalog
-     * @param Entity $category
-     *
-     * @return bool
-     * @throws BadRequest
-     */
-    protected function catalogCategoryUnrelateValidation(Entity $catalog, Entity $category): bool
-    {
-        if (count($catalog->get('products')) > 0) {
-            foreach ($catalog->get('products') as $product) {
-                $categories = $product->get('categories');
-                if (!empty($categories)) {
-                    foreach ($categories as $row) {
-                        if (in_array($category->get('id'), array_merge(explode("|", (string)$row->get('categoryRoute')), [$row->get('id')]))) {
-                            throw new BadRequest($this->translate('There are few products that using current category tree', 'exceptions', 'Catalog'));
-                        }
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
 }

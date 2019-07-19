@@ -46,12 +46,12 @@ class CatalogController extends AbstractListener
         $arguments = $event->getArguments();
 
         if ($arguments['params']['link'] === 'categories') {
-            $serviceProductCategory = $this->getService('ProductCategory');
 
             $categoryId = $arguments['data']->id;
             $catalogId = $arguments['params']['id'];
 
-            $serviceProductCategory->removeProductCategory($categoryId, $catalogId);
+            $this->getService('ProductCategory')
+                ->removeProductCategory($categoryId, $catalogId);
         }
     }
 }

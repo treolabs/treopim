@@ -72,20 +72,6 @@ class CategoryHook extends BaseHook
 
     /**
      * @param Entity $entity
-     * @param array  $options
-     * @param array  $hookData
-     *
-     * @throws BadRequest
-     */
-    public function beforeUnrelate(Entity $entity, array $options, array $hookData)
-    {
-        if ($hookData['relationName'] == 'catalogs') {
-            $this->catalogCategoryUnrelateValidation($hookData['foreignEntity'], $entity);
-        }
-    }
-
-    /**
-     * @param Entity $entity
      * @param array  $params
      *
      * @throws BadRequest
