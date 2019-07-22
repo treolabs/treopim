@@ -31,6 +31,21 @@ use Treo\Core\EventManager\Event;
 class AssociatedProductController extends AbstractListener
 {
     /**
+     * Before action list
+     *
+     * @param Event $event
+     */
+    public function beforeActionList(Event $event)
+    {
+        // get where
+        $where = $event->getArgument('request')->get('where', []);
+        //merge current "where" with whereProductTypes
+        $where = array_merge($where, $this->getWhereProductType());
+
+        $event->getArgument('request')->setQuery('where', $where);
+    }
+
+    /**
      * After action list
      *
      * @param Event $event
@@ -94,5 +109,30 @@ class AssociatedProductController extends AbstractListener
         }
 
         return $result;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getWhereProductType(): array
+    {
+        // prepare types
+        $types = array_keys(
+            $this->getContainer()
+                ->get('metadata')
+                ->get('pim.productType'));
+
+        return [
+            [
+                'type' => 'in',
+                'attribute' => 'mainProduct.type',
+                'value' => $types
+            ],
+            [
+                'type' => 'in',
+                'attribute' => 'relatedProduct.type',
+                'value' => $types
+            ]
+        ];
     }
 }

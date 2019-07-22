@@ -41,11 +41,11 @@ class Product extends AbstractService
     protected $linkSelectParams
         = [
             'productImages' => [
-                'order'             => 'ASC',
-                'orderBy'           => 'product_image_product.sort_order',
+                'order' => 'ASC',
+                'orderBy' => 'product_image_product.sort_order',
                 'additionalColumns' => [
                     'sortOrder' => 'sortOrder',
-                    'scope'     => 'scope'
+                    'scope' => 'scope'
                 ]
             ]
         ];
@@ -72,8 +72,8 @@ class Product extends AbstractService
         // find exists entities
         $entities = $repository->where(
             [
-                'associationId'    => $data->associationId,
-                'mainProductId'    => $data->ids,
+                'associationId' => $data->associationId,
+                'mainProductId' => $data->ids,
                 'relatedProductId' => $data->foreignIds
             ]
         )->find();
@@ -134,8 +134,8 @@ class Product extends AbstractService
             ->getRepository('AssociatedProduct')
             ->where(
                 [
-                    'associationId'    => $data->associationId,
-                    'mainProductId'    => $data->ids,
+                    'associationId' => $data->associationId,
+                    'mainProductId' => $data->ids,
                     'relatedProductId' => $data->foreignIds
                 ]
             )
@@ -169,7 +169,7 @@ class Product extends AbstractService
     /**
      * Get item in products data
      *
-     * @param string  $productId
+     * @param string $productId
      * @param Request $request
      *
      * @return array
@@ -179,7 +179,7 @@ class Product extends AbstractService
         // prepare result
         $result = [
             'total' => 0,
-            'list'  => []
+            'list' => []
         ];
 
         // get total
@@ -189,7 +189,7 @@ class Product extends AbstractService
             // prepare result
             $result = [
                 'total' => $total,
-                'list'  => $this->getDbItemInProducts($productId, $request)
+                'list' => $this->getDbItemInProducts($productId, $request)
             ];
         }
 
@@ -451,7 +451,7 @@ class Product extends AbstractService
     /**
      * Get DB count of item in products data
      *
-     * @param string  $productId
+     * @param string $productId
      * @param Request $request
      *
      * @return array
@@ -532,7 +532,7 @@ class Product extends AbstractService
      * Find linked AssociationMainProduct
      *
      * @param string $id
-     * @param array  $params
+     * @param array $params
      *
      * @return array
      * @throws Forbidden
@@ -545,7 +545,7 @@ class Product extends AbstractService
         }
 
         return [
-            'list'  => $this->getDBAssociationMainProducts($id, '', $params),
+            'list' => $this->getDBAssociationMainProducts($id, '', $params),
             'total' => $this->getDBTotalAssociationMainProducts($id, '')
         ];
 
@@ -556,7 +556,7 @@ class Product extends AbstractService
      *
      * @param string $productId
      * @param string $wherePart
-     * @param array  $params
+     * @param array $params
      *
      * @return array
      */
@@ -573,6 +573,8 @@ class Product extends AbstractService
         $sortOrder = ($params['asc'] === true) ? 'ASC' : 'DESC';
         $orderColumn = ['relatedProduct', 'association'];
         $sortColumn = in_array($params['sortBy'], $orderColumn) ? $params['sortBy'] . '.name' : 'relatedProduct.name';
+
+        $stringTypes = $this->getStringProductTypes();
 
         // prepare query
         $sql
@@ -604,7 +606,7 @@ class Product extends AbstractService
                   JOIN association 
                     ON association.id = ap.association_id AND association.deleted = 0
                 WHERE ap.deleted = 0 
-                  AND ap.main_product_id = :id "
+                  AND ap.main_product_id = :id AND relatedProduct.type IN ('{$stringTypes}') "
             . $wherePart
             . "ORDER BY " . $sortColumn . " " . $sortOrder
             . $limit;
@@ -625,6 +627,8 @@ class Product extends AbstractService
      */
     protected function getDBTotalAssociationMainProducts(string $productId, string $wherePart): int
     {
+        $stringTypes = $this->getStringProductTypes();
+
         // prepare query
         $sql
             = "SELECT
@@ -636,7 +640,7 @@ class Product extends AbstractService
                     ON p_main.id = ap.related_product_id AND p_main.deleted = 0
                   JOIN association 
                     ON association.id = ap.association_id AND association.deleted = 0
-                WHERE ap.deleted = 0 AND  ap.main_product_id = :id " . $wherePart;
+                WHERE ap.deleted = 0 AND ap.main_product_id = :id  AND p_rel.type IN ('{$stringTypes}') " . $wherePart;
 
         $sth = $this->getEntityManager()->getPDO()->prepare($sql);
         $sth->execute([':id' => $productId]);
@@ -655,5 +659,13 @@ class Product extends AbstractService
         if (isset($data->_duplicatingEntityId)) {
             $entity->isDuplicate = true;
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getStringProductTypes(): string
+    {
+        return join("','", array_keys($this->getMetadata()->get('pim.productType')));
     }
 }
