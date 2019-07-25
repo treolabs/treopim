@@ -109,7 +109,7 @@ class Attribute extends AbstractSelectManager
         $unitAttributes = $this
             ->getEntityManager()
             ->getRepository('Attribute')
-            ->select('id')
+            ->select(['id'])
             ->where([
                 'type' => 'unit'
             ])
