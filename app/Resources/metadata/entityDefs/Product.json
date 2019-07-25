@@ -220,7 +220,8 @@
       "type": "jsonObject",
       "layoutDetailDisabled": true,
       "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true
     },
     "catalog": {
       "type": "link",
@@ -240,7 +241,6 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "noLoad": true,
-      "importDisabled": true,
       "view": "pim:views/product/fields/product-categories"
     },
     "createdAt": {
