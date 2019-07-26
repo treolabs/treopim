@@ -30,97 +30,7 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
 
         multiLangFieldTypes: ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang', 'wysiwygMultiLang'],
 
-        data() {
-            var data = Dep.prototype.data.call(this);
-
-            data.familiesAttributes = this.familiesAttributes;
-            data.showFamiliesAttributes = this.getAcl().check('Attribute', 'read');
-            return data;
-        },
-
-        setup() {
-            Dep.prototype.setup.call(this);
-
-            _.extend(Dep.prototype.events, this.additionalEvents);
-            this.listenToOnce(this, 'after:render', function () {
-                this.createAttributeFilters(() => {
-                    this.updateExpandListButtonInFamily();
-                });
-            }, this);
-
-        },
-
-        createFilters: function (callback) {
-            var i = 0;
-            var count = this.getFiltersCount('standard');
-
-            if (count == 0) {
-                if (typeof callback === 'function') {
-                    callback();
-                }
-            }
-
-            for (var field in this.advanced) {
-                if (!this.advanced[field]['isAttribute'] && !this.advanced[field]['isImport']) {
-                    this.createFilter(field, this.advanced[field], function () {
-                        i++;
-                        if (i == count) {
-                            if (typeof callback === 'function') {
-                                callback();
-                            }
-                        }
-                    });
-                }
-            }
-        },
-
-        createAttributeFilters: function (callback) {
-            var i = 0;
-            var count = this.getFiltersCount('attributes');
-
-            if (count == 0) {
-                if (typeof callback === 'function') {
-                    callback();
-                }
-            }
-
-            for (var field in this.advanced) {
-                if ((this.advanced[field].fieldParams || {}).isAttribute) {
-                    this.createAttributeFilter(field, this.advanced[field], function () {
-                        i++;
-                        if (i == count) {
-                            if (typeof callback === 'function') {
-                                callback();
-                            }
-                        }
-                    });
-                }
-            }
-        },
-
-        getFiltersCount(typeOfFilters) {
-            let attributesFilterCount = 0;
-            let importFilterCount = 0;
-            Object.keys(this.advanced || {}).forEach((item) => {
-                if (this.advanced[item].isAttribute) {
-                    attributesFilterCount++;
-                }
-                if (this.advanced[item].isImport) {
-                    importFilterCount++;
-                }
-            });
-            if (typeOfFilters === 'standard') {
-                return Object.keys(this.advanced || {}).length - attributesFilterCount - importFilterCount;
-            }
-            if (typeOfFilters === 'attributes') {
-                return attributesFilterCount;
-            }
-            if (typeOfFilters === 'import') {
-                return importFilterCount;
-            }
-        },
-
-        additionalEvents: {
+        events: _.extend({}, Dep.prototype.events, {
             'click a[data-action="addAttributeFilter"]': function (e) {
                 var $target = $(e.currentTarget);
                 var name = $target.data('id');
@@ -220,6 +130,95 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
                 $(e.target).next('ul').toggle();
                 e.stopPropagation();
                 e.preventDefault();
+            }
+        }),
+
+        data() {
+            var data = Dep.prototype.data.call(this);
+
+            data.familiesAttributes = this.familiesAttributes;
+            data.showFamiliesAttributes = this.getAcl().check('Attribute', 'read');
+            return data;
+        },
+
+        setup() {
+            Dep.prototype.setup.call(this);
+
+            this.listenToOnce(this, 'after:render', function () {
+                this.createAttributeFilters(() => {
+                    this.updateExpandListButtonInFamily();
+                });
+            }, this);
+
+        },
+
+        createFilters: function (callback) {
+            var i = 0;
+            var count = this.getFiltersCount('standard');
+
+            if (count == 0) {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }
+
+            for (var field in this.advanced) {
+                if (!this.advanced[field]['isAttribute'] && !this.advanced[field]['isImport']) {
+                    this.createFilter(field, this.advanced[field], function () {
+                        i++;
+                        if (i == count) {
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
+                        }
+                    });
+                }
+            }
+        },
+
+        createAttributeFilters: function (callback) {
+            var i = 0;
+            var count = this.getFiltersCount('attributes');
+
+            if (count == 0) {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }
+
+            for (var field in this.advanced) {
+                if ((this.advanced[field].fieldParams || {}).isAttribute) {
+                    this.createAttributeFilter(field, this.advanced[field], function () {
+                        i++;
+                        if (i == count) {
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
+                        }
+                    });
+                }
+            }
+        },
+
+        getFiltersCount(typeOfFilters) {
+            let attributesFilterCount = 0;
+            let importFilterCount = 0;
+            Object.keys(this.advanced || {}).forEach((item) => {
+                if (this.advanced[item].isAttribute) {
+                    attributesFilterCount++;
+                }
+                if (this.advanced[item].isImport) {
+                    importFilterCount++;
+                }
+            });
+            if (typeOfFilters === 'standard') {
+                return Object.keys(this.advanced || {}).length - attributesFilterCount - importFilterCount;
+            }
+            if (typeOfFilters === 'attributes') {
+                return attributesFilterCount;
+            }
+            if (typeOfFilters === 'import') {
+                return importFilterCount;
             }
         },
 
