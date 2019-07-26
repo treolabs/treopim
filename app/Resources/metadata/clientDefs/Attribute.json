@@ -5,12 +5,14 @@
     "onlyMy",
     "notLinkedWithProduct",
     "notLinkedProductAttributeValues",
-    "notLinkedProductFamilyAttributes"
+    "notLinkedProductFamilyAttributes",
+    "unitTypeDisabled"
   ],
   "hiddenBoolFilterList": [
     "notLinkedWithProduct",
     "notLinkedProductAttributeValues",
-    "notLinkedProductFamilyAttributes"
+    "notLinkedProductFamilyAttributes",
+    "unitTypeDisabled"
   ],
   "disabledMassActions": [
     "merge"
