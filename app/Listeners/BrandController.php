@@ -40,21 +40,7 @@ class BrandController extends AbstractListener
         $data = $event->getArguments();
 
         if (empty($data['data']->force) && !empty($data['params']['id'])) {
-            $products = $this
-                ->getEntityManager()
-                ->getRepository('Product')
-                ->where(['brandId' => $data['params']['id']])
-                ->count();
-
-            if ($products > 0) {
-                throw new BadRequest(
-                    $this->getLanguage()->translate(
-                        'Brand is used in products. Please, update products first',
-                        'exceptions',
-                        'Brand'
-                    )
-                );
-            }
+            $this->validRelationsWithProduct([$data['params']['id']]);
         }
     }
 
@@ -64,9 +50,22 @@ class BrandController extends AbstractListener
     public function beforeActionMassDelete(Event $event)
     {
         // get data
-        $data = $event->getArguments();
+        $data = $event->getArgument('data');
 
-        if (empty($data['data']->force)) {
+        if (empty($data->force) && !empty($data->ids)) {
+            $this->validRelationsWithProduct($data->ids);
+        }
+    }
+
+
+    /**
+     * @param array $idsBrand
+     *
+     * @throws BadRequest
+     */
+    protected function validRelationsWithProduct(array $idsBrand): void
+    {
+        if ($this->hasProducts($idsBrand)) {
             throw new BadRequest(
                 $this->getLanguage()->translate(
                     'Brand is used in products. Please, update products first',
@@ -75,5 +74,23 @@ class BrandController extends AbstractListener
                 )
             );
         }
+    }
+
+    /**
+     * Is brand used in Products
+     *
+     * @param array $idsBrand
+     *
+     * @return bool
+     */
+    protected function hasProducts(array $idsBrand): bool
+    {
+        $count = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->where(['brandId' => $idsBrand])
+            ->count();
+
+        return !empty($count);
     }
 }
