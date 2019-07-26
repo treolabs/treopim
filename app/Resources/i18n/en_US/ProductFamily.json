@@ -18,5 +18,8 @@
   },
   "messages": {
     "Can't remove system Product Family": "Can't remove system Product Family"
+  },
+  "exceptions": {
+    "Product Family is used in products": "Product Family is used in products"
   }
 }

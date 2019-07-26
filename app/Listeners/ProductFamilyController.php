@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
+use Espo\Core\Exceptions\BadRequest;
 use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
 
@@ -65,5 +66,65 @@ class ProductFamilyController extends AbstractListener
             // set data
             $event->setArgument('result', $data['result']);
         }
+    }
+
+    /**
+     * Before action delete
+     *
+     * @param Event $event
+     */
+    public function beforeActionDelete(Event $event)
+    {
+        $id = $event->getArgument('params')['id'];
+
+        $this->validRelationsWithProduct([$id]);
+    }
+
+    /**
+     * Before action mass delete
+     *
+     * @param Event $event
+     */
+    public function beforeActionMassDelete(Event $event)
+    {
+        $ids = $event->getArgument('data')->ids;
+
+        $this->validRelationsWithProduct($ids);
+    }
+
+    /**
+     * Validation ProductFamilies relations Product
+     *
+     * @param array $productFamilyIds
+     */
+    protected function validRelationsWithProduct(array $productFamilyIds): void
+    {
+        if ($this->hasProducts($productFamilyIds)) {
+            throw new BadRequest(
+                $this->getLanguage()->translate(
+                    'Product Family is used in products',
+                    'exceptions',
+                    'ProductFamily'
+                )
+            );
+        }
+    }
+
+    /**
+     * Has Products relations ProductFamilies
+     *
+     * @param array $productFamilyIds
+     *
+     * @return bool
+     */
+    protected function hasProducts(array $productFamilyIds): bool
+    {
+        $count = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->where(['productFamilyId' => $productFamilyIds])
+            ->count();
+
+        return !empty($count);
     }
 }

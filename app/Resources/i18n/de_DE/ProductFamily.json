@@ -19,5 +19,8 @@
   },
   "messages": {
     "Can't remove system Product Family": "Das System Produktfamilie kann nicht entfernt werden"
+  },
+  "exceptions": {
+    "Product Family is used in products": "Die Produktfamilie wird in den Produkten verwendet"
   }
 }
