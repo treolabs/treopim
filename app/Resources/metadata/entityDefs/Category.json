@@ -58,7 +58,8 @@
     },
     "categoryParent": {
       "type": "link",
-      "view": "pim:views/category/fields/category-parent"
+      "view": "pim:views/category/fields/category-parent",
+      "layoutMassUpdateDisabled": true
     },
     "categoryRoute": {
       "type": "text",
