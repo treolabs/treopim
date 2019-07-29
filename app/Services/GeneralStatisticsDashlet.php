@@ -154,7 +154,7 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
                     (SELECT COUNT(c.id)
                     FROM category AS c
                       JOIN 
-                      product_category_linker AS pcl ON pcl.deleted = 0 AND c.id = pcl.category_id
+                      product_category AS pcl ON pcl.deleted = 0 AND c.id = pcl.category_id
                     WHERE c.deleted = 0 AND pcl.product_id = p.id) = 0 
                 AND p.deleted = 0 AND p.type IN " . $this->getProductTypesCondition();
 
@@ -176,7 +176,7 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
                 FROM product as p
                     LEFT JOIN product_attribute_value AS pal ON pal.product_id = p.id AND pal.deleted = 0
                     LEFT JOIN product_family AS pf ON pf.deleted = 0 AND pf.id = p.product_family_id
-                    LEFT JOIN product_family_attribute_linker AS pfa ON pfa.deleted = 0 AND pfa.product_family_id = pf.id
+                    LEFT JOIN product_family_attribute AS pfa ON pfa.deleted = 0 AND pfa.product_family_id = pf.id
                     LEFT JOIN attribute AS a ON a.deleted = 0 AND (a.id = pfa.attribute_id OR a.id = pal.attribute_id)
                 WHERE a.id IS NULL AND p.deleted = 0 AND p.type IN " . $this->getProductTypesCondition();
 
