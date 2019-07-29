@@ -129,4 +129,19 @@ class Category extends Base
             $serviceProduct->deleteEntity($productCategory['id']);
         }
     }
+
+    /**
+     * After mass delete action
+     *
+     * @param array $idList
+     *
+     * @return void
+     */
+    protected function afterMassRemove(array $idList): void
+    {
+        foreach ($idList as $id) {
+            $this->removeProductCategoryByCategory($id);
+        }
+        parent::afterMassRemove($idList);
+    }
 }
