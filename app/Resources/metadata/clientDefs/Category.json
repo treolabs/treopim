@@ -61,6 +61,13 @@
         "notLinkedWithCategory",
         "onlyCatalogProducts"
       ]
+    },
+    "catalogs": {
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "notEntity"
+      ],
+      "view": "pim:views/category/record/panels/catalogs"
     }
   },
   "menu": {
