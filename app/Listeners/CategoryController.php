@@ -77,6 +77,14 @@ class CategoryController extends AbstractListener
         $this->getService('Category')->removeProductCategoryByCategory($categoryId);
     }
 
+    public function afterActionMassDelete(Event $event)
+    {
+        $categoryIds = $event->getArgument('data')->ids;
+        foreach ($categoryIds as $categoryId) {
+            $this->getService('Category')->removeProductCategoryByCategory($categoryId);
+        }
+    }
+
     /**
      * @param Event $event
      */
