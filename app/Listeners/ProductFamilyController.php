@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
-use Espo\Core\Exceptions\BadRequest;
 use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
 
