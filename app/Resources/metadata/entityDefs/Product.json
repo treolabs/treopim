@@ -241,6 +241,7 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "noLoad": true,
+      "importMultipleField": true,
       "view": "pim:views/product/fields/product-categories"
     },
     "createdAt": {
