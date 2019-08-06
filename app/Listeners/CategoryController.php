@@ -70,16 +70,6 @@ class CategoryController extends AbstractListener
     /**
      * @param Event $event
      */
-    public function afterActionDelete(Event $event)
-    {
-        $categoryId = $event->getArgument('params')['id'];
-
-        $this->getService('Category')->removeProductCategoryByCategory($categoryId);
-    }
-
-    /**
-     * @param Event $event
-     */
     public function afterActionRemoveLink(Event $event)
     {
         // get data
