@@ -31,7 +31,7 @@ Espo.define('pim:views/category/record/panels/catalogs', ['views/record/panels/r
             bottomPanel.setup.call(this);
 
             var categoryParentId = this.model.get('categoryParentId');
-            var categoryRootId = this.model.get('categoryRootId');
+            var categoryRootId = (this.model.get('categoryRoute') || '').split('|').find(element => element);
 
             this.link = this.link || this.defs.link || this.panelName;
 
