@@ -36,19 +36,6 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                     this.createMiddleView(() => this.reRender());
                 }
             });
-            this.listenTo(this.model, 'sync', () => {
-                let value = this.model.get('value');
-                if (this.model.get('attributeType') === 'bool' && typeof value === 'string') {
-                    this.model.set({value: !!(+value)}, {silent: true});
-                    let middle = this.getView('middle');
-                    if (middle) {
-                        let valueField = middle.getView('valueField');
-                        if (valueField) {
-                            valueField.reRender();
-                        }
-                    }
-                }
-            });
         },
 
         updateModelDefs() {
@@ -73,10 +60,6 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                         fieldDefs.measure = (typeValue || ['Length'])[0];
                     }
                     this.model.defs.fields.value = fieldDefs;
-                    let value = this.model.get('value');
-                    if (type === 'bool' && typeof value === 'string') {
-                        this.model.set({value: !!(+value)}, {silent: true});
-                    }
                 }
             }
         },
