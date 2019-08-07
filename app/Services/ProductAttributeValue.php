@@ -43,6 +43,10 @@ class ProductAttributeValue extends AbstractService
         $entity->set('isCustom', $this->isCustom($entity));
         $entity->set('attributeType', (!empty($entity->get('attribute'))) ? $entity->get('attribute')->get('type') : null);
 
+        if ($entity->get('attributeType') == 'bool') {
+            $entity->set('value', (bool)$entity->get('value'));
+        }
+
         $this->prepareArrayType($entity);
     }
 
