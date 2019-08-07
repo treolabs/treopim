@@ -34,6 +34,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             this.updateDataForValueField();
 
             let type = this.model.get('attributeType') || 'base';
+            this.modifyValueByType(type, this.model.get('value'));
             this.createView('valueField', this.getValueFieldView(type), {
                 el: `${this.options.el} > .field[data-name="valueField"]`,
                 model: this.model,
@@ -45,6 +46,13 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             }, view => {
                 view.render();
             });
+        },
+
+        modifyValueByType(type, value) {
+            if (type === 'bool' && typeof value === 'string') {
+                this.model.set({value: !!(+value)}, {silent: true});
+            }
+            return value;
         },
 
         updateDataForValueField() {

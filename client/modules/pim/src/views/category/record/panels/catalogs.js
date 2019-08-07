@@ -17,10 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/category/record/panels/channels', ['views/record/panels/relationship', 'views/record/panels/bottom'],
-    Dep => Dep.extend({
+Espo.define('pim:views/category/record/panels/catalogs', ['views/record/panels/relationship', 'views/record/panels/bottom'],
+    (Dep, BottomPanel) => Dep.extend({
 
-        boolFilterData: {},
+        boolFilterData: {
+            notEntity() {
+                return this.collection.map(model => model.id);
+            }
+        },
 
         setup() {
             let bottomPanel = new BottomPanel();
@@ -204,13 +208,7 @@ Espo.define('pim:views/category/record/panels/channels', ['views/record/panels/r
 
         getSelectBoolFilterList() {
             return this.defs.selectBoolFilterList || null
-        },
-
-        boolFilterData: {
-            notLinkedWithCategory() {
-                return this.model.id;
-            }
-        },
+        }
 
     })
 );

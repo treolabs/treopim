@@ -18,77 +18,65 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace Pim\Listeners;
 
-use Espo\Core\Exceptions\BadRequest;
-use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
+use Treo\Listeners\AbstractListener;
+use Espo\Core\Exceptions\BadRequest;
 
 /**
- * Class BrandController
+ * Class ProductFamilyEntity
  *
- * @author r.ratsun@treolabs.com
+ * @package Pim\Listeners
+ * @author m.kokhanskyi@treolabs.com
  */
-class BrandController extends AbstractListener
+class ProductFamilyEntity extends AbstractListener
 {
     /**
-     * @param Event $event
-     */
-    public function beforeActionDelete(Event $event)
-    {
-        // get data
-        $data = $event->getArguments();
-
-        if (empty($data['data']->force) && !empty($data['params']['id'])) {
-            $this->validRelationsWithProduct([$data['params']['id']]);
-        }
-    }
-
-    /**
-     * @param Event $event
-     */
-    public function beforeActionMassDelete(Event $event)
-    {
-        // get data
-        $data = $event->getArgument('data');
-
-        if (empty($data->force) && !empty($data->ids)) {
-            $this->validRelationsWithProduct($data->ids);
-        }
-    }
-
-
-    /**
-     * @param array $idsBrand
+     * Before action delete
      *
-     * @throws BadRequest
+     * @param Event $event
      */
-    protected function validRelationsWithProduct(array $idsBrand): void
+    public function beforeRemove(Event $event)
     {
-        if ($this->hasProducts($idsBrand)) {
+        $id = $event->getArgument('entity')->id;
+
+        $this->validRelationsWithProduct($id);
+    }
+
+    /**
+     * Validation ProductFamily relations Product
+     *
+     * @param string $id
+     */
+    protected function validRelationsWithProduct(string $id): void
+    {
+        if ($this->hasProducts($id)) {
             throw new BadRequest(
                 $this->getLanguage()->translate(
-                    'Brand is used in products. Please, update products first',
+                    'Product Family is used in products',
                     'exceptions',
-                    'Brand'
+                    'ProductFamily'
                 )
             );
         }
     }
 
     /**
-     * Is brand used in Products
+     * Has Products relations ProductFamily
      *
-     * @param array $idsBrand
+     * @param string $id
      *
      * @return bool
      */
-    protected function hasProducts(array $idsBrand): bool
+    protected function hasProducts(string $id): bool
     {
         $count = $this
             ->getEntityManager()
             ->getRepository('Product')
-            ->where(['brandId' => $idsBrand])
+            ->where(['productFamilyId' => $id])
             ->count();
 
         return !empty($count);
