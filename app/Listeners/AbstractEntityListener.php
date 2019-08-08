@@ -31,7 +31,7 @@ use Treo\Listeners\AbstractListener;
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class AbstractEntityListener extends AbstractListener
+abstract class AbstractEntityListener extends AbstractListener
 {
     /**
      * @var string

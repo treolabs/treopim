@@ -18,22 +18,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Pim\Hooks\CategoryImage;
+namespace Pim\Listeners;
 
-use Pim\Core\Hooks\AbstractImageHook;
 use Espo\ORM\Entity;
 
 /**
- * CategoryImageHook hook
+ * Class ProductImageEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class CategoryImageHook extends AbstractImageHook
+class ProductImageEntity extends AbstractImageListener
 {
     /**
      * @var string
      */
-    protected $entityName = 'CategoryImage';
+    protected $entityName = 'ProductImage';
 
     /**
      * Return condition for query
@@ -44,6 +43,6 @@ class CategoryImageHook extends AbstractImageHook
      */
     protected function getCondition(Entity $entity)
     {
-        return ['categoryId' => $entity->get('categoryId')];
+        return ['productId' => $entity->get('productId')];
     }
 }
