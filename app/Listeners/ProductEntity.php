@@ -52,14 +52,11 @@ class ProductEntity extends AbstractListener
         $productAttributes = $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
-            ->select(['id'])
             ->where(['productId' => $id])
-            ->find()
-            ->toArray();
-        $service = $this->getService('ProductAttributeValue');
+            ->find();
 
         foreach ($productAttributes as $attr) {
-            $service->deleteEntity($attr['id']);
+            $this->getEntityManager()->removeEntity($attr, ['skipProductAttributeValueHook' => true]);
         }
     }
 }
