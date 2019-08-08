@@ -20,30 +20,26 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\Attribute;
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
 
 /**
- * Class AttributeHook
+ * Class AttributeEntity
  *
  * @author r.ratsun@treolabs.com
  */
-class AttributeHook extends \Pim\Core\Hooks\AbstractHook
+class AttributeEntity extends AbstractEntityListener
 {
-
     /**
-     * Before save action
-     *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
-        if (!$this->isCodeValid($entity)) {
+        if (!$this->isCodeValid($event->getArgument('entity'))) {
             throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
         }
     }

@@ -20,31 +20,28 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\AttributeGroup;
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Pim\Core\Hooks\AbstractHook;
-use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
 
 /**
- * AttributeGroup hook
+ * Class AttributeGroupEntity
  *
  * @author r.ratsun@treolabs.com
  */
-class AttributeGroupHook extends AbstractHook
+class AttributeGroupEntity extends AbstractEntityListener
 {
-
     /**
      * Before save action
      *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
-        if (!$this->isCodeValid($entity)) {
+        if (!$this->isCodeValid($event->getArgument('entity'))) {
             throw new BadRequest(
                 $this->translate(
                     'Code is invalid',
@@ -58,14 +55,13 @@ class AttributeGroupHook extends AbstractHook
     /**
      * Before remove action
      *
-     * @param Entity $entity
-     * @param array $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeRemove(Entity $entity, $options = [])
+    public function beforeRemove(Event $event)
     {
-        if (count($entity->get('attributes')) > 0) {
+        if (count($event->getArgument('entity')->get('attributes')) > 0) {
             throw new BadRequest(
                 $this->translate(
                     'Attribute group is linked with attribute(s). Please, unlink attribute(s) first',

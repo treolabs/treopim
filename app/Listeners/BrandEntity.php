@@ -20,32 +20,30 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\Brand;
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Pim\Core\Hooks\AbstractHook;
-use Pim\Services\Product;
 use Espo\ORM\Entity;
+use Pim\Services\Product;
+use Treo\Core\EventManager\Event;
 
 /**
- * Brand hook
+ * Class BrandEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class BrandHook extends AbstractHook
+class BrandEntity extends AbstractEntityListener
 {
-
     /**
      * Before save action
      *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
-        if (!$this->isCodeValid($entity)) {
+        if (!$this->isCodeValid($event->getArgument('entity'))) {
             throw new BadRequest(
                 $this->translate(
                     'Code is invalid',
@@ -59,12 +57,11 @@ class BrandHook extends AbstractHook
     /**
      * After save action
      *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      */
-    public function afterSave(Entity $entity, $options = [])
+    public function afterSave(Event $event)
     {
-        $this->updateProductActivation($entity);
+        $this->updateProductActivation($event->getArgument('entity'));
     }
 
     /**
