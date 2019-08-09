@@ -18,28 +18,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Pim\Hooks\ExportProfile;
+declare(strict_types=1);
 
-use Espo\Core\Hooks\Base;
-use Espo\ORM\Entity;
+namespace Pim\Listeners;
+
+use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Exceptions;
+use Treo\Core\EventManager\Event;
 
 /**
- * ExportProfileProductImageHook hook
+ * Class ChannelEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class ExportProfileProductImageHook extends Base
+class ChannelEntity extends AbstractEntityListener
 {
     /**
-     * Before save action
+     * @param Event $event
      *
-     * @param Entity $entity
-     * @param array  $options
+     * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
-        if ($entity->isNew() && $entity->get('type') == 'productImage') {
-            $entity->set('isHeaderRow', true);
+        if (!$this->isCodeValid($event->getArgument('entity'))) {
+            throw new Exceptions\BadRequest(
+                $this->translate(
+                    'Code is invalid',
+                    'exceptions',
+                    'Global'
+                )
+            );
         }
     }
 }
