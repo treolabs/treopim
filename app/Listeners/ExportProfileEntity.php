@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\ExportProfile;
+namespace Pim\Listeners;
 
 use Treo\Core\EventManager\Event;
 use Treo\Listeners\AbstractListener;
