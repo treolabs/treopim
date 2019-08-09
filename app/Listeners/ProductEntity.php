@@ -22,17 +22,62 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
-use Treo\Listeners\AbstractListener;
+use Espo\Core\Exceptions\BadRequest;
+use Espo\ORM\Entity;
 use Treo\Core\EventManager\Event;
 
 /**
  * Class ProductEntity
  *
  * @package Pim\Listeners
- * @author m.kokhanskyi@treolabs.com
+ * @author  m.kokhanskyi@treolabs.com
  */
-class ProductEntity extends AbstractListener
+class ProductEntity extends AbstractEntityListener
 {
+    /**
+     * @param Event $event
+     *
+     * @throws BadRequest
+     */
+    public function beforeSave(Event $event)
+    {
+        // get entity
+        $entity = $event->getArgument('entity');
+
+        // get options
+        $options = $event->getArgument('options');
+
+        // is sku valid
+        if (!$this->isSkuUnique($entity)) {
+            if (isset($options['isImport']) && $options['isImport']) {
+                $entity->setIsNew(false);
+            } else {
+                throw new BadRequest($this->exception('Product with such SKU already exist'));
+            }
+        }
+
+        if ($entity->isAttributeChanged('catalogId')) {
+            // is product categories in selected catalog
+            $this->isProductCategoriesInSelectedCatalog($entity);
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function afterSave(Event $event)
+    {
+        // get entity
+        $entity = $event->getArgument('entity');
+
+        // get options
+        $options = $event->getArgument('options');
+
+        if (empty($options['skipProductFamilyHook']) && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
+            $this->updateProductAttributesByProductFamily($entity);
+        }
+    }
+
     /**
      * Before action delete
      *
@@ -58,5 +103,133 @@ class ProductEntity extends AbstractListener
         foreach ($productAttributes as $attr) {
             $this->getEntityManager()->removeEntity($attr, ['skipProductAttributeValueHook' => true]);
         }
+    }
+
+    /**
+     * @param Entity $product
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function isSkuUnique(Entity $product): bool
+    {
+        $products = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->where(['sku' => $product->get('sku'), 'catalogId' => $product->get('catalogId')])
+            ->find();
+
+        if (count($products) > 0) {
+            foreach ($products as $item) {
+                if ($item->get('id') != $product->get('id')) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     * @throws BadRequest
+     */
+    protected function isProductCategoriesInSelectedCatalog(Entity $entity): bool
+    {
+        // get product categories
+        $productCategories = $this
+            ->getEntityManager()
+            ->getRepository('ProductCategory')
+            ->where(['productId' => $entity->get('id')])
+            ->find();
+
+        if (count($productCategories) > 0) {
+            // get catalog categories ids
+            $catalogCategories = array_column($entity->get('catalog')->get('categories')->toArray(), 'id');
+
+            foreach ($productCategories as $productCategory) {
+                // get category
+                if (empty($category = $productCategory->get('category'))) {
+                    throw new BadRequest($this->exception("No such category"));
+                }
+
+                if (empty($category->get('categoryParent'))) {
+                    $root = $category->get('id');
+                } else {
+                    $tree = explode("|", (string)$category->get('categoryRoute'));
+                    $root = null;
+                    if (!empty($tree[1])) {
+                        $root = $tree[1];
+                    }
+                }
+                if (!in_array($root, $catalogCategories)) {
+                    throw new BadRequest($this->exception("Some category cannot be linked with selected catalog"));
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    protected function updateProductAttributesByProductFamily(Entity $entity): bool
+    {
+        // get product family
+        $productFamily = $entity->get('productFamily');
+
+        // get product family attributes
+        $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
+
+        if ($entity->isNew()) {
+            if (count($productFamilyAttributes) > 0) {
+                foreach ($productFamilyAttributes as $productFamilyAttribute) {
+                    // create
+                    $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                    $productAttributeValue->set(
+                        [
+                            'productId'                => $entity->get('id'),
+                            'attributeId'              => $productFamilyAttribute->get('attributeId'),
+                            'productFamilyAttributeId' => $productFamilyAttribute->get('id'),
+                            'isRequired'               => $productFamilyAttribute->get('isRequired'),
+                            'scope'                    => $productFamilyAttribute->get('scope')
+                        ]
+                    );
+                    // save
+                    $this->getEntityManager()->saveEntity($productAttributeValue);
+
+                    // relate channels if it needs
+                    if ($productFamilyAttribute->get('scope') == 'Channel') {
+                        $channels = $productFamilyAttribute->get('channels');
+                        if (count($channels) > 0) {
+                            foreach ($channels as $channel) {
+                                $this
+                                    ->getEntityManager()
+                                    ->getRepository('ProductAttributeValue')
+                                    ->relate($productAttributeValue, 'channels', $channel);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function exception(string $key): string
+    {
+        return $this->translate($key, 'exceptions', 'Product');
     }
 }

@@ -18,32 +18,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Pim\Hooks\ProductImage;
+declare(strict_types=1);
 
-use Pim\Core\Hooks\AbstractImageHook;
-use Espo\ORM\Entity;
+namespace Pim\Hooks\ExportProfile;
+
+use Treo\Core\EventManager\Event;
+use Treo\Listeners\AbstractListener;
 
 /**
- * CategoryImageHook hook
+ * Class ExportProfileEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class ProductImageHook extends AbstractImageHook
+class ExportProfileEntity extends AbstractListener
 {
     /**
-     * @var string
+     * @param Event $event
      */
-    protected $entityName = 'ProductImage';
-
-    /**
-     * Return condition for query
-     *
-     * @param Entity $entity
-     *
-     * @return array
-     */
-    protected function getCondition(Entity $entity)
+    public function beforeSave(Event $event)
     {
-        return ['productId' => $entity->get('productId')];
+        // get entity
+        $entity = $event->getArgument('entity');
+
+        if ($entity->isNew() && $entity->get('type') == 'productImage') {
+            $entity->set('isHeaderRow', true);
+        }
     }
 }

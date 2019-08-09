@@ -20,30 +20,29 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\Association;
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Pim\Core\Hooks\AbstractHook;
 use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
 
 /**
- * Association hook
+ * Class AssociationEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class AssociationHook extends AbstractHook
+class AssociationEntity extends AbstractEntityListener
 {
-
     /**
-     * Before save action
-     *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
+        // get entity
+        $entity = $event->getArgument('entity');
+
         if (empty($entity->get('isActive')) && $this->hasProduct($entity, true)) {
             throw new BadRequest(
                 $this->translate(
@@ -56,15 +55,15 @@ class AssociationHook extends AbstractHook
     }
 
     /**
-     * Before remove action
-     *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeRemove(Entity $entity, $options = [])
+    public function beforeRemove(Event $event)
     {
+        // get entity
+        $entity = $event->getArgument('entity');
+
         if ($this->hasProduct($entity)) {
             throw new BadRequest(
                 $this->translate(

@@ -20,29 +20,28 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\Catalog;
+namespace Pim\Listeners;
 
-use Espo\ORM\Entity;
 use Espo\Core\Exceptions\BadRequest;
+use Treo\Core\EventManager\Event;
 
 /**
- * Class CatalogHook
+ * Class CatalogEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class CatalogHook extends \Pim\Core\Hooks\AbstractHook
+class CatalogEntity extends AbstractEntityListener
 {
     /**
      * Before save
      *
-     * @param Entity $entity
-     * @param array $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, array $options = [])
+    public function beforeSave(Event $event)
     {
-        if (!$this->isCodeValid($entity)) {
+        if (!$this->isCodeValid($event->getArgument('entity'))) {
             throw new BadRequest(
                 $this->translate('Code is invalid', 'exceptions', 'Global')
             );
@@ -50,27 +49,27 @@ class CatalogHook extends \Pim\Core\Hooks\AbstractHook
     }
 
     /**
-     * @param Entity $entity
-     * @param array  $options
-     * @param array  $hookData
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeRelate(Entity $entity, array $options, array $hookData)
+    public function beforeRelate(Event $event)
     {
-        if ($hookData['relationName'] == 'categories' && !empty($hookData['foreignEntity']->get('categoryParent'))) {
+        if ($event->getArgument('relationName') == 'categories'
+            && !empty($foreign = $event->getArgument('foreign'))
+            && !is_string($foreign)
+            && !empty($foreign->get('categoryParent'))) {
             throw new BadRequest($this->exception('Only root category can be linked with catalog'));
         }
     }
 
     /**
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      */
-    public function afterRemove(Entity $entity, $options = [])
+    public function afterRemove(Event $event)
     {
         // get products
-        $products = $entity->get('products');
+        $products = $event->getArgument('entity')->get('products');
 
         // delete products
         if (count($products) > 0) {
@@ -87,6 +86,6 @@ class CatalogHook extends \Pim\Core\Hooks\AbstractHook
      */
     protected function exception(string $key): string
     {
-        return $this->getInjection('language')->translate($key, 'exceptions', 'Catalog');
+        return $this->translate($key, 'exceptions', 'Catalog');
     }
 }

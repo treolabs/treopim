@@ -22,34 +22,72 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
-use Treo\Core\EventManager\Event;
-use Treo\Listeners\AbstractListener;
 use Espo\Core\Exceptions\BadRequest;
+use Treo\Core\EventManager\Event;
 
 /**
  * Class ProductFamilyEntity
  *
  * @package Pim\Listeners
- * @author m.kokhanskyi@treolabs.com
+ * @author  m.kokhanskyi@treolabs.com
  */
-class ProductFamilyEntity extends AbstractListener
+class ProductFamilyEntity extends AbstractEntityListener
 {
     /**
-     * Before action delete
-     *
      * @param Event $event
+     *
+     * @throws BadRequest
+     */
+    public function beforeSave(Event $event)
+    {
+        // get entity
+        $entity = $event->getArgument('entity');
+
+        if (!$this->isCodeValid($entity)) {
+            throw new BadRequest(
+                $this->translate(
+                    'Code is invalid',
+                    'exceptions',
+                    'Global'
+                )
+            );
+        }
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @throws BadRequest
      */
     public function beforeRemove(Event $event)
     {
-        $id = $event->getArgument('entity')->id;
+        // get entity
+        $entity = $event->getArgument('entity');
 
-        $this->validRelationsWithProduct($id);
+        $this->validRelationsWithProduct($entity->id);
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function afterUnrelate(Event $event)
+    {
+        if ($event->getArgument('relationName') == 'productFamilyAttributes'
+            && !empty($foreign = $event->getArgument('foreign'))
+            && !is_string($foreign)) {
+            $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->removeCollectionByProductFamilyAttribute($foreign->get('id'));
+        }
     }
 
     /**
      * Validation ProductFamily relations Product
      *
      * @param string $id
+     *
+     * @throws BadRequest
      */
     protected function validRelationsWithProduct(string $id): void
     {

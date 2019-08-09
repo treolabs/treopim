@@ -20,46 +20,31 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\Category;
+namespace Pim\Listeners;
 
-use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\ORM\Entity;
+use Espo\ORM\Entity;
 
 /**
- * Class ProductHook
+ * Class CategoryImageEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class ProductHook extends \Espo\Core\Hooks\Base
+class CategoryImageEntity extends AbstractImageListener
 {
     /**
-     * @param Entity $entity
-     * @param array  $params
+     * @var string
      */
-    public function beforeSave(Entity $entity, $params = [])
-    {
-        if (!empty($parent = $entity->get('categoryParent')) && !empty(count($parent->get('products')))) {
-            throw new BadRequest(
-                $this->getInjection('language')->translate(
-                    'Parent category has products',
-                    'exceptions',
-                    'Category'
-                )
-            );
-        }
-    }
+    protected $entityName = 'CategoryImage';
 
     /**
-     * Init
+     * Return condition for query
+     *
+     * @param Entity $entity
+     *
+     * @return array
      */
-    protected function init()
+    protected function getCondition(Entity $entity)
     {
-        parent::init();
-
-        $this->addDependencyList(
-            [
-                'language'
-            ]
-        );
+        return ['categoryId' => $entity->get('categoryId')];
     }
 }

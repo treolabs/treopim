@@ -18,37 +18,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Pim\Hooks\Channel;
+declare(strict_types=1);
+
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Pim\Core\Hooks\AbstractHook;
-use Espo\Core\Exceptions;
-use Pim\Entities\Channel as ChannelEntity;
+use Treo\Core\EventManager\Event;
 
 /**
- * Channel hook
+ * Class AttributeEntity
  *
- * @author r.ratsun <r.ratsun@treolabs.com>
+ * @author r.ratsun@treolabs.com
  */
-class ChannelHook extends AbstractHook
+class AttributeEntity extends AbstractEntityListener
 {
-
     /**
-     * @param ChannelEntity $entity
-     * @param array         $params
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(ChannelEntity $entity, $params = [])
+    public function beforeSave(Event $event)
     {
-        if (!$this->isCodeValid($entity)) {
-            throw new Exceptions\BadRequest(
-                $this->translate(
-                    'Code is invalid',
-                    'exceptions',
-                    'Global'
-                )
-            );
+        if (!$this->isCodeValid($event->getArgument('entity'))) {
+            throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
         }
     }
 }

@@ -18,54 +18,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Pim\Hooks\ProductFamily;
+declare(strict_types=1);
+
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Exceptions\Forbidden;
-use Pim\Core\Hooks\AbstractHook;
-use Espo\ORM\Entity;
+use Espo\Core\Exceptions;
+use Treo\Core\EventManager\Event;
 
 /**
- * ProductFamilyHook hook
+ * Class ChannelEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class ProductFamilyHook extends AbstractHook
+class ChannelEntity extends AbstractEntityListener
 {
-
     /**
-     * Before save action
-     *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
-        if (!$this->isCodeValid($entity)) {
-            throw new BadRequest(
+        if (!$this->isCodeValid($event->getArgument('entity'))) {
+            throw new Exceptions\BadRequest(
                 $this->translate(
                     'Code is invalid',
                     'exceptions',
                     'Global'
                 )
             );
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param array  $options
-     * @param array  $data
-     */
-    public function afterUnrelate(Entity $entity, array $options = [], array $data = [])
-    {
-        if ($data['relationName'] == 'productFamilyAttributes') {
-            $this
-                ->getEntityManager()
-                ->getRepository('ProductAttributeValue')
-                ->removeCollectionByProductFamilyAttribute($data['foreignEntity']->get('id'));
         }
     }
 }

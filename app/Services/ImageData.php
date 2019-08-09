@@ -99,7 +99,10 @@ class ImageData extends AbstractService
                 $entity->setFetched('type', $entity->get('type'));
                 $entity->set($data);
 
-                $this->getEntityManager()->saveEntity($entity, ['isImageDataSaved' => true]);
+                // set flag
+                $entity->isImageDataSaved = true;
+
+                $this->getEntityManager()->saveEntity($entity);
             }
 
             // prepare result

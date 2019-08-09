@@ -20,42 +20,23 @@
 
 declare(strict_types=1);
 
-namespace Pim\Core\Hooks;
+namespace Pim\Listeners;
 
-use Espo\Core\Hooks\Base as BaseHook;
 use Espo\ORM\Entity;
 use Espo\Core\ServiceFactory;
-use Espo\Core\Exceptions\BadRequest;
+use Treo\Listeners\AbstractListener;
 
 /**
- * AbstractHook hook
+ * Class AbstractListener
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-abstract class AbstractHook extends BaseHook
+abstract class AbstractEntityListener extends AbstractListener
 {
     /**
      * @var string
      */
     public static $codePattern = '/^[a-z0-9_]*$/';
-
-    /**
-     * Init
-     */
-    protected function init()
-    {
-        // parent init
-        parent::init();
-
-        // add dependecies
-        $this->addDependencyList(
-            [
-                'serviceFactory',
-                'language'
-            ]
-        );
-    }
-
 
     /**
      * Create service
@@ -122,7 +103,7 @@ abstract class AbstractHook extends BaseHook
      */
     protected function getServiceFactory(): ServiceFactory
     {
-        return $this->getInjection('serviceFactory');
+        return $this->getContainer()->get('serviceFactory');
     }
 
     /**
@@ -137,6 +118,6 @@ abstract class AbstractHook extends BaseHook
      */
     protected function translate(string $key, string $label, $scope = ''): string
     {
-        return $this->getInjection('language')->translate($key, $label, $scope);
+        return $this->getContainer()->get('language')->translate($key, $label, $scope);
     }
 }

@@ -18,19 +18,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Pim\Core\Hooks;
+declare(strict_types=1);
+
+namespace Pim\Listeners;
 
 use Espo\Core\CronManager;
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
 
 /**
- * AbstractImageHook hook
+ * Class AbstractImageListener
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-abstract class AbstractImageHook extends AbstractHook
+abstract class AbstractImageListener extends AbstractEntityListener
 {
     /**
      * @var string
@@ -45,13 +47,15 @@ abstract class AbstractImageHook extends AbstractHook
     abstract protected function getCondition(Entity $entity);
 
     /**
-     * Before Save hook
+     * @param Event $event
      *
-     * @param Entity $entity
-     * @param array  $options
+     * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
+        // get entity
+        $entity = $event->getArgument('entity');
+
         $this->clearUnusedFields($entity);
 
         // is asset code valid?
@@ -67,14 +71,14 @@ abstract class AbstractImageHook extends AbstractHook
     }
 
     /**
-     * After Save hook
-     *
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      */
-    public function afterSave(Entity $entity, $options = [])
+    public function afterSave(Event $event)
     {
-        if (empty($options['isImageDataSaved'])) {
+        // get entity
+        $entity = $event->getArgument('entity');
+
+        if (empty($entity->isImageDataSaved)) {
             $this->setImageData($entity);
         }
     }

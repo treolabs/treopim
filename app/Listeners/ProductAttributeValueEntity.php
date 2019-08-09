@@ -20,20 +20,21 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\ProductAttributeValue;
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Hooks\Base as BaseHook;
 use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
+use Treo\Listeners\AbstractListener;
 
 /**
- * Class ProductAttributeValueHook
+ * Class ProductAttributeValueEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class ProductAttributeValueHook extends BaseHook
+class ProductAttributeValueEntity extends AbstractListener
 {
     /**
      * @var array
@@ -41,13 +42,16 @@ class ProductAttributeValueHook extends BaseHook
     protected $beforeSaveData = [];
 
     /**
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
+        // get data
+        $entity = $event->getArgument('entity');
+        $options = $event->getArgument('options');
+
         // exit
         if (!empty($options['skipProductAttributeValueHook'])) {
             return true;
@@ -82,29 +86,14 @@ class ProductAttributeValueHook extends BaseHook
     }
 
     /**
-     * @param Entity $entity
-     * @param array  $options
-     *
-     * @throws BadRequest
+     * @param Event $event
      */
-    public function beforeRemove(Entity $entity, $options = [])
+    public function afterSave(Event $event)
     {
-        // exit
-        if (!empty($options['skipProductAttributeValueHook'])) {
-            return true;
-        }
+        // get data
+        $entity = $event->getArgument('entity');
+        $options = $event->getArgument('options');
 
-        if (!empty($productFamilyAttribute = $entity->get('productFamilyAttribute')) && !empty($productFamilyAttribute->get('productFamily'))) {
-            throw new BadRequest($this->exception('Product Family attribute cannot be deleted'));
-        }
-    }
-
-    /**
-     * @param Entity $entity
-     * @param array  $options
-     */
-    public function afterSave(Entity $entity, $options = [])
-    {
         // exit
         if (!empty($options['skipProductAttributeValueHook'])) {
             return true;
@@ -115,14 +104,24 @@ class ProductAttributeValueHook extends BaseHook
     }
 
     /**
-     * @inheritdoc
+     * @param Event $event
+     *
+     * @throws BadRequest
      */
-    protected function init()
+    public function beforeRemove(Event $event)
     {
-        // parent init
-        parent::init();
+        // get data
+        $entity = $event->getArgument('entity');
+        $options = $event->getArgument('options');
 
-        $this->addDependency('language');
+        // exit
+        if (!empty($options['skipProductAttributeValueHook'])) {
+            return true;
+        }
+
+        if (!empty($productFamilyAttribute = $entity->get('productFamilyAttribute')) && !empty($productFamilyAttribute->get('productFamily'))) {
+            throw new BadRequest($this->exception('Product Family attribute cannot be deleted'));
+        }
     }
 
     /**
@@ -202,7 +201,8 @@ class ProductAttributeValueHook extends BaseHook
 
         // prepare field name
         $fieldName = $this
-                ->getInjection('language')
+                ->getContainer()
+                ->get('language')
                 ->translate('Attribute', 'custom', 'ProductAttributeValue') . ' ' . $attribute->get('name');
 
         // prepare result
@@ -263,6 +263,6 @@ class ProductAttributeValueHook extends BaseHook
      */
     protected function exception(string $key): string
     {
-        return $this->getInjection('language')->translate($key, 'exceptions', 'ProductAttributeValue');
+        return $this->getContainer()->get('language')->translate($key, 'exceptions', 'ProductAttributeValue');
     }
 }
