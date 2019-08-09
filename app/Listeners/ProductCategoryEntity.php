@@ -20,27 +20,30 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\ProductCategory;
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Hooks\Base as BaseHook;
 use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
+use Treo\Listeners\AbstractListener;
 
 /**
- * Class ProductCategoryHook
+ * Class ProductCategoryEntity
  *
- * @author r.ratsun <r.ratsun@gmail.com>
+ * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class ProductCategoryHook extends BaseHook
+class ProductCategoryEntity extends AbstractListener
 {
     /**
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
+        // get entity
+        $entity = $event->getArgument('entity');
+
         if (empty($product = $entity->get('product')) || empty($category = $entity->get('category'))) {
             throw new BadRequest($this->exception('Product and Category cannot be empty'));
         }
@@ -69,17 +72,6 @@ class ProductCategoryHook extends BaseHook
         if ($entity->get('scope') == 'Global') {
             $entity->set('channelsIds', []);
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function init()
-    {
-        // parent init
-        parent::init();
-
-        $this->addDependency('language');
     }
 
     /**
@@ -130,6 +122,6 @@ class ProductCategoryHook extends BaseHook
      */
     protected function exception(string $key): string
     {
-        return $this->getInjection('language')->translate($key, 'exceptions', 'ProductCategory');
+        return $this->getContainer()->get('language')->translate($key, 'exceptions', 'ProductCategory');
     }
 }

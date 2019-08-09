@@ -20,28 +20,31 @@
 
 declare(strict_types=1);
 
-namespace Pim\Hooks\ProductFamilyAttribute;
+namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Hooks\Base as BaseHook;
 use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
+use Treo\Listeners\AbstractListener;
 
 /**
- * Class ProductFamilyAttributeHook
+ * Class ProductFamilyAttributeEntity
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class ProductFamilyAttributeHook extends BaseHook
+class ProductFamilyAttributeEntity extends AbstractListener
 {
-
     /**
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      *
      * @throws BadRequest
      */
-    public function beforeSave(Entity $entity, $options = [])
+    public function beforeSave(Event $event)
     {
+        // prepare data
+        $entity = $event->getArgument('entity');
+        $options = $event->getArgument('options');
+
         // exit
         if (!empty($options['skipValidation'])) {
             return true;
@@ -66,36 +69,29 @@ class ProductFamilyAttributeHook extends BaseHook
     }
 
     /**
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      */
-    public function afterSave(Entity $entity, $options = [])
+    public function afterSave(Event $event)
     {
+        // prepare data
+        $entity = $event->getArgument('entity');
+
         // update product attribute value
         $this->updateProductAttributeValues($entity);
     }
 
     /**
-     * @param Entity $entity
-     * @param array  $options
+     * @param Event $event
      */
-    public function afterRemove(Entity $entity, $options = [])
+    public function afterRemove(Event $event)
     {
+        // prepare data
+        $entity = $event->getArgument('entity');
+
         $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
             ->removeCollectionByProductFamilyAttribute($entity->get('id'));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function init()
-    {
-        // parent init
-        parent::init();
-
-        $this->addDependency('language');
     }
 
     /**
@@ -291,6 +287,6 @@ class ProductFamilyAttributeHook extends BaseHook
      */
     protected function exception(string $key): string
     {
-        return $this->getInjection('language')->translate($key, 'exceptions', 'ProductFamilyAttribute');
+        return $this->getLanguage()->translate($key, 'exceptions', 'ProductFamilyAttribute');
     }
 }
