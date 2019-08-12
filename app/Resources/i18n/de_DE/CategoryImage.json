@@ -17,8 +17,7 @@
         "modifiedAt": "geändert am",
         "modifiedBy": "geändert von",
         "sortOrder": "Sortierreihenfolge",
-        "imagesMultiple": "Mehrere Bilder",
-        "state": "Status"
+        "imagesMultiple": "Mehrere Bilder"
     },
     "options": {
         "type": {
