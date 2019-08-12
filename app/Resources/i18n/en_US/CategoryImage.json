@@ -2,7 +2,6 @@
     "fields": {
         "image": "Image",
         "categories": "Categories",
-        "state": "State",
         "size": "Size",
         "width": "Width",
         "height": "Height",

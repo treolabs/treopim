@@ -60,21 +60,6 @@
       "layoutMassUpdateDisabled": true,
       "required": true
     },
-    "state": {
-      "type": "enum",
-      "required": true,
-      "options": [
-        "uploaded",
-        "processed"
-      ],
-      "optionColors": {
-        "uploaded": "FFE900",
-        "processed": "00FF37"
-      },
-      "default": "uploaded",
-      "isSorted": false,
-      "layoutMassUpdateDisabled": true
-    },
     "size": {
       "notNull": false,
       "type": "float",

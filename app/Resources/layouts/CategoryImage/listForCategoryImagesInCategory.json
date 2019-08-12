@@ -4,10 +4,6 @@
         "notSortable": true
     },
     {
-        "name": "state",
-        "notSortable": true
-    },
-    {
         "name": "scope",
         "notSortable": true
     },

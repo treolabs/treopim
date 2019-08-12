@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
-use Espo\Core\CronManager;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
 use Treo\Core\EventManager\Event;
@@ -88,23 +87,58 @@ abstract class AbstractImageListener extends AbstractEntityListener
      *
      * @param Entity $entity
      */
-    protected function setImageData($entity)
+    protected function setImageData(Entity $entity)
     {
-        // create job
-        if (!is_null($this->entityName)) {
-            $job = $this->getEntityManager()->getEntity('Job');
-            $job->set(
-                [
-                    'name'        => 'Set image data',
-                    'status'      => CronManager::PENDING,
-                    'executeTime' => (new \DateTime())->format('Y-m-d H:i:s'),
-                    'serviceName' => 'ImageData',
-                    'method'      => 'cron',
-                    'data'        => ['entityName' => $this->entityName, 'entityId' => $entity->get('id')],
-                ]
-            );
-            $this->getEntityManager()->saveEntity($job);
+        switch ($entity->get('type')) {
+            case 'File':
+                // set alt image
+                if (empty($entity->get('name'))) {
+                    $entity->set('name', $entity->get('imageName'));
+                }
+
+                // prepare image data
+                $image = $entity->get('image');
+                $filePath = $this->getEntityManager()->getRepository('Attachment')->getFilePath($image);
+
+                // get image sizes
+                $imageBytes = $image->get('size');
+                $imageSize = getimagesize($filePath);
+
+                // get image type
+                $imageType = $image->get('type');
+
+                // set fetched value to avoid looping
+                $entity->setFetched('imageId', $entity->get('imageId'));
+                break;
+            case 'Link':
+                $imageLink = $entity->get('imageLink');
+                // set alt image
+                if (empty($entity->get('name'))) {
+                    $entity->set('name', pathinfo($imageLink, PATHINFO_FILENAME));
+                }
+                // get image sizes
+                $imageBytes = get_headers($imageLink, 1)['Content-Length'];
+                $imageSize = getimagesize($imageLink);
+
+                // get image type
+                $imageType = image_type_to_mime_type(exif_imagetype($imageLink));
+
+                // set fetched value to avoid looping
+                $entity->setFetched('imageLink', $imageLink);
+                break;
         }
+
+        // update data image
+        $entity->setFetched('type', $entity->get('type'));
+        $entity->set('size', round($imageBytes / pow(2, 20), 2));
+        $entity->set('width', $imageSize[0]);
+        $entity->set('height', $imageSize[1]);
+        $entity->set('imageType', $imageType);
+
+        // set flag
+        $entity->isImageDataSaved = true;
+
+        $this->getEntityManager()->saveEntity($entity);
     }
 
     /**

@@ -4,13 +4,8 @@
         "notSortable": true
     },
     {
-        "name": "state",
-        "notSortable": true
-    },
-    {
         "name": "scope",
-        "notSortable": true,
-        "width": 10
+        "notSortable": true
     },
     {
         "name": "channels",
@@ -26,22 +21,18 @@
     },
     {
         "name": "width",
-        "notSortable": true,
-        "width": 7
+        "notSortable": true
     },
     {
         "name": "height",
-        "notSortable": true,
-        "width": 7
+        "notSortable": true
     },
     {
         "name": "size",
-        "notSortable": true,
-        "width": 7
+        "notSortable": true
     },
     {
         "name": "imageType",
-        "notSortable": true,
-        "width": 7
+        "notSortable": true
     }
 ]

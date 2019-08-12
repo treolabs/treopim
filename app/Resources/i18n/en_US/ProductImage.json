@@ -2,7 +2,6 @@
   "fields": {
     "image": "Image",
     "products": "Products",
-    "state": "State",
     "size": "Size",
     "width": "Width",
     "height": "Height",
