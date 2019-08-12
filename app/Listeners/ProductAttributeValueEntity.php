@@ -39,7 +39,7 @@ class ProductAttributeValueEntity extends AbstractListener
     /**
      * @var array
      */
-    protected $beforeSaveData = [];
+    protected static $beforeSaveData = [];
 
     /**
      * @param Event $event
@@ -81,7 +81,7 @@ class ProductAttributeValueEntity extends AbstractListener
 
         // storing data
         if (!$entity->isNew()) {
-            $this->beforeSaveData = $this->getEntityManager()->getEntity('ProductAttributeValue', $entity->get('id'))->toArray();
+            self::$beforeSaveData = $this->getEntityManager()->getEntity('ProductAttributeValue', $entity->get('id'))->toArray();
         }
     }
 
@@ -214,18 +214,18 @@ class ProductAttributeValueEntity extends AbstractListener
         // for value
         if ($entity->isAttributeChanged('value')
             || ($entity->isAttributeChanged('data')
-                && $this->beforeSaveData['data']->unit != $entity->get('data')->unit)) {
+                && self::$beforeSaveData['data']->unit != $entity->get('data')->unit)) {
             $result['fields'][] = $fieldName;
             if (in_array($attribute->get('type'), $arrayTypes)) {
-                $result['attributes']['was'][$fieldName] = Json::decode($this->beforeSaveData['value'], true);
+                $result['attributes']['was'][$fieldName] = Json::decode(self::$beforeSaveData['value'], true);
                 $result['attributes']['became'][$fieldName] = Json::decode($entity->get('value'), true);
             } else {
-                $result['attributes']['was'][$fieldName] = $this->beforeSaveData['value'];
+                $result['attributes']['was'][$fieldName] = self::$beforeSaveData['value'];
                 $result['attributes']['became'][$fieldName] = $entity->get('value');
             }
 
             if ($entity->get('attribute')->get('type') == 'unit') {
-                $result['attributes']['was'][$fieldName . 'Unit'] = $this->beforeSaveData['data']->unit;
+                $result['attributes']['was'][$fieldName . 'Unit'] = self::$beforeSaveData['data']->unit;
                 $result['attributes']['became'][$fieldName . 'Unit'] = $entity->get('data')->unit;
             }
         }
@@ -242,11 +242,11 @@ class ProductAttributeValueEntity extends AbstractListener
                     $result['fields'][] = $localeFieldName;
                     if (in_array($attribute->get('type'), $arrayTypes)) {
                         $result['attributes']['was'][$localeFieldName]
-                            = Json::decode($this->beforeSaveData[$field], true);
+                            = Json::decode(self::$beforeSaveData[$field], true);
                         $result['attributes']['became'][$localeFieldName]
                             = Json::decode($entity->get($field), true);
                     } else {
-                        $result['attributes']['was'][$localeFieldName] = $this->beforeSaveData[$field];
+                        $result['attributes']['was'][$localeFieldName] = self::$beforeSaveData[$field];
                         $result['attributes']['became'][$localeFieldName] = $entity->get($field);
                     }
                 }
