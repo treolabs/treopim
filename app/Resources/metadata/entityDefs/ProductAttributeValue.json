@@ -25,7 +25,8 @@
       "rows": 4,
       "lengthOfCut": 400,
       "isMultilang": true,
-      "view": "pim:views/product-attribute-value/fields/value-container"
+      "view": "pim:views/product-attribute-value/fields/value-container",
+      "hasCompleteValidation": true
     },
     "data": {
       "type": "jsonObject"
