@@ -74,7 +74,7 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                         link: this.link,
                         acl: 'create',
                         aclScope: this.scope,
-                        html: '<span class="glyphicon glyphicon-plus"></span>',
+                        html: '<span class="fas fa-plus"></span>',
                         data: {
                             link: this.link,
                             layout: this.defs.detailLayout
@@ -238,6 +238,16 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                 row.$el.addClass('hidden');
             } else {
                 row.$el.removeClass('hidden');
+            }
+            this.controlListVisibility();
+        },
+
+        controlListVisibility() {
+            let notHiddenRows = this.$el.find('.list-container .list-row:not(.hidden)');
+            if (!notHiddenRows.length) {
+                this.$el.find('.list-container').addClass('hidden');
+            } else {
+                this.$el.find('.list-container').removeClass('hidden');
             }
         },
 
