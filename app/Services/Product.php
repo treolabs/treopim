@@ -238,6 +238,46 @@ class Product extends AbstractService
 
     /**
      * @param Entity $product
+     * @param array $data
+     * @param array $options
+     *
+     * @return string
+     */
+    public function exportProductCategories(Entity $product, array $data, array $options): string
+    {
+        // prepare result
+        $result = [];
+
+        $productCategories = $product->get('productCategories');
+
+        if (count($productCategories) > 0) {
+            $delimiter = isset($options['delimiter']) ? $options['delimiter'] : ',';
+
+            foreach ($productCategories as $productCategory) {
+                $category = $productCategory->get('category');
+
+                if ($productCategory->get('scope') == $data['scope'] && $category->hasField($data['exportBy'])) {
+                    switch ($data['scope']) {
+                        case 'Global':
+                            $result[] = $category->get($data['exportBy']);
+                            break;
+                        case 'Channel':
+                            if (isset($data['channelId'])
+                                && in_array($data['channelId'], array_column($productCategory->get('channels')->toArray(), 'id'))) {
+                                $result[] = $category->get($data['exportBy']);
+                            }
+                    }
+                }
+            }
+
+            $result = implode($delimiter, $result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Entity $product
      * @param Entity $duplicatingProduct
      */
     protected function duplicateProductAttributeValues(Entity $product, Entity $duplicatingProduct)
