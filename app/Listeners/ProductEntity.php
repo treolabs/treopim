@@ -73,7 +73,10 @@ class ProductEntity extends AbstractEntityListener
         // get options
         $options = $event->getArgument('options');
 
-        if (empty($options['skipProductFamilyHook']) && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
+        $skipUpdate = empty($entity->skipUpdateProductAttributesByProductFamily)
+                        && empty($options['skipProductFamilyHook']);
+
+        if ($skipUpdate && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
             $this->updateProductAttributesByProductFamily($entity);
         }
     }
