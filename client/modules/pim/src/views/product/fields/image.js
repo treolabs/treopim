@@ -68,7 +68,8 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
             if (this.model.id) {
                 this.ajaxGetRequest(`Product/${this.model.id}/productImages`, {
                     maxSize: 1,
-                    offset: 0
+                    offset: 0,
+                    sortBy: 'sortOrder'
                 })
                     .then(data => {
                         if (data.list.length) {
