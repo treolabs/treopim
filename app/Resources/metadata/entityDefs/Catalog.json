@@ -65,7 +65,6 @@
     },
     "categories": {
       "type": "linkMultiple",
-      "required": true,
       "layoutDetailDisabled": true,
       "layoutDetailSmallDisabled": true,
       "noLoad": true
