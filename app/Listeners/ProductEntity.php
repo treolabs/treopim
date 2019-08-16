@@ -49,11 +49,7 @@ class ProductEntity extends AbstractEntityListener
 
         // is sku valid
         if (!$this->isSkuUnique($entity)) {
-            if (isset($options['isImport']) && $options['isImport']) {
-                $entity->setIsNew(false);
-            } else {
-                throw new BadRequest($this->exception('Product with such SKU already exist'));
-            }
+            throw new BadRequest($this->exception('Product with such SKU already exist'));
         }
 
         if ($entity->isAttributeChanged('catalogId')) {
