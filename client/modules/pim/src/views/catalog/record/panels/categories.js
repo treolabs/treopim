@@ -77,7 +77,7 @@ Espo.define('pim:views/catalog/record/panels/categories', ['views/record/panels/
                         link: this.link,
                         acl: 'create',
                         aclScope: this.scope,
-                        html: '<span class="glyphicon glyphicon-plus"></span>',
+                        html: '<span class="fas fa-plus"></span>',
                         data: {
                             link: this.link,
                             layout: this.defs.detailLayout

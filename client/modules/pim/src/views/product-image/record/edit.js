@@ -141,7 +141,8 @@ Espo.define('pim:views/product-image/record/edit', 'views/record/edit',
             let model = this.model;
             let beforeSaveAttributes = this.model.getClonedAttributes();
             let imagesIds = this.model.get('imagesMultipleIds');
-            let promises = [];
+            let imageSavingPromises = [];
+            let channelSavingPromises = [];
 
             if (this.validate()) {
                 model.attributes = beforeSaveAttributes;
@@ -163,28 +164,29 @@ Espo.define('pim:views/product-image/record/edit', 'views/record/edit',
             imagesIds.forEach((item) => {
                 data.imageId = item;
                 data.imageName = this.model.get('imagesMultipleNames')[item];
-                promises.push(this.ajaxPostRequest(this.model.name, Espo.Utils.clone(data)).then(response => {
+                imageSavingPromises.push(this.ajaxPostRequest(this.model.name, Espo.Utils.clone(data)).then(response => {
                     if (response.id && this.model.productId && this.model.get('scope') === 'Channel') {
                         let data = this.model.get('channelsIds');
-                        promises.push(this.ajaxPutRequest(`ProductImage/${response.id}/channels/${this.model.productId}`, data));
+                        channelSavingPromises.push(this.ajaxPutRequest(`ProductImage/${response.id}/channels/${this.model.productId}`, data));
                     }
                 }));
             });
 
-            Promise.all(promises)
-            .then(response => {
-                this.afterSave();
-                if (this.isNew) {
-                    this.isNew = false;
-                }
-                this.trigger('after:save');
-                this.model.trigger('after:save');
+            Promise.all(imageSavingPromises).then(response => {
+                Promise.all(channelSavingPromises).then(response => {
+                    this.afterSave();
+                    if (this.isNew) {
+                        this.isNew = false;
+                    }
+                    this.trigger('after:save');
+                    this.model.trigger('after:save');
 
-                if (!callback) {
-                    this.exit('save');
-                } else {
-                    callback(this);
-                }
+                    if (!callback) {
+                        this.exit('save');
+                    } else {
+                        callback(this);
+                    }
+                });
             });
         }
     })
