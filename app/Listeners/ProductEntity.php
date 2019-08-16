@@ -44,9 +44,6 @@ class ProductEntity extends AbstractEntityListener
         // get entity
         $entity = $event->getArgument('entity');
 
-        // get options
-        $options = $event->getArgument('options');
-
         // is sku valid
         if (!$this->isSkuUnique($entity)) {
             throw new BadRequest($this->exception('Product with such SKU already exist'));
