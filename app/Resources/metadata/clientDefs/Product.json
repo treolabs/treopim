@@ -76,8 +76,7 @@
       "selectBoolFilterList": [
         "onlyActive",
         "notLinkedProductCategories",
-        "onlyCatalogCategories",
-        "hasNoChildCategory"
+        "onlyCatalogCategories"
       ],
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "modalEditView": "pim:views/product-category/modals/edit-in-product",

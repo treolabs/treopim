@@ -52,10 +52,6 @@ class ProductCategoryEntity extends AbstractListener
             throw new BadRequest($this->exception('Such record already exists'));
         }
 
-        if (count($category->get('categories')) > 0) {
-            throw new BadRequest($this->exception('Category has child category'));
-        }
-
         if (empty($catalog = $product->get('catalog'))) {
             throw new BadRequest($this->exception('No such product catalog'));
         }
