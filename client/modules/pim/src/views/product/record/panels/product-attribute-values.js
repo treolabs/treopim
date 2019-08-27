@@ -446,7 +446,6 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         buildGroups() {
-            let count = 0;
             this.groups.forEach(group => {
                 this.getCollectionFactory().create(this.scope, collection => {
                     group.rowList.forEach(id => {
@@ -474,12 +473,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         showMore: false
                     };
                     this.createView(group.key, viewName, this.modifyListOptions(options), view => {
-                        view.render(() => {
-                            count++;
-                            if (count === this.groups.length) {
-                                this.applyOverviewFilters();
-                            }
-                        });
+                        view.listenTo(view, 'after:render', () => this.applyOverviewFilters());
+                        view.render();
                     });
                 });
             });
@@ -549,6 +544,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 fieldView.langFieldNameList = langFieldNameList;
                 fieldView.hideMainOption = !showGenericFields ||
                     !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
+                fieldView.expandLocales = fieldView.hideMainOption || !!(hiddenLocales.length || currentLocaleFilter);
                 hide = hide || !fieldView.langFieldNameList.length && fieldView.hideMainOption;
                 fieldView.reRender();
             }

@@ -2,7 +2,6 @@
   "fields": {
     "name": {
       "type": "varchar",
-      "required": true,
       "trim": true
     },
     "productFamily": {
