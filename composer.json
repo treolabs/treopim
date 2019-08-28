@@ -20,7 +20,7 @@
   "require": {
     "treolabs/treocore": "~3.22.0",
     "treo-module/coloredfields": "~1.7.6",
-    "treo-module/multilang": "~1.13.3"
+    "treolabs/multi-language": "~1.13.3"
   },
   "autoload": {
     "psr-4": {
