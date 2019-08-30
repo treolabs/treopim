@@ -23,7 +23,8 @@
     "teams": "Teams",
     "markupType": "Typ",
     "markupValue": "Wert",
-    "scope": "Umfang"
+    "scope": "Umfang",
+    "catalogs": "Kataloge"
   },
   "links": {
     "categories": "Kategorien",

@@ -11,7 +11,8 @@
     "image": "Main Image",
     "categoryRouteName": "Сategory Tree",
     "scope": "Scope",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "catalogs": "Catalogs"
   },
   "links": {
     "categoryParent": "Parent Category",
