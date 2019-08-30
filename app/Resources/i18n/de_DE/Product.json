@@ -76,7 +76,9 @@
     "withoutAnyCategory": "Ohne Kategorie",
     "typeCategoryToSearch": "Kategorie zum Suchen eingeben...",
     "Package Details": "Paketdetails",
-    "No Group": "Keine Gruppe"
+    "No Group": "Keine Gruppe",
+    "sort": "Sortieren",
+    "itemsInRow": "Einzelteile in der Reihe"
   },
   "options": {
     "productStatus": {
