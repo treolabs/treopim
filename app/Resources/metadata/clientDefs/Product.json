@@ -1,5 +1,5 @@
 {
-  "controller": "controllers/record",
+  "controller": "pim:controllers/product",
   "iconClass": "fas fa-box-open",
   "quickCreate": true,
   "navigateToEntityAfterQuickCreate": true,
@@ -46,12 +46,15 @@
   ],
   "views": {
     "list": "pim:views/product/list",
-    "detail": "pim:views/product/detail"
+    "detail": "pim:views/product/detail",
+    "plate": "pim:views/product/plate"
   },
   "recordViews": {
     "list": "pim:views/product/record/list",
     "detail": "pim:views/product/record/detail",
-    "search": "pim:views/product/record/search"
+    "search": "pim:views/product/record/search",
+    "plate": "pim:views/product/record/plate",
+    "plateItem": "pim:views/product/record/plate-item"
   },
   "massRelationView": "pim:views/product/modals/select-entity-and-records",
   "relationshipPanels": {
@@ -159,6 +162,48 @@
         "value": "bundleProduct"
       }
     ]
+  },
+  "menu": {
+    "list": {
+      "buttons": [
+        {
+          "acl": "read",
+          "label": "",
+          "link": "#Product/list",
+          "style": "primary",
+          "title": "List",
+          "iconHtml": "<span class=\"fa fa-list\"></span>"
+        },
+        {
+          "acl": "read",
+          "label": "",
+          "link": "#Product/plate",
+          "style": "default",
+          "title": "Plate",
+          "iconHtml": "<span class=\"fa fa-th\"></span>"
+        }
+      ]
+    },
+    "plate": {
+      "buttons": [
+        {
+          "acl": "read",
+          "label": "",
+          "link": "#Product/list",
+          "style": "default",
+          "title": "List",
+          "iconHtml": "<span class=\"fa fa-list\"></span>"
+        },
+        {
+          "acl": "read",
+          "label": "",
+          "link": "#Product/plate",
+          "style": "primary",
+          "title": "Plate",
+          "iconHtml": "<span class=\"fa fa-th\"></span>"
+        }
+      ]
+    }
   },
   "dynamicLogic": {
     "fields": {

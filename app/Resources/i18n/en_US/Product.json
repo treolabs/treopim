@@ -71,7 +71,9 @@
     "Image": "Images",
     "withoutAnyCategory": "Without Any Category",
     "typeCategoryToSearch": "Type category to search...",
-    "No Group": "No Group"
+    "No Group": "No Group",
+    "sort": "Sort",
+    "itemsInRow": "Items in row"
   },
   "options": {
     "productStatus": {
