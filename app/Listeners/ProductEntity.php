@@ -70,7 +70,7 @@ class ProductEntity extends AbstractEntityListener
                         && empty($options['skipProductFamilyHook']);
 
         if ($skipUpdate && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
-            $this->updateProductAttributesByProductFamily($entity);
+            $this->updateProductAttributesByProductFamily($entity, $options);
         }
     }
 
@@ -170,10 +170,13 @@ class ProductEntity extends AbstractEntityListener
 
     /**
      * @param Entity $entity
+     * @param array $options
      *
      * @return bool
+     *
+     * @throws \Espo\Core\Exceptions\Error
      */
-    protected function updateProductAttributesByProductFamily(Entity $entity): bool
+    protected function updateProductAttributesByProductFamily(Entity $entity, array $options): bool
     {
         // get product family
         $productFamily = $entity->get('productFamily');
@@ -181,7 +184,7 @@ class ProductEntity extends AbstractEntityListener
         // get product family attributes
         $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
 
-        if ($entity->isNew()) {
+        if ($entity->isNew() || (isset($options['isImport']) && $options['isImport'])) {
             if (count($productFamilyAttributes) > 0) {
                 foreach ($productFamilyAttributes as $productFamilyAttribute) {
                     // create
