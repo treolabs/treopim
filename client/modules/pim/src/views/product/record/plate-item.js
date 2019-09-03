@@ -24,6 +24,19 @@ Espo.define('pim:views/product/record/plate-item', 'view',
 
         fields: ['productStatus', 'image'],
 
+        events: _.extend({
+            'click .link': function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                const url = $(e.currentTarget).attr('href');
+                this.getRouter().navigate(url, {trigger: false});
+                this.getRouter().dispatch(this.model.name, 'view', {
+                    id: this.model.id,
+                    rootUrl: `${this.model.name}/plate`
+                });
+            }
+        }, Dep.prototype.events),
+
         setup() {
             Dep.prototype.setup.call(this);
 
