@@ -206,9 +206,11 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     this.actionRefresh();
                 });
 
-                this.listenTo(this.model, 'overview-filters-changed', () => {
-                    this.applyOverviewFilters();
-                });
+                if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
+                    this.listenTo(this.model, 'overview-filters-changed', () => {
+                        this.applyOverviewFilters();
+                    });
+                }
 
                 this.getMetadata().fetch();
                 this.fetchCollectionGroups(() => this.wait(false));
@@ -457,7 +459,9 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     this.listenTo(collection, 'sync', () => {
                         this.model.trigger('attributes-updated');
                         collection.models.sort((a, b) => a.get('sortOrder') - b.get('sortOrder'));
-                        this.applyOverviewFilters();
+                        if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
+                            this.applyOverviewFilters();
+                        }
                     });
 
                     let viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
@@ -473,7 +477,9 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         showMore: false
                     };
                     this.createView(group.key, viewName, this.modifyListOptions(options), view => {
-                        view.listenTo(view, 'after:render', () => this.applyOverviewFilters());
+                        if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
+                            view.listenTo(view, 'after:render', () => this.applyOverviewFilters());
+                        }
                         view.render();
                     });
                 });
@@ -542,8 +548,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     return this.checkFieldValue(currentFieldFilter, fieldView.model.get(field), fieldView.model.get('isRequired'));
                 });
                 fieldView.langFieldNameList = langFieldNameList;
-                fieldView.hideMainOption = !showGenericFields ||
-                    !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
+                fieldView.hideMainOption = (showGenericFields !== null && typeof showGenericFields !== 'undefined' && !showGenericFields)
+                    || !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
                 fieldView.expandLocales = fieldView.hideMainOption || !!(hiddenLocales.length || currentLocaleFilter);
                 hide = hide || !fieldView.langFieldNameList.length && fieldView.hideMainOption;
                 fieldView.reRender();
