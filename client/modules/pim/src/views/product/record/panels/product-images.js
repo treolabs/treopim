@@ -169,10 +169,11 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                     }
                     this.trigger('panel:rebuild', this.defs);
                 });
-
-                this.listenTo(this.model, 'overview-filters-changed', () => {
-                    this.applyOverviewFilters();
-                });
+                if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
+                    this.listenTo(this.model, 'overview-filters-changed', () => {
+                        this.applyOverviewFilters();
+                    });
+                }
 
                 this.extendCollectionModel();
 
@@ -191,9 +192,11 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
                             dragableListRows: !this.defs.readOnly,
                             listRowsOrderSaveUrl: `ProductImage/${this.model.id}/sortOrder`
                         }, function (view) {
-                            view.listenTo(view, 'after:render', () => {
-                                this.applyOverviewFilters();
-                            });
+                            if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
+                                view.listenTo(view, 'after:render', () => {
+                                    this.applyOverviewFilters();
+                                });
+                            }
                             view.render();
                         });
                     }, this);
