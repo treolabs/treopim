@@ -42,7 +42,6 @@
     },
     "channels": {
       "type": "linkMultiple",
-      "required": true,
       "importDisabled": true,
       "noLoad": false,
       "view": "pim:views/product-attribute-value/fields/channels"

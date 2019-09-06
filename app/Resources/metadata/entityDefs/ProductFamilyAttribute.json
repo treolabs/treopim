@@ -28,7 +28,6 @@
     },
     "channels": {
       "type": "linkMultiple",
-      "required": true,
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
