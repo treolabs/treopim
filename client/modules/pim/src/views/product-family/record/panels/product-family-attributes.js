@@ -203,10 +203,12 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                 });
 
                 this.listenTo(collection, 'change:isRequired', model => {
-                    this.notify('Saving...');
-                    model.save().then(() => {
-                        this.notify('Saved', 'success');
-                    });
+                    if (!model.hasChanged('modifiedAt')) {
+                        this.notify('Saving...');
+                        model.save().then(() => {
+                            this.notify('Saved', 'success');
+                        });
+                    }
                 });
 
                 this.fetchCollectionGroups(() => this.wait(false));
