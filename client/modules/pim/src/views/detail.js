@@ -22,6 +22,8 @@ Espo.define('pim:views/detail', 'views/detail',
 
         updateRelationshipPanel(name) {
             let bottom = this.getView('record').getView('bottom');
+            let header = this.getView('header');
+            let channelsFilter = header.getView('channelsFilter');
             if (bottom) {
                 let rel = bottom.getView(name);
                 if (rel) {
@@ -30,6 +32,9 @@ Espo.define('pim:views/detail', 'views/detail',
                     }
                     if (typeof rel.setupList === 'function') {
                         rel.setupList();
+                    }
+                    if (header && channelsFilter) {
+                        channelsFilter.updateChannels(() => channelsFilter.reRender());
                     }
                 }
             }
