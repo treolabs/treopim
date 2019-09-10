@@ -216,14 +216,9 @@ class Product extends AbstractService
                        pi.image_link AS imageLink
                     FROM product_image pi
                       JOIN product_image_product pip
-                        ON pip.product_image_id = pi.id AND pip.deleted = 0 AND pip.id = (
-                          SELECT id
-                          FROM product_image_product
-                          WHERE product_id = pip.product_id
-                          ORDER BY sort_order, id
-                          LIMIT 1
-                        )
-                    WHERE pip.product_id IN ({$productIds}) AND pi.deleted = 0";
+                        ON pip.product_image_id = pi.id AND pip.deleted = 0
+                    WHERE pip.product_id IN ({$productIds}) AND pi.deleted = 0
+                    ORDER BY pip.sort_order DESC, pip.id DESC";
 
             $sth = $this->getEntityManager()->getPDO()->prepare($sql);
             $sth->execute();
