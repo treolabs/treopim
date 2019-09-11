@@ -111,20 +111,21 @@ abstract class AbstractImageListener extends AbstractEntityListener
                 $entity->setFetched('imageId', $entity->get('imageId'));
                 break;
             case 'Link':
-                $imageLink = $entity->get('imageLink');
-                // set alt image
-                if (empty($entity->get('name'))) {
-                    $entity->set('name', pathinfo($imageLink, PATHINFO_FILENAME));
+                    $imageLink = $entity->get('imageLink');
+                if((bool)@exif_imagetype($imageLink)) {
+                    // set alt image
+                    if (empty($entity->get('name'))) {
+                        $entity->set('name', pathinfo($imageLink, PATHINFO_FILENAME));
+                    }
+                    // get image sizes
+                    $imageBytes = get_headers($imageLink, 1)['Content-Length'];
+                    $imageSize = getimagesize($imageLink);
+
+                    // get image type
+                    $imageType = image_type_to_mime_type(exif_imagetype($imageLink));
+                    // set fetched value to avoid looping
+                    $entity->setFetched('imageLink', $imageLink);
                 }
-                // get image sizes
-                $imageBytes = get_headers($imageLink, 1)['Content-Length'];
-                $imageSize = getimagesize($imageLink);
-
-                // get image type
-                $imageType = image_type_to_mime_type(exif_imagetype($imageLink));
-
-                // set fetched value to avoid looping
-                $entity->setFetched('imageLink', $imageLink);
                 break;
         }
 
