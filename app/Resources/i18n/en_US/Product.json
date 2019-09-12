@@ -104,6 +104,7 @@
     "withoutImageAssets": "Without Image Assets"
   },
   "exceptions": {
-    "Product with such SKU already exist": "Product with such SKU already exist"
+    "Product with such SKU already exist": "Product with such SKU already exist",
+    "You can't change Product Family in Product": "You can't change Product Family in Product"
   }
 }
