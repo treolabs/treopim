@@ -54,6 +54,9 @@ class ProductEntity extends AbstractEntityListener
             $this->isProductCategoriesInSelectedCatalog($entity);
         }
 
+        if (!$entity->isNew() && $entity->isAttributeChanged('type')) {
+            throw new BadRequest($this->exception('You can\'t change field of Type'));
+        }
         if ($entity->isAttributeChanged('productFamilyId') && !$entity->isNew()) {
             throw new BadRequest($this->exception('You can\'t change Product Family in Product'));
         }
