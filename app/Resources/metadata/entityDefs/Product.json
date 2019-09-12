@@ -56,7 +56,6 @@
       "required": true,
       "default": "simpleProduct",
       "view": "pim:views/product/fields/type",
-      "notChange": true,
       "layoutMassUpdateDisabled": true,
       "options": [
         "simpleProduct",

@@ -84,7 +84,6 @@
       "audited": false,
       "readOnly": false,
       "tooltip": false,
-      "notChange": true,
       "view": "pim:views/attribute/fields/type"
     },
     "typeValue": {
