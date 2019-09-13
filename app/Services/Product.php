@@ -539,8 +539,21 @@ class Product extends AbstractService
             throw new Forbidden();
         }
 
+        $associatedProducts = $this->getDBAssociationMainProducts($id, '', $params);
+        $associatedProductsImages
+            = $this->getDBAssociatedProductsMainImage(array_column($associatedProducts, 'relatedProductId'));
+
+        foreach ($associatedProducts as $key => $product) {
+            if (isset($associatedProductsImages[$product['relatedProductId']])) {
+                $associatedProducts[$key]['relatedProductImageId']
+                    = $associatedProductsImages[$product['relatedProductId']]['imageId'];
+                $associatedProducts[$key]['relatedProductImageLink']
+                    = $associatedProductsImages[$product['relatedProductId']]['imageLink'];
+            }
+        }
+
         return [
-            'list' => $this->getDBAssociationMainProducts($id, '', $params),
+            'list' => $associatedProducts,
             'total' => $this->getDBTotalAssociationMainProducts($id, '')
         ];
 
@@ -580,24 +593,12 @@ class Product extends AbstractService
                   p_main.id           AS mainProductId,
                   p_main.name         AS mainProductName,
                   relatedProduct.id   AS relatedProductId,
-                  relatedProduct.name AS relatedProductName,
-                  pi.image_id         AS relatedProductImageId,
-                  pi.image_link       AS relatedProductImageLink
+                  relatedProduct.name AS relatedProductName
                 FROM associated_product AS ap
                   JOIN product AS relatedProduct 
                     ON relatedProduct.id = ap.related_product_id AND relatedProduct.deleted = 0
-                  LEFT JOIN product_image_product as pip
-                    ON pip.product_id = relatedProduct.id AND pip.deleted = 0 AND pip.id = (
-                      SELECT id
-                      FROM product_image_product
-                      WHERE product_id = pip.product_id
-                      ORDER BY sort_order, id
-                      LIMIT 1
-                    )
-                  LEFT JOIN product_image as pi
-                    ON pi.id = pip.product_image_id AND pi.deleted = 0
                   JOIN product AS p_main 
-                    ON p_main.id = ap.related_product_id AND p_main.deleted = 0
+                    ON p_main.id = ap.main_product_id AND p_main.deleted = 0
                   JOIN association 
                     ON association.id = ap.association_id AND association.deleted = 0
                 WHERE ap.deleted = 0 
