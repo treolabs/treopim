@@ -49,8 +49,8 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         setup() {
             this.scope = this.options.scope || this.scope;
-            this.wait(true);
 
+            this.wait(true);
             this.getFullEntity('Catalog', {select: 'name,categoriesIds,categoriesNames'}, catalogs => {
                 this.catalogs = catalogs;
                 this.rootCategoriesIds = this.getRootCategoriesIds();
@@ -76,6 +76,9 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 }, categories => {
                     this.categories = categories;
                     this.setupPanels();
+                    if (this.model) {
+                        this.expandTreeWithProductCategory();
+                    }
                     this.wait(false);
                 });
             });
@@ -83,7 +86,33 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             this.listenTo(this, 'resetFilters', () => {
                 this.selectCategoryButtonApplyFilter(this.$el.find('button[data-action="selectAll"]'), false);
             });
+
+            if (this.model) {
+                this.listenTo(Backbone, 'menu-expanded', () => {
+                    this.actionCollapsePanel(true);
+                });
+            }
         },
+
+        expandTreeWithProductCategory() {
+            this.ajaxGetRequest(`Product/${this.model.id}/productCategories`).then(productCategories => {
+                let id = (((productCategories.list || [])[0] || {}).categoryId);
+                if (id) {
+                    this.ajaxGetRequest(`Category/${id}`).then(category => {
+                        let parentCategoryId = !category.categoryParentId ? id : (category.categoryRoute || '').split('|').find(element => element);
+                        let catalog = this.catalogs.find(catalog => (catalog.categoriesIds || []).includes(parentCategoryId));
+                        if (catalog) {
+                            let catalogTree = this.getView(`category-tree-${catalog.id}`);
+                            if (catalogTree && typeof catalogTree.expandCategoryHandler === 'function') {
+                                catalogTree.expandCategoryHandler(category);
+                            }
+                        }
+                    });
+                }
+            });
+        },
+
+
 
         getFullEntity(url, params, callback, container) {
             if (url) {
@@ -125,6 +154,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             if ($(window).width() <= 767 || !!this.getStorage().get('catalog-tree-panel', this.scope)) {
                 this.actionCollapsePanel();
             }
+
+            if (this.model && !this.getStorage().get('catalog-tree-panel', this.scope)) {
+                Backbone.trigger('tree-panel-expanded');
+            }
         },
 
         selectCategoryButtonApplyFilter(button, filterParams) {
@@ -145,7 +178,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             }, view => {
                 view.render();
                 this.listenTo(view, 'category-search-select', category => {
-                    this.selectCategory(category, true);
+                    let categoryTree = this.getView(`category-tree-${category.catalogId}`);
+                    if (categoryTree) {
+                        categoryTree.expandCategoryHandler(category);
+                    }
                 });
             });
 
@@ -158,23 +194,19 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                         catalog: catalog,
                         categories: this.categories
                     }, view => {
-                        view.render();
                         view.listenTo(view, 'category-tree-select', category => {
                             this.selectCategory(category);
                         });
+                        view.render();
                     });
                 }
             });
         },
 
-        selectCategory(category, notSkipCollapse) {
+        selectCategory(category) {
             if (category && category.id && category.catalogId) {
-                this.setCategoryActive(category.id, category.catalogId);
                 if ($(window).width() <= 767) {
                     this.actionCollapsePanel();
-                }
-                if (notSkipCollapse) {
-                    this.collapseCategory(category.id, category.catalogId);
                 }
                 this.applyCategoryFilter('anyOf', category);
             }
@@ -214,21 +246,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             this.trigger('select-category', data);
         },
 
-        collapseCategory(id, catalogId) {
-            let activeCategory = this.$el.find(`.panel[data-name="${catalogId}"] li.child[data-id="${id}"]:eq()`);
-            activeCategory.parents('.panel-collapse.collapse').collapse('show');
-        },
-
-        setCategoryActive(id, catalogId) {
-            this.$el.find('.category-buttons > button').removeClass('active');
-            this.$el.find('ul.list-group-tree li.child').removeClass('active');
-            if (catalogId) {
-                this.$el.find(`.panel[data-name="${catalogId}"] li.child[data-id="${id}"]:eq()`).addClass('active');
-            } else {
-                this.$el.find(`li.child[data-id="${id}"]:eq()`).addClass('active');
-            }
-        },
-
         selectCategoryButton(button) {
             this.$el.find('.panel-collapse.collapse[class^="catalog-"].in').collapse('hide');
             this.$el.find('ul.list-group-tree li.child').removeClass('active');
@@ -238,30 +255,65 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         actionCollapsePanel(forceHide) {
             let categoryPanel = this.$el.find('.category-panel');
-            let button = this.$el.find('button[data-action="collapsePanel"]');
-            let listContainer = this.$el.parent('#main').find('.list-container');
             if (categoryPanel.hasClass('hidden') && !forceHide) {
                 categoryPanel.removeClass('hidden');
-                button.removeClass('collapsed');
-                button.find('span.toggle-icon-left').removeClass('hidden');
-                button.find('span.toggle-icon-right').addClass('hidden');
-                this.$el.removeClass('catalog-tree-panel-hidden');
-                this.$el.addClass('col-xs-12 col-lg-3');
-                listContainer.removeClass('hidden-catalog-tree-panel');
-                listContainer.addClass('col-xs-12 col-lg-9');
+                this.showUtilityElements();
                 this.getStorage().set('catalog-tree-panel', this.scope, '');
+                if (this.model) {
+                    Backbone.trigger('tree-panel-expanded');
+                }
             } else {
                 categoryPanel.addClass('hidden');
-                button.addClass('collapsed');
-                button.find('span.toggle-icon-left').addClass('hidden');
-                button.find('span.toggle-icon-right').removeClass('hidden');
-                this.$el.removeClass('col-xs-12 col-lg-3');
-                this.$el.addClass('catalog-tree-panel-hidden');
-                listContainer.removeClass('col-xs-12 col-lg-9');
-                listContainer.addClass('hidden-catalog-tree-panel');
+                this.hideUtilityElements();
                 this.getStorage().set('catalog-tree-panel', this.scope, 'collapsed');
             }
             $(window).trigger('resize');
+        },
+
+        showUtilityElements() {
+            let button = this.$el.find('button[data-action="collapsePanel"]');
+            button.removeClass('collapsed');
+            button.find('span.toggle-icon-left').removeClass('hidden');
+            button.find('span.toggle-icon-right').addClass('hidden');
+
+            this.$el.removeClass('catalog-tree-panel-hidden');
+
+            if (this.model) {
+                this.$el.addClass('col-md-2');
+
+                let detailContainer = this.$el.parents('#main').find('.overview');
+                detailContainer.removeClass('col-md-9 hidden-catalog-tree-panel');
+                detailContainer.addClass('col-md-7');
+            } else {
+                this.$el.addClass('col-xs-12 col-lg-3');
+
+                let listContainer = this.$el.parents('#main').find('.list-container');
+                listContainer.removeClass('hidden-catalog-tree-panel');
+                listContainer.addClass('col-xs-12 col-lg-9');
+            }
+        },
+
+        hideUtilityElements() {
+            let button = this.$el.find('button[data-action="collapsePanel"]');
+            button.addClass('collapsed');
+            button.find('span.toggle-icon-left').addClass('hidden');
+            button.find('span.toggle-icon-right').removeClass('hidden');
+
+            this.$el.addClass('catalog-tree-panel-hidden');
+
+            if (this.model) {
+                this.$el.removeClass('col-md-2');
+
+                let detailContainer = this.$el.parents('#main').find('.overview');
+                detailContainer.removeClass('col-md-7');
+                detailContainer.addClass('col-md-9 hidden-catalog-tree-panel');
+            } else {
+                this.$el.removeClass('col-xs-12 col-lg-3');
+
+                let listContainer = this.$el.parents('#main').find('.list-container');
+                listContainer.removeClass('col-xs-12 col-lg-9');
+                listContainer.addClass('hidden-catalog-tree-panel');
+            }
         },
 
         getCatalogDataList: function () {

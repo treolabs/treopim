@@ -24,6 +24,8 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
 
         template: 'pim:product/record/catalog-tree-panel/category-tree',
 
+        expandableCategory: null,
+
         events: {
             'show.bs.collapse div.panel-collapse.collapse[class^="catalog-"]': function (e) {
                 e.stopPropagation();
@@ -36,9 +38,15 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             },
             'show.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
                 e.stopPropagation();
+            },
+            'shown.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
+                e.stopPropagation();
                 this.unfold($(e.currentTarget).data('id'));
             },
             'hide.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
+                e.stopPropagation();
+            },
+            'hidden.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
                 e.stopPropagation();
                 this.fold($(e.currentTarget).data('id'));
             },
@@ -62,9 +70,26 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             this.rootCategories = this.categories.filter(category => (this.catalog.categoriesIds || []).includes(category.id));
         },
 
+        expandCategoryHandler(category) {
+            if (this.$el.size()) {
+                this.expandCategory(category);
+            } else {
+                this.listenTo(this, 'after:render', () => this.expandCategory(category));
+            }
+        },
+
+        expandCategory(category) {
+            this.expandableCategory = category;
+            let catalogCollapse = this.$el.find('.collapse[class^="catalog-"]');
+            catalogCollapse.collapse("show");
+            let routes = (category.categoryRoute || '').split('|').filter(element => element);
+            catalogCollapse.find(`.collapse[data-id="${routes[0]}"]`).collapse('show');
+        },
+
         selectCategory(id) {
             let category = this.categoryTrees.find(item => item.id === id) || this.rootCategories.find(item => item.id === id);
             category.catalogId = this.catalog.id;
+            this.setCategoryActive(id);
             this.trigger('category-tree-select', category);
         },
 
@@ -147,7 +172,38 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
                 button.find('span.fa-chevron-right').addClass('hidden');
                 button.find('span.fa-chevron-down').removeClass('hidden');
+                this.expandCategoriesFromRoute(id);
             });
+        },
+
+        expandCategoriesFromRoute(categoryId) {
+            if (this.expandableCategory) {
+                let routes = (this.expandableCategory.categoryRoute || '').split('|').filter(element => element);
+                let atLeastOne = routes.some(routeCategoryId => {
+                    let nextCollapse = this.$el.find(`.collapse[data-id="${routeCategoryId}"]:not(.in)`);
+                    if (categoryId !== routeCategoryId && nextCollapse.size()) {
+                        nextCollapse.collapse('show');
+                        return true;
+                    }
+                });
+                if (!atLeastOne && this.expandableCategory) {
+                    let expandableCategory = this.$el.find(`.category[data-id="${this.expandableCategory.id}"]`);
+                    if (expandableCategory.size()) {
+                        this.selectCategory(this.expandableCategory.id);
+                        this.expandableCategory = null;
+                    }
+                }
+            }
+        },
+
+        setCategoryActive(id) {
+            if (id) {
+                let category = this.$el.find(`.category[data-id="${id}"]`);
+                let panel = this.$el.parents('.category-panel');
+                panel.find('.category-buttons > button').removeClass('active');
+                panel.find('.category.active').removeClass('active');
+                category.addClass('active');
+            }
         },
 
         setupCategoryTree(id, callback) {

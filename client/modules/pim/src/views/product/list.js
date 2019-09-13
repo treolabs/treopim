@@ -37,6 +37,7 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
             }, view => {
                 view.render();
                 view.listenTo(view, 'select-category', data => {
+                    debugger;
                     this.updateCollectionWithCatalogTree(data);
                     this.collection.fetch();
                 });

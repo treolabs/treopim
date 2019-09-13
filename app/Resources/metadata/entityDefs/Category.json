@@ -44,7 +44,6 @@
     },
     "ownerUser": {
       "type": "link",
-      "required": true,
       "view": "views/fields/owner-user"
     },
     "assignedUser": {
