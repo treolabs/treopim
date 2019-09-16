@@ -3,7 +3,6 @@
         "name": {
             "type": "varchar",
             "trim": true,
-            "required": true,
             "view": "pim:views/fields/image-code-name"
         },
         "alt": {
@@ -30,7 +29,6 @@
         },
         "image": {
             "type": "image",
-            "required": true,
             "previewSize": "small",
             "view": "pim:views/category-image/fields/image",
             "layoutMassUpdateDisabled": true
@@ -39,7 +37,6 @@
             "layoutListDisabled": true,
             "layoutMassUpdateDisabled": true,
             "type": "attachmentMultiple",
-            "required": true,
             "sourceList": []
         },
         "type": {
@@ -56,8 +53,7 @@
         "imageLink": {
             "type": "url",
             "layoutListDisabled": true,
-            "layoutMassUpdateDisabled": true,
-            "required": true
+            "layoutMassUpdateDisabled": true
         },
         "size": {
             "notNull": false,
@@ -93,7 +89,6 @@
         "scope": {
             "type": "enum",
             "notStorable": true,
-            "required": true,
             "options": [
                 "Global",
                 "Channel"

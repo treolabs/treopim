@@ -18,6 +18,19 @@
               "attribute": "categoryId"
             }
           ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "scope",
+              "value": "Channel"
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "categoryId"
+            }
+          ]
         }
       },
       "scope": {
