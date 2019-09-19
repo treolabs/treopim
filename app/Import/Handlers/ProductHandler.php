@@ -1,28 +1,43 @@
 <?php
 /**
- * Pim
- * Free Extension
- * Copyright (c) TreoLabs GmbH
+ * This file is part of EspoCRM and/or TreoCore.
  *
- * This program is free software: you can redistribute it and/or modify
+ * EspoCRM - Open Source CRM application.
+ * Copyright (C) 2014-2019 Yuri Kuznetsov, Taras Machyshyn, Oleksiy Avramenko
+ * Website: http://www.espocrm.com
+ *
+ * TreoCore is EspoCRM-based Open Source application.
+ * Copyright (C) 2017-2019 TreoLabs GmbH
+ * Website: https://treolabs.com
+ *
+ * TreoCore as well as EspoCRM is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * TreoCore as well as EspoCRM is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with EspoCRM. If not, see http://www.gnu.org/licenses/.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "EspoCRM" word
+ * and "TreoCore" word.
  */
 
 declare(strict_types=1);
 
-namespace Pim\ImportHandlers;
+namespace Pim\Import\Handlers;
 
 use Espo\ORM\Entity;
+use Import\Handlers\AbstractHandler;
 
 /**
  * Class Product
@@ -142,11 +157,11 @@ class ProductHandler extends AbstractHandler
 
                     continue;
                 } else {
-                    $this->convertItem($inputRow, 'Product', $item, $row, ',');
+                    $this->convertItem($inputRow, 'Product', $item, $row, $data['data']['delimiter']);
                 }
-
-                $result[] = $inputRow;
             }
+
+            $result[] = $inputRow;
         }
 
         return $result;
@@ -165,30 +180,41 @@ class ProductHandler extends AbstractHandler
         $conf = $data['item'];
         $row = $data['row'];
 
-        // convert attribute value
-        if (!empty($converter = $this->getMetadata()->get(['import', 'simple', 'fields', $conf['type'], 'converter']))) {
-            (new $converter($this->container))->convert($inputRow, 'ProductAttributeValue', $conf, $row, $delimiter);
-
-            $inputRow->value = $inputRow->{$conf['name']};
-            unset($inputRow->{$conf['name']});
-        }
-
         foreach ($product->get('productAttributeValues') as $item) {
             if ($item->get('attributeId') == $conf['attributeId'] && $item->get('scope') == $conf['scope']) {
                 if ($conf['scope'] == 'Global') {
                     $inputRow->id = $item->get('id');
                 } elseif ($conf['scope'] == 'Channel') {
-                    $inputRow->id = $item->get('id');
                     $channels = array_column($item->get('channels')->toArray(), 'id');
 
-                    if (!empty(array_diff($conf['channelsIds'], $channels))) {
-                        $inputRow->channels = array_merge($conf['channelsIds'], $channels);
+                    if (empty($diff = array_diff($conf['channelsIds'], $channels))) {
+                        $inputRow->id = $item->get('id');
+                    } elseif (count($diff) != count($conf['channelsIds'])) {
+                        if (empty($item->get('productFamilyAttributeId'))) {
+                            $inputRow->channelsIds = array_diff($channels, $conf['channelsIds']);
+                            $service->updateEntity($item->get('id'), $inputRow);
+                        } else {
+                            return;
+                        }
                     }
                 }
             }
         }
 
+        // convert attribute value
+        $this->convertItem($inputRow, 'ProductAttributeValue', $conf, $row, $delimiter);
+        $inputRow->value = $inputRow->{$conf['name']};
+        unset($inputRow->{$conf['name']});
+
         if (!isset($inputRow->id)) {
+            $inputRow->productId = $product->get('id');
+            $inputRow->attributeId = $conf['attributeId'];
+            $inputRow->scope = $conf['scope'];
+
+            if ($conf['scope'] == 'Channel') {
+                $inputRow->channelsIds = $conf['channelsIds'];
+            }
+
             $service->createEntity($inputRow);
         } else {
             $id = $inputRow->id;
