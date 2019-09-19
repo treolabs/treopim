@@ -1,6 +1,6 @@
 # Associated Products
 
-**Associated Products** – two products, which are related within a certain association. So there is a Main Product and a Related Product. Related products are not automatically cross-linked, so if product A (main product) is related to product B (associated product), it does not mean that product B is automatically related to product A. 
+**Associated Products** – two products, which are related within a certain association. So there is a *main product* and a *related product*. Related products are not automatically cross-linked, so if product A (main product) is related to product B (associated product), it does not mean that product B is automatically related to product A. 
 
 The option to create associated products targets on increasing sales and helping in promotion and marketing of new products, but has a slightly different configuration process.
 
@@ -24,7 +24,7 @@ The `Associated Product` entity record comes with the following preconfigured fi
 | Main product *           | The main product name |
 | Related product *           | The related product name |
 
-> If you want to make changes to the associated product entity, e.g. add new fields, or modify associated product views, please contact your administrator.
+If you want to make changes to the associated product entity, e.g. add new fields, or modify associated product views, please contact your administrator.
 
 ## Creating
 
@@ -36,7 +36,7 @@ Here fill in all the required fields for the entry being created. Select the `Bo
 
 *If a [backward association](https://treopim.com/help/associations) is defined for the association entry within which the products are related, the `Both directions` checkbox will be selected by default with the backward association name displayed in the corresponding field.*
 
-Alternatively, use `+` button on the "Associated products" panel of the [product](https://treopim.com/help/products) detail view page or the quick create button on any TreoPIM page and fill in the required fields in the associated product creation pop-up that appears. Please, note that the "Associated Products" panel of the product detail view page displays which products are in relation with the currently opened product and within which association.
+Alternatively, use `+` button on the `ASSOCIATED PRODUCTS` panel of the [product](https://treopim.com/help/products) detail view page or the quick create button on any TreoPIM page and fill in the required fields in the associated product creation pop-up that appears. Please, note that the `ASSOCIATED PRODUCTS` panel of the product detail view page displays which products are in relation with the currently opened product and within which association.
 
 ## Listing
 
@@ -44,7 +44,7 @@ To open the list of associated products available in the system, click `Associat
 
 ![Associated products list view page](../../_assets/associated-products/ap-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels#list-view) page for the associated products:
+By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for the associated products:
 
 - Association
 - Main product image
@@ -65,9 +65,9 @@ The following mass actions are available for associated product entities:
 - Mass update
 - Export
 
-![Associations mass actions](../../_assets/associated-products/ap-mass-actions.jpg)
+![AP mass actions](../../_assets/associated-products/ap-mass-actions.jpg)
 
-For details on these actions, please, see the **Mass Actions** section of the [**User Interface**](https://treopim.com/help/user-interface#mass-actions) article in this user guide.
+For details on these actions, please, see the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
 
 ### Single Record Actions
 
@@ -75,8 +75,10 @@ The following single record actions are available for the associated product ent
 - View
 - Edit
 - Remove
+
+![AP single record actions](../../_assets/associated-products/ap-single-record-actions.jpg)
   
-For details on these actions, please, see the **Single Record Actions** section of the [**User Interface**](https://treopim.com/help/user-interface#single-record-actions) article in this user guide.
+For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
 
 ## Editing
 
@@ -86,15 +88,15 @@ To edit the associated product, use the `Edit` option from the single record act
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
-Alternatively, make changes to the desired associated product record in the [quick edit](https://treopim.com/help/views-and-panels#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the "Associated products" panel of the product detail view page. 
+Alternatively, make changes to the desired associated product record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the `ASSOCIATED PRODUCTS` panel of the product detail view page. 
 
 ## Removing
 
-To remove the associated product record, select the `Remove` option from the single record actions menu for the appropriate record on the associated products list view page 
+To remove the associated product record, select the `Remove` option from the single record actions menu for the appropriate record on the `ASSOCIATED PRODUCTS` panel of the product detail view page 
 
 ![AP removing](../../_assets/associated-products/ap-remove-panel.jpg)
 
-or on the "Associated products" panel of the product detail view page:
+or on the associated products list view page:
 
 ![AP removing](../../_assets/associated-products/ap-remove-list.jpg)
 

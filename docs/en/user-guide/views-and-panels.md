@@ -1,21 +1,21 @@
 # Views and Panels
 
-There are two types of **views** in the TreoPIM system with the corresponding:
+There are two types of **pages** in the TreoPIM system with the corresponding views:
 
-- **List View** – shows a table of records with main fields chosen for each entity and includes:
+- **List Page** – shows a table of records with main fields chosen for each entity and includes:
+  - *[navigation menu](https://treopim.com/help/user-interface);*
+  - *[taskbar](https://treopim.com/help/user-interface);*
+  - *[search and filtering panel](https://treopim.com/help/search-and-filtering);*
+  - *[breadcrumb navigation](https://treopim.com/help/user-interface) including the page name;*
+  - *records list in the [list](#list-view) or [plate](#plate-view) view.* 
+- **Detail Page** – shows detailed information about the selected entity record and all its relations and includes:
   - [*navigation menu*](https://treopim.com/help/user-interface#navigation-menu)*;*
   - [*taskbar*](https://treopim.com/help/user-interface#taskbar)*;*
-  - [*search and filtering panel*](https://treopim.com/help/search-and-filtering)*;*
   - [*breadcrumb navigation*](https://treopim.com/help/user-interface#breadcrumb-navigation) *including the page name;*
-  - [*records list*](#list-view)*.* <!--CHANGE INFO IN () WHEN SUBSECTION IS RENAMED -->
-- **Detail View** – shows detailed information about the selected entity record and all its relations and includes:
-  - [*navigation menu*](https://treopim.com/help/user-interface#navigation-menu)*;*
-  - [*taskbar*](https://treopim.com/help/user-interface#taskbar)*;*
-  - [*breadcrumb navigation*](https://treopim.com/help/user-interface#breadcrumb-navigation) *including the page name;*
-  - [*record details*](#detail-view)*, where detailed information about the currently open entity record is displayed.* <!--CHANGE INFO IN () WHEN SUBSECTION IS RENAMED -->
+  - [*record details*](#detail-view)*, where detailed information about the currently open entity record is displayed.* 
 
 The **detail view** may also include:
-- the *"Overview" panel* and some other panels, if these were configured by the administrator:
+- the *`OVERVIEW` panel* and some other panels, if these were configured by the administrator:
 
   ![Detail View Page](../../_assets/views-and-panels/detail-view-page.jpg)
 
@@ -45,21 +45,21 @@ The following mass actions are available in the TreoPIM system:
  
 - **Remove** – to remove the selected entity records.
 - **Merge** – to merge the selected entity records.
-- **Mass Update** – to update several selected entity records at once.
+- **Mass update** – to update several selected entity records at once.
 - **Export** – to export the desired data fields of the selected entity records in the XLSX or CSV format.
 - **Follow** – to enable tracking of the changes for the selected entity records. 
 - **Unfollow** – to disable tracking of the changes for the selected entity records.
 - **Add relation** – to relate the selected entity records with other entities (or entity).
 - **Remove relation** – to remove the relations that have been added to the selected entity records.
 
-> To modify the mass actions list, please, contact your administrator.
+To modify the mass actions list, please, contact your administrator.
 
-_**TIP:**_ *For more advanced export features, please, use the **Export Feeds** module.*
-<!-- When the module is released and described, add a hyperlink here -->
+*For more advanced export features, please, use the **Export Feeds** module.*
+<!-- When the module is released, add a hyperlink here -->
 
 ### Single Record Actions
 
-To see the available single record actions list, click the select icon on the right of the record:
+To see the actions available for the records in the list, click the single record actions menu icon located on the right of the record:
 
 ![Single Record Actions](../../_assets/views-and-panels/single-record-actions.jpg)
 
@@ -68,7 +68,23 @@ By default, the following actions are available for all entities:
 - **Edit** – to go to the detail view of the record in the edit mode.
 - **Remove** – to remove the selected record.
 
-> Please, contact your developer if you want to extend the single record actions list.
+Please, contact your developer if you want to extend the single record actions list.
+
+## Plate View
+
+The plate view is a variant of the [list view](#list-view), in which all entity records are displayed as plates:
+
+![Plate view](../../_assets/views-and-panels/plate-view.jpg)
+
+To switch to this view, click the plates icon located in the upper right corner of the list view page of entity records.
+
+The [mass actions](#mass-actions) and [singe record actions](#single-record-actions)  are also available here, just like for the list view.
+
+You can configure the plate view layout by selecting the desired item number to be displayed in a row (1–6) and defining the record field to be used for sorting via the corresponding drop-down menus:
+
+![Plate view cfg](../../_assets/views-and-panels/plate-view-cfg.jpg)
+
+Within the TreoPIM system the plate view is available only for [products](https://treopim.com/help/products).
 
 ## Detail View
 
@@ -80,9 +96,11 @@ You can start following the entity record right on the detail view page. To do t
 
 *This option is available only when the `Stream` checkbox is activated for the given entity by the administrator in the Entity Manager.*
 
-Filtering the record data display by fields, locales, and scopes is available on the products detail view page only via the corresponding drop-down menus. Keep in mind that the locales filter appears when the "Multilanguage and Locales" module is installed and input language options are configured in the multilang settings by your administrator. 
+Filtering the record data display by fields, locales, and scopes is available on the [products](https://treopim.com/help/products) detail view page only via the corresponding drop-down menus:
 
-Please, see the details in the [**Products**](https://treopim.com/help/products) article of this user guide and visit our store to learn more about the [**"Multilanguage and Locales"**](https://treopim.com/store/multi-language-and-local-fields) module.
+![Product filters](../../_assets/views-and-panels/product-filters.jpg)
+
+Keep in mind that the locales filter appears when the "Multi-Languages" module is installed and input language options are configured by your administrator. Go to our [store](https://treopim.com/store/multi-languages) to learn more about the "Multi-Languages" module and its features.
 
 Navigation through the existing entity records can be done on the detail view pages using the corresponding buttons: 
 
@@ -93,7 +111,9 @@ To edit the fields data on the detail view page, use [in-line editing](#in-line-
 ### Main Actions
 
 The following actions are available for all entity records by default:
-<!-- ADD THE SCREENSHOT WITH ACTIONS HIGHLIGHTED-->
+
+![Main actions](../../_assets/views-and-panels/main-actions.jpg)
+
 - **Edit** – click the `Edit` button to make changes in the given record.
 - **Remove** – select the `Remove` option from the actions drop-down menu to remove the given record.
 - **Duplicate** – select the `Duplicate` option from the actions drop-down menu to go to the record creation page and enter the unique values for the record fields to be used for duplication. 
@@ -113,7 +133,6 @@ The following actions are available for the small list view panels:
 
 - **Single record actions** – applicable to each record of the related entities separately. The list of actions here is usually the same as on the list view for this entity.
     ![Related entity single actions](../../_assets/views-and-panels/related-entity-actions-single.jpg)
-<!-- CHANGE!!!!! add REMOVE-->
 
 ## Side View
 
@@ -129,13 +148,17 @@ The following information is available by default on the side view panel:
  - **Modified** – the date and time of the record modification, not changeable.
  - **Followers** – who is following the changes in the record.
 
-> The `Owner`, `Assigned user`, and `Teams` fields are enabled/disabled by the administrator.
+The `Owner`, `Assigned user`, and `Teams` fields are enabled/disabled by the administrator.
 
 TreoPIM modules can add more panels to the side view panel. Please, visit our [store](https://treopim.com/store) to learn more about TreoPIM modules available for you.
 
 ## Edit View
 
-The edit view panel is shown in the main window and uses the layout of the detail view page. To get to it, use the `Edit` button on the detail view page. On the page that appears you see and can edit only the fields of the edited entity, i.e. no fields of the related entities can be edited here.
+The edit view panel is shown in the main window and uses the layout of the detail view page. To get to it, use the `Edit` button on the detail view page:
+
+![Edit view](../../_assets/views-and-panels/edit-view.jpg)
+
+ On the `OVERVIEW` panel you can edit only the fields of the given entity, i.e. no fields of the related entities can be edited here.
 
 If you are on the quick edit view page, click the `Full Form` button to get to the edit view page.
 
@@ -176,7 +199,7 @@ The following actions are available directly out of the box:
 | Merge       | List View                                                   |
 | Export      | List View                                                   |
 
-> If you want to make changes to some entity (e.g. add new fields, modify its views or relations), please, contact your administrator.
+If you want to make changes to some entity (e.g. add new fields, modify its views or relations), please, contact your administrator.
 
 ## In-Line Editing
 

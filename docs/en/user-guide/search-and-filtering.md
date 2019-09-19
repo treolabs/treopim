@@ -1,8 +1,8 @@
-# Search and Filtering Panel
+# Search and Filtering
 
-Searching and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity [list view](https://treopim.com/help/views-and-panels):
+Searching and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity list or plate [view](https://treopim.com/help/views-and-panels):
 
-![Search and filtering](../../_assets/search-and-filtering/search-filter.jpg) 
+![Search and filtering](../../_assets/search-and-filtering/search-filter.jpg)
 *Search and filter on the products list view page*
 
 Searching works on the current entity records, while filtering works also on the related records, which are configured by the administrator.
@@ -11,7 +11,7 @@ To perform a search operation, enter your search query into the corresponding fi
 
 To filter your entity records, open the filter drop-down list and set the desired checkbox(es):
 
-![Search and Filtering Panel](../../_assets/search-and-filtering/search-and-filtering-panel.jpg) 
+![Search and Filtering Panel](../../_assets/search-and-filtering/search-and-filtering-panel.jpg)
 
 To clear all filters, click the `Reset` button, located to the right of the search field.
 
@@ -107,7 +107,7 @@ Depending of the field type, you can apply the following filtering criteria:
 | *Image, File, Attachment Multiple*          | –                      | Filtering for these field types is not possible  (for now) |
 
 ## Automatic Search Mask Recognition *(in development)*
-<!-- do we even need this subsection??? -->
+
 TreoPIM has automatic search mask recognition. This can be considered as a quick search function, i.e. when you start typing, TreoPIM automatically determines the search mask type of your search string. Automatic search mask recognition is available for the following fields: Text, Number, Date, and Time.
 
 Depending on the search mask type, the system searches through all entity fields of the appropriate field type. A pop-up with auto-suggestions appears with the information about field name and amount of search results for this field, i.e. "Address: 3 results", and the text link(s) to show the results.

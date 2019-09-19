@@ -15,7 +15,7 @@ The association entity comes with the following preconfigured fields; mandatory 
 | Backward association     | Backward association name         |
 | Description (multi-lang) | The aim of this association usage |
 
-> If you want to make changes to the association entity (e.g. add new fields, or modify association views), please contact your administrator.
+If you want to make changes to the association entity (e.g. add new fields, or modify association views), please contact your administrator.
 
 ## Creating
 
@@ -37,7 +37,7 @@ To open the list of associations available in the system, click the `Association
 
 ![Associations list view page](../../_assets/associations/associations-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels#list-view) page for associations:
+By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for associations:
  - Name
  - Backward association
  - Active
@@ -46,7 +46,7 @@ To change the association records order in the list, click any sortable column t
 
 Associations can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
 
-To view some association record details, click the name field value of the corresponding record in the list of associations; the detail view page will open showing the association records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels#quick-detail-view-small-detail-view) pop-up.
+To view some association record details, click the name field value of the corresponding record in the list of associations; the detail view page will open showing the association records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
 
 ### Mass Actions
 
@@ -59,7 +59,7 @@ The following mass actions are available for association entities on the list vi
 
 ![Associations mass actions](../../_assets/associations/associations-mass-actions.jpg)
 
-For details on these actions, refer to the **Mass Actions** section of the [**User Interface**](https://treopim.com/help/user-interface) article in this user guide.
+For details on these actions, please, see the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
 
 ### Single Record Actions
 
@@ -69,8 +69,8 @@ The following single record actions are available for association entities on th
 - Remove
 
 ![Associations single record actions](../../_assets/associations/associations-single-actions.jpg)
-  
-For details on these actions, refer to the **Single Record Actions** section of the [**User Interface**](https://treopim.com/help/user-interface) article in this user guide.
+
+For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
 
 ## Editing
 
@@ -80,7 +80,7 @@ To edit the association, click the `Edit` button on the detail view page of the 
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
-Alternatively, make changes to the desired association record in the [quick edit](https://treopim.com/help/views-and-panels#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the associations list view page:
+Alternatively, make changes to the desired association record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the associations list view page:
 
 ![Edit option](../../_assets/associations/association-editing-popup.jpg)
 
@@ -102,16 +102,13 @@ Use the `Duplicate` option from the actions drop-down menu to go to the associat
 
 ## Working with Associated Products
 
-[Associated products](https://treopim.com/help/associated-products) are related to the associations and are shown as a [small list view](https://treopim.com/help/views-and-panels#small-list-views) on each product page and include the following table columns:
+[Associated products](https://treopim.com/help/associated-products) are related to the associations and are shown as a [small list view](https://treopim.com/help/views-and-panels) on each product page and include the following table columns:
 
  - Related product image
  - Related product
  - Association
 
-TreoPIM also offers you the ability to add associations to all the products (or as many as needed) simultaneously via the mass actions menu.
-
-For more details on the associated products and their features, refer to the [**Associated Products**](https://treopim.com/help/associated-products) article in this user guide.
-
+TreoPIM also offers you the ability to add associations to all the products (or as many as needed) simultaneously via the [mass actions](https://treopim.com/help/views-and-panels) menu.
 
 
 

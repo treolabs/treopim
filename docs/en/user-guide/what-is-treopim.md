@@ -1,6 +1,6 @@
 # What is TreoPIM
 
-TreoPIM is a single page application (SPA) with an API-centric architecture and flexible data model based on entities, entity attributes and relations of all kinds among them. TreoPIM allows you to gather and store all your product content in one place, enrich it and spread it to several channels like own online shop, Amazon, eBay, online shops of your distributors, on a tablet or mobile application. TreoPIM will help your to structure and organise all you flexible data and get rid of the Excel mess.
+TreoPIM is a single page application (SPA) with an API-centric architecture and flexible data model based on entities, entity attributes and relations of all kinds among them. TreoPIM allows you to gather and store all your product content in one place, enrich it and spread it to several channels like own online shop, Amazon, eBay, online shops of your distributors, on a tablet or mobile application. TreoPIM will help your to structure and organize all you flexible data and get rid of the Excel mess.
 
 TreoPIM is developed and supported by [TreoLabs GmbH](https://treolabs.com).
 
@@ -10,11 +10,11 @@ TreoPIM is developed and supported by [TreoLabs GmbH](https://treolabs.com).
 
 This functionality is enabled when the  **"Multi-languages"** module is installed to your system. Please, see the details in the [TreoPIM store](https://treopim.com/store/multi-languages).
 
-**Attribute** – a product's property. Each product can be characterised by one or several attributes. There are over 20 attribute types available for you in TreoPIM. Some attribute types allow you to store unique attribute values per locale for your products. Products can have specific attribute values for channels.
+**Attribute** – a product's property. Each product can be characterized by one or several attributes. There are over 20 attribute types available for you in TreoPIM. Some attribute types allow you to store unique attribute values per locale for your products. Products can have specific attribute values for channels.
 
-**Attribute group** – a way to categorise the attributes. Different attributes of the same nature can be assigned to the same attribute group. You can have multiple attribute groups in TreoPIM.
+**Attribute group** – a way to categorize the attributes. Different attributes of the same nature can be assigned to the same attribute group. You can have multiple attribute groups in TreoPIM.
 
-**Brand** – a brand of the product or the name of its manufacturer. Brands create additional possibility to categorise the products.
+**Brand** – a brand of the product or the name of its manufacturer. Brands create additional possibility to categorize the products.
 
 **Category** – a way to classify and group the products by certain criteria. A category can have only one parent category. A category without a parent category is called a root category. A root category starts a category tree. In TreoPIM you can have multiple category trees. A category tree can have unlimited levels. A category without any child category is called a leaf category.
 
