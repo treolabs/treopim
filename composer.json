@@ -1,5 +1,5 @@
 {
-  "name": "treo-module/pim",
+  "name": "treolabs/pim",
   "description": "TreoPIM. Open source PIM application.",
   "homepage": "https://treopim.com",
   "license": "GPL-3.0-only",
@@ -18,9 +18,9 @@
     }
   ],
   "require": {
-    "treolabs/treocore": "~3.22.0",
-    "treo-module/coloredfields": "~1.7.6",
-    "treolabs/multi-language": "~1.13.3",
+    "treolabs/treocore": "~3.23.0",
+    "treolabs/colored-fields": "~1.7.13",
+    "treolabs/multi-languages": "~1.13.20",
     "treolabs/import-feeds-common": "~1.0.0"
   },
   "autoload": {
