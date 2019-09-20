@@ -42,6 +42,26 @@
             }
           ]
         }
+      },
+      "category": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "categoryId"
+            }
+          ]
+        }
+      },
+      "product": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "productId"
+            }
+          ]
+        }
       }
     }
   }

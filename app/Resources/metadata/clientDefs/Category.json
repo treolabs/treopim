@@ -52,13 +52,7 @@
     "productCategories": {
       "layout": "listForProductCategoriesInCategory",
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "createAction": "createRelatedConfigured",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "onlyActive",
-        "notLinkedWithCategory",
-        "onlyCatalogProducts"
-      ]
+      "select": false
     },
     "catalogs": {
       "selectAction": "selectRelatedEntity",
