@@ -274,4 +274,19 @@ class ProductHandler extends AbstractHandler
 
         return $result;
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getType(string $entityType, array $item): ?string
+    {
+        $result = null;
+
+        if (isset($item['attributeId']) && isset($item['type'])) {
+            $result = $item['type'];
+        } else {
+            $result = parent::getType($entityType, $item);
+        }
+        return $result;
+    }
 }
