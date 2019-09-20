@@ -20,10 +20,12 @@
 
 declare(strict_types=1);
 
-namespace Pim\Import\Handlers;
+namespace Pim\Import\Types\Simple\Handlers;
 
 use Espo\ORM\Entity;
+use Espo\Services\Record;
 use Import\Handlers\AbstractHandler;
+use Treo\Core\Exceptions\NoChange;
 
 /**
  * Class Product
@@ -76,7 +78,7 @@ class ProductHandler extends AbstractHandler
                     if (empty($id)) {
                         $entity = $service->createEntity($input);
                     } else {
-                        $entity = $service->updateEntity($id, $input);
+                        $entity = $this->updateEntity($service, $id, $input);
                     }
 
                     foreach ($this->categories as $value) {
@@ -94,12 +96,28 @@ class ProductHandler extends AbstractHandler
                     $this->log('Product', $importResultId, 'error', $fileRow, $e->getMessage());
                 }
                 if (!is_null($entity)) {
-                    $this->log('Product', $importResultId, $action, $fileRow, $entity->get('id'));
+                    $this->log('Product', $importResultId, $action, $fileRow, (string)$entity->get('id'));
                 }
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param Record $service
+     * @param string $id
+     * @param \stdClass $data
+     */
+    protected function updateEntity(Record $service, string $id, \stdClass $data): ?Entity
+    {
+        try {
+            $result = $service->updateEntity($id, $data);
+        } catch (NoChange $e) {
+            $result = $service->readEntity($id);
+        }
+
+        return $result;
     }
 
     /**
@@ -179,7 +197,7 @@ class ProductHandler extends AbstractHandler
                         if (empty($item->get('productFamilyAttributeId'))) {
                             $inputRow->channelsIds = array_diff($channels, $conf['channelsIds']);
                             sort($inputRow->channelsIds);
-                            $service->updateEntity($item->get('id'), $inputRow);
+                            $this->updateEntity($service, $item->get('id'), $inputRow);
                         } else {
                             return;
                         }
@@ -207,7 +225,7 @@ class ProductHandler extends AbstractHandler
             $id = $inputRow->id;
             unset($inputRow->id);
 
-            $service->updateEntity($id, $inputRow);
+            $this->updateEntity($service, $id, $inputRow);
         }
     }
 
@@ -249,7 +267,7 @@ class ProductHandler extends AbstractHandler
                 $service->createEntity($inputRow);
             } elseif ($conf['scope'] == 'Channel') {
                 $inputRow->channelsIds = $channelsIds;
-                $service->updateEntity($id, $inputRow);
+                $this->updateEntity($service, $id, $inputRow);
             }
         }
     }
