@@ -49,11 +49,9 @@
       ],
       "recordsPerPage": 200
     },
-    "products": {
-      "view": "pim:views/category/record/panels/products",
-      "layout": "listForProductsInCategory",
-      "recordListView": "pim:views/record/list-with-model-edit-check",
-      "rowActionsView": "views/record/row-actions/relationship-unlink-only",
+    "productCategories": {
+      "layout": "listForProductCategoriesInCategory",
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
