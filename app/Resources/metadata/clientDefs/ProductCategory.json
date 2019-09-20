@@ -48,7 +48,7 @@
           "conditionGroup": [
             {
               "type": "isNotEmpty",
-              "attribute": "categoryId"
+              "attribute": "id"
             }
           ]
         }
@@ -58,7 +58,7 @@
           "conditionGroup": [
             {
               "type": "isNotEmpty",
-              "attribute": "productId"
+              "attribute": "id"
             }
           ]
         }
