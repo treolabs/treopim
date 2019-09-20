@@ -178,6 +178,7 @@ class ProductHandler extends AbstractHandler
                     } elseif (count($diff) != count($conf['channelsIds'])) {
                         if (empty($item->get('productFamilyAttributeId'))) {
                             $inputRow->channelsIds = array_diff($channels, $conf['channelsIds']);
+                            sort($inputRow->channelsIds);
                             $service->updateEntity($item->get('id'), $inputRow);
                         } else {
                             return;
