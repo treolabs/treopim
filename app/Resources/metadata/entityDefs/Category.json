@@ -179,8 +179,7 @@
     "productCategories": {
       "type": "hasMany",
       "foreign": "category",
-      "entity": "ProductCategory",
-      "layoutRelationshipsDisabled": true
+      "entity": "ProductCategory"
     }
   },
   "collection": {

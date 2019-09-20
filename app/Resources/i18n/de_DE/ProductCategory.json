@@ -2,6 +2,7 @@
   "fields": {
     "product": "Produkt",
     "category": "Kategorie",
+    "sorting": "Sortierung",
     "scope": "Umfang",
     "channels": "Kanale"
   },
