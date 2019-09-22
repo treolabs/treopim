@@ -24,7 +24,7 @@ namespace Pim\Import\Types\Simple\Handlers;
 
 use Espo\ORM\Entity;
 use Espo\Services\Record;
-use Import\Handlers\AbstractHandler;
+use Import\Types\Simple\Handlers\AbstractHandler;
 use Treo\Core\Exceptions\NoChange;
 
 /**
@@ -35,16 +35,6 @@ use Treo\Core\Exceptions\NoChange;
 class ProductHandler extends AbstractHandler
 {
     /**
-     * @var array
-     */
-    protected $attributes = [];
-
-    /**
-     * @var array
-     */
-    protected $categories = [];
-
-    /**
      * @param array $fileData
      * @param array $data
      *
@@ -52,52 +42,110 @@ class ProductHandler extends AbstractHandler
      */
     public function run(array $fileData, array $data): bool
     {
-        if (!empty($result = $this->prepareRows($fileData, $data))) {
-            $importResultId = (string)$data['data']['importResultId'];
-            $delimiter = $data['data']['delimiter'];
+        // prepare entity type
+        $entityType = (string)$data['data']['entity'];
 
-            $service = $this->getServiceFactory()->create('Product');
+        // prepare import result id
+        $importResultId = (string)$data['data']['importResultId'];
 
-            foreach ($result as $input) {
-                $entity = null;
+        // prepare field value delimiter
+        $delimiter = $data['data']['delimiter'];
 
-                // prepare id
-                $id = $input->_id;
-                unset($input->_id);
+        // create service
+        $service = $this->getServiceFactory()->create($entityType);
 
-                // prepare file row
-                $fileRow = (string)$input->_fileRow;
-                unset($input->_fileRow);
+        // prepare id field
+        $idField = isset($data['data']['idField']) ? $data['data']['idField'] : null;
 
-                // prepare action
-                $action = (empty($id)) ? 'create' : 'update';
+        // find ID row
+        $idRow = $this->getIdRow($data['data']['configuration'], $idField);
 
-                try {
-                    $this->getEntityManager()->getPDO()->beginTransaction();
+        // find exists if it needs
+        $exists = [];
+        if (in_array($data['action'], ['update', 'create_update']) && !empty($idRow)) {
+            $exists = $this->getExists($entityType, $idRow['name'], array_column($fileData, $idRow['column']));
+        }
 
-                    if (empty($id)) {
-                        $entity = $service->createEntity($input);
+        // prepare file row
+        $fileRow = (int)$data['offset'];
+
+        foreach ($fileData as $row) {
+            $fileRow++;
+
+            // prepare id
+            if ($data['action'] == 'create') {
+                $id = null;
+            } elseif ($data['action'] == 'update') {
+                if (isset($exists[$row[$idRow['column']]])) {
+                    $id = $exists[$row[$idRow['column']]];
+                } else {
+                    // skip row if such item does not exist
+                    continue 1;
+                }
+            } elseif ($data['action'] == 'create_update') {
+                $id = (isset($exists[$row[$idRow['column']]])) ? $exists[$row[$idRow['column']]] : null;
+            }
+
+            // prepare entity
+            $entity = null;
+
+            try {
+                // begin transaction
+                $this->getEntityManager()->getPDO()->beginTransaction();
+
+                // prepare row
+                $input = new \stdClass();
+
+                $attributes = $categories = [];
+
+                foreach ($data['data']['configuration'] as $item) {
+                    if (isset($item['attributeId'])) {
+                        $attributes[] = [
+                            'item' => $item,
+                            'row' => $row
+                        ];
+
+                        continue;
+                    } elseif ($item['name'] == 'productCategories') {
+                        $categories[] = [
+                            'item' => $item,
+                            'row' => $row
+                        ];
+
+                        continue;
                     } else {
-                        $entity = $this->updateEntity($service, $id, $input);
+                        $this->convertItem($input, $entityType, $item, $row, $delimiter);
                     }
-
-                    foreach ($this->categories as $value) {
-                        $this->importCategories($entity, $value, $delimiter);
-                    }
-
-                    foreach ($this->attributes as $value) {
-                        $this->importAttribute($entity, $value, $delimiter);
-                    }
-
-                    $this->getEntityManager()->getPDO()->commit();
-
-                } catch (\Throwable $e) {
-                    $this->getEntityManager()->getPDO()->rollBack();
-                    $this->log('Product', $importResultId, 'error', $fileRow, $e->getMessage());
                 }
-                if (!is_null($entity)) {
-                    $this->log('Product', $importResultId, $action, $fileRow, (string)$entity->get('id'));
+
+                if (empty($id)) {
+                    $entity = $service->createEntity($input);
+                } else {
+                    $entity = $this->updateEntity($service, $id, $input);
                 }
+
+                foreach ($categories as $value) {
+                    $this->importCategories($entity, $value, $delimiter);
+                }
+
+                foreach ($attributes as $value) {
+                    $this->importAttribute($entity, $value, $delimiter);
+                }
+
+                $this->getEntityManager()->getPDO()->commit();
+            } catch (\Throwable $e) {
+                // roll back transaction
+                $this->getEntityManager()->getPDO()->rollBack();
+
+                // push log
+                $this->log($entityType, $importResultId, 'error', (string)$fileRow, $e->getMessage());
+            }
+            if (!is_null($entity)) {
+                // prepare action
+                $action = empty($id) ? 'create' : 'update';
+
+                // push log
+                $this->log($entityType, $importResultId, $action, (string)$fileRow, $entity->get('id'));
             }
         }
 
@@ -115,57 +163,6 @@ class ProductHandler extends AbstractHandler
             $result = $service->updateEntity($id, $data);
         } catch (NoChange $e) {
             $result = $service->readEntity($id);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param array $fileData
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function prepareRows(array $fileData, array $data): array
-    {
-        $result = [];
-
-        $idField = isset($data['data']['idField']) ? $data['data']['idField'] : null;
-
-        if (!empty($idRow = $this->getIdRow($data['data']['configuration'], $idField))) {
-            $exists = $this->getExists('Product', $idRow['name'], array_column($fileData, $idRow['column']));
-        }
-
-        $fileRow = (int)$data['offset'];
-
-        foreach ($fileData as $row) {
-            $fileRow++;
-
-            $inputRow = new \stdClass();
-            $inputRow->_fileRow = $fileRow;
-            $inputRow->_id = (isset($exists[$row[$idRow['column']]])) ? $exists[$row[$idRow['column']]] : null;
-
-            foreach ($data['data']['configuration'] as $key => $item) {
-                if (isset($item['attributeId'])) {
-                    $this->attributes[] = [
-                        'item' => $item,
-                        'row' => $row
-                    ];
-
-                    continue;
-                } elseif ($item['name'] == 'productCategories') {
-                    $this->categories[] = [
-                        'item' => $item,
-                        'row' => $row
-                    ];
-
-                    continue;
-                } else {
-                    $this->convertItem($inputRow, 'Product', $item, $row, $data['data']['delimiter']);
-                }
-            }
-
-            $result[] = $inputRow;
         }
 
         return $result;
