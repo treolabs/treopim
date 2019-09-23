@@ -20,5 +20,8 @@
   "hasOwner": true,
   "hasAssignedUser": true,
   "hasTeam": true,
-  "advancedFilters": true
+  "advancedFilters": true,
+  "importTypeSimple": {
+    "handler": "Pim\\Import\\Types\\Simple\\Handlers\\ProductHandler"
+  }
 }
