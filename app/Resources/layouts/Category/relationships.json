@@ -4,5 +4,8 @@
   },
   {
     "name": "catalogs"
+  },
+  {
+    "name": "productCategories"
   }
 ]

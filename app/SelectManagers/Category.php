@@ -46,15 +46,25 @@ class Category extends AbstractSelectManager
 
     /**
      * @param array $result
+     *
+     * @return mixed
      */
     protected function boolFilterOnlyCatalogCategories(array &$result)
     {
-        // get catalog
-        $catalog = $this
-            ->getEntityManager()
-            ->getEntity('Catalog', (string)$this->getSelectCondition('onlyCatalogCategories'));
+        // get id
+        $id = (string)$this->getSelectCondition('onlyCatalogCategories');
 
-        if (!empty($catalog) && !empty($catalogTrees = $catalog->get('categories')->toArray())) {
+        // get catalog
+        if (empty($id)) {
+            return null;
+        }
+
+        // get catalog trees
+        if (!empty($catalog = $this->getEntityManager()->getEntity('Catalog', $id))) {
+            $catalogTrees = $catalog->get('categories')->toArray();
+        }
+
+        if (!empty($catalogTrees)) {
             // prepare where
             $where[] = ['id' => array_column($catalogTrees, 'id')];
             foreach ($catalogTrees as $catalogTree) {
@@ -92,10 +102,12 @@ class Category extends AbstractSelectManager
             ->getEntityManager()
             ->getRepository('ProductCategory')
             ->select(['categoryId'])
-            ->where([
-                'productId' => $data['productId'],
-                'scope' => $data['scope']
-            ])
+            ->where(
+                [
+                    'productId' => $data['productId'],
+                    'scope'     => $data['scope']
+                ]
+            )
             ->find()
             ->toArray();
 
