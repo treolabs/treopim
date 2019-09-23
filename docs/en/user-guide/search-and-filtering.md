@@ -1,9 +1,9 @@
 # Search and Filtering
 
-Searching and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity list or plate [view](https://treopim.com/help/views-and-panels):
+Search and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity list or plate [view](https://treopim.com/help/views-and-panels):
 
 ![Search and filtering](../../_assets/search-and-filtering/search-filter.jpg)
-*Search and filter on the products list view page*
+*Search and filtering on the products list view page*
 
 Searching works on the current entity records, while filtering works also on the related records, which are configured by the administrator.
 
@@ -15,10 +15,10 @@ To filter your entity records, open the filter drop-down list and set the desire
 
 To clear all filters, click the `Reset` button, located to the right of the search field.
 
-Use the [global search](https://treopim.com/help/user-interface#global-search) if you wish to search globally across all the entities in the system.      
-
+Use the global search if you wish to search globally across all the entities in the system.
+<!-- since search doesn't work properly now and it cannot be checked, I'm hiding this 
 By default, search is performed through all the records, which attributes start with the search string. If you want to search for the records, which attributes contain the search string, please, use the `%` symbol before your search string (without space); the use of `%` at the end of the search string is not necessary.
-
+-->
 The fields available for searching can be configured by developers in the metadata of the appropriate entity.
 
 You can have one or more filters based on a certain field for all field types. The exception is field types that can be used as a filter only once (because there is no need for it), which are:
@@ -32,7 +32,6 @@ You can have one or more filters based on a certain field for all field types. T
 
 The system behavior is different for the OR and AND logical operators:
 
-- Currently the use of these operators in the search field is not possible.
 - Operator AND is automatically applied between filters set up for different fields, e.g. `name` and `brand`.
 - Operator OR is automatically applied between filters set up for the same field, e.g. both filters set up for `name`.
 
@@ -44,7 +43,7 @@ Depending of the field type, you can apply the following filtering criteria:
 
 | **Field Type**                              | **Filtering Criteria** | **Input Value**                                            |
 | :------------------------------------------ | :--------------------- | :--------------------------------------------------------- |
-| **Array, Multi-Enum*                        | –                      | Value list, multiselect                                    |
+| *Array, Multi-Enum*                        | –                      | Value list, multiselect                                    |
 | *Address*                                   | –                      | Input field                                                |
 | *Boolean*                                   | –                      | Checkbox                                                   |
 | *Auto-increment, Currency,  Integer, Float* | Is Not Empty           | –                                                          |
@@ -130,13 +129,15 @@ Predefined search filters are available in the drop-down menu on the left of the
 
 ![Search filters list](../../_assets/search-and-filtering/search-filters-list.jpg)
 
-To extend the list, please save your custom search filters for the desired entities, as described below, or contact your developer.
+To filter the records, select the desired checkbox or several checkboxes. 
+
+To extend the list, please contact your developer.
 
 ## Custom Search Filters
 
 To save a custom search filter, select the `Add filter > 'desired filter'` option from the filtering drop-down list:
 
-![Filters list](../../_assets/search-and-filtering/filter-list.jpg) 
+![Filters list](../../_assets/search-and-filtering/filter-list.jpg)
 
 The selected filter will be added to the current page:
 
@@ -144,7 +145,19 @@ The selected filter will be added to the current page:
 
 If needed, click the `X` button to remove the added filter.
 
-### Templates
+To extend the list of fields to be used for filtering, please, contact your administrator.
+
+## Custom Attribute Filters
+
+TreoPIM supports the ability to filter entity records not only by field values, but also by attribute values. This type of filtering is performed by values of the attributes that are linked to products. For your convenience, product attributes are grouped by product families and the `All` list contains additional product attributes that are not related to product families. 
+
+To add a custom attribute filter, select the `Add attribute filter > 'product family' (or `All`) > 'product attribute'` option from the filtering drop-down list:
+
+![Attribute filters](../../_assets/search-and-filtering/attribute-filters.jpg)
+
+To remove the attribute filter, click the `X` button next to it.
+
+## Templates
 
 You can create custom search filter templates. To do this, add the desired filters as described above and select the `Save filter` option from the filtering drop-down list:
 
