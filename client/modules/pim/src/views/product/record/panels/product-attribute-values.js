@@ -37,6 +37,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             label: 'No Group'
         },
 
+        initialAttributes: null,
+
         boolFilterData: {
             notLinkedProductAttributeValues() {
                 return {
@@ -342,6 +344,10 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             Dep.prototype.afterRender.call(this);
 
             this.buildGroups();
+
+            if (this.mode === 'edit') {
+                this.setEditMode();
+            }
         },
 
         fetchCollectionGroups(callback) {
@@ -448,6 +454,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         buildGroups() {
+            let count = 0;
             this.groups.forEach(group => {
                 this.getCollectionFactory().create(this.scope, collection => {
                     group.rowList.forEach(id => {
@@ -457,6 +464,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     this.setGroupCollectionDefs(group, collection);
 
                     this.listenTo(collection, 'sync', () => {
+                        this.initialAttributes = this.getAttributesValues();
                         this.model.trigger('attributes-updated');
                         collection.models.sort((a, b) => a.get('sortOrder') - b.get('sortOrder'));
                         if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
@@ -476,11 +484,17 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
                     };
+
                     this.createView(group.key, viewName, this.modifyListOptions(options), view => {
                         if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
                             view.listenTo(view, 'after:render', () => this.applyOverviewFilters());
                         }
-                        view.render();
+                        view.render(() => {
+                            count++;
+                            if (count === this.groups.length) {
+                                this.trigger('groups-rendered');
+                            }
+                        });
                     });
                 });
             });
@@ -672,6 +686,84 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     }.bind(this),
                 });
             }, this);
+        },
+
+        setListMode() {
+            this.mode = 'list';
+
+            this.groups.forEach(group => {
+                let groupView = this.getView(group.key);
+                if (groupView) {
+                    groupView.setListMode();
+                }
+            });
+
+            this.reRender();
+        },
+
+        setEditMode() {
+            this.initialAttributes = this.getAttributesValues();
+
+            const groupsRendered = this.groups.every(group => {
+                const groupView = this.getView(group.key);
+                return groupView && groupView.isRendered();
+            });
+
+            const updateMode = () => {
+                this.mode = 'edit';
+                this.groups.forEach(group => {
+                    let groupView = this.getView(group.key);
+                    if (groupView) {
+                        groupView.setEditMode();
+                    }
+                });
+            };
+
+            if (groupsRendered) {
+                updateMode();
+            } else {
+                this.listenToOnce(this, 'groups-rendered', () => updateMode());
+            }
+        },
+
+        getAttributesValues() {
+            const data = {};
+            this.collection.forEach(model => {
+                const modelData = {};
+                const actualFields = this.getFieldManager().getActualAttributeList(model.get('attributeType'), 'value');
+                actualFields.forEach(field => _.extend(modelData, {[field]: model.get(field)}));
+                data[model.id] = modelData;
+            });
+            return data;
+        },
+
+        panelFetch() {
+            let data = false;
+            this.groups.forEach(group => {
+                const groupView = this.getView(group.key);
+                (groupView.rowList || []).forEach(id => {
+                    const row = groupView.getView(id);
+                    const value = row.getView('valueField');
+                    const fetchedData = value.fetch();
+                    if (typeof this.initialAttributes[id] === 'undefined' || !_.isEqual(this.initialAttributes[id], fetchedData)) {
+                        data = _.extend(data || {}, {[id]: fetchedData});
+                    }
+                });
+            });
+            return data;
+        },
+
+        save() {
+            const data = this.panelFetch();
+            if (data) {
+                const promises = [];
+                $.each(data, (id, attrs) => {
+                    this.collection.get(id).set(attrs, {silent: true});
+                    promises.push(this.ajaxPutRequest(`${this.collection.name}/${id}`, attrs))
+                });
+                this.notify('Saving...');
+                Promise.all(promises).then(response => this.notify('Saved', 'success'));
+            }
         }
 
     })
