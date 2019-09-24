@@ -59,21 +59,10 @@ Espo.define('pim:views/product-image/fields/channels', 'treo-core:views/fields/f
                     this.wait(false);
                 });
             }
-
-            this.listenTo(this.model, 'after:save', () => {
-                this.saveData();
-            })
         },
 
         getData() {
             return this.ajaxGetRequest(`ProductImage/${this.model.id}/channels/${this.productId}`);
-        },
-
-        saveData() {
-            if (this.productId && this.model.id && this.model.get('scope') === 'Channel') {
-                let data = this.model.get(this.idsName);
-                return this.ajaxPutRequest(`ProductImage/${this.model.id}/channels/${this.productId}`, data).then(response => {});
-            }
         }
     })
 );
