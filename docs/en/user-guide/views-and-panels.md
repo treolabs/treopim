@@ -9,9 +9,9 @@ There are two types of **pages** in the TreoPIM system with the corresponding vi
   - *[breadcrumb navigation](https://treopim.com/help/user-interface) including the page name;*
   - *records list in the [list](#list-view) or [plate](#plate-view) view.* 
 - **Detail Page** – shows detailed information about the selected entity record and all its relations and includes:
-  - [*navigation menu*](https://treopim.com/help/user-interface#navigation-menu)*;*
-  - [*taskbar*](https://treopim.com/help/user-interface#taskbar)*;*
-  - [*breadcrumb navigation*](https://treopim.com/help/user-interface#breadcrumb-navigation) *including the page name;*
+  - [*navigation menu*](https://treopim.com/help/user-interface)*;*
+  - [*taskbar*](https://treopim.com/help/user-interface)*;*
+  - [*breadcrumb navigation*](https://treopim.com/help/user-interface) *including the page name;*
   - [*record details*](#detail-view)*, where detailed information about the currently open entity record is displayed.* 
 
 The **detail view** may also include:
@@ -45,7 +45,7 @@ The following mass actions are available in the TreoPIM system:
  
 - **Remove** – to remove the selected entity records.
 - **Merge** – to merge the selected entity records.
-- **Mass update** – to update several selected entity records at once.
+- **Mass update** – to update several selected entity records at once. To have a longer list of fields available for mass updating, please, contact your administrator.
 - **Export** – to export the desired data fields of the selected entity records in the XLSX or CSV format.
 - **Follow** – to enable tracking of the changes for the selected entity records. 
 - **Unfollow** – to disable tracking of the changes for the selected entity records.
@@ -184,7 +184,7 @@ The quick create view is shown in a pop-up window and uses the layout of the sma
 
 Click the `Full Form` button to get to the [create view](#create-view) page.
 
-# Entity Records
+## Entity Records
 
 Each entity in the system can have many records. These records are available to work with on the views described above. 
 
@@ -201,7 +201,7 @@ The following actions are available directly out of the box:
 
 If you want to make changes to some entity (e.g. add new fields, modify its views or relations), please, contact your administrator.
 
-## In-Line Editing
+### In-Line Editing
 
 With in-line editing you can change values *on the fly*. This ensures quick change of field values and reduces the number of clicks to do their work.
 
@@ -209,6 +209,6 @@ Currently in-line editing is available on the [detail view](#detail-view) pages 
 
 ![In-line editing](../../_assets/views-and-panels/inline-editing.jpg)
 
-## Automatic Linking of the Related Entity Records
+### Automatic Linking of the Related Entity Records
 
 Each entity in the system has a certain main naming field, in most cases this is the `Name` field. These field values are automatically converted to links, leading to the detail view pages of the appropriate entity record.

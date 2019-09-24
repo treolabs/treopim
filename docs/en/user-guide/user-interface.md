@@ -160,7 +160,7 @@ Currently not available.
 
 Select the `Custom Tab List` checkbox to enable a custom navigation menu. Using the `Add` button select the entities to be linked to your custom [navigation menu](#navigation-menu).
 
-[Dashboard](#dashboard) layout and [dashlet](#dashlets) settings are also available for editing on the `USER INTERFACE` panel:
+[Dashboard](https://treopim.com/help/dashboard-and-dashlets) layout and [dashlet](https://treopim.com/help/dashboard-and-dashlets) settings are also available for editing on the `USER INTERFACE` panel:
 
 ![Dashboard settings](../../_assets/user-interface/ui-dashboard.jpg) 
 
@@ -168,7 +168,7 @@ The same options are available on the TreoPIM starting page:
 
 ![PIM dashboard editing](../../_assets/user-interface/pim-dashboard-edit.jpg)
 
-Click the editing button and enter a name for your dashboard in the corresponding field of the "Edit dashboard" pop-up page and hit `Enter`:
+Click the editing button and enter a name for your dashboard in the corresponding field of the "Edit dashboard" pop-up and hit `Enter`:
 
 ![Dashboard editing](../../_assets/user-interface/ui-dashboard-edit.jpg)
 
@@ -180,7 +180,7 @@ To rearrange your dashboard view, drag-and-drop the dashlets right on the `USER 
 
 ![Dashlets order](../../_assets/user-interface/dashlets-order.jpg)
 
-Alternatively, you can customize your dashboard view in the same way on the TreoPIM starting page.
+Alternatively, you can customize your [dashboard](https://treopim.com/help/dashboard-and-dashlets) view in the same way on the TreoPIM starting page.
 
 ### Last Viewed
 
