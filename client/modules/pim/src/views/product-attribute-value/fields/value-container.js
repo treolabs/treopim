@@ -98,8 +98,28 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             let view = this.getView('valueField');
             if (view) {
                 _.extend(data, view.fetch());
+                _.extend(data, this.getAdditionalFieldData(view, data));
             }
             return data;
+        },
+
+        getAdditionalFieldData(view, data) {
+            let result = {};
+            let additionalData = false;
+            if (view.type === 'unit') {
+                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
+                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
+                actualFieldDefs.forEach((field, i) => {
+                    if (field) {
+                        additionalData = additionalData || {};
+                        additionalData[field] = data[actualFieldValues[i]];
+                    }
+                });
+            }
+            if (additionalData) {
+                result.data = _.extend((data.data || {}), additionalData);
+            }
+            return result;
         },
 
         validate() {
@@ -107,9 +127,6 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             let view = this.getView('valueField');
             if (view) {
                 validate = view.validate();
-            }
-            if (!validate) {
-                validate = this.validateColumn();
             }
             return validate;
         },

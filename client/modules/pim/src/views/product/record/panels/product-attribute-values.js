@@ -49,7 +49,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         events: _.extend({
-            'click [data-action="unlinkAttributeGroup"]': function(e) {
+            'click [data-action="unlinkAttributeGroup"]': function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 let data = $(e.currentTarget).data();
@@ -744,9 +744,11 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 (groupView.rowList || []).forEach(id => {
                     const row = groupView.getView(id);
                     const value = row.getView('valueField');
-                    const fetchedData = value.fetch();
-                    if (typeof this.initialAttributes[id] === 'undefined' || !_.isEqual(this.initialAttributes[id], fetchedData)) {
-                        data = _.extend(data || {}, {[id]: fetchedData});
+                    if (value.mode === 'edit') {
+                        const fetchedData = value.fetch();
+                        if (typeof this.initialAttributes[id] === 'undefined' || !_.isEqual(this.initialAttributes[id], fetchedData)) {
+                            data = _.extend(data || {}, {[id]: fetchedData});
+                        }
                     }
                 });
             });
@@ -764,6 +766,21 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 this.notify('Saving...');
                 Promise.all(promises).then(response => this.notify('Saved', 'success'));
             }
+        },
+
+        validate() {
+            let notValid = false;
+            this.groups.forEach(group => {
+                const groupView = this.getView(group.key);
+                (groupView.rowList || []).forEach(id => {
+                    const row = groupView.getView(id);
+                    const value = row.getView('valueField');
+                    if (value.mode === 'edit' && !value.disabled && !value.readOnly) {
+                        notValid = value.validate() || notValid;
+                    }
+                });
+            });
+            return notValid;
         }
 
     })
