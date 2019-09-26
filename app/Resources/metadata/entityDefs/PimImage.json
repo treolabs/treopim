@@ -3,7 +3,9 @@
     "name": {
       "type": "varchar",
       "required": false,
-      "trim": true
+      "trim": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true
     },
     "category": {
       "type": "link"
@@ -20,7 +22,11 @@
         "File",
         "Link"
       ],
-      "default": "File"
+      "default": "File",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutFiltersDisabled": true,
+      "layoutMassUpdateDisabled": true
     },
     "image": {
       "type": "image",
@@ -31,7 +37,11 @@
       "type": "varchar",
       "notStorable": true,
       "required": false,
-      "trim": true
+      "trim": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutFiltersDisabled": true,
+      "layoutMassUpdateDisabled": true
     },
     "sortOrder": {
       "type": "int",

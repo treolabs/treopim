@@ -11,7 +11,7 @@
     "own",
     "no"
   ],
-  "customizable": true,
+  "customizable": false,
   "importable": true,
   "notifications": true,
   "stream": false,
