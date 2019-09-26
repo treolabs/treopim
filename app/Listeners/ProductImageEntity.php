@@ -21,6 +21,7 @@
 namespace Pim\Listeners;
 
 use Espo\ORM\Entity;
+use Treo\Core\EventManager\Event;
 
 /**
  * Class ProductImageEntity
@@ -44,5 +45,22 @@ class ProductImageEntity extends AbstractImageListener
     protected function getCondition(Entity $entity)
     {
         return ['productId' => $entity->get('productId')];
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @throws \Espo\Core\Exceptions\Error
+     */
+    public function afterRelate(Event $event)
+    {
+        if ($event->getArgument('relationName') == 'products') {
+            $this
+                ->getEntityManager()
+                ->getEntity('Product', $event->getArgument('relationName'));
+            $this
+                ->createService('ProductImage')
+                ->sortingImage($event->getArgument('foreign'));
+        }
     }
 }
