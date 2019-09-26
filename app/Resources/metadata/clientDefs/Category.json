@@ -3,7 +3,6 @@
   "iconClass": "fas fa-th",
   "boolFilterList": [
     "onlyMy",
-    "hasNoChildCategory",
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
@@ -13,7 +12,6 @@
     "notLinkedProductCategories"
   ],
   "hiddenBoolFilterList": [
-    "hasNoChildCategory",
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
