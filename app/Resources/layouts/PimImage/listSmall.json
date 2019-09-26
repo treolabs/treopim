@@ -1,0 +1,16 @@
+[
+  {
+    "name": "name",
+    "link": true
+  },
+  {
+    "name": "image"
+  },
+  {
+    "name": "scope"
+  },
+  {
+    "name": "channels",
+    "notSortable": true
+  }
+]

@@ -1,0 +1,119 @@
+{
+  "controller": "controllers/record",
+  "boolFilterList": [
+    "onlyMy"
+  ],
+  "iconClass": "fas fa-file-image",
+  "dynamicLogic": {
+    "fields": {
+      "category": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isEmpty",
+              "attribute": "productId",
+              "data": {
+                "field": "product"
+              }
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "isEmpty",
+              "attribute": "productId",
+              "data": {
+                "field": "product"
+              }
+            }
+          ]
+        }
+      },
+      "product": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isEmpty",
+              "attribute": "categoryId",
+              "data": {
+                "field": "category"
+              }
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "isEmpty",
+              "attribute": "categoryId",
+              "data": {
+                "field": "category"
+              }
+            }
+          ]
+        }
+      },
+      "image": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "File"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "File"
+            }
+          ]
+        }
+      },
+      "link": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "Link"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "Link"
+            }
+          ]
+        }
+      },
+      "channels": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "scope",
+              "value": "Channel"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "scope",
+              "value": "Channel"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

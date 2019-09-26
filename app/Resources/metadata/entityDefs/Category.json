@@ -127,6 +127,12 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
+    },
+    "pimImages": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -180,6 +186,11 @@
       "type": "hasMany",
       "foreign": "category",
       "entity": "ProductCategory"
+    },
+    "pimImages": {
+      "type": "hasMany",
+      "foreign": "category",
+      "entity": "PimImage"
     }
   },
   "collection": {

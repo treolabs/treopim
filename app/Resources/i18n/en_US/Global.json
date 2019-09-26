@@ -31,7 +31,8 @@
     "Tax": "Tax",
     "ProductSerie": "Product Serie",
     "ProductCategory": "Product Category",
-    "ProductFamilyAttribute": "Product Family Attribute"
+    "ProductFamilyAttribute": "Product Family Attribute",
+    "PimImage": "Image"
   },
   "scopeNamesPlural": {
     "Association": "Associations",
@@ -55,7 +56,8 @@
     "Tax": "Taxes",
     "ProductSerie": "Product Series",
     "ProductCategory": "Product Categories",
-    "ProductFamilyAttribute": "Product Family Attributes"
+    "ProductFamilyAttribute": "Product Family Attributes",
+    "PimImage": "Images"
   },
   "options": {
     "channelsFilter": {
