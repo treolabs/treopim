@@ -30,6 +30,9 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             this.name = this.options.name || this.defs.name;
 
             this.getModelFactory().create(this.model.name, model => {
+                this.updateDataForValueField();
+                this.updateModelDefs();
+
                 model = this.getConfiguratedValueModel(model);
                 this.model = model;
                 this.createValueFieldView();
@@ -44,9 +47,6 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         },
 
         createValueFieldView() {
-            this.updateDataForValueField();
-            this.updateModelDefs();
-
             this.clearView('valueField');
 
             let type = this.model.get('attributeType') || 'base';
@@ -98,28 +98,8 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             let view = this.getView('valueField');
             if (view) {
                 _.extend(data, view.fetch());
-                _.extend(data, this.getAdditionalFieldData(view, data));
             }
             return data;
-        },
-
-        getAdditionalFieldData(view, data) {
-            let result = {};
-            let additionalData = false;
-            if (view.type === 'unit') {
-                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
-                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
-                actualFieldDefs.forEach((field, i) => {
-                    if (field) {
-                        additionalData = additionalData || {};
-                        additionalData[field] = data[actualFieldValues[i]];
-                    }
-                });
-            }
-            if (additionalData) {
-                result.data = _.extend((data.data || {}), additionalData);
-            }
-            return result;
         },
 
         validate() {
