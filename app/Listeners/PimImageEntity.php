@@ -42,5 +42,8 @@ class PimImageEntity extends AbstractListener
 
         // set entity name
         $entity->set('name', $entity->get('image')->get('name'));
+
+        // set sort order
+        $entity->set('sortOrder', time());
     }
 }

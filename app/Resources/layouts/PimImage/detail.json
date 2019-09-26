@@ -3,19 +3,15 @@
     "rows": [
       [
         {
-          "name": "category"
+          "name": "category",
+          "inlineEditDisabled": true
         },
         false
       ],
       [
         {
-          "name": "product"
-        },
-        false
-      ],
-      [
-        {
-          "name": "sortOrder"
+          "name": "product",
+          "inlineEditDisabled": true
         },
         false
       ],
