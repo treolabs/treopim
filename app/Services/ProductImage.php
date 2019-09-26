@@ -164,4 +164,48 @@ class ProductImage extends AbstractImageService
 
         return $result;
     }
+
+    /**
+     * @param string $productId
+     */
+    public function sortingImage(string $productId)
+    {
+        $images = $this->getProductImageProduct($productId);
+        $data = [];
+
+        $maxSortOrder = max(array_column($images, 'sortOrder'));
+        if (is_null($maxSortOrder)) {
+            $maxSortOrder = 0;
+        }
+
+        foreach ($images as $image) {
+            if (is_null($image['sortOrder'])) {
+                $data[++$maxSortOrder] = $image['productImageId'];
+            }
+        }
+
+        if (!empty($data)) {
+            $this->updateSortOrder($productId, $data);
+        }
+    }
+
+    /**
+     * @param string $productId
+     *
+     * @return array
+     */
+    private function getProductImageProduct(string $productId): array
+    {
+        $sql
+            = 'SELECT 
+                        product_image_id as productImageId, 
+                        sort_order AS sortOrder
+                FROM product_image_product
+                WHERE deleted = 0
+                      AND product_id = :productId';
+        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
+        $sth->execute(['productId' => $productId]);
+
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
