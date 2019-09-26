@@ -14,7 +14,7 @@
     "type": {
       "type": "enum",
       "notStorable": true,
-      "required": true,
+      "required": false,
       "fontSize": 1,
       "options": [
         "File",
@@ -125,7 +125,7 @@
   },
   "collection": {
     "sortBy": "sortOrder",
-    "asc": false
+    "asc": true
   },
   "indexes": {
     "name": {
