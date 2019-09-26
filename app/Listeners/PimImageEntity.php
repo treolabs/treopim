@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
+use Espo\Core\Exceptions\Error;
 use Treo\Core\EventManager\Event;
+use Treo\Entities\Attachment;
 use Treo\Listeners\AbstractListener;
 
 /**
@@ -40,10 +42,61 @@ class PimImageEntity extends AbstractListener
         // get entity
         $entity = $event->getArgument('entity');
 
+        // get attachment
+        $attachment = $entity->get('image');
+
+        // create attachment by link
+        if ($entity->get('type') == 'Link' && !empty($entity->get('link'))) {
+            $attachment = $this->createAttachmentByLink($entity->get('link'));
+            $entity->set('imageId', $attachment->get('id'));
+        }
+
         // set entity name
-        $entity->set('name', $entity->get('image')->get('name'));
+        $entity->set('name', $attachment->get('name'));
 
         // set sort order
         $entity->set('sortOrder', time());
+    }
+
+    /**
+     * @param string $link
+     *
+     * @return Attachment
+     * @throws Error
+     */
+    protected function createAttachmentByLink(string $link): Attachment
+    {
+        // get contents
+        if (empty($contents = @file_get_contents($link))) {
+            throw new Error('Wrong image link. Link: ' . $link);
+        }
+
+        // create attachment
+        $attachment = $this->getEntityManager()->getEntity('Attachment');
+        $attachment->set('name', array_pop(explode('/', $link)));
+        $attachment->set('field', 'image');
+        $attachment->set('role', 'Attachment');
+
+        // get file storage manager
+        $sm = $this->getContainer()->get('fileStorageManager');
+
+        // store file
+        $sm->putContents($attachment, $contents);
+
+        // get mime type
+        $type = mime_content_type($sm->getLocalFilePath($attachment));
+
+        if (!in_array($type, ['image/jpeg', 'image/png', 'image/gif'])) {
+            $sm->unlink($attachment);
+            throw new Error('Wrong file mime type. Only image allowed. Link:' . $link);
+        }
+
+        // set mime type
+        $attachment->set('type', $type);
+
+        // save attachment
+        $this->getEntityManager()->saveEntity($attachment);
+
+        return $attachment;
     }
 }
