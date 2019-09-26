@@ -195,7 +195,7 @@ Espo.define('pim:views/product/record/panels/product-bundles', ['views/record/pa
             }, function () {
                 this.notify('Unlinking...');
                 $.ajax({
-                    url: `/Markets/${this.linkScope}/${product.productTypeBundleId}/delete`,
+                    url: `Markets/${this.linkScope}/${product.productTypeBundleId}/delete`,
                     type: 'DELETE',
                     contentType: 'application/json',
                     success: function () {

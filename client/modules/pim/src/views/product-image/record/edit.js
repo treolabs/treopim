@@ -73,10 +73,21 @@ Espo.define('pim:views/product-image/record/edit', 'views/record/edit',
                 return;
             }
 
+            this.channelsIds = attrs['channelsIds'];
+            delete attrs['channelsIds'];
+            delete attrs['channelsNames'];
+
             this.beforeSave();
 
             this.trigger('before:save');
             model.trigger('before:save');
+
+            if (!this.model.isNew()) {
+                this.saveChannels(attrs);
+
+            } else {
+                this.listenToOnce(this.model, 'after:save', () => this.saveChannels(attrs));
+            }
 
             model.save(attrs, {
                 success: function () {
@@ -133,6 +144,22 @@ Espo.define('pim:views/product-image/record/edit', 'views/record/edit',
                 patch: !model.isNew()
             });
             return true;
+        },
+
+        saveChannels(attrs) {
+            if (this.channelsIds && this.model.productId && this.model.id && this.model.get('scope') === 'Channel') {
+                this.ajaxPutRequest(`ProductImage/${this.model.id}/channels/${this.model.productId}`, this.channelsIds).then(response => {
+                    if (!Object.keys(attrs).length) {
+                        this.afterSave();
+
+                        model.trigger('after:save');
+                        this.trigger('after:save');
+
+                        this.exit('save');
+                        return true;
+                    }
+                });
+            }
         },
 
         multipleSave(callback) {

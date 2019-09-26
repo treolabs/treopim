@@ -30,6 +30,9 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             this.name = this.options.name || this.defs.name;
 
             this.getModelFactory().create(this.model.name, model => {
+                this.updateDataForValueField();
+                this.updateModelDefs();
+
                 model = this.getConfiguratedValueModel(model);
                 this.model = model;
                 this.createValueFieldView();
@@ -44,9 +47,6 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         },
 
         createValueFieldView() {
-            this.updateDataForValueField();
-            this.updateModelDefs();
-
             this.clearView('valueField');
 
             let type = this.model.get('attributeType') || 'base';
@@ -107,9 +107,6 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             let view = this.getView('valueField');
             if (view) {
                 validate = view.validate();
-            }
-            if (!validate) {
-                validate = this.validateColumn();
             }
             return validate;
         },
