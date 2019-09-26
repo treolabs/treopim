@@ -86,6 +86,13 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
                     })
             }
         },
+
+        data() {
+            return _.extend({}, Dep.prototype.data.call(this), {
+                valueIsSet: true
+            });
+        },
+
         getValueForDisplay() {
             let imageSize = [];
 
@@ -98,10 +105,6 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
             if (!this.imageId && this.urlImage && this.showPreview) {
                 return `<div class="attachment-preview"><a data-action="showRemoteImagePreview" href="${this.urlImage}"><img src="${this.urlImage}" style="max-width:${imageSize[0]}px; max-height:${imageSize[1]}px;"></a></div>`;
             } else {
-                this.model.set({
-                    [this.idName]: this.imageId,
-                    [this.nameName]: this.imageName
-                });
                 return Dep.prototype.getValueForDisplay.call(this);
             }
         }
