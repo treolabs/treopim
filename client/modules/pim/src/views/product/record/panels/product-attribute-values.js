@@ -758,7 +758,6 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     const value = row.getView('valueField');
                     if (value.mode === 'edit') {
                         const fetchedData = value.fetch();
-                        this.extendAdditionalFieldData(value.getView('valueField'), fetchedData);
                         if (!_.isEqual(this.initialAttributes[id], fetchedData)) {
                             data = _.extend(data || {}, {[id]: fetchedData});
                         }
@@ -766,23 +765,6 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 });
             });
             return data;
-        },
-
-        extendAdditionalFieldData(view, data) {
-            let additionalData = false;
-            if (view.type === 'unit') {
-                let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
-                let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
-                actualFieldDefs.forEach((field, i) => {
-                    if (field) {
-                        additionalData = additionalData || {};
-                        additionalData[field] = data[actualFieldValues[i]];
-                    }
-                });
-            }
-            if (additionalData) {
-                _.extend((data || {}), {data: additionalData});
-            }
         },
 
         save() {

@@ -32,7 +32,8 @@
       "multiEnumMultiLang": "Multi-Enum Multi Lang",
       "arrayMultiLang": "Array Multi Lang",
       "wysiwyg": "Wysiwyg",
-      "wysiwygMultiLang": "Wysiwyg Multi Lang"
+      "wysiwygMultiLang": "Wysiwyg Multi Lang",
+      "image": "Image"
     }
   },
   "links": {

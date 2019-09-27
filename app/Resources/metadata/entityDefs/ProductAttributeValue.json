@@ -28,6 +28,10 @@
       "view": "pim:views/product-attribute-value/fields/value-container",
       "hasCompleteValidation": true
     },
+    "image": {
+      "type": "image",
+      "notStorable": true
+    },
     "data": {
       "type": "jsonObject"
     },
