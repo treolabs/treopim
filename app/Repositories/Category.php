@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\ORM\Entity;
 use Espo\Core\Templates\Repositories\Base;
 
 /**
@@ -30,4 +31,26 @@ use Espo\Core\Templates\Repositories\Base;
  */
 class Category extends Base
 {
+    /**
+     * @inheritDoc
+     */
+    public function relate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'pimImages') {
+            $image = $this->getEntityManager()->getEntity('PimImage');
+            $image->set(
+                [
+                    'name'       => $foreign->get('name'),
+                    'categoryId' => $entity->get('id'),
+                    'imageId'    => $foreign->get('imageId'),
+                    'imageName'  => $foreign->get('imageName'),
+                ]
+            );
+            $this->getEntityManager()->saveEntity($image);
+
+            return true;
+        }
+
+        return parent::relate($entity, $relationName, $foreign, $data, $options);
+    }
 }
