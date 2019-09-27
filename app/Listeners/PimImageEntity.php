@@ -42,17 +42,15 @@ class PimImageEntity extends AbstractListener
         // get entity
         $entity = $event->getArgument('entity');
 
-        // get attachment
-        $attachment = $entity->get('image');
-
         // create attachment by link
         if ($entity->get('type') == 'Link' && !empty($entity->get('link'))) {
             $attachment = $this->createAttachmentByLink($entity->get('link'));
             $entity->set('imageId', $attachment->get('id'));
+            $entity->set('imageName', $attachment->get('name'));
         }
 
         // set entity name
-        $entity->set('name', $attachment->get('name'));
+        $entity->set('name', $entity->get('imageName'));
 
         // set sort order
         $entity->set('sortOrder', time());

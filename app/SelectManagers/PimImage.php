@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
+use Treo\Core\Utils\Util;
 
 /**
  * Class PimImage
@@ -38,30 +39,24 @@ class PimImage extends AbstractSelectManager
     {
         foreach ($this->getSelectData('where') as $row) {
             if ($row['type'] == 'bool' && !empty($row['data']['pimImageRelation'])) {
+                // prepare field
+                $field = Util::toUnderScore(lcfirst($row['data']['pimImageRelation']['scope']) . 'Id');
+
                 // prepare id
                 $id = (string)$row['data']['pimImageRelation']['id'];
 
+                // prepare sql
+                $sql = "SELECT id FROM pim_image WHERE image_id NOT IN (SELECT DISTINCT image_id FROM pim_image WHERE $field='$id') GROUP BY image_id";
+
+                // get ids
+                $sth = $this->getEntityManager()->getPDO()->prepare($sql);
+                $sth->execute();
+                $ids = array_column($sth->fetchAll(\PDO::FETCH_ASSOC), 'id');
+
                 // prepare where clause
-                switch ($row['data']['pimImageRelation']['scope']) {
-                    case 'Product':
-                        $result['whereClause'][] = [
-                            'OR'         => [
-                                'productId'   => null,
-                                'productId!=' => $id,
-                            ],
-                            'categoryId' => null
-                        ];
-                        break;
-                    case 'Category':
-                        $result['whereClause'][] = [
-                            'OR'        => [
-                                'categoryId'   => null,
-                                'categoryId!=' => $id,
-                            ],
-                            'productId' => null
-                        ];
-                        break;
-                }
+                $result['whereClause'][] = [
+                    'id' => $ids
+                ];
             }
         }
     }

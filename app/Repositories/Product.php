@@ -125,4 +125,27 @@ class Product extends Base
 
         return true;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function relate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'pimImages') {
+            $image = $this->getEntityManager()->getEntity('PimImage');
+            $image->set(
+                [
+                    'name'      => $foreign->get('name'),
+                    'productId' => $entity->get('id'),
+                    'imageId'   => $foreign->get('imageId'),
+                    'imageName' => $foreign->get('imageName'),
+                ]
+            );
+            $this->getEntityManager()->saveEntity($image);
+
+            return true;
+        }
+
+        return parent::relate($entity, $relationName, $foreign, $data, $options);
+    }
 }
