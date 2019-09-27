@@ -104,6 +104,15 @@
       ],
       "recordsPerPage": 200
     },
+    "pimImages": {
+      "view": "pim:views/product/record/panels/pim-images",
+      "layout": "listSmallForRelate",
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "pimImageRelation"
+      ],
+      "recordsPerPage": 200
+    },
     "associatedMainProducts": {
       "view": "pim:views/product/record/panels/associated-main-product",
       "label": "Associated Products",

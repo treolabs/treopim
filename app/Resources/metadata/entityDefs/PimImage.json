@@ -57,10 +57,12 @@
         "Global",
         "Channel"
       ],
-      "default": "Global"
+      "default": "Global",
+      "layoutListSmallDisabled": true
     },
     "channels": {
       "type": "linkMultiple",
+      "layoutListSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "noLoad": false
     },

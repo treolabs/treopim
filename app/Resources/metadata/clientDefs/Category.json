@@ -49,6 +49,15 @@
       ],
       "recordsPerPage": 200
     },
+    "pimImages": {
+      "view": "pim:views/product/record/panels/pim-images",
+      "layout": "listSmallForRelate",
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "pimImageRelation"
+      ],
+      "recordsPerPage": 200
+    },
     "productCategories": {
       "layout": "listForProductCategoriesInCategory",
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
