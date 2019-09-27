@@ -76,7 +76,8 @@
         "multiEnumMultiLang",
         "arrayMultiLang",
         "wysiwyg",
-        "wysiwygMultiLang"
+        "wysiwygMultiLang",
+        "image"
       ],
       "default": "text",
       "layoutMassUpdateDisabled": true,

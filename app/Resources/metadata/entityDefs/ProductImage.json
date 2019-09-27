@@ -3,7 +3,6 @@
     "name": {
       "type": "varchar",
       "trim": true,
-      "required": true,
       "layoutMassUpdateDisabled": true,
       "view": "pim:views/fields/image-code-name"
     },
@@ -31,7 +30,6 @@
     },
     "image": {
       "type": "image",
-      "required": true,
       "previewSize": "small",
       "view": "pim:views/product-image/fields/image",
       "layoutMassUpdateDisabled": true
@@ -40,7 +38,6 @@
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true,
       "type": "attachmentMultiple",
-      "required": true,
       "sourceList": []
     },
     "type": {
@@ -57,8 +54,7 @@
     "imageLink": {
       "type": "url",
       "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "required": true
+      "layoutMassUpdateDisabled": true
     },
     "size": {
       "notNull": false,
@@ -94,7 +90,6 @@
     "scope": {
       "type": "enum",
       "notStorable": true,
-      "required": true,
       "layoutMassUpdateDisabled": true,
       "options": [
         "Global",

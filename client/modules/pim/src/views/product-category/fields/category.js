@@ -22,14 +22,11 @@ Espo.define('pim:views/product-category/fields/category', 'treo-core:views/field
 
         createDisabled: true,
 
-        selectBoolFilterList:  ["onlyActive", "onlyCatalogCategories", "hasNoChildCategory"],
+        selectBoolFilterList:  ["onlyActive", "onlyCatalogCategories"],
 
         boolFilterData: {
             onlyCatalogCategories() {
                 return this.model.catalogId;
-            },
-            hasNoChildCategory() {
-                return true;
             }
         },
 

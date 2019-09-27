@@ -3,7 +3,6 @@
   "iconClass": "fas fa-th",
   "boolFilterList": [
     "onlyMy",
-    "hasNoChildCategory",
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
@@ -13,7 +12,6 @@
     "notLinkedProductCategories"
   ],
   "hiddenBoolFilterList": [
-    "hasNoChildCategory",
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
@@ -49,18 +47,10 @@
       ],
       "recordsPerPage": 200
     },
-    "products": {
-      "view": "pim:views/category/record/panels/products",
-      "layout": "listForProductsInCategory",
-      "recordListView": "pim:views/record/list-with-model-edit-check",
-      "rowActionsView": "views/record/row-actions/relationship-unlink-only",
-      "createAction": "createRelatedConfigured",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "onlyActive",
-        "notLinkedWithCategory",
-        "onlyCatalogProducts"
-      ]
+    "productCategories": {
+      "layout": "listForProductCategoriesInCategory",
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
+      "select": false
     },
     "catalogs": {
       "selectAction": "selectRelatedEntity",

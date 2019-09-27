@@ -94,24 +94,93 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
             }
         },
 
-        cancelEdit() {
-            let bottomView = this.getView('bottom');
-            if (bottomView) {
-                for (let panel in bottomView.nestedViews) {
-                    if (typeof bottomView.nestedViews[panel].cancelEdit === 'function') {
-                        bottomView.nestedViews[panel].cancelEdit();
-                    }
-                }
-            }
-            Dep.prototype.cancelEdit.call(this);
-        },
-
         afterNotModified(notShow) {
             if (!notShow) {
                 let msg = this.translate('notModified', 'messages');
                 Espo.Ui.warning(msg, 'warning');
             }
             this.enableButtons();
+        },
+
+        getBottomPanels() {
+            let bottomView = this.getView('bottom');
+            if (bottomView) {
+                return bottomView.nestedViews;
+            }
+            return null;
+        },
+
+        setDetailMode() {
+            let panels = this.getBottomPanels();
+            if (panels) {
+                for (let panel in panels) {
+                    if (typeof panels[panel].setListMode === 'function') {
+                        panels[panel].setListMode();
+                    }
+                }
+            }
+            Dep.prototype.setDetailMode.call(this);
+        },
+
+        setEditMode() {
+            let panels = this.getBottomPanels();
+            if (panels) {
+                for (let panel in panels) {
+                    if (typeof panels[panel].setEditMode === 'function') {
+                        panels[panel].setEditMode();
+                    }
+                }
+            }
+            Dep.prototype.setEditMode.call(this);
+        },
+
+        cancelEdit() {
+            let panels = this.getBottomPanels();
+            if (panels) {
+                for (let panel in panels) {
+                    if (typeof panels[panel].cancelEdit === 'function') {
+                        panels[panel].cancelEdit();
+                    }
+                }
+            }
+            Dep.prototype.cancelEdit.call(this);
+        },
+
+        handlePanelsFetch() {
+            let changes = false;
+            let panels = this.getBottomPanels();
+            if (panels) {
+                for (let panel in panels) {
+                    if (typeof panels[panel].panelFetch === 'function') {
+                        changes = panels[panel].panelFetch() || changes;
+                    }
+                }
+            }
+            return changes;
+        },
+
+        validatePanels() {
+            let notValid = false;
+            let panels = this.getBottomPanels();
+            if (panels) {
+                for (let panel in panels) {
+                    if (typeof panels[panel].validate === 'function') {
+                        notValid = panels[panel].validate() || notValid;
+                    }
+                }
+            }
+            return notValid
+        },
+
+        handlePanelsSave() {
+            let panels = this.getBottomPanels();
+            if (panels) {
+                for (let panel in panels) {
+                    if (typeof panels[panel].save === 'function') {
+                        panels[panel].save();
+                    }
+                }
+            }
         },
 
         save(callback, skipExit) {
@@ -158,8 +227,6 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 }
             }
 
-            model.set(attrs, {silent: true});
-
             let beforeSaveGridPackages = false;
             if (gridPackages && packageView) {
                 let gridModel = packageView.getView('grid').model;
@@ -178,14 +245,26 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 return;
             }
 
-            if (gridPackages && packageView) {
-                packageView.save();
+            let changesFromPanels = this.handlePanelsFetch();
+
+            if (this.validatePanels()) {
+                this.trigger('cancel:save');
+                this.afterNotValid();
+                return;
             }
 
+            this.handlePanelsSave();
+
             if (!attrs) {
-                this.afterNotModified(gridPackages);
+                this.afterNotModified(gridPackages || changesFromPanels);
                 this.trigger('cancel:save');
                 return true;
+            }
+
+            model.set(attrs, {silent: true});
+
+            if (gridPackages && packageView) {
+                packageView.save();
             }
 
             this.beforeSave();

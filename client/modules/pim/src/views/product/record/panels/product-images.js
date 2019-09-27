@@ -246,8 +246,9 @@ Espo.define('pim:views/product/record/panels/product-images', ['views/record/pan
         },
 
         controlListVisibility() {
+            let rowsCount = this.$el.find('.list-container .list-row').size();
             let notHiddenRows = this.$el.find('.list-container .list-row:not(.hidden)');
-            if (!notHiddenRows.length) {
+            if (rowsCount && !notHiddenRows.length) {
                 this.$el.find('.list-container').addClass('hidden');
             } else {
                 this.$el.find('.list-container').removeClass('hidden');
