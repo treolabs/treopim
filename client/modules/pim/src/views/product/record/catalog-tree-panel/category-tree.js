@@ -198,11 +198,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
 
         setCategoryActive(id) {
             if (id) {
-                let category = this.$el.find(`.category[data-id="${id}"]`);
                 let panel = this.$el.parents('.category-panel');
                 panel.find('.category-buttons > button').removeClass('active');
-                panel.find('.category.active').removeClass('active');
-                category.addClass('active');
+                panel.find('li.child.active').removeClass('active');
+                this.$el.find(`li.child[data-id="${id}"]`).addClass('active');
             }
         },
 

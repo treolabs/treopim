@@ -28,6 +28,8 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         rootCategoriesIds: [],
 
+        catalogTreeData: null,
+
         events: {
             'click .category-buttons button[data-action="selectAll"]': function (e) {
                 this.selectCategoryButtonApplyFilter($(e.currentTarget), {type: 'anyOf'});
@@ -213,24 +215,25 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         },
 
         applyCategoryFilter(type, category) {
-            let data = {};
+            this.catalogTreeData = {};
             if (type === 'isEmpty') {
-                data.advanced = {
+                this.catalogTreeData.advanced = {
                     productCategories: {
                         type: 'isNotLinked',
                         data: {
                             type: type
-                        }
+                        },
+                        hidden: true
                     }
                 };
             } else if (type === 'anyOf' && category) {
-                data.bool = {
+                this.catalogTreeData.bool = {
+                    boolData: {
+                        linkedWithCategory: category.id
+                    },
                     linkedWithCategory: true
                 };
-                data.boolData = {
-                    linkedWithCategory: category.id
-                };
-                data.advanced = {
+                this.catalogTreeData.advanced = {
                     catalog: {
                         type: 'equals',
                         field: 'catalogId',
@@ -239,11 +242,12 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                             type: 'is',
                             idValue: category.catalogId,
                             nameValue: (this.catalogs.find(catalog => catalog.id === category.catalogId) || {}).name
-                        }
+                        },
+                        hidden: true
                     }
                 };
             }
-            this.trigger('select-category', data);
+            this.trigger('select-category', this.catalogTreeData);
         },
 
         selectCategoryButton(button) {

@@ -203,6 +203,29 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
             }
         },
 
+        updateCollection() {
+            const defaultFilters = this.searchManager.get();
+            const catalogTreeData = this.getCatalogTreeData();
+            let extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), catalogTreeData);
+            this.searchManager.set(extendedFilters);
+
+            Dep.prototype.updateCollection.call(this);
+
+            this.searchManager.set(defaultFilters);
+        },
+
+        getCatalogTreeData() {
+            let result = {};
+            const list = this.getParentView();
+            if (list) {
+                const treePanel = list.getView('catalogTreePanel');
+                if (treePanel && treePanel.catalogTreeData) {
+                    result = treePanel.catalogTreeData;
+                }
+            }
+            return result;
+        },
+
         resetFilters() {
             Dep.prototype.resetFilters.call(this);
 

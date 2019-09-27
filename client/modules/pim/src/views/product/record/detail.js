@@ -45,8 +45,6 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 view.render();
                 view.listenTo(view, 'select-category', data => {
                     debugger;
-                    // this.updateCollectionWithCatalogTree(data);
-                    // this.collection.fetch();
                 });
             });
         },
@@ -55,25 +53,6 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
             return _.extend({
                 isCatalogTreePanel: this.getAcl().check('Catalog', 'read') && this.getAcl().check('Category', 'read')
             }, Dep.prototype.data.call(this))
-        },
-
-        updateCollectionWithCatalogTree(data) {
-            let defaultFilters = this.searchManager.get();
-            let advanced = _.extend(Espo.Utils.cloneDeep(defaultFilters.advanced), data.advanced);
-            let bool = _.extend(Espo.Utils.cloneDeep(defaultFilters.bool), data.bool);
-            this.searchManager.set(_.extend(Espo.Utils.cloneDeep(defaultFilters), {advanced: advanced, bool: bool}));
-            this.collection.where = this.searchManager.getWhere();
-            let boolPart = this.collection.where.find(item => item.type === 'bool');
-            if (boolPart) {
-                let boolPartData = {};
-                boolPart.value.forEach(elem => {
-                    if (elem in data.boolData) {
-                        boolPartData[elem] = data.boolData[elem];
-                    }
-                });
-                boolPart.data = boolPartData;
-            }
-            this.searchManager.set(defaultFilters);
         },
 
         hotKeySave: function (e) {
