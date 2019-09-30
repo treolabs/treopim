@@ -37,16 +37,32 @@ class Category extends Base
     public function relate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
     {
         if ($relationName == 'pimImages') {
-            $image = $this->getEntityManager()->getEntity('PimImage');
+            // prepare image
+            if (empty($foreign->get('productId') && empty($foreign->get('categoryId')))) {
+                $image = $foreign;
+            } else {
+                $image = $this->getEntityManager()->getEntity('PimImage');
+            }
+
+            // set data
             $image->set(
                 [
                     'name'       => $foreign->get('name'),
+                    'productId'  => null,
                     'categoryId' => $entity->get('id'),
                     'imageId'    => $foreign->get('imageId'),
                     'imageName'  => $foreign->get('imageName'),
+                    'scope'      => 'Global'
                 ]
             );
+
+            // save
             $this->getEntityManager()->saveEntity($image);
+
+            // unrelate all previous channels
+            if (!$image->isNew()) {
+                $this->getEntityManager()->getRepository('PimImage')->unrelate($image, 'channels', true);
+            }
 
             return true;
         }
