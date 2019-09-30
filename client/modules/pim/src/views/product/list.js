@@ -39,9 +39,10 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
             }, view => {
                 view.render();
                 view.listenTo(view, 'select-category', data => {
+                    this.notify('Please wait...');
                     this.catalogTreeData = data || {};
                     this.updateCollectionWithCatalogTree();
-                    this.collection.fetch();
+                    this.collection.fetch().then(() => this.notify(false));
                 });
             });
         },

@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/record/search', 'views/record/search',
-    Dep => Dep.extend({
+Espo.define('pim:views/product/record/search', ['views/record/search', 'search-manager'],
+    (Dep, SearchManager) => Dep.extend({
 
         template: 'pim:product/record/search',
 
@@ -324,6 +324,7 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
         },
 
         createFilter: function (name, params, callback, noRender) {
+            debugger;
             if (((params || {}).fieldParams || {}).isAttribute) {
                 this.createAttributeFilter(name, params, callback);
             } else {

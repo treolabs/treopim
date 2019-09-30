@@ -86,6 +86,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             });
 
             this.listenTo(this, 'resetFilters', () => {
+                this.catalogTreeData = null;
                 this.selectCategoryButtonApplyFilter(this.$el.find('button[data-action="selectAll"]'), false);
             });
 
@@ -113,8 +114,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 }
             });
         },
-
-
 
         getFullEntity(url, params, callback, container) {
             if (url) {
@@ -228,10 +227,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 };
             } else if (type === 'anyOf' && category) {
                 this.catalogTreeData.bool = {
-                    boolData: {
-                        linkedWithCategory: category.id
-                    },
                     linkedWithCategory: true
+                };
+                this.catalogTreeData.boolData = {
+                    linkedWithCategory: category.id
                 };
                 this.catalogTreeData.advanced = {
                     catalog: {

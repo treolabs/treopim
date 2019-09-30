@@ -17,10 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
-    Dep => Dep.extend({
+Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'search-manager'],
+    (Dep, SearchManager) => Dep.extend({
 
         template: 'pim:product/record/detail',
+
+        catalogTreeData: null,
 
         setup() {
             Dep.prototype.setup.call(this);
@@ -44,7 +46,10 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
             }, view => {
                 view.render();
                 view.listenTo(view, 'select-category', data => {
-                    debugger;
+                    debugger
+                    //todo: route to list
+                    data;
+                    this;
                 });
             });
         },

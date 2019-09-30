@@ -83,7 +83,11 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             let catalogCollapse = this.$el.find('.collapse[class^="catalog-"]');
             catalogCollapse.collapse("show");
             let routes = (category.categoryRoute || '').split('|').filter(element => element);
-            catalogCollapse.find(`.collapse[data-id="${routes[0]}"]`).collapse('show');
+            if (routes.length) {
+                catalogCollapse.find(`.collapse[data-id="${routes[0]}"]`).collapse('show');
+            } else {
+                this.setCategoryActive(this.expandableCategory.id)
+            }
         },
 
         selectCategory(id) {
