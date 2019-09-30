@@ -28,7 +28,7 @@ Wenn die Änderungsverfolgung bei einem Feld einer Entität aktiviert ist, wird 
 
 Um die Änderungsverfolgung zu aktivieren, kontaktieren Sie bitte Ihren Administrator.
 
-Wenn die Standardfunktionen für die Änderungsverfolgung für Sie nicht ausreichen, nutzen Sie bitte unser Modul [Revisions]([https://treopim.com/de/shop/revisionen](https://treopim.com/de/shop/revisionen)). Das Modul wird Ihnen unter anderem erlauben, die alten Werte wiederherzustellen.
+Wenn die Standardfunktionen für die Änderungsverfolgung für Sie nicht ausreichen, nutzen Sie bitte unser Modul [Revisions](https://treopim.com/de/shop/revisionen). Das Modul wird Ihnen unter anderem erlauben, die alten Werte wiederherzustellen.
 
   
 
