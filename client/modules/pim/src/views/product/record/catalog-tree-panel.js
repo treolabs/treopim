@@ -78,6 +78,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 }, categories => {
                     this.categories = categories;
                     this.setupPanels();
+                    debugger
                     if (this.model) {
                         this.expandTreeWithProductCategory();
                     }

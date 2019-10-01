@@ -38,13 +38,15 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
                 scope: this.scope
             }, view => {
                 view.render();
-                view.listenTo(view, 'select-category', data => {
-                    this.notify('Please wait...');
-                    this.catalogTreeData = data || {};
-                    this.updateCollectionWithCatalogTree();
-                    this.collection.fetch().then(() => this.notify(false));
-                });
+                view.listenTo(view, 'select-category', data => this.sortCollectionWithCatalogTree(data));
             });
+        },
+
+        sortCollectionWithCatalogTree(data) {
+            this.notify('Please wait...');
+            this.catalogTreeData = Espo.Utils.cloneDeep(data || {});
+            this.updateCollectionWithCatalogTree();
+            this.collection.fetch().then(() => this.notify(false));
         },
 
         updateCollectionWithCatalogTree() {

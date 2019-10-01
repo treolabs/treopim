@@ -45,13 +45,25 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
                 model: this.model
             }, view => {
                 view.render();
-                view.listenTo(view, 'select-category', data => {
-                    debugger
-                    //todo: route to list
-                    data;
-                    this;
-                });
+                view.listenTo(view, 'select-category', data => this.navigateToList(data));
             });
+        },
+
+        navigateToList(data) {
+            this.catalogTreeData = Espo.Utils.cloneDeep(data || {});
+            const options = {
+                isReturn: true,
+                callback: this.expandCatalogTreeOnListView,
+                callbackData: data
+            };
+            this.getRouter().navigate(`#${this.scope}`);
+            this.getRouter().dispatch(this.scope, null, options);
+        },
+
+        expandCatalogTreeOnListView(list) {
+            const callbackData = (list.options.params || {}).callbackData || {};
+            list.sortCollectionWithCatalogTree(callbackData);
+            list.render();
         },
 
         data() {
