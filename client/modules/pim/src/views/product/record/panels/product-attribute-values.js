@@ -758,7 +758,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     const value = row.getView('valueField');
                     if (value.mode === 'edit') {
                         const fetchedData = value.fetch();
-                        if (!_.isEqual(this.initialAttributes[id], fetchedData)) {
+                        const initialData = this.initialAttributes[id];
+                        if (!_.isEqual(initialData, fetchedData) && (Object.keys(fetchedData).every(key => initialData[key] || fetchedData[key]))) {
                             data = _.extend(data || {}, {[id]: fetchedData});
                         }
                     }
