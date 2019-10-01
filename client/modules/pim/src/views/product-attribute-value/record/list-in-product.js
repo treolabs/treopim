@@ -72,7 +72,7 @@ Espo.define('pim:views/product-attribute-value/record/list-in-product', 'views/r
                 if (rowView) {
                     let fieldView = rowView.getView('valueField');
                     if (fieldView && fieldView.model && !fieldView.model.getFieldParam(fieldView.name, 'readOnly')
-                        && typeof fieldView.setMode === 'function' && !fieldView.readOnly && !fieldView.disabled) {
+                        && typeof fieldView.setMode === 'function') {
                         fieldView.setMode(mode);
                         fieldView.reRender();
                     }
