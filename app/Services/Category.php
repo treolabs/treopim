@@ -30,21 +30,6 @@ use Espo\Core\Exceptions\Forbidden;
 class Category extends AbstractService
 {
     /**
-     * @var array
-     */
-    protected $linkSelectParams
-        = [
-            'categoryImages' => [
-                'order' => 'ASC',
-                'orderBy' => 'category_image_category.sort_order',
-                'additionalColumns' => [
-                    'sortOrder' => 'sortOrder',
-                    'scope' => 'scope'
-                ]
-            ]
-        ];
-
-    /**
      * Get category entity
      *
      * @param string $id

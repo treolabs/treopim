@@ -99,13 +99,9 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
         $sql =
             "SELECT " . $select . " 
                 FROM product as p 
-                WHERE
-                    (SELECT COUNT(pi.id)
-                    FROM product_image AS pi
-                      JOIN 
-                      product_image_product AS pip ON pip.deleted = 0 AND pip.product_image_id = pi.id
-                    WHERE pi.deleted = 0 AND pip.product_id = p.id) = 0 
-                AND p.deleted = 0 AND p.type IN " . $this->getProductTypesCondition();
+                WHERE p.image_id IS NULL 
+                  AND p.deleted = 0 
+                  AND p.type IN " . $this->getProductTypesCondition();
 
         return $sql;
     }

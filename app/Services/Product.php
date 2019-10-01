@@ -36,21 +36,6 @@ use \PDO;
 class Product extends AbstractService
 {
     /**
-     * @var array
-     */
-    protected $linkSelectParams
-        = [
-            'productImages' => [
-                'order' => 'ASC',
-                'orderBy' => 'product_image_product.sort_order',
-                'additionalColumns' => [
-                    'sortOrder' => 'sortOrder',
-                    'scope' => 'scope'
-                ]
-            ]
-        ];
-
-    /**
      * @param \stdClass $data
      *
      * @return bool
