@@ -119,6 +119,8 @@ To edit the attribute, click the `Edit` button on the detail view page of the cu
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
+Besides, you can make changes in the attribute record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+
 Alternatively, make changes to the desired attribute record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the attributes list view page:
 
 ![Edit option](../../_assets/attributes/attribute-editing-popup.jpg)
@@ -141,7 +143,7 @@ Select the checkbox to unlink the attribute from other entities and click `Remov
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions drop-down menu to go to the attribute creation page and get all the values of the last chosen attribute record copied in the empty fields of the new attribute record to be created.
+Use the `Duplicate` option from the actions drop-down menu to go to the attribute creation page and get all the values of the last chosen attribute record copied in the empty fields of the new attribute record to be created. Modifying the attribute code is required, as this value has to be unique.
 
 
 

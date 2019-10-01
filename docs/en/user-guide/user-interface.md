@@ -12,14 +12,14 @@ The following elements make up the TreoPIM user interface:
 
 Within the TreoPIM system your information may be presented in various ways:
 
-- [**List View**](https://treopim.com/help/view-and-panels) – to view the lists of entity records.
-- [**Plate View**](https://treopim.com/help/view-and-panels) – to view entity records as plates.
-- [**Detail View**](https://treopim.com/help/view-and-panels) – to view the entity record details.
-- [**Create View**](https://treopim.com/help/view-and-panels) – to create a new entity record in the main window.
-- [**Edit View**](https://treopim.com/help/view-and-panels) – to edit the entity record.
-- [**Quick Detail View (pop-up)**](https://treopim.com/help/view-and-panels) – to view the record details in the pop-up window.
-- [**Quick Edit View (pop-up)**](https://treopim.com/help/view-and-panels) – to edit the record detail in the pop-up window.
-- [**Quick Create View**](https://treopim.com/help/view-and-panels) – to create a new entity record in the pop-up window.
+- [**List View**](https://treopim.com/help/views-and-panels) – to view the lists of entity records.
+- [**Plate View**](https://treopim.com/help/views-and-panels) – to view entity records as plates.
+- [**Detail View**](https://treopim.com/help/views-and-panels) – to view the entity record details.
+- [**Create View**](https://treopim.com/help/views-and-panels) – to create a new entity record in the main window.
+- [**Edit View**](https://treopim.com/help/views-and-panels) – to edit the entity record.
+- [**Quick Detail View (pop-up)**](https://treopim.com/help/views-and-panels) – to view the record details in the pop-up window.
+- [**Quick Edit View (pop-up)**](https://treopim.com/help/views-and-panels) – to edit the record detail in the pop-up window.
+- [**Quick Create View**](https://treopim.com/help/views-and-panels) – to create a new entity record in the pop-up window.
 
 ## Navigation Menu
 
@@ -73,7 +73,7 @@ To create new records from anywhere, click the quick create icon in the upper ri
 
 ![Quick Create](../../_assets/user-interface/quick-create.jpg)
 
-The [quick create view](https://treopim.com/help/view-and-panels) page will be opened.
+The [quick create view](https://treopim.com/help/views-and-panels) page will be opened.
 
 ## Breadcrumb Navigation
 

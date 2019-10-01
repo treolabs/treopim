@@ -19,23 +19,25 @@ The catalog entity comes with the following preconfigured fields; mandatory are 
 | Active					| Activity state of the catalog record          |
 | Name (multi-lang) *		| Catalog name                     |
 | Category *				| Category name this catalog must be assigned to            |
-| Description (multi-lang)  | Catalog description, i.e. the aim of this catalog usage    |
+| Description (multi-lang)  | Description of the catalog usage    |
 
 If you want to make changes to the catalog entity (e.g. add new fields, or modify catalog views), please contact your administrator.
 
 ## Creating 
 
-To create a new catalog, click `Catalogs` in the breadcrumb navigation or in the navigation menu to get to the catalogs [list view](#listing) and then click the `Create Catalog` button. The common creation window will open:
+To create a new catalog, click `Catalogs` in the breadcrumb navigation or in the navigation menu to get to the catalogs [list view](#listing), and then click the `Create Catalog` button. The common creation window will open:
 
 ![Catalog creation](../../_assets/catalogs/catalogs-create.jpg)
 
-Here enter the desired name for the catalog being created and activate it, if needed. Its code is automatically generated based on the entered name, but you can change it via the keyboard. The catalog description is an optional field and can be left empty.
+Here enter the desired name for the catalog being created and activate it, if needed. Its code is automatically generated based on the entered name, but you can change it via the keyboard. Also select the catalog owner and assigned user from the corresponding lists. The catalog description is an optional field and can be left empty.
 
 Please, consider giving your catalog a clear name that will help you quickly identify its destination and target audience.
 
-Click the `Save` button to finish the catalog creation or `Cancel` to abort the process.
+Click the `Save` button to finish the catalog creation or `Cancel` to abort the process. 
 
 If the catalog code is not unique, the error message will appear notifying you about it.
+
+The new record will be added to the catalogs list. You can configure it right away on the detail view page that opens or return to it later.
 
 Alternatively, use the quick create button on any TreoPIM page and fill in the required fields in the catalog creation pop-up that appears:
 
@@ -47,7 +49,7 @@ To open the list of catalogs available in the system, click the `Catalogs` optio
 
 ![Catalogs list view](../../_assets/catalogs/catalogs-list-view.jpg)
 
-By default the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for catalogs:
+By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for catalogs:
 
 - Name
 - Code
@@ -95,6 +97,8 @@ To edit the catalog, click the `Edit` button on the detail view page of the curr
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
+Besides, you can make changes in the catalog record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+
 You can also manage [categories](#categories) and [products](#products) related to the catalog. The details are given later in this article.
 
 Alternatively, make changes to the desired catalog record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the catalogs list view page:
@@ -119,7 +123,7 @@ Click the `Remove` button to complete the operation or `Cancel` to abort it.
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions menu to go to the catalog creation page and get all the values of the last chosen catalog record copied in the empty fields of the new catalog record to be created.
+Use the `Duplicate` option from the actions menu to go to the catalog creation page and get all the values of the last chosen catalog record copied in the empty fields of the new catalog record to be created. Modifying the catalog code is required, as this value has to be unique.
 
 As a result, the catalog is 100% duplicated together with all its products.
 
@@ -137,7 +141,7 @@ In the "Categories" pop-up that opens, choose the desired category (or categorie
 
 Please, note that only root categories should be linked to the catalogs, which means that all catalog products may have only those categories that are related to the selected category tree(s).
 
-You can also create new categories to be linked to the currently open catalog. To do this, click the `+` button on the `CATEGORIES` panel and fill in the required fields in the category creation pop-up that appears:
+You can also create new categories to be linked to the currently open catalog. To do this, click the `+` button on the `CATEGORIES` panel and enter the necessary data in the category creation pop-up that appears:
 
 ![Creating categories](../../_assets/catalogs/catalogs-create-category.jpg)
 
@@ -149,19 +153,23 @@ Categories linked to the given catalog can be viewed, edited, unlinked or remove
 
 ### Products
 
-A list of products linked to the catalog, if any, is displayed on the `PRODUCTS` panel.
+Products that are linked to the catalog are displayed on its detail view page on the `PRODUCTS` panel and include the following table columns:
+ - Name
+ - SKU
+ - Type
+ - Active
 
-To see all products available in the given catalog, use the `Show full list` button:
+![Catalog products](../../_assets/catalogs/catalog-products.jpg)
+
+To see all products linked to the given catalog, use the `Show full list` option:
 
 ![Catalog products](../../_assets/catalogs/show-full-option.jpg)
 
-Then the "Products" page opens, where all product records [filtered](https://treopim.com/de/hilfe/search-and-filtering) by the given catalog are displayed:
+Then the "Products" page opens, where all product records [filtered](https://treopim.com/help/search-and-filtering) by the given catalog are displayed:
 
 ![Products full list](../../_assets/catalogs/products-full-list.jpg)
 
-
-
-
+To view the catalog related product, click its name in the products list. The [detail view](https://treopim.com/help/views-and-panels) page of the given product will open, where you can perform further actions according to your access rights, configured by the administrator. 
 
 
 

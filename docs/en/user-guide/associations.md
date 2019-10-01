@@ -80,6 +80,8 @@ To edit the association, click the `Edit` button on the detail view page of the 
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
+Besides, you can make changes in the association record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+
 Alternatively, make changes to the desired association record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the associations list view page:
 
 ![Edit option](../../_assets/associations/association-editing-popup.jpg)
@@ -98,7 +100,7 @@ By default, it is not possible to remove the association, if there is any produc
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions drop-down menu to go to the association creation page and get all the values of the last chosen association record copied in the empty fields of the new association record to be created.
+Use the `Duplicate` option from the actions drop-down menu to go to the association creation page and get all the values of the last chosen association record copied in the empty fields of the new association record to be created. Modifying the association code is required, as this value has to be unique.
 
 ## Working with Associated Products
 

@@ -28,7 +28,7 @@ If you want to make changes to the associated product entity, e.g. add new field
 
 ## Creating
 
-To create a new associated product record, click `Associated Products` in the breadcrumb navigation or in the navigation menu to get to the associated products [list view](#listing) and then click the `Create Associated Product` button. The common creation  pop-up will appear:
+To create a new associated product record, click `Associated Products` in the breadcrumb navigation or in the navigation menu to get to the associated products [list view](#listing), and then click the `Create Associated Product` button. The common creation  pop-up will appear:
 
 ![Associated product creation](../../_assets/associated-products/ap-create-popup.jpg)
 
