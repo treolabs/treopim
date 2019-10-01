@@ -4,7 +4,7 @@ TreoPIM is a single page application (SPA) with an API-centric architecture and 
 
 TreoPIM is developed and supported by [TreoLabs GmbH](https://treolabs.com).
 
-# Main Definitions
+## Main Definitions
 
 [**Locale**](https://treopim.com/store/multi-language-and-local-fields) – a combination of a language (i.e. German, English) and a country/region (i.e. Germany, United Kingdom, the U.S.A.) preferred to be used in the interface. For instance, German German is marked as "de_DE", Austrian German is marked as "de_AT", UK English is marked as "en_GB" and so on. You can use one or more locales in the system. 
 
@@ -32,9 +32,9 @@ This functionality is enabled when the  **"Multi-languages"** module is installe
 
 **Dashboard** – a collection of data displayed in a graphical or table layout as widgets. Dashboards allow users to have all the important information grouped by a certain type or nature in one single place. Every user can have several dashboards.
 
-# Main Concepts
+## Main Concepts
 
-## Concept of Entity
+### Concept of Entity
 
 An entity is any singular, identifiable and separate object or unit of data that can be classified and have stated relationships to other entities. The entities are used to model and manage business data. For example, in TreoPIM the following entities are used: Products, Categories, Product Images, Channels, Attributes, Attribute Groups, Product Families, etc. 
 
@@ -42,20 +42,20 @@ An entity has a set of attributes, and each attribute represents a data item of 
 
 The entities are divided into three categories: system (hidden from Administrator), business and custom (both available for Administrator). Administrators, working with your business data, can create new custom entities or modify existing business or custom entities, set relations between the entities. In TreoPIM it is possible to set business and custom entities and attributes to be either customisable or non-customisable. You can modify a customisable entity by renaming it, adding new attributes, deleting or changing attributes. You cannot modify a non-customisable entity. Developers can change everything.
 
-## Concept of Record Deletion
+### Concept of Record Deletion
 
 All records always remain physically present in the database. The state of the record, whether it is deleted or not, is defined by the  "isDeleted" system attribute. All records where the "isDeleted" attribute is true are not visible for the user, as if they were deleted.
 
 Only Developer can recover the deleted records.
 
-> Please note, if changes in the data structure occur, no data for removed fields can be recovered from the database any more.
+Please note, if changes in the data structure occur, no data for removed fields can be recovered from the database any more.
 
-## Concept of Activeness
+### Concept of Activeness
 
 It is possible to define for each entity in the system whether their records can be activated and deactivated.
 
 Deactivated records cannot be in relation to any other entities. They are available for search only in the UI of that very entity; in all other interfaces they are not visible.
 
-## Concept of Data Auditing
+### Concept of Data Auditing
 
 Each entity field can be set to be audited or not. When this option is activated, all the changes made to the field value for a certain record are logged and shown in the activity stream as follows: old value, new value, who has made the change and when. 
