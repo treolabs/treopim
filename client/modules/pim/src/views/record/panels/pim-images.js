@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/record/panels/pim-images', 'views/record/panels/relationship',
+Espo.define('pim:views/record/panels/pim-images', 'views/record/panels/relationship',
     Dep => Dep.extend({
 
         boolFilterData: {
@@ -43,6 +43,8 @@ Espo.define('pim:views/product/record/panels/pim-images', 'views/record/panels/r
                     primaryFilterName: this.defs.selectPrimaryFilterName || null
                 };
             }
+
+            this.listenTo(this.collection, 'sync', () => this.model.fetch());
         },
 
         getSelectBoolFilterList() {

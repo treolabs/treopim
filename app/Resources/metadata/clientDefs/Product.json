@@ -90,7 +90,7 @@
       "selectAction": "selectRelatedEntity"
     },
     "pimImages": {
-      "view": "pim:views/product/record/panels/pim-images",
+      "view": "pim:views/record/panels/pim-images",
       "layout": "listSmallForRelate",
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "selectAction": "selectRelatedEntity",
