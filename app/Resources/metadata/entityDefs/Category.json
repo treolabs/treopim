@@ -86,21 +86,9 @@
       "importDisabled": true
     },
     "image": {
-      "layoutFiltersDisabled": true,
-      "notStorable": true,
       "type": "image",
       "previewSize": "medium",
-      "readOnly": true,
-      "importDisabled": true,
-      "view": "pim:views/category/fields/image"
-    },
-    "categoryImages": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
-      "noLoad": true
+      "readOnly": true
     },
     "hasChildren": {
       "type": "bool",
@@ -170,11 +158,10 @@
       "entity": "Category",
       "disableMassRelation": true
     },
-    "categoryImages": {
-      "type": "hasMany",
-      "relationName": "categoryImageCategory",
-      "foreign": "categories",
-      "entity": "CategoryImage"
+    "image": {
+      "type": "belongsTo",
+      "entity": "Attachment",
+      "skipOrmDefs": true
     },
     "catalogs": {
       "type": "hasMany",

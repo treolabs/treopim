@@ -7,7 +7,6 @@
     "categoryParent": "Parent Category",
     "categories": "Categories",
     "channels": "Channels",
-    "categoryImages": "Category Images",
     "image": "Main Image",
     "categoryRouteName": "Сategory Tree",
     "scope": "Scope",
@@ -18,7 +17,6 @@
     "categoryParent": "Parent Category",
     "categories": "Categories",
     "channels": "Channels",
-    "categoryImages": "Category Images",
     "catalogs": "Catalogs",
     "productCategories": "Product Categories"
   },

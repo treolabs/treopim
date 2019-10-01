@@ -5,7 +5,6 @@
     "code": "Code",
     "categories": "Kategorien",
     "channels": "Kanäle",
-    "categoryImages": "Kategoriebilder",
     "categoryParent": "Hauptkategorie",
     "image": "Hauptbild",
     "categoryRouteName": "Kategoriebaum",
@@ -29,7 +28,6 @@
   "links": {
     "categories": "Kategorien",
     "channels": "Kanäle",
-    "categoryImages": "Kategoriebilder",
     "categoryParent": "Hauptkategorie",
     "categoryRoot": "Stammkategorie",
     "createdBy": "erstellt von",

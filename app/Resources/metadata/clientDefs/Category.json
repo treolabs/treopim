@@ -35,20 +35,6 @@
     "detail": "pim:views/category/record/detail"
   },
   "relationshipPanels": {
-    "categoryImages": {
-      "view": "pim:views/category/record/panels/category-images",
-      "recordListView": "pim:views/category-image/record/list-in-category",
-      "modalDetailView": "pim:views/category-image/modals/detail-in-category",
-      "modalEditView": "pim:views/category-image/modals/edit-in-category",
-      "layout": "listForCategoryImagesInCategory",
-      "detailLayout": "detailForCategoryImagesInCategory",
-      "createAction": "createRelatedCategoryImage",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "notLinkedWithCategory"
-      ],
-      "recordsPerPage": 200
-    },
     "pimImages": {
       "view": "pim:views/product/record/panels/pim-images",
       "layout": "listSmallForRelate",

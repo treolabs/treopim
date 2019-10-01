@@ -61,6 +61,30 @@ class PimImage extends Base
     /**
      * @inheritDoc
      */
+    public function afterSave(Entity $entity, array $options = [])
+    {
+        // call parent
+        parent::afterSave($entity, $options);
+
+        // update main image
+        $this->updateMainImage($entity);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterRemove(Entity $entity, array $options = [])
+    {
+        // call parent
+        parent::afterRemove($entity, $options);
+
+        // update main image
+        $this->updateMainImage($entity);
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function init()
     {
         parent::init();
@@ -130,5 +154,40 @@ class PimImage extends Base
             ->count();
 
         return empty($count);
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    protected function updateMainImage(Entity $entity): bool
+    {
+        if (!empty($foreign = $entity->get('product'))) {
+        } elseif (!empty($foreign = $entity->get('category'))) {
+        } else {
+            return false;
+        }
+
+        // find first image
+        $first = $this
+            ->select(['imageId'])
+            ->where([lcfirst($foreign->getEntityName()) . 'Id' => $foreign->get('id')])
+            ->order('sortOrder')
+            ->findOne();
+
+        // prepare image id
+        $imageId = empty($first) ? null : $first->get('imageId');
+
+        // update main image if it needs
+        if ($imageId != $foreign->get('imageId')) {
+            // set image
+            $foreign->set('imageId', $imageId);
+
+            // save
+            $this->getEntityManager()->saveEntity($foreign);
+        }
+
+        return true;
     }
 }
