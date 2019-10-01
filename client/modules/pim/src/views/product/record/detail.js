@@ -20,6 +20,8 @@
 Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
     Dep => Dep.extend({
 
+        notSavedFields: ['image'],
+
         setup() {
             Dep.prototype.setup.call(this);
 
@@ -138,6 +140,11 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
         },
 
         save(callback, skipExit) {
+            (this.notSavedFields || []).forEach(field => {
+                const keys = this.getFieldManager().getAttributeList(this.model.getFieldType(field), field);
+                keys.forEach(key => delete this.model.attributes[key]);
+            });
+
             this.beforeBeforeSave();
 
             let data = this.fetch();
