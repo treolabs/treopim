@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
-use Espo\ORM\Entity;
 use Espo\Core\Templates\Repositories\Base;
 
 /**
@@ -31,42 +30,4 @@ use Espo\Core\Templates\Repositories\Base;
  */
 class Category extends Base
 {
-    /**
-     * @inheritDoc
-     */
-    public function relate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
-    {
-        if ($relationName == 'pimImages') {
-            // prepare image
-            if (empty($foreign->get('productId') && empty($foreign->get('categoryId')))) {
-                $image = $foreign;
-            } else {
-                $image = $this->getEntityManager()->getEntity('PimImage');
-            }
-
-            // set data
-            $image->set(
-                [
-                    'name'       => $foreign->get('name'),
-                    'productId'  => null,
-                    'categoryId' => $entity->get('id'),
-                    'imageId'    => $foreign->get('imageId'),
-                    'imageName'  => $foreign->get('imageName'),
-                    'scope'      => 'Global'
-                ]
-            );
-
-            // save
-            $this->getEntityManager()->saveEntity($image);
-
-            // unrelate all previous channels
-            if (!$image->isNew()) {
-                $this->getEntityManager()->getRepository('PimImage')->unrelate($image, 'channels', true);
-            }
-
-            return true;
-        }
-
-        return parent::relate($entity, $relationName, $foreign, $data, $options);
-    }
 }

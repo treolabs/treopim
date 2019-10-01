@@ -21,15 +21,13 @@
 namespace Pim\Services;
 
 use Espo\Core\Exceptions\Forbidden;
-use Espo\Core\Templates\Services\Base;
-use Espo\ORM\EntityCollection;
 
 /**
  * Service of Category
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Category extends Base
+class Category extends AbstractService
 {
     /**
      * @var array

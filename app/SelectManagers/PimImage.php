@@ -46,17 +46,20 @@ class PimImage extends AbstractSelectManager
                 $id = (string)$row['data']['pimImageRelation']['id'];
 
                 // prepare sql
-                $sql = "SELECT id FROM pim_image WHERE deleted=0 AND image_id NOT IN (SELECT DISTINCT image_id FROM pim_image WHERE $field='$id' AND deleted=0) GROUP BY image_id";
+                $sql = "SELECT id, image_id FROM pim_image WHERE image_id NOT IN (SELECT image_id FROM pim_image WHERE $field='$id' AND deleted=0)";
 
                 // get ids
                 $sth = $this->getEntityManager()->getPDO()->prepare($sql);
                 $sth->execute();
-                $ids = array_column($sth->fetchAll(\PDO::FETCH_ASSOC), 'id');
+                $ids = array_column($sth->fetchAll(\PDO::FETCH_ASSOC), 'id', 'image_id');
 
                 // prepare where clause
                 $result['whereClause'][] = [
-                    'id' => $ids
+                    'id' => array_values($ids)
                 ];
+
+                // enable withDeleted param
+                $result['withDeleted'] = true;
             }
         }
     }

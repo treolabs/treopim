@@ -125,43 +125,4 @@ class Product extends Base
 
         return true;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function relate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
-    {
-        if ($relationName == 'pimImages') {
-            // prepare image
-            if (empty($foreign->get('productId') && empty($foreign->get('categoryId')))) {
-                $image = $foreign;
-            } else {
-                $image = $this->getEntityManager()->getEntity('PimImage');
-            }
-
-            // set data
-            $image->set(
-                [
-                    'name'       => $foreign->get('name'),
-                    'productId'  => $entity->get('id'),
-                    'categoryId' => null,
-                    'imageId'    => $foreign->get('imageId'),
-                    'imageName'  => $foreign->get('imageName'),
-                    'scope'      => 'Global'
-                ]
-            );
-
-            // save
-            $this->getEntityManager()->saveEntity($image);
-
-            // unrelate all previous channels
-            if (!$image->isNew()) {
-                $this->getEntityManager()->getRepository('PimImage')->unrelate($image, 'channels', true);
-            }
-
-            return true;
-        }
-
-        return parent::relate($entity, $relationName, $foreign, $data, $options);
-    }
 }
