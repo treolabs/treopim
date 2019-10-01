@@ -54,7 +54,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 this.selectCategory($(e.currentTarget).data('id'));
             }
         },
-        
+
         data() {
             return {
                 catalog: this.options.catalog,
@@ -71,10 +71,15 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         expandCategoryHandler(category) {
-            if (this.$el.size()) {
-                this.expandCategory(category);
-            } else {
-                this.listenTo(this, 'after:render', () => this.expandCategory(category));
+            if (typeof category === 'string') {
+                category = this.categories.find(item => item.id === category);
+            }
+            if (category) {
+                if (this.$el.size()) {
+                    this.expandCategory(category);
+                } else {
+                    this.listenTo(this, 'after:render', () => this.expandCategory(category));
+                }
             }
         },
 

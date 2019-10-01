@@ -57,7 +57,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 this.catalogs = catalogs;
                 this.rootCategoriesIds = this.getRootCategoriesIds();
                 this.getFullEntity('Category', {
-                    select: 'name,categoryParentId',
+                    select: 'name,categoryParentId,categoryRoute',
                     where: [
                         {
                             type: 'or',
@@ -78,7 +78,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 }, categories => {
                     this.categories = categories;
                     this.setupPanels();
-                    debugger
                     if (this.model) {
                         this.expandTreeWithProductCategory();
                     }
