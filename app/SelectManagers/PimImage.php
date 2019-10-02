@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
-use Treo\Core\Utils\Util;
 
 /**
  * Class PimImage
@@ -40,26 +39,33 @@ class PimImage extends AbstractSelectManager
         foreach ($this->getSelectData('where') as $row) {
             if ($row['type'] == 'bool' && !empty($row['data']['pimImageRelation'])) {
                 // prepare field
-                $field = Util::toUnderScore(lcfirst($row['data']['pimImageRelation']['scope']) . 'Id');
+                $field = lcfirst($row['data']['pimImageRelation']['scope']) . 'Id';
 
                 // prepare id
                 $id = (string)$row['data']['pimImageRelation']['id'];
 
-                // prepare sql
-                $sql = "SELECT id, image_id FROM pim_image WHERE image_id NOT IN (SELECT image_id FROM pim_image WHERE $field='$id' AND deleted=0)";
+                // prepare repository
+                $repository = $this->getEntityManager()->getRepository('PimImage');
 
-                // get ids
-                $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-                $sth->execute();
-                $ids = array_column($sth->fetchAll(\PDO::FETCH_ASSOC), 'id', 'image_id');
+                // get linked images
+                $linked = $repository
+                    ->select(['imageId'])
+                    ->distinct()
+                    ->where([$field => $id])
+                    ->find()
+                    ->toArray();
+
+                // get data
+                $data = $repository
+                    ->select(['id', 'imageId'])
+                    ->where(['imageId!=' => array_column($linked, 'imageId')])
+                    ->find()
+                    ->toArray();
 
                 // prepare where clause
                 $result['whereClause'][] = [
-                    'id' => array_values($ids)
+                    'id' => array_values(array_column($data, 'id', 'imageId'))
                 ];
-
-                // enable withDeleted param
-                $result['withDeleted'] = true;
             }
         }
     }

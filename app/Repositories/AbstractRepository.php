@@ -49,4 +49,27 @@ abstract class AbstractRepository extends Base
             }
         }
     }
+
+    /**
+     * @param Entity $entity
+     * @param mixed  $foreign
+     * @param mixed  $data
+     * @param array  $options
+     */
+    public function relatePimImages(Entity $entity, $foreign, $data, array $options = [])
+    {
+        // prepare image
+        $image = $this->getEntityManager()->getRepository('PimImage')->get();
+
+        // set data
+        $image->set('name', $foreign->get('name'));
+        $image->set('imageId', $foreign->get('imageId'));
+        $image->set('imageName', $foreign->get('imageName'));
+        $image->set(lcfirst($entity->getEntityName()) . 'Id', $entity->get('id'));
+
+        // save
+        $this->getEntityManager()->saveEntity($image);
+
+        return true;
+    }
 }

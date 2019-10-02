@@ -36,38 +36,6 @@ use Treo\Core\Utils\Util;
 abstract class AbstractService extends Base
 {
     /**
-     * @inheritDoc
-     */
-    public function linkEntity($id, $link, $foreignId)
-    {
-        if ($link == 'pimImages' && in_array($this->entityName, ['Product', 'Category'])) {
-            // prepare repository
-            $repository = $this->getEntityManager()->getRepository('PimImage');
-
-            // get foreign
-            if (empty($foreign = $repository->where(['id' => $foreignId])->findOne(['withDeleted' => true]))) {
-                throw new NotFound();
-            }
-
-            // prepare image
-            $image = $repository->get();
-
-            // set data
-            $image->set('name', $foreign->get('name'));
-            $image->set('imageId', $foreign->get('imageId'));
-            $image->set('imageName', $foreign->get('imageName'));
-            $image->set(lcfirst($this->entityName) . 'Id', $id);
-
-            // save
-            $this->getEntityManager()->saveEntity($image);
-
-            return true;
-        }
-
-        return parent::linkEntity($id, $link, $foreignId);
-    }
-
-    /**
      * Get ACL "where" SQL
      *
      * @param string $entityName
