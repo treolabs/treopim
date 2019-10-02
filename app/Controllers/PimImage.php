@@ -20,13 +20,15 @@
 
 declare(strict_types=1);
 
-namespace Pim\Repositories;
+namespace Pim\Controllers;
+
+use Espo\Core\Templates\Controllers\Base;
 
 /**
- * Class Category
+ * Class PimImage
  *
  * @author r.ratsun@treolabs.com
  */
-class Category extends AbstractRepository
+class PimImage extends Base
 {
 }

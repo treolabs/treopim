@@ -1,7 +1,6 @@
 {
   "fields": {
     "categories": "Categories",
-    "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
     "productAttributeValues": "Product Attributes",
@@ -39,7 +38,6 @@
   },
   "links": {
     "categories": "Product Categories",
-    "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
     "productAttributeValues": "Product Attributes",
@@ -68,7 +66,6 @@
     "Channels": "Channels",
     "Product Channel Attributes": "Channel Attributes",
     "Associated Products": "Associated Products",
-    "Image": "Images",
     "withoutAnyCategory": "Without Any Category",
     "typeCategoryToSearch": "Type category to search...",
     "No Group": "No Group",

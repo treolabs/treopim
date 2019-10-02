@@ -7,12 +7,10 @@
     "name": "image"
   },
   {
-    "name": "code"
+    "name": "scope"
   },
   {
-    "name": "categoryRouteName"
-  },
-  {
-    "name": "isActive"
+    "name": "channels",
+    "notSortable": true
   }
 ]

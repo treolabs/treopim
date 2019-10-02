@@ -20,13 +20,19 @@
 
 declare(strict_types=1);
 
-namespace Pim\Repositories;
+namespace Pim\Entities;
+
+use Espo\Core\Templates\Entities\Base;
 
 /**
- * Class Category
+ * Class PimImage
  *
- * @author r.ratsun@treolabs.com
+ * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Category extends AbstractRepository
+class PimImage extends Base
 {
+    /**
+     * @var string
+     */
+    protected $entityType = 'PimImage';
 }
