@@ -21,6 +21,7 @@
 namespace Pim\Listeners;
 
 use Espo\Core\Utils\Util;
+use stdClass;
 use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
 
@@ -49,6 +50,23 @@ class ProductImageController extends AbstractListener
             $data->name = $name;
 
             $event->setArgument('data', $data);
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function afterActionRead(Event $event): void
+    {
+        $result = $event->getArgument('result');
+
+        if ($result->productsColumns instanceof StdClass && isset($result->productsColumns)) {
+            foreach ($result->productsColumns as &$product) {
+                if ($product->sortOrder === null) {
+                    unset($product->sortOrder);
+                }
+            }
+            $event->setArgument('result', $result);
         }
     }
 }
