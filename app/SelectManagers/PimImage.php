@@ -45,7 +45,9 @@ class PimImage extends AbstractSelectManager
                 $id = (string)$row['data']['pimImageRelation']['id'];
 
                 // prepare repository
-                $repository = $this->getEntityManager()->getRepository('PimImage');
+                $repository = $this
+                    ->getEntityManager()
+                    ->getRepository('PimImage');
 
                 // get linked images
                 $linked = $repository
@@ -62,9 +64,12 @@ class PimImage extends AbstractSelectManager
                     ->find()
                     ->toArray();
 
+                // prepare ids
+                $ids = array_values(array_column($data, 'id', 'imageId'));
+
                 // prepare where clause
                 $result['whereClause'][] = [
-                    'id' => array_values(array_column($data, 'id', 'imageId'))
+                    'id' => $ids
                 ];
             }
         }

@@ -48,10 +48,14 @@ class PimImage extends Base
         }
 
         // set entity name
-        $entity->set('name', $entity->get('imageName'));
+        if (empty($entity->get('name'))) {
+            $entity->set('name', $entity->get('imageName'));
+        }
 
         // set sort order
-        $entity->set('sortOrder', time());
+        if (empty($entity->get('sortOrder'))) {
+            $entity->set('sortOrder', time());
+        }
 
         if (!$this->isUnique($entity)) {
             throw new BadRequest('Such record already exists');
@@ -141,17 +145,23 @@ class PimImage extends Base
      */
     protected function isUnique(Entity $entity): bool
     {
+        // prepare where
+        $where = [
+            'id!='       => $entity->get('id'),
+            'categoryId' => $entity->get('categoryId'),
+            'productId'  => $entity->get('productId')
+        ];
+        if ($entity->get('type') == 'Link') {
+            $where['link'] = $entity->get('link');
+        }
+        if ($entity->get('type') == 'File') {
+            $where['imageId'] = $entity->get('imageId');
+        }
+
         $count = $this
             ->getEntityManager()
             ->getRepository('PimImage')
-            ->where(
-                [
-                    'id!='       => $entity->get('id'),
-                    'categoryId' => $entity->get('categoryId'),
-                    'productId'  => $entity->get('productId'),
-                    'imageId'    => $entity->get('imageId')
-                ]
-            )
+            ->where($where)
             ->count();
 
         return empty($count);
