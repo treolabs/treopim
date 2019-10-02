@@ -115,26 +115,4 @@ class Category extends AbstractSelectManager
             $result['whereClause'][] = ['id!=' => array_column($productCategories, 'categoryId')];
         }
     }
-
-    /**
-     * @param $result
-     */
-    protected function boolFilterHasNoChildCategory(&$result)
-    {
-        // prepare parent categories ids
-        $parentCategories = $this
-            ->getEntityManager()
-            ->getRepository('Category')
-            ->distinct()
-            ->select(['id'])
-            ->join('categories')
-            ->find()
-            ->toArray();
-
-        if (!empty($parentCategories)) {
-            $result['whereClause'][] = [
-                'id!=' => array_column($parentCategories, 'id')
-            ];
-        }
-    }
 }

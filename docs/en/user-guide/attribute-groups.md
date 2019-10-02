@@ -17,7 +17,7 @@ If you want to make changes to the attribute group entity (e.g. add new fields, 
 
 ## Creating
 
-To create a new attribute group record, click `Attribute Groups` in the breadcrumb navigation or in the navigation menu to get to the attribute groups [list view](#listing) and then click the `Create Attribute Group` button. The common creation window will open:
+To create a new attribute group record, click `Attribute Groups` in the breadcrumb navigation or in the navigation menu to get to the attribute groups [list view](#listing), and then click the `Create Attribute Group` button. The common creation window will open:
 
 ![AG creation](../../_assets/attribute-groups/ag-create.jpg)
 
@@ -78,6 +78,8 @@ To edit the attribute group, click the `Edit` button on the detail view page of 
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
+Besides, you can make changes in the attribute group record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+
 Alternatively, make changes to the desired attribute group record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the attribute groups list view page:
 
 ![Editing pop-up](../../_assets/attribute-groups/ag-editing-popup.jpg)
@@ -96,7 +98,7 @@ If you are removing the attribute group that contains related attributes, these 
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions menu to go to the attribute group creation page and get all the values of the last chosen attribute group record copied in the empty fields of the new attribute group record to be created.
+Use the `Duplicate` option from the actions menu to go to the attribute group creation page and get all the values of the last chosen attribute group record copied in the empty fields of the new attribute group record to be created. Modifying the attribute group code is required, as this value has to be unique.
 
 ## Working with Attributes, Related to the Attribute Group
 

@@ -20,6 +20,8 @@
 Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
     Dep => Dep.extend({
 
+        notSavedFields: ['image'],
+
         setup() {
             Dep.prototype.setup.call(this);
 
@@ -105,7 +107,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
             let panels = this.getBottomPanels();
             if (panels) {
                 for (let panel in panels) {
-                    if (typeof panels[panel].fetch === 'function') {
+                    if (typeof panels[panel].panelFetch === 'function') {
                         changes = panels[panel].panelFetch() || changes;
                     }
                 }
@@ -138,6 +140,11 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
         },
 
         save(callback, skipExit) {
+            (this.notSavedFields || []).forEach(field => {
+                const keys = this.getFieldManager().getAttributeList(this.model.getFieldType(field), field);
+                keys.forEach(key => delete this.model.attributes[key]);
+            });
+
             this.beforeBeforeSave();
 
             let data = this.fetch();
@@ -181,8 +188,6 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 }
             }
 
-            model.set(attrs, {silent: true});
-
             let beforeSaveGridPackages = false;
             if (gridPackages && packageView) {
                 let gridModel = packageView.getView('grid').model;
@@ -201,17 +206,13 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 return;
             }
 
+            let changesFromPanels = this.handlePanelsFetch();
+
             if (this.validatePanels()) {
                 this.trigger('cancel:save');
                 this.afterNotValid();
                 return;
             }
-
-            if (gridPackages && packageView) {
-                packageView.save();
-            }
-
-            let changesFromPanels = this.handlePanelsFetch();
 
             this.handlePanelsSave();
 
@@ -219,6 +220,12 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 this.afterNotModified(gridPackages || changesFromPanels);
                 this.trigger('cancel:save');
                 return true;
+            }
+
+            model.set(attrs, {silent: true});
+
+            if (gridPackages && packageView) {
+                packageView.save();
             }
 
             this.beforeSave();

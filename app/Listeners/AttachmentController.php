@@ -1,4 +1,5 @@
-/*
+<?php
+/**
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -17,27 +18,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/category/record/detail', 'views/record/detail',
-    Dep => Dep.extend({
+declare(strict_types=1);
 
-        notSavedFields: ['image'],
+namespace Pim\Listeners;
 
-        setup() {
-            Dep.prototype.setup.call(this);
+use Treo\Listeners\AbstractListener;
+use Treo\Core\EventManager\Event;
 
-            this.listenTo(this, 'after:save', () => this.model.fetch());
-        },
+/**
+ * Class CatalogController
+ *
+ * @author m.kokhanskyi <m.kokhanskyi@treolabs.com>
+ */
+class AttachmentController extends AbstractListener
+{
+    /**
+     * @var string
+     */
+    protected $entityType = 'Attachment';
 
-        save(callback, skipExit) {
-            (this.notSavedFields || []).forEach(field => {
-                const keys = this.getFieldManager().getAttributeList(this.model.getFieldType(field), field);
-                keys.forEach(key => delete this.model.attributes[key]);
-            });
+    /**
+     * @param Event $event
+     */
+    public function beforeActionCreate(Event $event)
+    {
+        $data = $event->getArgument('data');
 
-            Dep.prototype.save.call(this, callback, skipExit);
-
+        if ($data->relatedType == 'ProductAttributeValue') {
+            $data->field = 'image';
         }
 
-    })
-);
-
+       $event->setArgument('data', $data);
+    }
+}

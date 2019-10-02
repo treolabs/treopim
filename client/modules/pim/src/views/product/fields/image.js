@@ -26,7 +26,7 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
 
         imageName: null,
 
-        sizeImage:{
+        sizeImage: {
             'x-small': [64, 64],
             'small': [128, 128],
             'medium': [256, 256],
@@ -86,6 +86,13 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
                     })
             }
         },
+
+        data() {
+            return _.extend({}, Dep.prototype.data.call(this), {
+                valueIsSet: true
+            });
+        },
+
         getValueForDisplay() {
             let imageSize = [];
 

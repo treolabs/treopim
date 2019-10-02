@@ -49,7 +49,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         events: _.extend({
-            'click [data-action="unlinkAttributeGroup"]': function(e) {
+            'click [data-action="unlinkAttributeGroup"]': function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 let data = $(e.currentTarget).data();
@@ -289,6 +289,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 dialog.render();
                 this.notify(false);
                 dialog.once('select', selectObj => {
+                    this.notify('Loading...');
                     if (!Array.isArray(selectObj)) {
                         return;
                     }
@@ -464,7 +465,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     this.setGroupCollectionDefs(group, collection);
 
                     this.listenTo(collection, 'sync', () => {
-                        this.initialAttributes = this.getAttributesValues();
+                        this.initialAttributes = this.getInitialAttributes();
                         this.model.trigger('attributes-updated');
                         collection.models.sort((a, b) => a.get('sortOrder') - b.get('sortOrder'));
                         if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
@@ -648,8 +649,11 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         actionRefresh() {
+            Object.keys(this.nestedViews).forEach(view => this.clearView(view));
             this.getMetadata().fetch();
-            this.fetchCollectionGroups(() => this.reRender());
+            this.fetchCollectionGroups(() => {
+                this.reRender();
+            });
         },
 
         unlinkAttributeGroup(data) {
@@ -702,7 +706,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         setEditMode() {
-            this.initialAttributes = this.getAttributesValues();
+            this.initialAttributes = this.getInitialAttributes();
 
             const groupsRendered = this.groups.every(group => {
                 const groupView = this.getView(group.key);
@@ -726,13 +730,21 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             }
         },
 
-        getAttributesValues() {
+        cancelEdit() {
+            this.actionRefresh();
+        },
+
+        getInitialAttributes() {
             const data = {};
             this.collection.forEach(model => {
                 const modelData = {};
                 const actualFields = this.getFieldManager().getActualAttributeList(model.get('attributeType'), 'value');
                 actualFields.forEach(field => _.extend(modelData, {[field]: model.get(field)}));
-                data[model.id] = modelData;
+                const additionalData = model.get('data');
+                if (additionalData) {
+                    modelData.data = additionalData;
+                }
+                data[model.id] = Espo.Utils.cloneDeep(modelData);
             });
             return data;
         },
@@ -744,9 +756,12 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 (groupView.rowList || []).forEach(id => {
                     const row = groupView.getView(id);
                     const value = row.getView('valueField');
-                    const fetchedData = value.fetch();
-                    if (typeof this.initialAttributes[id] === 'undefined' || !_.isEqual(this.initialAttributes[id], fetchedData)) {
-                        data = _.extend(data || {}, {[id]: fetchedData});
+                    if (value.mode === 'edit') {
+                        const fetchedData = value.fetch();
+                        const initialData = this.initialAttributes[id];
+                        if (!_.isEqual(initialData, fetchedData) && (Object.keys(fetchedData).every(key => initialData[key] || fetchedData[key]))) {
+                            data = _.extend(data || {}, {[id]: fetchedData});
+                        }
                     }
                 });
             });
@@ -762,8 +777,23 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     promises.push(this.ajaxPutRequest(`${this.collection.name}/${id}`, attrs))
                 });
                 this.notify('Saving...');
-                Promise.all(promises).then(response => this.notify('Saved', 'success'));
+                Promise.all(promises).then(response => this.notify('Saved', 'success'), error => this.actionRefresh());
             }
+        },
+
+        validate() {
+            let notValid = false;
+            this.groups.forEach(group => {
+                const groupView = this.getView(group.key);
+                (groupView.rowList || []).forEach(id => {
+                    const row = groupView.getView(id);
+                    const value = row.getView('valueField');
+                    if (value.mode === 'edit' && !value.disabled && !value.readOnly) {
+                        notValid = value.validate() || notValid;
+                    }
+                });
+            });
+            return notValid;
         }
 
     })
