@@ -22,11 +22,31 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Templates\Repositories\Base;
+use Espo\ORM\Entity;
+
 /**
- * Class Category
+ * Class AbstractRepository
  *
- * @author r.ratsun@treolabs.com
+ * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Category extends AbstractRepository
+abstract class AbstractRepository extends Base
 {
+    /**
+     * @inheritDoc
+     */
+    public function afterRemove(Entity $entity, array $options = [])
+    {
+        // call parent
+        parent::afterRemove($entity, $options);
+
+        if (in_array($entity->getEntityName(), ['Product', 'Category'])) {
+            // get images
+            if (!empty($images = $entity->get('pimImages'))) {
+                foreach ($images as $image) {
+                    $this->getEntityManager()->removeEntity($image);
+                }
+            }
+        }
+    }
 }

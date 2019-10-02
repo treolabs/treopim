@@ -57,8 +57,8 @@ class Product extends AbstractService
         // find exists entities
         $entities = $repository->where(
             [
-                'associationId' => $data->associationId,
-                'mainProductId' => $data->ids,
+                'associationId'    => $data->associationId,
+                'mainProductId'    => $data->ids,
                 'relatedProductId' => $data->foreignIds
             ]
         )->find();
@@ -119,8 +119,8 @@ class Product extends AbstractService
             ->getRepository('AssociatedProduct')
             ->where(
                 [
-                    'associationId' => $data->associationId,
-                    'mainProductId' => $data->ids,
+                    'associationId'    => $data->associationId,
+                    'mainProductId'    => $data->ids,
                     'relatedProductId' => $data->foreignIds
                 ]
             )
@@ -154,7 +154,7 @@ class Product extends AbstractService
     /**
      * Get item in products data
      *
-     * @param string $productId
+     * @param string  $productId
      * @param Request $request
      *
      * @return array
@@ -164,7 +164,7 @@ class Product extends AbstractService
         // prepare result
         $result = [
             'total' => 0,
-            'list' => []
+            'list'  => []
         ];
 
         // get total
@@ -174,7 +174,7 @@ class Product extends AbstractService
             // prepare result
             $result = [
                 'total' => $total,
-                'list' => $this->getDbItemInProducts($productId, $request)
+                'list'  => $this->getDbItemInProducts($productId, $request)
             ];
         }
 
@@ -268,43 +268,6 @@ class Product extends AbstractService
                 $service->createEntity($data);
             }
         }
-    }
-
-
-    /**
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateProductImages(Entity $product, Entity $duplicatingProduct)
-    {
-        // copy images
-        $sql
-            = "DELETE FROM product_image_product WHERE product_id = '" . $product->get('id') . "';
-               INSERT INTO product_image_product (product_id, product_image_id, sort_order, scope, deleted)
-               SELECT
-                 '" . $product->get('id') . "',
-                  product_image_id,
-                  sort_order,
-                  scope,
-                  deleted
-               FROM product_image_product
-               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
-
-        // copy channel images
-        $sql
-            = "DELETE FROM product_image_channel WHERE product_id = '" . $product->get('id') . "';
-               INSERT INTO product_image_channel (product_id, product_image_id, channel_id, deleted)
-               SELECT
-                 '" . $product->get('id') . "',
-                  product_image_id,
-                  channel_id,
-                  deleted
-               FROM product_image_channel
-               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
     }
 
     /**
@@ -431,7 +394,7 @@ class Product extends AbstractService
     /**
      * Get DB count of item in products data
      *
-     * @param string $productId
+     * @param string  $productId
      * @param Request $request
      *
      * @return array
@@ -512,7 +475,7 @@ class Product extends AbstractService
      * Find linked AssociationMainProduct
      *
      * @param string $id
-     * @param array $params
+     * @param array  $params
      *
      * @return array
      * @throws Forbidden
@@ -538,7 +501,7 @@ class Product extends AbstractService
         }
 
         return [
-            'list' => $associatedProducts,
+            'list'  => $associatedProducts,
             'total' => $this->getDBTotalAssociationMainProducts($id, '')
         ];
 
@@ -549,7 +512,7 @@ class Product extends AbstractService
      *
      * @param string $productId
      * @param string $wherePart
-     * @param array $params
+     * @param array  $params
      *
      * @return array
      */

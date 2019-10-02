@@ -146,6 +146,7 @@ class PimImage extends Base
             ->getRepository('PimImage')
             ->where(
                 [
+                    'id!='       => $entity->get('id'),
                     'categoryId' => $entity->get('categoryId'),
                     'productId'  => $entity->get('productId'),
                     'imageId'    => $entity->get('imageId')

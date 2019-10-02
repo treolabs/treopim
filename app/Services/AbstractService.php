@@ -24,7 +24,9 @@ namespace Pim\Services;
 
 use Espo\Core\Exceptions\NotFound;
 use Espo\Core\Templates\Services\Base;
+use Espo\ORM\Entity;
 use Treo\Core\EventManager\Event;
+use Treo\Core\Utils\Util;
 
 /**
  * Class of AbstractService
@@ -109,6 +111,39 @@ abstract class AbstractService extends Base
         $this->addDependency('language');
         $this->addDependency('eventManager');
         $this->addDependency('metadata');
+    }
+
+    /**
+     * @param Entity $entity
+     * @param Entity $duplicatingEntity
+     */
+    protected function duplicatePimImages(Entity $entity, Entity $duplicatingEntity)
+    {
+        // get images
+        if (!empty($images = $duplicatingEntity->get('pimImages'))) {
+            // prepare repository
+            $repository = $this->getEntityManager()->getRepository('PimImage');
+
+            // copy images
+            foreach ($images as $image) {
+                // prepare new image
+                $newImage = $repository->get();
+                $newImage->set($image->toArray());
+                $newImage->id = Util::generateId();
+                $newImage->set(lcfirst($entity->getEntityName()) . 'Id', $entity->get('id'));
+
+                // save
+                $this->getEntityManager()->saveEntity($newImage);
+
+                // get channels
+                if (!empty($channels = $image->get('channels'))) {
+                    foreach ($channels as $channel) {
+                        // relate channel
+                        $repository->relate($newImage, 'channels', $channel);
+                    }
+                }
+            }
+        }
     }
 
     /**
