@@ -182,41 +182,6 @@ class Product extends AbstractService
     }
 
     /**
-     * Get product main image
-     *
-     * @param array $productIds
-     *
-     * @return array
-     */
-    public function getDBAssociatedProductsMainImage(array $productIds): array
-    {
-        $result = [];
-        $productIds = "'" . implode("','", $productIds) . "'";
-        if (!empty($productIds)) {
-            $sql
-                = "SELECT
-                       pip.product_id AS productId,
-                       pi.type AS imageType,
-                       pi.image_id AS imageId,
-                       pi.image_link AS imageLink
-                    FROM product_image pi
-                      JOIN product_image_product pip
-                        ON pip.product_image_id = pi.id AND pip.deleted = 0
-                    WHERE pip.product_id IN ({$productIds}) AND pi.deleted = 0
-                    ORDER BY pip.sort_order DESC, pip.id DESC";
-
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $result = $sth->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
-
-            return is_array($result) ? $result : [];
-        }
-
-        return $result;
-    }
-
-    /**
      * @param Entity $product
      * @param Entity $duplicatingProduct
      */
@@ -487,24 +452,10 @@ class Product extends AbstractService
             throw new Forbidden();
         }
 
-        $associatedProducts = $this->getDBAssociationMainProducts($id, '', $params);
-        $associatedProductsImages
-            = $this->getDBAssociatedProductsMainImage(array_column($associatedProducts, 'relatedProductId'));
-
-        foreach ($associatedProducts as $key => $product) {
-            if (isset($associatedProductsImages[$product['relatedProductId']])) {
-                $associatedProducts[$key]['relatedProductImageId']
-                    = $associatedProductsImages[$product['relatedProductId']]['imageId'];
-                $associatedProducts[$key]['relatedProductImageLink']
-                    = $associatedProductsImages[$product['relatedProductId']]['imageLink'];
-            }
-        }
-
         return [
-            'list'  => $associatedProducts,
+            'list'  => $this->getDBAssociationMainProducts($id, '', $params),
             'total' => $this->getDBTotalAssociationMainProducts($id, '')
         ];
-
     }
 
     /**
@@ -536,12 +487,16 @@ class Product extends AbstractService
         $sql
             = "SELECT
                   ap.id,
-                  ap.association_id   AS associationId,
-                  association.name    AS associationName,
-                  p_main.id           AS mainProductId,
-                  p_main.name         AS mainProductName,
-                  relatedProduct.id   AS relatedProductId,
-                  relatedProduct.name AS relatedProductName
+                  ap.association_id         AS associationId,
+                  association.name          AS associationName,
+                  p_main.id                 AS mainProductId,
+                  p_main.name               AS mainProductName,
+                  p_main.image_id           AS mainProductImageId,
+                  p_main.image_name         AS mainProductImageName,
+                  relatedProduct.id         AS relatedProductId,
+                  relatedProduct.name       AS relatedProductName,
+                  relatedProduct.image_id   AS relatedProductImageId,
+                  relatedProduct.image_name AS relatedProductImageName
                 FROM associated_product AS ap
                   JOIN product AS relatedProduct 
                     ON relatedProduct.id = ap.related_product_id AND relatedProduct.deleted = 0
