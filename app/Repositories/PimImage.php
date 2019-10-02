@@ -153,8 +153,7 @@ class PimImage extends Base
         ];
         if ($entity->get('type') == 'Link') {
             $where['link'] = $entity->get('link');
-        }
-        if ($entity->get('type') == 'File') {
+        } else {
             $where['imageId'] = $entity->get('imageId');
         }
 
