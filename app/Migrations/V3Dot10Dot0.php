@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Migrations;
 
 use Treo\Core\Migration\AbstractMigration;
+use Treo\Core\Utils\Util;
 
 /**
  * Migration class for version 3.10.0
@@ -152,10 +153,6 @@ class V3Dot10Dot0 extends AbstractMigration
      */
     public function down(): void
     {
-        echo '<pre>';
-        print_r('123');
-        die();
-
         // delete old
         $this->execute('DELETE FROM product_image WHERE 1;DELETE FROM product_image_product WHERE 1;DELETE FROM product_image_channel WHERE 1');
         $this->execute('DELETE FROM category_image WHERE 1;DELETE FROM category_image_category WHERE 1;DELETE FROM category_image_channel WHERE 1');
@@ -173,13 +170,86 @@ class V3Dot10Dot0 extends AbstractMigration
                    pi.scope       AS scope,
                    pi.sort_order  AS sortOrder
                 FROM pim_image AS pi 
+                JOIN attachment AS a ON a.id=pi.image_id AND a.deleted=0
                 LEFT JOIN category AS c ON pi.category_id=c.id AND c.deleted=0  
                 LEFT JOIN product AS p ON pi.product_id=p.id AND p.deleted=0
                 WHERE pi.deleted=0'
             );
 
         foreach ($images as $image) {
+            if (!empty($image['categoryId'])) {
+                // create image
+                $newImage = $this->getEntityManager()->getEntity('CategoryImage');
+                $newImage->set(
+                    [
+                        'name'      => $image['name'],
+                        'alt'       => $image['name'],
+                        'imageId'   => $image['imageId'],
+                        'type'      => (!empty($image['link'])) ? 'Link' : 'File',
+                        'imageLink' => $image['link']
+                    ]
+                );
+                $this->getEntityManager()->saveEntity($newImage);
 
+                // relate category
+                $this->execute(
+                    "INSERT INTO category_image_category (category_id,category_image_id,sort_order,scope) VALUES ('" . $image['categoryId']
+                    . "', '" . $newImage->get('id') . "', '" . $image['sortOrder'] . "', '" . $image['scope'] . "')"
+                );
+
+                // insert channels
+                if ($image['scope'] == 'Channel') {
+                    $channels = $this
+                        ->fetchAll(
+                            'SELECT channel_id AS channelId
+                             FROM pim_image_channel
+                             WHERE deleted=0 AND pim_image_id=\'' . $image['id'] . '\''
+                        );
+
+                    foreach ($channels as $row) {
+                        $this->execute(
+                            "INSERT INTO category_image_channel (id,category_id,category_image_id,channel_id) VALUES ('" . Util::generateId() . "', '" . $image['categoryId']
+                            . "', '" . $newImage->get('id') . "', '" . $row['channelId'] . "')"
+                        );
+                    }
+                }
+            } elseif (!empty($image['productId'])) {
+                // create image
+                $newImage = $this->getEntityManager()->getEntity('ProductImage');
+                $newImage->set(
+                    [
+                        'name'      => $image['name'],
+                        'alt'       => $image['name'],
+                        'imageId'   => $image['imageId'],
+                        'type'      => (!empty($image['link'])) ? 'Link' : 'File',
+                        'imageLink' => $image['link']
+                    ]
+                );
+                $this->getEntityManager()->saveEntity($newImage);
+
+                // relate category
+                $this->execute(
+                    "INSERT INTO product_image_product (product_id,product_image_id,sort_order,scope) VALUES ('" . $image['productId']
+                    . "', '" . $newImage->get('id') . "', '" . $image['sortOrder'] . "', '" . $image['scope'] . "')"
+                );
+
+                // insert channels
+                if ($image['scope'] == 'Channel') {
+                    $channels = $this
+                        ->fetchAll(
+                            'SELECT channel_id AS channelId
+                             FROM pim_image_channel
+                             WHERE deleted=0 AND pim_image_id=\'' . $image['id'] . '\''
+                        );
+
+                    foreach ($channels as $row) {
+                        $this->execute(
+                            "INSERT INTO product_image_channel (id,product_id,product_image_id,channel_id) VALUES ('" . Util::generateId() . "', '" . $image['productId']
+                            . "', '" . $newImage->get('id') . "', '" . $row['channelId'] . "')"
+                        );
+                    }
+                }
+            }
         }
     }
 
