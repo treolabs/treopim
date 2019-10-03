@@ -54,7 +54,7 @@
     "sortOrder": {
       "type": "int",
       "required": false,
-      "default": 0,
+      "default": null,
       "disableFormatting": false
     },
     "scope": {

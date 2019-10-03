@@ -50,7 +50,7 @@ class PimImage extends Base
         }
 
         // set sort order
-        if (empty($entity->get('sortOrder'))) {
+        if (is_null($entity->get('sortOrder'))) {
             $entity->set('sortOrder', time());
         }
 
