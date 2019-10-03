@@ -41,11 +41,8 @@ class PimImage extends Base
         // call parent action
         parent::beforeSave($entity, $options);
 
-        if ($entity->get('type') == 'Link' && !empty($entity->get('link'))) {
-            $attachment = $this->createAttachmentByLink($entity->get('link'));
-            $entity->set('imageId', $attachment->get('id'));
-            $entity->set('imageName', $attachment->get('name'));
-        }
+        // prepare image by type
+        $this->prepareImageByType($entity);
 
         // set entity name
         if (empty($entity->get('name'))) {
@@ -72,6 +69,16 @@ class PimImage extends Base
 
         // update main image
         $this->updateMainImage($entity);
+
+        // save new images for Files type
+        if (!empty($entity->newImages)) {
+            foreach ($entity->newImages as $image) {
+                try {
+                    $this->getEntityManager()->saveEntity($image);
+                } catch (BadRequest $e) {
+                }
+            }
+        }
     }
 
     /**
@@ -199,5 +206,62 @@ class PimImage extends Base
         }
 
         return true;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @throws BadRequest
+     * @throws Error
+     */
+    protected function prepareImageByType(Entity $entity)
+    {
+        // for link type
+        if ($entity->get('type') == 'Link' && !empty($entity->get('link'))) {
+            $attachment = $this->createAttachmentByLink($entity->get('link'));
+            $entity->set('imageId', $attachment->get('id'));
+            $entity->set('imageName', $attachment->get('name'));
+        }
+
+        // for files type
+        if ($entity->get('type') == 'Files' && !empty($entity->get('imagesTypes'))) {
+            // add proportye for collecting images
+            $entity->newImages = [];
+
+            foreach ($entity->get('imagesTypes') as $id => $mime) {
+                // skip if not image
+                if (!in_array($mime, ['image/jpeg', 'image/png', 'image/gif',])) {
+                    throw new BadRequest('Wrong file mime type. Only images allowed.');
+                }
+
+                // prepare image name
+                $imageName = $entity->get('imagesNames')->$id;
+
+                if (empty($entity->get('imageId'))) {
+                    // set image id for first image
+                    $entity->set('imageId', $id);
+                    $entity->set('imageName', $imageName);
+                } else {
+                    // save else images as separate records
+                    $newImage = $this->get();
+                    $newImage->set(
+                        [
+                            'scope'       => $entity->get('scope'),
+                            'channelsIds' => $entity->get('channelsIds'),
+                            'productId'   => $entity->get('productId'),
+                            'categoryId'  => $entity->get('categoryId'),
+                            'imageId'     => $id,
+                            'imageName'   => $imageName,
+                        ]
+                    );
+
+                    $entity->newImages[] = $newImage;
+                }
+            }
+
+            $entity->set('imagesIds', null);
+            $entity->set('imagesNames', null);
+            $entity->set('imagesTypes', null);
+        }
     }
 }
