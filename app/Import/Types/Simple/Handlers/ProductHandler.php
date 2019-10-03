@@ -69,6 +69,9 @@ class ProductHandler extends AbstractHandler
         // prepare file row
         $fileRow = (int)$data['offset'];
 
+        // prepare restore data
+        $restoreData = [];
+
         foreach ($fileData as $row) {
             $fileRow++;
 
@@ -87,14 +90,15 @@ class ProductHandler extends AbstractHandler
             }
 
             // prepare entity
-            $entity = null;
+            $entity = !empty($id) ? $this->getEntityManager()->getEntity($entityType, $id) : null;
+
+            // prepare row
+            $input = new \stdClass();
+            $restore = new \stdClass();
 
             try {
                 // begin transaction
                 $this->getEntityManager()->getPDO()->beginTransaction();
-
-                // prepare row
-                $input = new \stdClass();
 
                 $attributes = $categories = [];
 
@@ -116,20 +120,28 @@ class ProductHandler extends AbstractHandler
                     } else {
                         $this->convertItem($input, $entityType, $item, $row, $delimiter);
                     }
+
+                    if (!empty($entity)) {
+                        $this->prepareValue($restore, $entity, $item);
+                    }
                 }
 
                 if (empty($id)) {
                     $entity = $service->createEntity($input);
+
+                    $restoreData['created'][$entityType][] = $entity->get('id');
                 } else {
-                    $entity = $this->updateEntity($service, $id, $input);
+                    $entity = $this->updateEntity($service, (string)$id, $input);
+
+                    $restoreData['updated'][$entityType][$id] = $restore;
                 }
 
                 foreach ($categories as $value) {
-                    $this->importCategories($entity, $value, $delimiter);
+                    $this->importCategories($entity, $value, $delimiter, $restoreData);
                 }
 
                 foreach ($attributes as $value) {
-                    $this->importAttribute($entity, $value, $delimiter);
+                    $this->importAttribute($entity, $value, $delimiter, $restoreData);
                 }
 
                 $this->getEntityManager()->getPDO()->commit();
@@ -145,9 +157,12 @@ class ProductHandler extends AbstractHandler
                 $action = empty($id) ? 'create' : 'update';
 
                 // push log
-                $this->log($entityType, $importResultId, $action, (string)$fileRow, $entity->get('id'));
+                $this->log($entityType, $importResultId, $action, (string)$fileRow, (string)$entity->get('id'));
             }
         }
+
+        // save data for restore
+        $this->saveRestoreData($importResultId, $restoreData);
 
         return true;
     }
@@ -173,11 +188,13 @@ class ProductHandler extends AbstractHandler
      * @param array $data
      * @param string $delimiter
      */
-    protected function importAttribute(Entity $product, array $data, string $delimiter)
+    protected function importAttribute(Entity $product, array $data, string $delimiter, array &$restore)
     {
         $service = $this->getServiceFactory()->create('ProductAttributeValue');
 
         $inputRow = new \stdClass();
+        $restoreRow = new \stdClass();
+
         $conf = $data['item'];
         $row = $data['row'];
 
@@ -185,19 +202,15 @@ class ProductHandler extends AbstractHandler
             if ($item->get('attributeId') == $conf['attributeId'] && $item->get('scope') == $conf['scope']) {
                 if ($conf['scope'] == 'Global') {
                     $inputRow->id = $item->get('id');
+                    $restoreRow->value = $item->get('value');
                 } elseif ($conf['scope'] == 'Channel') {
                     $channels = array_column($item->get('channels')->toArray(), 'id');
 
-                    if (empty($diff = array_diff($conf['channelsIds'], $channels))) {
+                    if (empty($diff = array_diff($conf['channelsIds'], $channels))
+                        && empty($diff = array_diff($channels, $conf['channelsIds']))) {
                         $inputRow->id = $item->get('id');
-                    } elseif (count($diff) != count($conf['channelsIds'])) {
-                        if (empty($item->get('productFamilyAttributeId'))) {
-                            $inputRow->channelsIds = array_diff($channels, $conf['channelsIds']);
-                            sort($inputRow->channelsIds);
-                            $this->updateEntity($service, $item->get('id'), $inputRow);
-                        } else {
-                            return;
-                        }
+                        $restoreRow->value = $item->get('value');
+                        $restoreRow->channelsIds = array_column($item->get('channels')->toArray(), 'id');
                     }
                 }
             }
@@ -217,12 +230,16 @@ class ProductHandler extends AbstractHandler
                 $inputRow->channelsIds = $conf['channelsIds'];
             }
 
-            $service->createEntity($inputRow);
+            $entity = $service->createEntity($inputRow);
+
+            $restore['created'][$entity->getEntityType()][] = $entity->get('id');
         } else {
             $id = $inputRow->id;
             unset($inputRow->id);
 
-            $this->updateEntity($service, $id, $inputRow);
+            $entity = $this->updateEntity($service, $id, $inputRow);
+
+            $restore['updated'][$entity->getEntityType()][$id] = $restoreRow;
         }
     }
 
@@ -230,8 +247,10 @@ class ProductHandler extends AbstractHandler
      * @param Entity $product
      * @param array $data
      * @param string $delimiter
+     *
+     * @throws \Espo\Core\Exceptions\Error
      */
-    protected function importCategories(Entity $product, array $data, string $delimiter)
+    protected function importCategories(Entity $product, array $data, string $delimiter, array &$restore)
     {
         $service = $this->getServiceFactory()->create('ProductCategory');
 
@@ -251,8 +270,9 @@ class ProductHandler extends AbstractHandler
 
         foreach ($exists as $exist) {
             $inputRow = new \stdClass();
+            $restoreRow = new \stdClass();
 
-            if (empty($id = $this->getProductCategory($product, $exist, $conf['scope']))) {
+            if (empty($category = $this->getProductCategory($product, $exist, $conf['scope']))) {
                 $inputRow->categoryId = $exist;
                 $inputRow->productId = $product->get('id');
                 $inputRow->scope = $conf['scope'];
@@ -261,10 +281,15 @@ class ProductHandler extends AbstractHandler
                     $inputRow->channelsIds = $channelsIds;
                 }
 
-                $service->createEntity($inputRow);
+                $entity = $service->createEntity($inputRow);
+
+                $restore['created'][$entity->getEntityType()][] = $entity->get('id');
             } elseif ($conf['scope'] == 'Channel') {
                 $inputRow->channelsIds = $channelsIds;
-                $this->updateEntity($service, $id, $inputRow);
+                $restoreRow->channelsIds = array_column($category->get('channels')->toArray(), 'id');
+
+                $this->updateEntity($service, (string)$category->get('id'), $inputRow);
+                $restore['updated'][$category->getEntityType()][$category->get('id')] = $restoreRow;
             }
         }
     }
@@ -277,13 +302,13 @@ class ProductHandler extends AbstractHandler
      *
      * @return Entity|null
      */
-    protected function getProductCategory(Entity $product, string $categoryId, string $scope): ?string
+    protected function getProductCategory(Entity $product, string $categoryId, string $scope): ?Entity
     {
         $result = null;
 
         foreach ($product->get('productCategories') as $item) {
             if ($item->get('categoryId') == $categoryId && $item->get('scope') == $scope) {
-                $result = $item->get('id');
+                $result = $item;
                 break;
             }
         }
