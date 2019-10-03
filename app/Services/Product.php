@@ -492,11 +492,11 @@ class Product extends AbstractService
                   p_main.id                 AS mainProductId,
                   p_main.name               AS mainProductName,
                   p_main.image_id           AS mainProductImageId,
-                  p_main.image_name         AS mainProductImageName,
+                  (SELECT name FROM attachment WHERE id = p_main.image_id) AS mainProductImageName,
                   relatedProduct.id         AS relatedProductId,
                   relatedProduct.name       AS relatedProductName,
                   relatedProduct.image_id   AS relatedProductImageId,
-                  relatedProduct.image_name AS relatedProductImageName
+                  (SELECT name FROM attachment WHERE id = relatedProduct.image_id) AS relatedProductImageName
                 FROM associated_product AS ap
                   JOIN product AS relatedProduct 
                     ON relatedProduct.id = ap.related_product_id AND relatedProduct.deleted = 0
