@@ -30,6 +30,12 @@
       ],
       [
         {
+          "name": "images"
+        },
+        false
+      ],
+      [
+        {
           "name": "link"
         },
         false

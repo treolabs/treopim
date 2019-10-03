@@ -64,6 +64,14 @@
             }
           ]
         },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        },
         "required": {
           "conditionGroup": [
             {
@@ -110,6 +118,36 @@
               "type": "equals",
               "attribute": "scope",
               "value": "Channel"
+            }
+          ]
+        }
+      },
+      "type": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
+      },
+      "images": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "Files"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "Files"
             }
           ]
         }

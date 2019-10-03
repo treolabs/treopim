@@ -20,6 +20,7 @@
       "fontSize": 1,
       "options": [
         "File",
+        "Files",
         "Link"
       ],
       "default": "File",
@@ -32,6 +33,14 @@
       "type": "image",
       "required": false,
       "previewSize": "small"
+    },
+    "images": {
+      "type": "attachmentMultiple",
+      "required": false,
+      "previewSize": "small",
+      "sourceList": [],
+      "layoutListDisabled": true,
+      "layoutMassUpdateDisabled": true
     },
     "link": {
       "type": "varchar",
@@ -114,6 +123,13 @@
       "relationName": "pimImageChannel",
       "foreign": "pimImages",
       "entity": "Channel"
+    },
+    "images": {
+      "type": "hasChildren",
+      "entity": "Attachment",
+      "foreign": "parent",
+      "layoutRelationshipsDisabled": true,
+      "relationName": "attachments"
     },
     "createdBy": {
       "type": "belongsTo",
