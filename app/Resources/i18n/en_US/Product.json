@@ -34,7 +34,8 @@
     "association": "Association",
     "catalog": "Catalog",
     "channels": "Channels",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "pimImages": "Images"
   },
   "links": {
     "categories": "Product Categories",
@@ -55,7 +56,8 @@
     "packaging": "Packaging",
     "catalog": "Catalog",
     "channels": "Channels",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "pimImages": "Images"
   },
   "labels": {
     "Create Product": "Create Product",

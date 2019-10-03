@@ -70,6 +70,11 @@ class PimImage extends Base
         // update main image
         $this->updateMainImage($entity);
 
+        // unrelate all channels
+        if ($entity->get('scope') == 'Global') {
+            $this->unrelate($entity, 'channels', true);
+        }
+
         // save new images for Files type
         if (!empty($entity->newImages)) {
             foreach ($entity->newImages as $image) {
@@ -202,7 +207,7 @@ class PimImage extends Base
             $foreign->set('imageId', $imageId);
 
             // save
-            $this->getEntityManager()->saveEntity($foreign);
+            $this->getEntityManager()->saveEntity($foreign, ['skipAll' => true]);
         }
 
         return true;

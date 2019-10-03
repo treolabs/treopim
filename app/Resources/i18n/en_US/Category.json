@@ -11,14 +11,16 @@
     "categoryRouteName": "Сategory Tree",
     "scope": "Scope",
     "productCategories": "Product Categories",
-    "catalogs": "Catalogs"
+    "catalogs": "Catalogs",
+    "pimImages": "Images"
   },
   "links": {
     "categoryParent": "Parent Category",
     "categories": "Categories",
     "channels": "Channels",
     "catalogs": "Catalogs",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "pimImages": "Images"
   },
   "labels": {
     "Create Category": "Create Category"

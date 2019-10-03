@@ -38,7 +38,8 @@
     "productSerie": "Product Serie",
     "association": "Assoziation",
     "catalog": "Katalog",
-    "channels": "Kanale"
+    "channels": "Kanale",
+    "pimImages": "Bilder"
   },
   "links": {
     "brand": "Marke",
@@ -60,7 +61,8 @@
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
     "productTypePackages": "Produkttyp  Pakete",
     "catalog": "Katalog",
-    "channels": "Kanale"
+    "channels": "Kanale",
+    "pimImages": "Bilder"
   },
   "labels": {
     "There is no valid attributes for channel": "Es gibt keine gültigen Attribute für Kanal",
