@@ -205,7 +205,7 @@ If you want to make changes to some entity (e.g. add new fields, modify its view
 
 With in-line editing you can change values *on the fly*. This ensures quick change of field values and reduces the number of clicks to do their work.
 
-Currently in-line editing is available on the [detail view](#detail-view) pages only. To edit the record information on these pages using the in-line editing, click the pencil icon above the field you want to edit:
+Currently in-line editing is available on the [detail view](#detail-view) pages only. To edit the record information on these pages using the in-line editing, click the pencil icon located in the upper right corner of the field you want to edit:
 
 ![In-line editing](../../_assets/views-and-panels/inline-editing.jpg)
 

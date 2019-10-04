@@ -17,17 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Pim\Repositories;
-
-use Espo\Core\Templates\Repositories\Base;
 
 /**
  * Class Category
  *
  * @author r.ratsun@treolabs.com
  */
-class Category extends Base
+class Category extends AbstractRepository
 {
 }

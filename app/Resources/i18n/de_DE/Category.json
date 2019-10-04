@@ -5,7 +5,6 @@
     "code": "Code",
     "categories": "Kategorien",
     "channels": "Kanäle",
-    "categoryImages": "Kategoriebilder",
     "categoryParent": "Hauptkategorie",
     "image": "Hauptbild",
     "categoryRouteName": "Kategoriebaum",
@@ -24,19 +23,20 @@
     "markupType": "Typ",
     "markupValue": "Wert",
     "scope": "Umfang",
-    "catalogs": "Kataloge"
+    "catalogs": "Kataloge",
+    "pimImages": "Bilder"
   },
   "links": {
     "categories": "Kategorien",
     "channels": "Kanäle",
-    "categoryImages": "Kategoriebilder",
     "categoryParent": "Hauptkategorie",
     "categoryRoot": "Stammkategorie",
     "createdBy": "erstellt von",
     "modifiedBy": "geändert von",
     "rootCategories": "Stammkategorien",
     "teams": "Teams",
-    "catalogs": "Kataloge"
+    "catalogs": "Kataloge",
+    "pimImages": "Bilder"
   },
   "labels": {
     "Create Category": "Kategorie erstellen"

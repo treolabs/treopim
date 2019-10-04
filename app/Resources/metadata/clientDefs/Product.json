@@ -89,18 +89,13 @@
       "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity"
     },
-    "productImages": {
-      "label": "Image",
-      "view": "pim:views/product/record/panels/product-images",
-      "recordListView": "pim:views/product-image/record/list-in-product",
-      "modalDetailView": "pim:views/product-image/modals/detail-in-product",
-      "modalEditView": "pim:views/product-image/modals/edit-in-product",
-      "layout": "listForProductImagesInProduct",
-      "detailLayout": "detailForProductImagesInProduct",
-      "createAction": "createRelatedProductImage",
+    "pimImages": {
+      "view": "pim:views/record/panels/pim-images",
+      "layout": "listSmallForRelate",
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
-        "notLinkedWithProduct"
+        "pimImageRelation"
       ],
       "recordsPerPage": 200
     },

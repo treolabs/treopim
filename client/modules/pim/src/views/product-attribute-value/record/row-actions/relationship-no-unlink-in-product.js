@@ -56,6 +56,9 @@ Espo.define('pim:views/product-attribute-value/record/row-actions/relationship-n
                 });
             }
             this.runPipeline('actionListPipe', list);
+            if (this.model.get('attributeType') === 'image') {
+                list = list.filter(item => item.action !== 'showRevisionAttribute');
+            }
             return list;
         }
 

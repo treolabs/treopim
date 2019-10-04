@@ -1,7 +1,6 @@
 {
   "fields": {
     "categories": "Categories",
-    "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
     "productAttributeValues": "Product Attributes",
@@ -35,11 +34,11 @@
     "association": "Association",
     "catalog": "Catalog",
     "channels": "Channels",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "pimImages": "Images"
   },
   "links": {
     "categories": "Product Categories",
-    "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
     "productAttributeValues": "Product Attributes",
@@ -57,7 +56,8 @@
     "packaging": "Packaging",
     "catalog": "Catalog",
     "channels": "Channels",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "pimImages": "Images"
   },
   "labels": {
     "Create Product": "Create Product",
@@ -68,7 +68,6 @@
     "Channels": "Channels",
     "Product Channel Attributes": "Channel Attributes",
     "Associated Products": "Associated Products",
-    "Image": "Images",
     "withoutAnyCategory": "Without Any Category",
     "typeCategoryToSearch": "Type category to search...",
     "No Group": "No Group",

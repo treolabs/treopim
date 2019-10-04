@@ -86,7 +86,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
 
         updateDataForValueField() {
             let data = this.model.get('data') || {};
-            Object.keys(data).forEach(param => this.model.set({[`value${Espo.Utils.upperCaseFirst(param)}`]: data[param]}));
+            Object.keys(data).forEach(param => this.model.set({[`${this.name}${Espo.Utils.upperCaseFirst(param)}`]: data[param]}));
 
             if (this.model.get('attributeType') === 'image') {
                 this.model.set({[`${this.name}Id`]: this.model.get(this.name)});
@@ -108,19 +108,22 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         },
 
         extendValueData(view, data) {
-            let additionalData = false;
+            data = data || {};
+            const additionalData = {};
             if (view.type === 'unit') {
                 let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
                 let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
                 actualFieldDefs.forEach((field, i) => {
                     if (field) {
-                        additionalData = additionalData || {};
                         additionalData[field] = data[actualFieldValues[i]];
                     }
                 });
+                if (additionalData) {
+                    _.extend(data, {data: additionalData});
+                }
             }
-            if (additionalData) {
-                _.extend((data || {}), {data: additionalData});
+            if (view.type === 'image') {
+                _.extend(data, {[this.name]: data[`${this.name}Id`]});
             }
         },
 

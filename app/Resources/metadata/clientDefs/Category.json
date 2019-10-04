@@ -33,17 +33,13 @@
     "detail": "pim:views/category/record/detail"
   },
   "relationshipPanels": {
-    "categoryImages": {
-      "view": "pim:views/category/record/panels/category-images",
-      "recordListView": "pim:views/category-image/record/list-in-category",
-      "modalDetailView": "pim:views/category-image/modals/detail-in-category",
-      "modalEditView": "pim:views/category-image/modals/edit-in-category",
-      "layout": "listForCategoryImagesInCategory",
-      "detailLayout": "detailForCategoryImagesInCategory",
-      "createAction": "createRelatedCategoryImage",
+    "pimImages": {
+      "view": "pim:views/record/panels/pim-images",
+      "layout": "listSmallForRelate",
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
-        "notLinkedWithCategory"
+        "pimImageRelation"
       ],
       "recordsPerPage": 200
     },

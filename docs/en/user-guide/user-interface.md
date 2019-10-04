@@ -73,7 +73,7 @@ To create new records from anywhere, click the quick create icon in the upper ri
 
 ![Quick Create](../../_assets/user-interface/quick-create.jpg)
 
-The [quick create view](https://treopim.com/help/view-and-panels) page will be opened.
+The [quick create view](https://treopim.com/help/views-and-panels) page will be opened.
 
 ## Breadcrumb Navigation
 

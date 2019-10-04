@@ -15,17 +15,17 @@ The brand entity comes with the following preconfigured fields; mandatory are ma
 | Active                   | Activity state of the brand record         |
 | Name (multi-lang) *      | Name of the brand (e.g. Apple, Nike, etc.) |
 | Code *                   | Unique value used to identify the brand. It can only consist of lowercase letters, digits and underscore symbols     |
-| Description (multi-lang) | Description of the brand                   |
+| Description (multi-lang) | Description of the brand usage                   |
 
 If you want to make changes to the brand entity, e.g. add new fields, or modify brand views, please contact your administrator.
 
 ## Creating
 
-To create a new brand, click `Brands` in the breadcrumb navigation or in the navigation menu to get to the brand [list view](#listing) and then click the `Create Brand` button. The common creation window will open:
+To create a new brand, click `Brands` in the breadcrumb navigation or in the navigation menu to get to the brand [list view](#listing), and then click the `Create Brand` button. The common creation window will open:
 
 ![Brands creation](../../_assets/brands/brands-create.jpg)
 
-Here enter the desired name for the brand being created and activate it, if needed. Its code is automatically generated based on the entered name, but you can change it via the keyboard. The brand description is an optional field and can be left empty
+Here enter the desired name for the brand being created and activate it, if needed. Its code is automatically generated based on the entered name, but you can change it via the keyboard. The brand description is an optional field and can be left empty.
 
 Click the `Save` button to finish the brand creation or `Cancel` to abort the process.
 
@@ -41,7 +41,7 @@ To open the list of brands available in the system, click the `Brands` option in
 
 ![Brands list view page](../../_assets/brands/brands-list-view.jpg)
 
-By default the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for brands:
+By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for brands:
  - Name
  - Active
  - Code
@@ -86,6 +86,8 @@ To edit the brand, click the `Edit` button on the detail view page of the curren
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
+Besides, you can make changes in the brand record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+
 Alternatively, make changes to the desired brand record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the brands list view page:
 
 ![Editing popup](../../_assets/brands/brand-editing-popup.jpg)
@@ -104,11 +106,11 @@ By default, it is not possible to remove the brand, if there is any product asso
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions menu to go to the brand creation page and get all the values of the last chosen brand record copied in the empty fields of the new brand record to be created.
+Use the `Duplicate` option from the actions menu to go to the brand creation page and get all the values of the last chosen brand record copied in the empty fields of the new brand record to be created. Modifying the brand code is required, as this value has to be unique.
 
 ## Working with Products Related to Brands
 
-Products that are associated with the brand are displayed on its detail view page on the `PRODUCTS` panel and include the following table columns:
+Products that are linked to the brand are displayed on its detail view page on the `PRODUCTS` panel and include the following table columns:
  - Name
  - SKU
  - Type
@@ -118,11 +120,21 @@ Products that are associated with the brand are displayed on its detail view pag
 
 By design, if a brand is deactivated, all the related products will automatically be deactivated as well. Otherwise, if a brand is activated, all the related products will remain in the previous activity state without any changes. To activate the products linked to this brand, please filter them by this brand and apply the corresponding [mass action](#mass-actions).
 
-To create a new product from this view use the `+` button located on the `PRODUCTS` panel and enter the necessary data for the entry being created.
+To create a new product from this view, use the `+` button located on the `PRODUCTS` panel and enter the necessary data in the product creation pop-up that appears:
+
+![Creating products](../../_assets/brands/brands-create-product.jpg)
 
 To link the already existing products with the given brand, use the `Select` option from the actions menu located in the upper right corner of the `PRODUCTS` panel. Then in the "Products" pop-up window choose one or several products you would like to assign to this brand and click the `Select` button.
 
 *Please, note that if the product has already been related to other brand, it will be reassigned to a new brand, which is opened in the main window.* 
+
+To see all products linked to the given brand, use the `Show full list` option:
+
+![Brand products](../../_assets/brands/show-full-option.jpg)
+
+Then the "Products" page opens, where all product records [filtered](https://treopim.com/help/search-and-filtering) by the given brand are displayed:
+
+![Products full list](../../_assets/brands/products-full-list.jpg)
 
 To view the brand related product, click its name in the products list or select the `View` option from the single record actions menu for the appropriate record:
 
