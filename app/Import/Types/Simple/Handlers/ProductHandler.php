@@ -69,9 +69,6 @@ class ProductHandler extends AbstractHandler
         // prepare file row
         $fileRow = (int)$data['offset'];
 
-        // prepare restore data
-        $restoreData = [];
-
         foreach ($fileData as $row) {
             $fileRow++;
 
@@ -129,19 +126,19 @@ class ProductHandler extends AbstractHandler
                 if (empty($id)) {
                     $entity = $service->createEntity($input);
 
-                    $restoreData['created'][$entityType][] = $entity->get('id');
+                    $this->restore[] = ['action' => 'created', 'entity' => $entityType, 'data' => $entity->get('id')];
                 } else {
                     $entity = $this->updateEntity($service, (string)$id, $input);
 
-                    $restoreData['updated'][$entityType][$id] = $restore;
+                    $this->restore[] = ['action' => 'updated', 'entity' => $entityType, 'data' => [$id => $restore]];
                 }
 
                 foreach ($categories as $value) {
-                    $this->importCategories($entity, $value, $delimiter, $restoreData);
+                    $this->importCategories($entity, $value, $delimiter);
                 }
 
                 foreach ($attributes as $value) {
-                    $this->importAttribute($entity, $value, $delimiter, $restoreData);
+                    $this->importAttribute($entity, $value, $delimiter);
                 }
 
                 $this->getEntityManager()->getPDO()->commit();
@@ -162,7 +159,7 @@ class ProductHandler extends AbstractHandler
         }
 
         // save data for restore
-        $this->saveRestoreData($importResultId, $restoreData);
+        $this->saveRestoreData($importResultId);
 
         return true;
     }
@@ -188,7 +185,7 @@ class ProductHandler extends AbstractHandler
      * @param array $data
      * @param string $delimiter
      */
-    protected function importAttribute(Entity $product, array $data, string $delimiter, array &$restore)
+    protected function importAttribute(Entity $product, array $data, string $delimiter)
     {
         $service = $this->getServiceFactory()->create('ProductAttributeValue');
 
@@ -232,14 +229,14 @@ class ProductHandler extends AbstractHandler
 
             $entity = $service->createEntity($inputRow);
 
-            $restore['created'][$entity->getEntityType()][] = $entity->get('id');
+            $this->restore[] = ['action' => 'created', 'entity' => 'ProductAttributeValue', 'data' => $entity->get('id')];
         } else {
             $id = $inputRow->id;
             unset($inputRow->id);
 
             $entity = $this->updateEntity($service, $id, $inputRow);
 
-            $restore['updated'][$entity->getEntityType()][$id] = $restoreRow;
+            $this->restore[] = ['action' => 'updated', 'entity' => 'ProductAttributeValue', 'data' => [$id => $restoreRow]];
         }
     }
 
@@ -250,7 +247,7 @@ class ProductHandler extends AbstractHandler
      *
      * @throws \Espo\Core\Exceptions\Error
      */
-    protected function importCategories(Entity $product, array $data, string $delimiter, array &$restore)
+    protected function importCategories(Entity $product, array $data, string $delimiter)
     {
         $service = $this->getServiceFactory()->create('ProductCategory');
 
@@ -283,13 +280,15 @@ class ProductHandler extends AbstractHandler
 
                 $entity = $service->createEntity($inputRow);
 
-                $restore['created'][$entity->getEntityType()][] = $entity->get('id');
+                $this->restore[] = ['action' => 'created', 'entity' => 'ProductCategory', 'data' => $entity->get('id')];
             } elseif ($conf['scope'] == 'Channel') {
+                $id = (string)$category->get('id');
                 $inputRow->channelsIds = $channelsIds;
                 $restoreRow->channelsIds = array_column($category->get('channels')->toArray(), 'id');
 
-                $this->updateEntity($service, (string)$category->get('id'), $inputRow);
-                $restore['updated'][$category->getEntityType()][$category->get('id')] = $restoreRow;
+                $this->updateEntity($service, $id, $inputRow);
+
+                $this->restore[] = ['action' => 'updated', 'entity' => 'ProductCategory', 'data' => [$id => $restoreRow]];
             }
         }
     }
