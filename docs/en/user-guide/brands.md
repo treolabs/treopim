@@ -21,7 +21,7 @@ If you want to make changes to the brand entity, e.g. add new fields, or modify 
 
 ## Creating
 
-To create a new brand, click `Brands` in the breadcrumb navigation or in the navigation menu to get to the brand [list view](#listing), and then click the `Create Brand` button. The common creation window will open:
+To create a new brand, click `Brands` in the navigation menu to get to the brand [list view](#listing), and then click the `Create Brand` button. The common creation window will open:
 
 ![Brands creation](../../_assets/brands/brands-create.jpg)
 
@@ -31,7 +31,7 @@ Click the `Save` button to finish the brand creation or `Cancel` to abort the pr
 
 If the brand code is not unique, the error message will appear notifying you about it.
 
-Alternatively, use the quick create button on any TreoPIM page and fill in the required fields in the brand creation pop-up that appears:
+Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the brand creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/brands/creation-popup.jpg)
 

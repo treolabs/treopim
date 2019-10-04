@@ -20,7 +20,7 @@ If you want to make changes to the channel entity, e.g. add new fields, or modif
 
 ## Creating
 
-To create a new channel, click `Channels` in the breadcrumb navigation or in the navigation menu to get to the channel [list view](#listing), and then click the `Create Channel` button. The common creation window will open:
+To create a new channel, click `Channels` in the navigation menu to get to the channel [list view](#listing), and then click the `Create Channel` button. The common creation window will open:
 
 ![Channel creation](../../_assets/channels/channels-create.jpg)
 
@@ -32,7 +32,7 @@ Click the `Save` button to finish the channel creation or `Cancel` to abort the 
 
 If the channel code is not unique, the error message will appear notifying you about it.
 
-Alternatively, use the quick create button on any TreoPIM page and fill in the required fields in the channel creation pop-up that appears:
+Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the channel creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/channels/creation-popup.jpg)
 

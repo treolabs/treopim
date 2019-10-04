@@ -69,7 +69,7 @@ In the Queue Manager you will see the most recent TreoPIM operations, which were
 
 ### Quick Create
 
-To create new records from anywhere, click the quick create icon in the upper right corner of the taskbar on any TreoPIM page and choose the entity for the record to be created:
+To create new records from anywhere, click the quick create button located in the upper right corner of the taskbar on any TreoPIM page and choose the entity for the record to be created:
 
 ![Quick Create](../../_assets/user-interface/quick-create.jpg)
 

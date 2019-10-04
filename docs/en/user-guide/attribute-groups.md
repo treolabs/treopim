@@ -17,7 +17,7 @@ If you want to make changes to the attribute group entity (e.g. add new fields, 
 
 ## Creating
 
-To create a new attribute group record, click `Attribute Groups` in the breadcrumb navigation or in the navigation menu to get to the attribute groups [list view](#listing), and then click the `Create Attribute Group` button. The common creation window will open:
+To create a new attribute group record, click `Attribute Groups` in the navigation menu to get to the attribute groups [list view](#listing), and then click the `Create Attribute Group` button. The common creation window will open:
 
 ![AG creation](../../_assets/attribute-groups/ag-create.jpg)
 
@@ -25,7 +25,7 @@ Here enter the desired name for the attribute group being created and its sort o
 
 If the attribute group code is not unique, the error message will appear notifying you about it.
 
-Alternatively, use the quick create button on any TreoPIM page and fill in the required fields in the attribute group creation pop-up that appears:
+Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the attribute group creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/attribute-groups/creation-popup.jpg)
 
