@@ -178,7 +178,8 @@
     "pimImages": {
       "type": "hasMany",
       "foreign": "category",
-      "entity": "PimImage"
+      "entity": "PimImage",
+      "disableMassRelation": true
     }
   },
   "collection": {

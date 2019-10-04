@@ -122,7 +122,8 @@
       "type": "hasMany",
       "relationName": "pimImageChannel",
       "foreign": "pimImages",
-      "entity": "Channel"
+      "entity": "Channel",
+      "disableMassRelation": true
     },
     "images": {
       "type": "hasChildren",
