@@ -359,7 +359,8 @@
     "pimImages": {
       "type": "hasMany",
       "foreign": "product",
-      "entity": "PimImage"
+      "entity": "PimImage",
+      "disableMassRelation": true
     },
     "createdBy": {
       "type": "belongsTo",
