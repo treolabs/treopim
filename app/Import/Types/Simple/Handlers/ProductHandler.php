@@ -126,11 +126,11 @@ class ProductHandler extends AbstractHandler
                 if (empty($id)) {
                     $entity = $service->createEntity($input);
 
-                    $this->restore[] = ['action' => 'created', 'entity' => $entityType, 'data' => $entity->get('id')];
+                    $this->saveRestoreRow('created', $entityType, $entity->get('id'));
                 } else {
                     $entity = $this->updateEntity($service, (string)$id, $input);
 
-                    $this->restore[] = ['action' => 'updated', 'entity' => $entityType, 'data' => [$id => $restore]];
+                    $this->saveRestoreRow('updated', $entityType, [$id => $restore]);
                 }
 
                 foreach ($categories as $value) {
@@ -158,9 +158,6 @@ class ProductHandler extends AbstractHandler
             }
         }
 
-        // save data for restore
-        $this->saveRestoreData($importResultId);
-
         return true;
     }
 
@@ -187,7 +184,8 @@ class ProductHandler extends AbstractHandler
      */
     protected function importAttribute(Entity $product, array $data, string $delimiter)
     {
-        $service = $this->getServiceFactory()->create('ProductAttributeValue');
+        $entityType = 'ProductAttributeValue';
+        $service = $this->getServiceFactory()->create($entityType);
 
         $inputRow = new \stdClass();
         $restoreRow = new \stdClass();
@@ -214,7 +212,7 @@ class ProductHandler extends AbstractHandler
         }
 
         // convert attribute value
-        $this->convertItem($inputRow, 'ProductAttributeValue', $conf, $row, $delimiter);
+        $this->convertItem($inputRow, $entityType, $conf, $row, $delimiter);
         $inputRow->value = $inputRow->{$conf['name']};
         unset($inputRow->{$conf['name']});
 
@@ -229,14 +227,14 @@ class ProductHandler extends AbstractHandler
 
             $entity = $service->createEntity($inputRow);
 
-            $this->restore[] = ['action' => 'created', 'entity' => 'ProductAttributeValue', 'data' => $entity->get('id')];
+            $this->saveRestoreRow('created', $entityType, $entity->get('id'));
         } else {
             $id = $inputRow->id;
             unset($inputRow->id);
 
             $entity = $this->updateEntity($service, $id, $inputRow);
 
-            $this->restore[] = ['action' => 'updated', 'entity' => 'ProductAttributeValue', 'data' => [$id => $restoreRow]];
+            $this->saveRestoreRow('updated', $entityType, [$id => $restoreRow]);
         }
     }
 
@@ -249,7 +247,8 @@ class ProductHandler extends AbstractHandler
      */
     protected function importCategories(Entity $product, array $data, string $delimiter)
     {
-        $service = $this->getServiceFactory()->create('ProductCategory');
+        $entityType = 'ProductCategory';
+        $service = $this->getServiceFactory()->create($entityType);
 
         $conf = $data['item'];
         $row = $data['row'];
@@ -280,7 +279,7 @@ class ProductHandler extends AbstractHandler
 
                 $entity = $service->createEntity($inputRow);
 
-                $this->restore[] = ['action' => 'created', 'entity' => 'ProductCategory', 'data' => $entity->get('id')];
+                $this->saveRestoreRow('created', $entityType, $entity->get('id'));
             } elseif ($conf['scope'] == 'Channel') {
                 $id = (string)$category->get('id');
                 $inputRow->channelsIds = $channelsIds;
@@ -288,7 +287,7 @@ class ProductHandler extends AbstractHandler
 
                 $this->updateEntity($service, $id, $inputRow);
 
-                $this->restore[] = ['action' => 'updated', 'entity' => 'ProductCategory', 'data' => [$id => $restoreRow]];
+                $this->saveRestoreRow('updated', $entityType, [$id => $restoreRow]);
             }
         }
     }
