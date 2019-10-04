@@ -51,13 +51,13 @@ Attributes are automatically validated according to their type. The following at
 
 ## Creating
 
-To create a new attribute, click `Attributes` in the breadcrumb navigation or in the navigation menu to get to the attribute [list view](#listing) and then click the `Create Attribute` button. The common creation pop-up window will appear:
+To create a new attribute, click `Attributes` in the navigation menu to get to the attribute [list view](#listing) and then click the `Create Attribute` button. The common creation pop-up window will appear:
 
 ![Attributes creation](../../_assets/attributes/attributes-create.jpg)
 
 Here enter the attribute name and code and select its type from the `Attribute Type` drop-down list. Define its attribute group using the corresponding select button, if needed. Your username is loaded to the `Owner` and `Assigned user` fields by default. You can change them via the corresponding select buttons, as well as define the team, if needed. Click the `Save` button to finish the attribute creation or `Cancel` to abort the process.
 
-If the catalog code is not unique, the error message will appear notifying you about it.
+If the attribute code is not unique, the error message will appear notifying you about it.
 
 Please, note that attribute type cannot be changed after the attribute is created. 
 
@@ -65,7 +65,7 @@ When creating attributes of the `Enum`, `Multi-Enum`, `Enum Multilang`, and `Mul
 
 ![Enum values list](../../_assets/attributes/enum-values-list.jpg)
 
-Alternatively, use the quick create button on any TreoPIM page and fill in the required fields in the attribute creation pop-up that appears:
+Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the attribute creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/attributes/creation-popup.jpg)
 

@@ -19,13 +19,13 @@ If you want to make changes to the association entity (e.g. add new fields, or m
 
 ## Creating
 
-To create a new association, click `Associations` in the breadcrumb navigation or in the navigation menu to get to the association [list view](#listing) and then click the `Create Association` button. The common creation window will open:
+To create a new association, click `Associations` in the navigation menu to get to the association [list view](#listing) and then click the `Create Association` button. The common creation window will open:
 
 ![Associations creation](../../_assets/associations/associations-create.jpg)
 
 Here enter the association name and description (optional); activate the new association, if needed. Define its backward association using the corresponding select button. Click the `Save` button to finish the association creation or `Cancel` to abort the process.
 
-Alternatively, use the quick create button on any TreoPIM page and fill in the required fields in the association creation pop-up that appears:
+Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the association creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/associations/creation-popup.jpg)
 

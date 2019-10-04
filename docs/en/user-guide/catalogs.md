@@ -133,11 +133,11 @@ Relations to products and categories are available for all catalogs by default. 
 
 ### Categories
 
-On the catalog detail view page you can assign a [category](https://treopim.com/help/categories) (or several categories) to your catalog on the `CATEGORIES` panel using the `Select` button:
+On the catalog detail view page you can assign a [category](https://treopim.com/help/categories) (or several categories) to your catalog on the `CATEGORIES` panel using the `Select` option from the actions menu:
 
 ![Adding categories](../../_assets/catalogs/categories-select.jpg)
 
-In the "Categories" pop-up that opens, choose the desired category (or categories) from the list and press the `Select` button to link the item(s) to the catalog.
+In the "Categories" pop-up that appears, choose the desired category (or categories) from the list and press the `Select` button to link the item(s) to the catalog.
 
 Please, note that only root categories should be linked to the catalogs, which means that all catalog products may have only those categories that are related to the selected category tree(s).
 
@@ -163,7 +163,7 @@ Products that are linked to the catalog are displayed on its detail view page on
 
 To see all products linked to the given catalog, use the `Show full list` option:
 
-![Catalog products](../../_assets/catalogs/show-full-option.jpg)
+![Show full option](../../_assets/catalogs/show-full-option.jpg)
 
 Then the "Products" page opens, where all product records [filtered](https://treopim.com/help/search-and-filtering) by the given catalog are displayed:
 
