@@ -205,7 +205,6 @@ class ProductHandler extends AbstractHandler
                         && empty($diff = array_diff($channels, $conf['channelsIds']))) {
                         $inputRow->id = $item->get('id');
                         $restoreRow->value = $item->get('value');
-                        $restoreRow->channelsIds = array_column($item->get('channels')->toArray(), 'id');
                     }
                 }
             }
