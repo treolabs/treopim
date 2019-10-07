@@ -206,8 +206,11 @@ class PimImage extends Base
             // set image
             $foreign->set('imageId', $imageId);
 
+            // set keep attachment param
+            $foreign->keepAttachment = true;
+
             // save
-            $this->getEntityManager()->saveEntity($foreign, ['skipAll' => true]);
+            $this->getEntityManager()->saveEntity($foreign);
         }
 
         return true;
