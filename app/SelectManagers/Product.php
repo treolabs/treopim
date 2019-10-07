@@ -587,18 +587,23 @@ class Product extends AbstractSelectManager
      */
     protected function boolFilterLinkedWithCategory(array &$result)
     {
-        // prepare category
-        $category = $this
-            ->getEntityManager()
-            ->getEntity('Category', (string)$this->getSelectCondition('linkedWithCategory'));
+        // prepare category id
+        $id = (string)$this->getSelectCondition('linkedWithCategory');
 
-        if (!empty($category)) {
-            // get category tree products
-            $products = $category->getTreeProducts();
+        // prepare sql
+        $sql = "
+          SELECT product_id
+          FROM product_category
+          WHERE product_id IS NOT NULL
+            AND deleted=0
+            AND scope='Global'
+            AND category_id IN (SELECT id FROM category WHERE (id='$id' OR category_route LIKE '%|$id|%') AND deleted=0)";
 
-            $result['whereClause'][] = [
-                'id' => count($products > 0) ? array_column($products->toArray(), 'id') : []
-            ];
-        }
+        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
+        $sth->execute();
+
+        $result['whereClause'][] = [
+            'id' => array_column($sth->fetchAll(\PDO::FETCH_ASSOC), 'product_id')
+        ];
     }
 }
