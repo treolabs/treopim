@@ -38,9 +38,9 @@ class ProductCategory extends AbstractSelectManager
     {
         // filtering by product types
         $params['where'][] = [
-            'type'      => 'in',
+            'type'      => 'notIn',
             'attribute' => 'productId',
-            'value'     => $this->getEntityManager()->getRepository('Product')->getAllowedProductIds()
+            'value'     => $this->getEntityManager()->getRepository('Product')->getNotAllowedProductIds()
         ];
 
         // call parent
