@@ -195,37 +195,35 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 gridModel.set(gridPackages, {silent: true})
             }
 
-            if (this.validate()) {
+            if (attrs) {
+                model.set(attrs, {silent: true});
+            }
+
+            const overviewValidation = this.validate();
+            const panelValidation = this.validatePanels();
+
+            if (overviewValidation || panelValidation) {
                 if (gridPackages && packageView && beforeSaveGridPackages) {
                     packageView.getView('grid').model.attributes = beforeSaveGridPackages;
                 }
 
                 model.attributes = beforeSaveAttributes;
+
                 this.trigger('cancel:save');
                 this.afterNotValid();
                 return;
             }
 
-            let changesFromPanels = this.handlePanelsFetch();
-
-            if (this.validatePanels()) {
-                this.trigger('cancel:save');
-                this.afterNotValid();
-                return;
+            if (gridPackages && packageView) {
+                packageView.save();
             }
 
             this.handlePanelsSave();
 
             if (!attrs) {
-                this.afterNotModified(gridPackages || changesFromPanels);
+                this.afterNotModified(gridPackages || this.handlePanelsFetch());
                 this.trigger('cancel:save');
                 return true;
-            }
-
-            model.set(attrs, {silent: true});
-
-            if (gridPackages && packageView) {
-                packageView.save();
             }
 
             this.beforeSave();
