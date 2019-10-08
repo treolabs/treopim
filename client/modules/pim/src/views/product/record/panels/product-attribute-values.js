@@ -765,13 +765,21 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     if (value.mode === 'edit') {
                         const fetchedData = value.fetch();
                         const initialData = this.initialAttributes[id];
-                        if (!_.isEqual(initialData, fetchedData) && (Object.keys(fetchedData).every(key => initialData[key] || fetchedData[key]))) {
+                        if (this.equalityValueCheck(fetchedData, initialData)) {
                             data = _.extend(data || {}, {[id]: fetchedData});
                         }
                     }
                 });
             });
             return data;
+        },
+
+        equalityValueCheck(fetchedData, initialData) {
+            return !_.isEqual(initialData, fetchedData) && (Object.keys(fetchedData).every(key => {
+                const initial = initialData[key];
+                const fetched = fetchedData[key];
+                return (Array.isArray(initial) ? initial.length : initial) || (Array.isArray(fetched) ? fetched.length : fetched);
+            }));
         },
 
         save() {
