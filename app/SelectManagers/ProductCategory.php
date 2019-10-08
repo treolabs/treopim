@@ -36,14 +36,15 @@ class ProductCategory extends AbstractSelectManager
      */
     public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
     {
-        // filtering by product types
-        $params['where'][] = [
-            'type'      => 'notIn',
-            'attribute' => 'productId',
-            'value'     => $this->getEntityManager()->getRepository('Product')->getNotAllowedProductIds()
-        ];
+        // get select params
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
 
-        // call parent
-        return parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        // prepare product types
+        $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
+
+        // add filtering by product types
+        $selectParams['customWhere'] .= " AND product_category.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)";
+
+        return $selectParams;
     }
 }

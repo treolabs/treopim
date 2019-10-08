@@ -50,14 +50,16 @@ class ProductAttributeValue extends AbstractSelectManager
             }
         }
 
-        // filtering by product types
-        $params['where'][] = [
-            'type'      => 'notIn',
-            'attribute' => 'productId',
-            'value'     => $this->getEntityManager()->getRepository('Product')->getNotAllowedProductIds()
-        ];
+        // get select params
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
 
-        return parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        // prepare product types
+        $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
+
+        // add filtering by product types
+        $selectParams['customWhere'] .= " AND product_attribute_value.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)";
+
+        return $selectParams;
     }
 
     /**

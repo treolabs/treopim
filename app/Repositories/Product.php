@@ -41,19 +41,6 @@ class Product extends AbstractRepository
     }
 
     /**
-     * @return array
-     */
-    public function getNotAllowedProductIds(): array
-    {
-        $data = $this
-            ->select(['id'])
-            ->where(['type!=' => array_keys($this->getMetadata()->get('pim.productType', []))])
-            ->find();
-
-        return array_column($data->toArray(), 'id');
-    }
-
-    /**
      * @inheritdoc
      */
     protected function afterSave(Entity $entity, array $options = [])
