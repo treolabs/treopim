@@ -127,25 +127,37 @@ Use the `Duplicate` option from the actions menu to go to the catalog creation p
 
 As a result, the catalog is 100% duplicated together with all its products.
 
-## Working with Entities Related to Catalogs
+## Working With Entities Related to Catalogs
 
-Relations to products and categories are available for all catalogs by default. To be able to relate more entities to the catalog, please, contact your administrator.
+Relations to [categories](https://treopim.com/help/categories) and [products](https://treopim.com/help/products) are available for all catalogs by default. The related entities records are displayed on the corresponding panels on the catalog [detail view](https://treopim.com/help/views-and-panels) page. If any panel is missing, please, contact your administrator as to your access rights configuration.
+
+To be able to relate more entities to the catalog, please, contact your administrator.
 
 ### Categories
 
-On the catalog detail view page you can assign a [category](https://treopim.com/help/categories) (or several categories) to your catalog on the `CATEGORIES` panel using the `Select` option from the actions menu:
+Categories that are linked to the catalog are shown on the `CATEGORIES` panel within the catalog detail view page and include the following table columns:
+ - Name
+ - Code
+ - Category tree
+ - Active
+
+![Categories panel](../../_assets/catalogs/categories-panel.jpg)
+
+On this panel, you can link categories to the given catalog by selecting the existing ones or creating new categories.
+
+To create new categories, click the `+` button located in the upper right corner of the `CATEGORIES` panel and enter the necessary data in the category creation pop-up that appears:
+
+![Creating categories](../../_assets/catalogs/catalogs-create-category.jpg)
+
+Click the `Save` button to complete the category creation process or `Cancel` to abort it.
+
+To assign an existing category (or several categories) to the catalog, use the `Select` option from the actions menu  of the `CATEGORIES` panel:
 
 ![Adding categories](../../_assets/catalogs/categories-select.jpg)
 
 In the "Categories" pop-up that appears, choose the desired category (or categories) from the list and press the `Select` button to link the item(s) to the catalog.
 
 Please, note that only root categories should be linked to the catalogs, which means that all catalog products may have only those categories that are related to the selected category tree(s).
-
-You can also create new categories to be linked to the currently open catalog. To do this, click the `+` button on the `CATEGORIES` panel and enter the necessary data in the category creation pop-up that appears:
-
-![Creating categories](../../_assets/catalogs/catalogs-create-category.jpg)
-
-Click the `Save` button to complete the category creation process or `Cancel` to abort it.
 
 Categories linked to the given catalog can be viewed, edited, unlinked or removed via the corresponding options from the single record actions menu on the `CATEGORIES` panel:
 

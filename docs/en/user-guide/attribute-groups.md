@@ -88,11 +88,11 @@ Alternatively, make changes to the desired attribute group record in the [quick 
 
 To remove the attribute group record, use the `Remove` option from the actions menu on its detail view page
 
-![Remove1](../../_assets/associations/remove-details.jpg)
+![Remove1](../../_assets/attribute-groups/remove-details.jpg)
 
 or from the single record actions menu on the attribute groups list view page:
 
-![Remove2](../../_assets/associations/remove-list.jpg)
+![Remove2](../../_assets/attribute-groups/remove-list.jpg)
 
 If you are removing the attribute group that contains related attributes, these attributes will be unlinked from this attribute group.
 
@@ -100,17 +100,16 @@ If you are removing the attribute group that contains related attributes, these 
 
 Use the `Duplicate` option from the actions menu to go to the attribute group creation page and get all the values of the last chosen attribute group record copied in the empty fields of the new attribute group record to be created. Modifying the attribute group code is required, as this value has to be unique.
 
-## Working with Attributes, Related to the Attribute Group
+## Working With Attributes Related to the Attribute Group
 
-On each attribute group detail view page, there is a small list view of the attributes associated with this attribute group. They are displayed on the `ATTRIBUTES` panel:
-
-![Attributes panel](../../_assets/attribute-groups/attributes-panel.jpg)
-
-By default, the following fields are displayed on the `ATTRIBUTES` panel:
-
+Attributes that are linked to the attribute group are displayed on its detail view page on the `ATTRIBUTES` panel and include the following table columns:
 - Attribute name
 - Code
 - Attribute type
+
+![Attributes panel](../../_assets/attribute-groups/attributes-panel.jpg)
+
+If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to attribute groups, please, contact your administrator.
 
 To create a new [attribute](https://treopim.com/help/attributes) from this view, сlick the `+` button and fill in the fields in the creation pop-up window that appears:
 
@@ -120,7 +119,7 @@ To link the already existing attribute(s) with the open attribute group, use the
 
 ![Selecting attributes](../../_assets/attribute-groups/attributes-select.jpg)
 
-In the "Attributes" pop-up window that appears select one or several attributes you would like to assign to this attribute group and click the `Select` button to complete the action.
+In the "Attributes" pop-up window that appears, select one or several attributes you would like to assign to this attribute group and click the `Select` button to complete the action.
 
 *Please consider, if the attribute has already been related to other attribute group(s), it will be reassigned to the currently open attribute group.*
 

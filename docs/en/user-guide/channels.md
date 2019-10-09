@@ -107,7 +107,7 @@ or from the single record actions menu on the channels list view page:
 
 Use the `Duplicate` option from the actions menu to go to the channel creation page and get all the values of the last chosen channel record copied in the empty fields of the new channel record to be created. Modifying the channel code is required, as this value has to be unique.
 
-## Working with Products Related to Channels
+## Working With Products Related to Channels
 
 Products that are linked to the channel are displayed on its detail view page on the `PRODUCTS` panel and include the following table columns:
  - Name
@@ -117,7 +117,9 @@ Products that are linked to the channel are displayed on its detail view page on
 
 ![Channel products](../../_assets/channels/channel-products.jpg)
 
-To create a new product from this view, use the `+` button located on the `PRODUCTS` panel and enter the necessary data in the product creation pop-up that appears:
+If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to product families, please, contact your administrator.
+
+To create a new product for the given channel, use the `+` button located on the `PRODUCTS` panel and enter the necessary data in the product creation pop-up that appears:
 
 ![Creating products](../../_assets/channels/channels-create-product.jpg)
 

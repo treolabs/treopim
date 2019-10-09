@@ -102,13 +102,15 @@ By default, it is not possible to remove the association, if there is any produc
 
 Use the `Duplicate` option from the actions drop-down menu to go to the association creation page and get all the values of the last chosen association record copied in the empty fields of the new association record to be created. Modifying the association code is required, as this value has to be unique.
 
-## Working with Associated Products
+## Working With Associated Products
 
-[Associated products](https://treopim.com/help/associated-products) are related to the associations and are shown as a [small list view](https://treopim.com/help/views-and-panels) on each product page and include the following table columns:
+[Associated products](https://treopim.com/help/associated-products) are related to the associations and are displayed on the `ASSOCIATED PRODUCTS` panel within the [product](https://treopim.com/help/products) detail view page and include the following table columns:
 
  - Related product image
  - Related product
  - Association
+
+![Associated products panel](../../_assets/associations/associated-products-panel.jpg)
 
 TreoPIM also offers you the ability to add associations to all the products (or as many as needed) simultaneously via the [mass actions](https://treopim.com/help/views-and-panels) menu.
 

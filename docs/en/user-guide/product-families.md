@@ -118,25 +118,25 @@ By default, it is not possible to remove the product family, if it is used in pr
 
 Use the `Duplicate` option from the actions menu to go to the product family creation page and get all the values of the last chosen product family record copied in the empty fields of the new product family record to be created. Modifying the product family code is required, as this value has to be unique.
 
-## Working with Entities Related to Product Families
+## Working With Entities Related to Product Families
 
-Relations to attributes and products are available for all product families by default. To be able to relate more entities to the product families, please, contact your administrator.
+Relations to [attributes](https://treopim.com/help/attributes) and [products](https://treopim.com/help/products) are available for all product families by default. The related entities records are displayed on the corresponding panels on the product family [detail view](https://treopim.com/help/views-and-panels) page. If any panel is missing, please, contact your administrator as to your access rights configuration.
+
+To be able to relate more entities to product families, please, contact your administrator.
 
 ### Attributes
 
-On the product family detail view page, you can assign an [attribute](https://treopim.com/help/attributes) (or several attributes) to your product family on the `PRODUCT FAMILY ATTRIBUTES` panel using the `Select` option from the actions menu:
+Attributes that are linked to the product family are shown on the `PRODUCT FAMILY ATTRIBUTES` panel within the product family detail view page and include the following table columns:
+ - Attribute
+ - Is required
+ - Scope
+ - Channels
 
-![Adding attributes](../../_assets/product-families/attributes-select.jpg)
+![PF attributes panel](../../_assets/product-families/pf-attributes-panel.jpg)
 
-In the "Attributes" pop-up that appears, choose the desired attribute (or attributes) from the list and press the `Select` button to link the item(s) to the product family. The linked attributes have the `Global` scope by default.
+On this panel, you can link attributes to the given product family by selecting the existing ones or creating new attributes.
 
-Please, note that when the attribute is linked to the product family, it is automatically linked to all [products](https://treopim.com/help/products) belonging to the given product family. Also note that it is not possible to link to the product family the attribute, which is already used in the product belonging to the given family. You will be notified about it with the corresponding error message. 
-
-TreoPIM supports linking to product families not only separate attributes, but also [attribute groups](https://treopim.com/help/attribute-groups). For this, use the `Select Attribute Group` option from the actions menu, and in the "Attribute Groups" pop-up that appears, select the desired groups from the list of available attribute groups.
-
-Please, note that attributes linked to product families are arranged by attribute groups correspondingly. Their placement depends on the configuration and the sort order value of the attribute group to which they belong.
-
-You can also create new attributes to be linked to the currently open product family. To do this, click the `+` button on the `PRODUCT FAMILY ATTRIBUTES` panel:
+To create new attributes to be linked to the currently open product family, click the `+` button located in the upper right corner of the `PRODUCT FAMILY ATTRIBUTES` panel:
 
 ![Creating attributes](../../_assets/product-families/pf-attribute-create.jpg)
 
@@ -144,7 +144,7 @@ In the product family attribute creation pop-up that appears, click the select a
 
 ![Creating attributes](../../_assets/product-families/pf-attributes-popup.jpg)
 
-Return to the product family attribute creation pop-up, define the owner and assigned user for the selected attribute and make it required by setting the corresponding checkbox, if needed. By default, the defined attribute has the `Global` scope, but you can change it to `Channel` and define the desired channel (or channels) in the added field:
+Return to the product family attribute creation pop-up, define the owner and assigned user for the selected attribute and make it required by setting the corresponding checkbox, if needed. By default, the defined attribute has the `Global` scope, but you can change it to `Channel` and select the desired channel (or channels) in the added field:
 
 ![Channel attribute](../../_assets/product-families/pf-attribute-channel.jpg)
 
@@ -153,6 +153,18 @@ Click the `Save` button to complete the product family attribute creation proces
 Please, note that you can link the same attribute to the product family more than once, but with different scopes (`Global` / `Channel`), and same channel can be used only once:
 
 ![PF attribute scope](../../_assets/product-families/pf-attribute-scope.jpg)
+
+Please, note that when the attribute is linked to the product family, it is automatically linked to all [products](https://treopim.com/help/products) belonging to the given product family. Also note that it is not possible to link to the product family the attribute, which is already used in the product belonging to the given family. You will be notified about it with the corresponding error message. 
+
+To assign an existing an existing attribute (or several attributes) to your product family, use the `Select` option from the actions menu:
+
+![Adding attributes](../../_assets/product-families/attributes-select.jpg)
+
+In the "Attributes" pop-up that appears, choose the desired attribute (or attributes) from the list and press the `Select` button to link the item(s) to the product family. The linked attributes have the `Global` scope by default.
+
+TreoPIM supports linking to product families not only separate attributes, but also [attribute groups](https://treopim.com/help/attribute-groups). For this, use the `Select Attribute Group` option from the actions menu, and in the "Attribute Groups" pop-up that appears, select the desired groups from the list of available attribute groups.
+
+Please, note that attributes linked to product families are arranged by attribute groups correspondingly. Their placement depends on the configuration and the sort order value of the attribute group to which they belong.
 
 Attributes linked to the given product family can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT FAMILY ATTRIBUTES` panel:
 
@@ -176,6 +188,14 @@ Products that are linked to the product family are displayed on its detail view 
 
 ![PF products](../../_assets/product-families/pf-products.jpg)
 
+On this panel, you can create new products within the currently open product family. To do this, click the `+` button and enter the necessary data in the product creation pop-up that appears:
+
+![Creating products](../../_assets/product-families/pf-create-product.jpg)
+
+Click the `Save` button to complete the product creation process or `Cancel` to abort it.
+
+Please, note that once the product is created within the product family, the given product family cannot be changed for this product. 
+
 To see all products linked to the given product family, use the `Show full list` option:
 
 ![Show full option](../../_assets/product-families/show-full-option.jpg)
@@ -183,14 +203,6 @@ To see all products linked to the given product family, use the `Show full list`
 Then the "Products" page opens, where all product records [filtered](https://treopim.com/help/search-and-filtering) by the given product family are displayed:
 
 ![Products full list](../../_assets/product-families/products-full-list.jpg)
-
-You can also create new products within the currently open product family. To do this, click the `+` button on the `PRODUCTS` panel and enter the necessary data in the product creation pop-up that appears:
-
-![Creating products](../../_assets/product-families/pf-create-product.jpg)
-
-Click the `Save` button to complete the product creation process or `Cancel` to abort it.
-
-Please, note that once the product is created within the product family, the given product family cannot be changed for this product. 
 
 Products linked to the given product family can be viewed, edited, unlinked or removed via the corresponding options from the single record actions menu on the `PRODUCTS` panel:
 
