@@ -22,8 +22,7 @@ namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
 use Pim\Services\GeneralStatisticsDashlet;
-use Pim\Services\Product as ProductService;
-use Treo\Core\EventManager\Event;
+use Treo\Core\SelectManagerFactory;
 
 /**
  * Product select manager
@@ -32,6 +31,11 @@ use Treo\Core\EventManager\Event;
  */
 class Product extends AbstractSelectManager
 {
+    /**
+     * @var SelectManagerFactory|null
+     */
+    protected $selectManagerFactory = null;
+
     /**
      * @inheritdoc
      */
@@ -65,8 +69,36 @@ class Product extends AbstractSelectManager
             'value'     => array_keys($this->getMetadata()->get('pim.productType', []))
         ];
 
-        // call parent
-        return parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        // get product attributes filter
+        $productAttributes = $this->getProductAttributeFilter($params);
+
+        // get select params
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
+
+        // add product attributes filter
+        $this->addProductAttributesFilter($selectParams, $productAttributes);
+
+        return $selectParams;
+    }
+
+    /**
+     * @param SelectManagerFactory $selectManagerFactory
+     *
+     * @return Product
+     */
+    public function setSelectManagerFactory(SelectManagerFactory $selectManagerFactory): Product
+    {
+        $this->selectManagerFactory = $selectManagerFactory;
+
+        return $this;
+    }
+
+    /**
+     * @return SelectManagerFactory|null
+     */
+    protected function getSelectManagerFactory(): ?SelectManagerFactory
+    {
+        return $this->selectManagerFactory;
     }
 
     /**
@@ -592,5 +624,120 @@ class Product extends AbstractSelectManager
 
         // set custom where
         $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND scope='Global' AND category_id IN (SELECT id FROM category WHERE (id='$id' OR category_route LIKE '%|$id|%') AND deleted=0))";
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    protected function getProductAttributeFilter(array &$params): array
+    {
+        // prepare result
+        $result = [];
+
+        if (!empty($params['where']) && is_array($params['where'])) {
+            $where = [];
+            foreach ($params['where'] as $row) {
+                if (empty($row['isAttribute'])) {
+                    $where[] = $row;
+                } else {
+                    $result[] = $row;
+                }
+            }
+            $params['where'] = $where;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $selectParams
+     * @param array $attributes
+     */
+    protected function addProductAttributesFilter(array &$selectParams, array $attributes): void
+    {
+        // create select manager
+        $selectManager = $this
+            ->getSelectManagerFactory()
+            ->create('ProductAttributeValue');
+
+        foreach ($attributes as $row) {
+            // prepare attribute where
+            switch ($row['type']) {
+                case 'isTrue':
+                    $where = [
+                        'type'  => 'and',
+                        'value' => [
+                            [
+                                'type'      => 'equals',
+                                'attribute' => 'attributeId',
+                                'value'     => $row['attribute']
+                            ],
+                            [
+                                'type'      => 'equals',
+                                'attribute' => 'value',
+                                'value'     => 'TreoBoolIsTrue'
+                            ]
+                        ]
+                    ];
+                    break;
+                case 'isFalse':
+                    $where = [
+                        'type'  => 'and',
+                        'value' => [
+                            [
+                                'type'      => 'equals',
+                                'attribute' => 'attributeId',
+                                'value'     => $row['attribute']
+                            ],
+                            [
+                                'type'  => 'or',
+                                'value' => [
+                                    [
+                                        'type'      => 'isNull',
+                                        'attribute' => 'value'
+                                    ],
+                                    [
+                                        'type'      => 'equals',
+                                        'attribute' => 'value',
+                                        'value'     => 'TreoBoolIsFalse'
+                                    ]
+                                ]
+                            ],
+                        ]
+                    ];
+                    break;
+                default:
+                    $where = [
+                        'type'  => 'and',
+                        'value' => [
+                            [
+                                'type'      => 'equals',
+                                'attribute' => 'attributeId',
+                                'value'     => $row['attribute']
+                            ],
+                            [
+                                'type'      => $row['type'],
+                                'attribute' => 'value',
+                                'value'     => $row['value']
+                            ]
+                        ]
+                    ];
+                    break;
+            }
+
+            // create select params
+            $sp = $selectManager->getSelectParams(['where' => [$where]], true, true);
+            $sp['select'] = ['productId'];
+
+            // create sql
+            $sql = $this
+                ->getEntityManager()
+                ->getQuery()
+                ->createSelectQuery('ProductAttributeValue', $sp);
+
+            $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
+        }
     }
 }

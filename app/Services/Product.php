@@ -182,6 +182,17 @@ class Product extends AbstractService
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function getSelectParams($params)
+    {
+        return $this
+            ->getSelectManager($this->entityType)
+            ->setSelectManagerFactory($this->getSelectManagerFactory())
+            ->getSelectParams($params, true, true);
+    }
+
+    /**
      * @param Entity $product
      * @param Entity $duplicatingProduct
      */
