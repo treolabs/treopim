@@ -22,7 +22,6 @@ namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
 use Pim\Services\GeneralStatisticsDashlet;
-use Treo\Core\SelectManagerFactory;
 
 /**
  * Product select manager
@@ -31,11 +30,6 @@ use Treo\Core\SelectManagerFactory;
  */
 class Product extends AbstractSelectManager
 {
-    /**
-     * @var SelectManagerFactory|null
-     */
-    protected $selectManagerFactory = null;
-
     /**
      * @inheritdoc
      */
@@ -79,26 +73,6 @@ class Product extends AbstractSelectManager
         $this->addProductAttributesFilter($selectParams, $productAttributes);
 
         return $selectParams;
-    }
-
-    /**
-     * @param SelectManagerFactory $selectManagerFactory
-     *
-     * @return Product
-     */
-    public function setSelectManagerFactory(SelectManagerFactory $selectManagerFactory): Product
-    {
-        $this->selectManagerFactory = $selectManagerFactory;
-
-        return $this;
-    }
-
-    /**
-     * @return SelectManagerFactory|null
-     */
-    protected function getSelectManagerFactory(): ?SelectManagerFactory
-    {
-        return $this->selectManagerFactory;
     }
 
     /**
