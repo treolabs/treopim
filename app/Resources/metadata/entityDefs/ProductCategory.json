@@ -13,6 +13,10 @@
       "required": true,
       "view": "pim:views/product-category/fields/category"
     },
+    "sorting": {
+      "type": "int",
+      "default": 0
+    },
     "scope": {
       "type": "enum",
       "required": true,
@@ -24,7 +28,6 @@
     },
     "channels": {
       "type": "linkMultiple",
-      "required": true,
       "importDisabled": true,
       "noLoad": false,
       "view": "pim:views/product-category/fields/channels"
@@ -75,7 +78,7 @@
     }
   },
   "collection": {
-    "sortBy": "createdAt",
+    "sortBy": "sorting",
     "asc": false
   }
 }

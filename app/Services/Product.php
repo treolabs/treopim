@@ -36,21 +36,6 @@ use \PDO;
 class Product extends AbstractService
 {
     /**
-     * @var array
-     */
-    protected $linkSelectParams
-        = [
-            'productImages' => [
-                'order' => 'ASC',
-                'orderBy' => 'product_image_product.sort_order',
-                'additionalColumns' => [
-                    'sortOrder' => 'sortOrder',
-                    'scope' => 'scope'
-                ]
-            ]
-        ];
-
-    /**
      * @param \stdClass $data
      *
      * @return bool
@@ -72,8 +57,8 @@ class Product extends AbstractService
         // find exists entities
         $entities = $repository->where(
             [
-                'associationId' => $data->associationId,
-                'mainProductId' => $data->ids,
+                'associationId'    => $data->associationId,
+                'mainProductId'    => $data->ids,
                 'relatedProductId' => $data->foreignIds
             ]
         )->find();
@@ -134,8 +119,8 @@ class Product extends AbstractService
             ->getRepository('AssociatedProduct')
             ->where(
                 [
-                    'associationId' => $data->associationId,
-                    'mainProductId' => $data->ids,
+                    'associationId'    => $data->associationId,
+                    'mainProductId'    => $data->ids,
                     'relatedProductId' => $data->foreignIds
                 ]
             )
@@ -169,7 +154,7 @@ class Product extends AbstractService
     /**
      * Get item in products data
      *
-     * @param string $productId
+     * @param string  $productId
      * @param Request $request
      *
      * @return array
@@ -179,7 +164,7 @@ class Product extends AbstractService
         // prepare result
         $result = [
             'total' => 0,
-            'list' => []
+            'list'  => []
         ];
 
         // get total
@@ -189,48 +174,8 @@ class Product extends AbstractService
             // prepare result
             $result = [
                 'total' => $total,
-                'list' => $this->getDbItemInProducts($productId, $request)
+                'list'  => $this->getDbItemInProducts($productId, $request)
             ];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get product main image
-     *
-     * @param array $productIds
-     *
-     * @return array
-     */
-    public function getDBAssociatedProductsMainImage(array $productIds): array
-    {
-        $result = [];
-        $productIds = "'" . implode("','", $productIds) . "'";
-        if (!empty($productIds)) {
-            $sql
-                = "SELECT
-                       pip.product_id AS productId,
-                       pi.type AS imageType,
-                       pi.image_id AS imageId,
-                       pi.image_link AS imageLink
-                    FROM product_image pi
-                      JOIN product_image_product pip
-                        ON pip.product_image_id = pi.id AND pip.deleted = 0 AND pip.id = (
-                          SELECT id
-                          FROM product_image_product
-                          WHERE product_id = pip.product_id
-                          ORDER BY sort_order, id
-                          LIMIT 1
-                        )
-                    WHERE pip.product_id IN ({$productIds}) AND pi.deleted = 0";
-
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $result = $sth->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
-
-            return is_array($result) ? $result : [];
         }
 
         return $result;
@@ -288,43 +233,6 @@ class Product extends AbstractService
                 $service->createEntity($data);
             }
         }
-    }
-
-
-    /**
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateProductImages(Entity $product, Entity $duplicatingProduct)
-    {
-        // copy images
-        $sql
-            = "DELETE FROM product_image_product WHERE product_id = '" . $product->get('id') . "';
-               INSERT INTO product_image_product (product_id, product_image_id, sort_order, scope, deleted)
-               SELECT
-                 '" . $product->get('id') . "',
-                  product_image_id,
-                  sort_order,
-                  scope,
-                  deleted
-               FROM product_image_product
-               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
-
-        // copy channel images
-        $sql
-            = "DELETE FROM product_image_channel WHERE product_id = '" . $product->get('id') . "';
-               INSERT INTO product_image_channel (product_id, product_image_id, channel_id, deleted)
-               SELECT
-                 '" . $product->get('id') . "',
-                  product_image_id,
-                  channel_id,
-                  deleted
-               FROM product_image_channel
-               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
     }
 
     /**
@@ -451,7 +359,7 @@ class Product extends AbstractService
     /**
      * Get DB count of item in products data
      *
-     * @param string $productId
+     * @param string  $productId
      * @param Request $request
      *
      * @return array
@@ -532,7 +440,7 @@ class Product extends AbstractService
      * Find linked AssociationMainProduct
      *
      * @param string $id
-     * @param array $params
+     * @param array  $params
      *
      * @return array
      * @throws Forbidden
@@ -545,10 +453,9 @@ class Product extends AbstractService
         }
 
         return [
-            'list' => $this->getDBAssociationMainProducts($id, '', $params),
+            'list'  => $this->getDBAssociationMainProducts($id, '', $params),
             'total' => $this->getDBTotalAssociationMainProducts($id, '')
         ];
-
     }
 
     /**
@@ -556,7 +463,7 @@ class Product extends AbstractService
      *
      * @param string $productId
      * @param string $wherePart
-     * @param array $params
+     * @param array  $params
      *
      * @return array
      */
@@ -580,29 +487,21 @@ class Product extends AbstractService
         $sql
             = "SELECT
                   ap.id,
-                  ap.association_id   AS associationId,
-                  association.name    AS associationName,
-                  p_main.id           AS mainProductId,
-                  p_main.name         AS mainProductName,
-                  relatedProduct.id   AS relatedProductId,
-                  relatedProduct.name AS relatedProductName,
-                  pi.image_id         AS relatedProductImageId,
-                  pi.image_link       AS relatedProductImageLink
+                  ap.association_id         AS associationId,
+                  association.name          AS associationName,
+                  p_main.id                 AS mainProductId,
+                  p_main.name               AS mainProductName,
+                  p_main.image_id           AS mainProductImageId,
+                  (SELECT name FROM attachment WHERE id = p_main.image_id) AS mainProductImageName,
+                  relatedProduct.id         AS relatedProductId,
+                  relatedProduct.name       AS relatedProductName,
+                  relatedProduct.image_id   AS relatedProductImageId,
+                  (SELECT name FROM attachment WHERE id = relatedProduct.image_id) AS relatedProductImageName
                 FROM associated_product AS ap
                   JOIN product AS relatedProduct 
                     ON relatedProduct.id = ap.related_product_id AND relatedProduct.deleted = 0
-                  LEFT JOIN product_image_product as pip
-                    ON pip.product_id = relatedProduct.id AND pip.deleted = 0 AND pip.id = (
-                      SELECT id
-                      FROM product_image_product
-                      WHERE product_id = pip.product_id
-                      ORDER BY sort_order, id
-                      LIMIT 1
-                    )
-                  LEFT JOIN product_image as pi
-                    ON pi.id = pip.product_image_id AND pi.deleted = 0
                   JOIN product AS p_main 
-                    ON p_main.id = ap.related_product_id AND p_main.deleted = 0
+                    ON p_main.id = ap.main_product_id AND p_main.deleted = 0
                   JOIN association 
                     ON association.id = ap.association_id AND association.deleted = 0
                 WHERE ap.deleted = 0 

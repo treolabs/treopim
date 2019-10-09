@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Pim\Repositories;
 
-use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
 
@@ -30,7 +30,7 @@ use Espo\Core\Utils\Util;
  *
  * @author r.ratsun@treolabs.com
  */
-class Product extends Base
+class Product extends AbstractRepository
 {
     /**
      * @return array
@@ -38,19 +38,6 @@ class Product extends Base
     public function getInputLanguageList(): array
     {
         return $this->getConfig()->get('inputLanguageList', []);
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllowedProductIds(): array
-    {
-        $data = $this
-            ->select(['id'])
-            ->where(['type' => array_keys($this->getMetadata()->get('pim.productType', []))])
-            ->find();
-
-        return array_column($data->toArray(), 'id');
     }
 
     /**

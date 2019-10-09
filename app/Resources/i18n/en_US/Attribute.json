@@ -32,7 +32,8 @@
       "multiEnumMultiLang": "Multi-Enum Multi Lang",
       "arrayMultiLang": "Array Multi Lang",
       "wysiwyg": "Wysiwyg",
-      "wysiwygMultiLang": "Wysiwyg Multi Lang"
+      "wysiwygMultiLang": "Wysiwyg Multi Lang",
+      "image": "Image"
     }
   },
   "links": {
@@ -59,6 +60,7 @@
     "You can not unlink product family attribute": "You can not unlink product family attribute",
     "Attribute with such CODE already exist": "Attribute with such CODE already exist",
     "Attribute is used in product families. Please, update product families first": "Attribute is used in product families. Please, update product families first",
-    "Attribute is used in products. Please, update products first": "Attribute is used in products. Please, update products first"
+    "Attribute is used in products. Please, update products first": "Attribute is used in products. Please, update products first",
+    "You can't change field of Type in Attribute": "You can't change field of Type in Attribute"
   }
 }

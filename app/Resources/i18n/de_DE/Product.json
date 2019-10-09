@@ -1,6 +1,5 @@
 {
   "fields": {
-    "productImages": "Produktbilder",
     "product": "Hauptartikel",
     "brand": "Marke",
     "sku": "SKU",
@@ -39,10 +38,10 @@
     "productSerie": "Product Serie",
     "association": "Assoziation",
     "catalog": "Katalog",
-    "channels": "Kanale"
+    "channels": "Kanale",
+    "pimImages": "Bilder"
   },
   "links": {
-    "productImages": "Produktbilder",
     "brand": "Marke",
     "tax": "MwSt.",
     "packaging": "Verpackung",
@@ -62,12 +61,12 @@
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
     "productTypePackages": "Produkttyp  Pakete",
     "catalog": "Katalog",
-    "channels": "Kanale"
+    "channels": "Kanale",
+    "pimImages": "Bilder"
   },
   "labels": {
     "There is no valid attributes for channel": "Es gibt keine gültigen Attribute für Kanal",
     "Item in Products": "Artikel im Set/Bundle",
-    "Image": "Produktbilder",
     "Add Attribute Filter": "Attributfilter hinzufügen",
     "Add Import Filter": "Importfilter hinzufügen",
     "Associated Products": "Assoziierte Produkte",
@@ -109,6 +108,8 @@
     "withoutProductAttributes": "ohne Produktattribute"
   },
   "exceptions": {
-    "Product with such SKU already exist": "Produkt mit einer solchen Artikelnummer existiert bereits"
+    "Product with such SKU already exist": "Produkt mit einer solchen Artikelnummer existiert bereits",
+    "You can't change Product Family in Product": "Sie können die Produktfamilie in Product nicht ändern",
+    "You can't change field of Type in Product": "Sie können das Feld Typ in Produkt nicht ändern"
   }
 }

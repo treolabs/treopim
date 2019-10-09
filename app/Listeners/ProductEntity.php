@@ -53,6 +53,13 @@ class ProductEntity extends AbstractEntityListener
             // is product categories in selected catalog
             $this->isProductCategoriesInSelectedCatalog($entity);
         }
+
+        if (!$entity->isNew() && $entity->isAttributeChanged('type')) {
+            throw new BadRequest($this->exception('You can\'t change field of Type'));
+        }
+        if ($entity->isAttributeChanged('productFamilyId') && !$entity->isNew()) {
+            throw new BadRequest($this->exception('You can\'t change Product Family in Product'));
+        }
     }
 
     /**
@@ -71,6 +78,20 @@ class ProductEntity extends AbstractEntityListener
 
         if ($skipUpdate && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
             $this->updateProductAttributesByProductFamily($entity, $options);
+        }
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @throws \Espo\Core\Exceptions\Error
+     */
+    public function afterRelate(Event $event)
+    {
+        if ($event->getArgument('relationName') == 'productImages') {
+            $this
+                ->createService('ProductImage')
+                ->sortingImage($event->getArgument('entity')->get('id'));
         }
     }
 
@@ -184,7 +205,7 @@ class ProductEntity extends AbstractEntityListener
         // get product family attributes
         $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
 
-        if ($entity->isNew() || (isset($options['isImport']) && $options['isImport'])) {
+        if ($entity->isNew()) {
             if (count($productFamilyAttributes) > 0) {
                 foreach ($productFamilyAttributes as $productFamilyAttribute) {
                     // create

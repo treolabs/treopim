@@ -72,14 +72,14 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
             let data = Dep.prototype.fetch.call(this);
             let view = this.getFieldView('value');
             if (view) {
-                _.extend(data, this.getAdditionalFieldData(view, data));
+                this.extendFieldData(view, data);
             }
             return data;
         },
 
-        getAdditionalFieldData(view, data) {
-            let result = {};
+        extendFieldData(view, data) {
             let additionalData = false;
+
             if (view.type === 'unit') {
                 let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
                 let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
@@ -90,10 +90,14 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                     }
                 });
             }
-            if (additionalData) {
-                result.data = _.extend((data.data || {}), additionalData);
+
+            if (view.type === 'image') {
+                _.extend((data || {}), {value: (data || {}).valueId});
             }
-            return result;
+
+            if (additionalData) {
+                _.extend((data || {}), {data: additionalData});
+            }
         }
 
     })

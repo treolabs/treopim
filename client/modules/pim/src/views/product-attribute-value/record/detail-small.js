@@ -38,8 +38,8 @@ Espo.define('pim:views/product-attribute-value/record/detail-small', ['pim:views
             return Dep.prototype.fetch.call(this);
         },
 
-        getAdditionalFieldData(view, data) {
-            return Detail.prototype.getAdditionalFieldData.call(this, view, data);
+        extendFieldData(view, data) {
+            Detail.prototype.extendFieldData.call(this, view, data);
         }
 
     })

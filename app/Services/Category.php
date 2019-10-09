@@ -21,31 +21,14 @@
 namespace Pim\Services;
 
 use Espo\Core\Exceptions\Forbidden;
-use Espo\Core\Templates\Services\Base;
-use Espo\ORM\EntityCollection;
 
 /**
  * Service of Category
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Category extends Base
+class Category extends AbstractService
 {
-    /**
-     * @var array
-     */
-    protected $linkSelectParams
-        = [
-            'categoryImages' => [
-                'order' => 'ASC',
-                'orderBy' => 'category_image_category.sort_order',
-                'additionalColumns' => [
-                    'sortOrder' => 'sortOrder',
-                    'scope' => 'scope'
-                ]
-            ]
-        ];
-
     /**
      * Get category entity
      *
@@ -143,5 +126,26 @@ class Category extends Base
             $this->removeProductCategoryByCategory($id);
         }
         parent::afterMassRemove($idList);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSelectParams($params)
+    {
+        // get parent
+        $selectParams = parent::getSelectParams($params);
+
+        // prepare additional select columns
+        $additionalSelectColumns = [
+            'childrenCount' => '(SELECT COUNT(c1.id) FROM category AS c1 WHERE c1.category_parent_id=category.id AND c1.deleted=0)'
+        ];
+
+        // add additional select columns
+        foreach ($additionalSelectColumns as $alias => $sql) {
+            $selectParams['additionalSelectColumns'][$sql] = $alias;
+        }
+
+        return $selectParams;
     }
 }

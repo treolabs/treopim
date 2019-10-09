@@ -26,7 +26,7 @@ Espo.define('pim:views/category/fields/image', 'views/fields/image',
 
         imageName: null,
 
-        sizeImage:{
+        sizeImage: {
             'x-small': [64, 64],
             'small': [128, 128],
             'medium': [256, 256],

@@ -56,10 +56,6 @@ class ProductCategoryEntity extends AbstractListener
             throw new BadRequest($this->exception('No such product catalog'));
         }
 
-        if (count($catalog->get('categories')) == 0) {
-            throw new BadRequest($this->exception('No category trees in product catalog'));
-        }
-
         if (!$this->isCategoryInCatalog($category, $catalog)) {
             throw new BadRequest($this->exception('Category should be in catalog trees'));
         }
