@@ -77,7 +77,8 @@ class PimImage extends Base
 
         // save new images for Files type
         if (!empty($entity->newImages)) {
-            foreach ($entity->newImages as $image) {
+            foreach ($entity->newImages as $k => $image) {
+                $image->set('sortOrder', time() + 2 + ($k * 2));
                 try {
                     $this->getEntityManager()->saveEntity($image);
                 } catch (BadRequest $e) {
