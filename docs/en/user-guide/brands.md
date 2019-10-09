@@ -108,7 +108,7 @@ By default, it is not possible to remove the brand, if there is any product asso
 
 Use the `Duplicate` option from the actions menu to go to the brand creation page and get all the values of the last chosen brand record copied in the empty fields of the new brand record to be created. Modifying the brand code is required, as this value has to be unique.
 
-## Working with Products Related to Brands
+## Working With Products Related to Brands
 
 Products that are linked to the brand are displayed on its detail view page on the `PRODUCTS` panel and include the following table columns:
  - Name
@@ -117,6 +117,8 @@ Products that are linked to the brand are displayed on its detail view page on t
  - Active
 
 ![Brand products](../../_assets/brands/brands-products.jpg)
+
+If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to brands, please, contact your administrator.
 
 By design, if a brand is deactivated, all the related products will automatically be deactivated as well. Otherwise, if a brand is activated, all the related products will remain in the previous activity state without any changes. To activate the products linked to this brand, please filter them by this brand and apply the corresponding [mass action](#mass-actions).
 

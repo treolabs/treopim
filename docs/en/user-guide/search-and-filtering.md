@@ -149,13 +149,15 @@ To extend the list of fields to be used for filtering, please, contact your admi
 
 ## Custom Attribute Filters
 
-TreoPIM supports the ability to filter entity records not only by field values, but also by attribute values. This type of filtering is performed by values of the attributes that are linked to products. For your convenience, product attributes are grouped by product families and the `All` list contains additional product attributes that are not related to product families. 
+TreoPIM supports the ability to filter [product](https://treopim.com/help/products) records not only by field values, but also by [attribute](https://treopim.com/help/attributes) values. This type of filtering is performed by values of the attributes that are linked to products. For your convenience, product attributes are grouped by product families and the `All` list contains additional product attributes that are not related to product families. 
 
 To add a custom attribute filter, select the `Add attribute filter > 'product family' (or `All`) > 'product attribute'` option from the filtering drop-down list:
 
 ![Attribute filters](../../_assets/search-and-filtering/attribute-filters.jpg)
 
 To remove the attribute filter, click the `X` button next to it.
+
+Please, note that attribute filters are available for products only.
 
 ## Templates
 
