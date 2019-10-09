@@ -73,7 +73,18 @@ Espo.define('pim:views/category/record/list-tree', ['view', 'lib!JsTree'], funct
                 dragAndDrop: window.innerWidth >= 768,
                 useContextMenu: false,
                 closedIcon: $('<i class="fa fa-angle-right"></i>'),
-                openedIcon: $('<i class="fa fa-angle-down"></i>')
+                openedIcon: $('<i class="fa fa-angle-down"></i>'),
+                onCanMoveTo: function(moved_node, target_node, position) {
+                    if (position === 'inside') {
+                        return !(moved_node.parent === target_node);
+                    }
+                    else if (position === 'after') {
+                        return !(moved_node.parent === target_node.parent);
+                    }
+                    else {
+                        return true;
+                    }
+                }
             });
 
             $(window).off(this.resizeEventName).on(this.resizeEventName, () => {
