@@ -97,7 +97,13 @@
       "selectBoolFilterList": [
         "pimImageRelation"
       ],
-      "recordsPerPage": 200
+      "recordsPerPage": 200,
+      "dragDrop": {
+        "isActive": true,
+        "sortField": "sortOrder"
+      },
+      "sortBy": "sortOrder",
+      "asc": true
     },
     "associatedMainProducts": {
       "view": "pim:views/product/record/panels/associated-main-product",

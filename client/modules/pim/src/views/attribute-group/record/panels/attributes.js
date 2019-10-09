@@ -169,9 +169,7 @@ Espo.define('pim:views/attribute-group/record/panels/attributes', ['views/record
                             checkboxes: false,
                             rowActionsView: this.defs.readOnly ? false : (this.defs.rowActionsView || this.rowActionsView),
                             buttonsDisabled: true,
-                            el: this.options.el + ' .list-container',
-                            dragableListRows: true,
-                            listRowsOrderSaveUrl: `Attribute/${this.getParentView().model.id}/sortOrder`
+                            el: this.options.el + ' .list-container'
                         }, function (view) {
                             view.render();
                         });
