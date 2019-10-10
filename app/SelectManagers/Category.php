@@ -34,11 +34,8 @@ class Category extends AbstractSelectManager
     /**
      * @inheritDoc
      */
-    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    public function applyAdditional(&$result)
     {
-        // get select params
-        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
-
         // prepare additional select columns
         $additionalSelectColumns = [
             'childrenCount' => '(SELECT COUNT(c1.id) FROM category AS c1 WHERE c1.category_parent_id=category.id AND c1.deleted=0)'
@@ -46,10 +43,8 @@ class Category extends AbstractSelectManager
 
         // add additional select columns
         foreach ($additionalSelectColumns as $alias => $sql) {
-            $selectParams['additionalSelectColumns'][$sql] = $alias;
+            $result['additionalSelectColumns'][$sql] = $alias;
         }
-
-        return $selectParams;
     }
 
     /**
