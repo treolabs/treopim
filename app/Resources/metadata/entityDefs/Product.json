@@ -124,7 +124,8 @@
       "type": "image",
       "previewSize": "medium",
       "readOnly": true,
-      "view": "pim:views/product/fields/image"
+      "view": "pim:views/product/fields/image",
+      "importDisabled": true
     },
     "productStatus": {
       "type": "enum",
@@ -235,7 +236,8 @@
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "noLoad": true
+      "noLoad": true,
+      "importDisabled": true
     },
     "createdAt": {
       "type": "datetime",

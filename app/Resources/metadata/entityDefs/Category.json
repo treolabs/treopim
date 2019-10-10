@@ -99,7 +99,8 @@
       "type": "image",
       "previewSize": "medium",
       "readOnly": true,
-      "view": "pim:views/product/fields/image"
+      "view": "pim:views/product/fields/image",
+      "importDisabled": true
     },
     "hasChildren": {
       "type": "bool",
@@ -131,7 +132,8 @@
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "noLoad": true
+      "noLoad": true,
+      "importDisabled": true
     }
   },
   "links": {
