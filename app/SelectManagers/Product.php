@@ -236,26 +236,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * NotConfigurabledProducts filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotConfigurabledProducts(&$result)
-    {
-        // prepare data
-        $productId = (string)$this->getSelectCondition('notConfigurabledProducts');
-
-        if (!empty($productId)) {
-            $variants = $this->getProductVariants($productId);
-            foreach ($variants as $id) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$id
-                ];
-            }
-        }
-    }
-
-    /**
      * Get assiciated products
      *
      * @param string $associationId
@@ -281,34 +261,6 @@ class Product extends AbstractSelectManager
         $sth->execute();
 
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Get product variants
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    protected function getProductVariants($productId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT
-          product_id
-        FROM
-          product_type_configurable
-        WHERE
-          configurable_product_id =' . $pdo->quote($productId) . '
-          AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        return (!empty($result)) ? array_column($result, 'product_id') : [];
     }
 
     /**

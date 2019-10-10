@@ -113,28 +113,6 @@
       ]
     }
   },
-  "bottomPanels": {
-    "detail": [
-      {
-        "name": "itemInProducts",
-        "label": "Item in Products",
-        "view": "pim:views/product/record/panels/item-in-products",
-        "layout": "listForItemInProducts",
-        "rowActionsView": "views/record/row-actions/empty",
-        "sortBy": "type",
-        "asc": true,
-        "order": 10
-      }
-    ]
-  },
-  "optionalBottomPanels": {
-    "itemInProducts": [
-      {
-        "field": "type",
-        "value": "simpleProduct"
-      }
-    ]
-  },
   "menu": {
     "list": {
       "buttons": [
