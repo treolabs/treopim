@@ -12,10 +12,6 @@
     "sku": "SKU",
     "isActive": "Active",
     "type": "Type",
-    "productTypeBundles": "Product Type Bundles",
-    "productBundles": "Product Bundles",
-    "productTypePackages": "Product Type Packages",
-    "productPackages": "Product Packages",
     "productTypeConfigurables": "Product Type Configurables",
     "amount": "Amount",
     "channelProducts": "Product Channels",
@@ -46,10 +42,6 @@
     "brand": "Brand",
     "associatedRelatedProduct": "Associated Related Product",
     "associatedMainProducts": "Associated Products",
-    "productTypeBundles": "Product Type Bundles",
-    "productBundles": "Product Bundles",
-    "productTypePackages": "Product Type Packages",
-    "productPackages": "Product Packages",
     "productTypeConfigurables": "Product Type Configurables",
     "channelProducts": "Product Channels",
     "tax": "Tax",
@@ -64,7 +56,6 @@
     "Product Attributes": "Attributes",
     "There is no valid attributes for channel": "There is no valid attributes for channel",
     "Add Attribute Filter": "Add Attribute Filter",
-    "Item in Products": "Item in Products",
     "Channels": "Channels",
     "Product Channel Attributes": "Channel Attributes",
     "Associated Products": "Associated Products",
@@ -83,9 +74,7 @@
       "ready": "Ready"
     },
     "type": {
-      "simpleProduct": "Simple Product",
-      "bundleProduct": "Bundle Product",
-      "packageProduct": "Package Product"
+      "simpleProduct": "Simple Product"
     },
     "tag": {
       "blue": "blue",

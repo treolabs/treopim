@@ -102,35 +102,6 @@ class Attribute extends AbstractService
     }
 
     /**
-     * Update attributes sort order
-     *
-     * @param string $attributeGroupId
-     * @param array  $data
-     *
-     * @return bool
-     */
-    public function updateSortOrder(string $attributeGroupId, array $data): bool
-    {
-        $result = false;
-
-        if (!empty($data)) {
-            $query = "UPDATE attribute SET sort_order='%s' WHERE attribute_group_id='%s' AND id='%s';";
-
-            $sql = '';
-            foreach ($data as $key => $attributeId) {
-                $sql .= sprintf($query, $key, $attributeGroupId, $attributeId);
-            }
-
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $result = true;
-        }
-
-        return $result;
-    }
-
-    /**
      * @return array
      */
     protected function getAttributesForFilter(): array

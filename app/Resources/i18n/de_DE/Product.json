@@ -26,14 +26,10 @@
     "priceConverted": "konvertierter Preis",
     "priceCurrency": "Währung der Preis",
     "productAttributeValues": "Produktattribute",
-    "productBundles": "Produktbündel",
     "productFamily": "Produktfamilie",
-    "productPackages": "Produktverpackungen",
     "products": "Produkte",
     "productStatus": "Produktstatus",
-    "productTypeBundles": "Produkttyp Bündel",
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
-    "productTypePackages": "Produkttyp  Pakete",
     "scope": "Umfang",
     "productSerie": "Product Serie",
     "association": "Assoziation",
@@ -53,20 +49,15 @@
     "modifiedBy": "geändert von",
     "product": "Produkt",
     "productAttributeValues": "Produktattribute",
-    "productBundles": "Produktbündel",
     "productFamily": "Produktfamilie",
-    "productPackages": "Produktpakete",
     "products": "Produkte",
-    "productTypeBundles": "Produkttyp Bündel",
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
-    "productTypePackages": "Produkttyp  Pakete",
     "catalog": "Katalog",
     "channels": "Kanale",
     "pimImages": "Bilder"
   },
   "labels": {
     "There is no valid attributes for channel": "Es gibt keine gültigen Attribute für Kanal",
-    "Item in Products": "Artikel im Set/Bundle",
     "Add Attribute Filter": "Attributfilter hinzufügen",
     "Add Import Filter": "Importfilter hinzufügen",
     "Associated Products": "Assoziierte Produkte",
@@ -96,9 +87,7 @@
       "your tag2": "your tag2"
     },
     "type": {
-      "simpleProduct": "einfaches Produkt",
-      "bundleProduct": "Bündelprodukt",
-      "packageProduct": "Produktpakett"
+      "simpleProduct": "einfaches Produkt"
     }
   },
   "boolFilters": {

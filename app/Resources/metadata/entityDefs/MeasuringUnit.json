@@ -43,14 +43,6 @@
         "teams": {
             "type": "linkMultiple",
             "view": "views/fields/teams"
-        },
-        "productTypePackages": {
-            "type": "linkMultiple",
-            "layoutListDisabled": true,
-            "layoutDetailDisabled": true,
-            "layoutFiltersDisabled": true,
-            "layoutMassUpdateDisabled": true,
-            "exportDisabled": true
         }
     },
     "links": {
@@ -74,12 +66,6 @@
             "type": "hasMany",
             "entity": "Team",
             "relationName": "EntityTeam",
-            "layoutRelationshipsDisabled": true
-        },
-        "productTypePackages": {
-            "type": "hasMany",
-            "foreign": "measuringUnit",
-            "entity": "ProductTypePackage",
             "layoutRelationshipsDisabled": true
         }
     },

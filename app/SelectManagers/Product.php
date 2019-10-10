@@ -256,26 +256,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * NotBundledProducts filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotBundledProducts(&$result)
-    {
-        //prepare data
-        $productId = (string)$this->getSelectCondition('notBundledProducts');
-
-        if (!empty($productId)) {
-            $variants = $this->getBundleItems($productId);
-            foreach ($variants as $id) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$id
-                ];
-            }
-        }
-    }
-
-    /**
      * Get assiciated products
      *
      * @param string $associationId
@@ -329,75 +309,6 @@ class Product extends AbstractSelectManager
         $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
         return (!empty($result)) ? array_column($result, 'product_id') : [];
-    }
-
-    /**
-     * Get bundle items
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    protected function getBundleItems($productId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT
-          product_id
-        FROM
-          product_type_bundle
-        WHERE
-          bundle_product_id =' . $pdo->quote($productId) . '
-          AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        return (!empty($result)) ? array_column($result, 'product_id') : [];
-    }
-
-    /**
-     * NotLinkedWithOrder filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotLinkedWithOrder(&$result)
-    {
-        $orderId = (string)$this->getSelectCondition('notLinkedWithOrder');
-
-        if (!empty($orderId)) {
-            $orderProducts = $this->getOrderProducts($orderId);
-            foreach ($orderProducts as $row) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$row['product_id']
-                ];
-            }
-        }
-    }
-
-    /**
-     * Get order products
-     *
-     * @param string $orderId
-     *
-     * @return array
-     */
-    protected function getOrderProducts($orderId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT product_id
-                FROM order_product
-                WHERE order_id = ' . $pdo->quote($orderId);
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
