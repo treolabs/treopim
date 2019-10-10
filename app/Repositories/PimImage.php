@@ -51,11 +51,15 @@ class PimImage extends Base
 
         // set sort order
         if (is_null($entity->get('sortOrder'))) {
-            $entity->set('sortOrder', time());
+            $entity->set('sortOrder', (int)$this->max('sortOrder') + 1);
         }
 
         if (!$this->isUnique($entity)) {
             throw new BadRequest('Such record already exists');
+        }
+
+        if (!$entity->isNew() && $entity->isAttributeChanged('sortOrder')) {
+            $this->updateSortOrder($entity);
         }
     }
 
@@ -78,7 +82,6 @@ class PimImage extends Base
         // save new images for Files type
         if (!empty($entity->newImages)) {
             foreach ($entity->newImages as $k => $image) {
-                $image->set('sortOrder', time() + 2 + ($k * 2));
                 try {
                     $this->getEntityManager()->saveEntity($image);
                 } catch (BadRequest $e) {
@@ -271,6 +274,50 @@ class PimImage extends Base
             $entity->set('imagesIds', null);
             $entity->set('imagesNames', null);
             $entity->set('imagesTypes', null);
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateSortOrder(Entity $entity): void
+    {
+        $data = $this
+            ->select(['id'])
+            ->where(
+                [
+                    'id!='        => $entity->get('id'),
+                    'sortOrder>=' => $entity->get('sortOrder'),
+                    'productId'   => $entity->get('productId')
+                ]
+            )
+            ->order('sortOrder')
+            ->find()
+            ->toArray();
+
+        if (!empty($data)) {
+            // create max
+            $max = $entity->get('sortOrder');
+
+            // prepare sql
+            $sql = '';
+            foreach ($data as $row) {
+                // increase max
+                $max++;
+
+                // prepare id
+                $id = $row['id'];
+
+                // prepare sql
+                $sql .= "UPDATE pim_image SET sort_order='$max' WHERE id='$id';";
+            }
+
+            // execute sql
+            $sth = $this
+                ->getEntityManager()
+                ->getPDO()
+                ->prepare($sql);
+            $sth->execute();
         }
     }
 }
