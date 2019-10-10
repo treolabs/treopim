@@ -31,7 +31,8 @@
     "catalog": "Catalog",
     "channels": "Channels",
     "productCategories": "Product Categories",
-    "pimImages": "Images"
+    "pimImages": "Images",
+    "measuringUnit": "Measuring Unit"
   },
   "links": {
     "categories": "Product Categories",

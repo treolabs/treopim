@@ -63,7 +63,7 @@
       ],
       [
         {
-          "name": "tax"
+          "name": "measuringUnit"
         },
         {
           "name": "packaging"
@@ -71,9 +71,11 @@
       ],
       [
         {
-          "name": "uvp"
+          "name": "tax"
         },
-        false
+        {
+          "name": "uvp"
+        }
       ],
       [
         {

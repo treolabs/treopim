@@ -217,6 +217,10 @@
       "noLoad": true,
       "importDisabled": true
     },
+    "measuringUnit": {
+      "type": "link",
+      "required": false
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
@@ -331,6 +335,10 @@
       "foreign": "product",
       "entity": "PimImage",
       "disableMassRelation": true
+    },
+    "measuringUnit": {
+      "type": "belongsTo",
+      "entity": "MeasuringUnit"
     },
     "createdBy": {
       "type": "belongsTo",
