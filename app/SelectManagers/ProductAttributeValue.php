@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
+use Treo\Core\Utils\Util;
 
 /**
  * ProductAttributeValue select manager
@@ -60,6 +61,33 @@ class ProductAttributeValue extends AbstractSelectManager
         $selectParams['customWhere'] .= " AND product_attribute_value.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)";
 
         return $selectParams;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function applyAdditional(&$selectParams)
+    {
+        // prepare additional select columns
+        $additionalSelectColumns = [
+            'typeValue' => '(SELECT a1.type_value FROM attribute AS a1 WHERE a1.id=product_attribute_value.attribute_id AND a1.deleted=0)'
+        ];
+
+        // prepare for multiLang fields
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                $field = Util::toCamelCase('typeValue_' . strtolower($locale));
+                $dbField = 'type_value_' . strtolower($locale);
+
+                $sql = "(SELECT a1.{$dbField} FROM attribute AS a1 WHERE a1.id=product_attribute_value.attribute_id AND a1.deleted=0)";
+
+                $additionalSelectColumns[$field] = $sql;
+            }
+        }
+
+        foreach ($additionalSelectColumns as $alias => $sql) {
+            $selectParams['additionalSelectColumns'][$sql] = $alias;
+        }
     }
 
     /**
