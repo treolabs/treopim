@@ -25,8 +25,6 @@ namespace Pim\Services;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
-use Slim\Http\Request;
-use \PDO;
 
 /**
  * Service of Product
@@ -152,36 +150,6 @@ class Product extends AbstractService
     }
 
     /**
-     * Get item in products data
-     *
-     * @param string  $productId
-     * @param Request $request
-     *
-     * @return array
-     */
-    public function getItemInProducts(string $productId, Request $request): array
-    {
-        // prepare result
-        $result = [
-            'total' => 0,
-            'list'  => []
-        ];
-
-        // get total
-        $total = $this->getDbCountItemInProducts($productId);
-
-        if (!empty($total)) {
-            // prepare result
-            $result = [
-                'total' => $total,
-                'list'  => $this->getDbItemInProducts($productId, $request)
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
      * @param Entity $product
      * @param Entity $duplicatingProduct
      */
@@ -285,155 +253,6 @@ class Product extends AbstractService
                 $this->getEntityManager()->saveEntity($entity);
             }
         }
-    }
-
-    /**
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateProductTypeBundles(Entity $product, Entity $duplicatingProduct)
-    {
-        if ($duplicatingProduct->get('type') === 'bundleProduct') {
-            // create service
-            $service = $this->getServiceFactory()->create('ProductTypeBundle');
-
-            // create new bundles
-            foreach ($service->getBundleProducts($duplicatingProduct->get('id')) as $bundle) {
-                $service->create($product->get('id'), $bundle['productId'], $bundle['amount']);
-            }
-        }
-    }
-
-    /**
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateProductTypePackages(Entity $product, Entity $duplicatingProduct)
-    {
-        if ($duplicatingProduct->get('type') === 'packageProduct') {
-            // create service
-            $service = $this->getServiceFactory()->create('ProductTypePackage');
-
-            // find ProductPackage
-            $productPackage = $service->getPackageProduct($duplicatingProduct->get('id'));
-
-            // create new productPackage
-            if (!is_null($productPackage['id'])) {
-                $service->update($product->get('id'), $productPackage);
-            }
-        }
-    }
-
-    /**
-     * Get DB count of item in products data
-     *
-     * @param string $productId
-     *
-     * @return int
-     */
-    protected function getDbCountItemInProducts(string $productId): int
-    {
-        // prepare data
-        $pdo = $this->getEntityManager()->getPDO();
-        $where = $this->getAclWhereSql('Product', 'p');
-
-        // prepare SQL
-        $sql
-            = "SELECT
-                  COUNT(p.id) as count
-                FROM
-                  product AS p
-                WHERE
-                 p.deleted = 0
-                AND p.id IN (SELECT bundle_product_id FROM product_type_bundle
-                                                    WHERE product_id = " . $pdo->quote($productId) . " $where)";
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        // get DB data
-        $data = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-        return (isset($data[0]['count'])) ? (int)$data[0]['count'] : 0;
-    }
-
-    /**
-     * Get DB count of item in products data
-     *
-     * @param string  $productId
-     * @param Request $request
-     *
-     * @return array
-     */
-    protected function getDbItemInProducts(string $productId, Request $request): array
-    {
-        // prepare data
-        $limit = (int)$request->get('maxSize');
-        $offset = (int)$request->get('offset');
-        $sortOrder = ($request->get('asc') == 'true') ? 'ASC' : 'DESC';
-        $sortColumn = (in_array($request->get('sortBy'), ['name', 'type'])) ? $request->get('sortBy') : 'name';
-        $where = $this->getAclWhereSql('Product', 'p');
-
-        // prepare PDO
-        $pdo = $this->getEntityManager()->getPDO();
-
-        // prepare SQL
-        $sql
-            = "SELECT
-                  p.id   AS id,
-                  p.name AS name,
-                  p.type AS type
-                FROM
-                  product AS p
-                WHERE
-                 p.deleted = 0
-                AND p.id IN (SELECT bundle_product_id FROM product_type_bundle
-                                                    WHERE product_id = " . $pdo->quote($productId) . " $where)
-                ORDER BY p." . $sortColumn . " " . $sortOrder . "
-                LIMIT " . $limit . " OFFSET " . $offset;
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * After delete action
-     *
-     * @param Entity $entity
-     *
-     * @return void
-     */
-    protected function afterDelete(Entity $entity): void
-    {
-        $this->deleteProductTypes([$entity->get('id')]);
-    }
-
-    /**
-     * After mass delete action
-     *
-     * @param array $idList
-     *
-     * @return void
-     */
-    protected function afterMassRemove(array $idList): void
-    {
-        $this->deleteProductTypes($idList);
-    }
-
-    /**
-     * Delete product types
-     *
-     * @param array $idList
-     *
-     * @return void
-     */
-    protected function deleteProductTypes(array $idList): void
-    {
-        // delete type bundle
-        $this->getServiceFactory()->create('ProductTypeBundle')->deleteByProductId($idList);
-
-        // delete type package
-        $this->getServiceFactory()->create('ProductTypePackage')->deleteByProductId($idList);
     }
 
     /**
