@@ -32,7 +32,9 @@
     "channels": "Channels",
     "productCategories": "Product Categories",
     "pimImages": "Images",
-    "measuringUnit": "Measuring Unit"
+    "measuringUnit": "Measuring Unit",
+    "basePriceAmount": "Base Price Amount",
+    "packedAmount": "Packed Amount"
   },
   "links": {
     "categories": "Product Categories",

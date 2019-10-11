@@ -35,7 +35,10 @@
     "association": "Assoziation",
     "catalog": "Katalog",
     "channels": "Kanale",
-    "pimImages": "Bilder"
+    "pimImages": "Bilder",
+    "measuringUnit": "Maßeinheit",
+    "basePriceAmount": "Grundpreis Betrag",
+    "packedAmount": "Gepackte Menge"
   },
   "links": {
     "brand": "Marke",

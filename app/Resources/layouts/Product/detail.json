@@ -21,12 +21,6 @@
       ],
       [
         {
-          "name": "configurableProduct"
-        },
-        false
-      ],
-      [
-        {
           "name": "sku"
         },
         false
@@ -83,6 +77,14 @@
         },
         {
           "name": "finalPrice"
+        }
+      ],
+      [
+        {
+          "name": "basePriceAmount"
+        },
+        {
+          "name": "packedAmount"
         }
       ],
       [
