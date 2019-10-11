@@ -75,8 +75,8 @@ class ProductAttributeValue extends AbstractSelectManager
         // prepare additional select columns
         $additionalSelectColumns = [
             'typeValue' => 'attribute.type_value',
-            'attributeGroupId' => 'attribute_group.id',
-            'attributeGroupName' => 'attribute_group.name'
+            'attributeGroupId' => 'ag1.id',
+            'attributeGroupName' => 'ag1.name'
         ];
 
         // prepare for multiLang fields
@@ -89,7 +89,7 @@ class ProductAttributeValue extends AbstractSelectManager
             }
         }
 
-        $result['customJoin'] .= " LEFT JOIN attribute_group ON attribute_group.id=attribute.attribute_group_id AND attribute_group.deleted=0";
+        $result['customJoin'] .= " LEFT JOIN attribute_group AS ag1 ON ag1.id=attribute.attribute_group_id AND ag1.deleted=0";
 
         foreach ($additionalSelectColumns as $alias => $sql) {
             $result['additionalSelectColumns'][$sql] = $alias;
