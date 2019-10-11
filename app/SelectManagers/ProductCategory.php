@@ -34,7 +34,7 @@ class ProductCategory extends AbstractSelectManager
     /**
      * @inheritDoc
      */
-    public function applyAdditional(&$result)
+    public function applyAdditional(array &$result, array $params)
     {
         // prepare product types
         $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));

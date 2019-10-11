@@ -494,14 +494,6 @@ class Product extends AbstractSelectManager
      */
     protected function addProductAttributesFilter(array &$selectParams, array $attributes): void
     {
-        // create select manager
-        $selectManager = $this
-            ->getSelectManagerFactory()
-            ->create('ProductAttributeValue');
-
-        // set param
-        $selectManager->isSubQuery = true;
-
         foreach ($attributes as $row) {
             // prepare attribute where
             switch ($row['type']) {
@@ -568,7 +560,9 @@ class Product extends AbstractSelectManager
             }
 
             // create select params
-            $sp = $selectManager->getSelectParams(['where' => [$where]], true, true);
+            $sp = $this
+                ->createSelectManager('ProductAttributeValue')
+                ->getSelectParams(['where' => [$where]], true, true);
             $sp['select'] = ['productId'];
 
             // create sql

@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "treolabs/treocore": "~3.23.0",
+    "treolabs/treocore": "~3.23.7",
     "treolabs/colored-fields": "~1.7.13",
     "treolabs/multi-languages": "~1.13.20",
     "treolabs/import-feeds-common": "~1.1.0"

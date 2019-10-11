@@ -34,7 +34,7 @@ class Category extends AbstractSelectManager
     /**
      * @inheritDoc
      */
-    public function applyAdditional(&$result)
+    public function applyAdditional(array &$result, array $params)
     {
         // prepare additional select columns
         $additionalSelectColumns = [

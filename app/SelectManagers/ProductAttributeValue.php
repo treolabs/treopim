@@ -66,9 +66,9 @@ class ProductAttributeValue extends AbstractSelectManager
     /**
      * @inheritDoc
      */
-    public function applyAdditional(&$selectParams)
+    public function applyAdditional(array &$result, array $params)
     {
-        if (!empty($this->isSubQuery)) {
+        if ($this->isSubQuery) {
             return false;
         }
 
