@@ -20,27 +20,45 @@
 
 declare(strict_types=1);
 
-namespace Pim\Repositories;
+namespace Pim\Migrations;
 
-use Espo\Core\Templates\Repositories\Base;
-use Espo\ORM\Entity;
+use Treo\Core\Migration\AbstractMigration;
 
 /**
- * Class AssociatedProduct
+ * Migration class for version 3.10.2
  *
  * @author r.ratsun@treolabs.com
  */
-class AssociatedProduct extends Base
+class V3Dot10Dot2 extends AbstractMigration
 {
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    public function beforeSave(Entity $entity, array $options = [])
+    public function up(): void
     {
-        parent::beforeSave($entity, $options);
+        $this->execute("UPDATE associated_product AS ap SET name=(SELECT name FROM association WHERE id=ap.association_id)");
+    }
 
-        if (empty($entity->get('name'))) {
-            $entity->set('name', $entity->get('associationName'));
-        }
+    /**
+     * @inheritdoc
+     */
+    public function down(): void
+    {
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @return mixed
+     */
+    private function execute(string $sql)
+    {
+        $sth = $this
+            ->getEntityManager()
+            ->getPDO()
+            ->prepare($sql);
+        $sth->execute();
+
+        return $sth;
     }
 }
