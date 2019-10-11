@@ -68,6 +68,10 @@ class ProductAttributeValue extends AbstractSelectManager
      */
     public function applyAdditional(&$selectParams)
     {
+        if (!empty($this->isSubQuery)) {
+            return false;
+        }
+
         // prepare additional select columns
         $additionalSelectColumns = [
             'typeValue' => '(SELECT a1.type_value FROM attribute AS a1 WHERE a1.id=product_attribute_value.attribute_id AND a1.deleted=0)'
@@ -168,11 +172,13 @@ class ProductAttributeValue extends AbstractSelectManager
                 ->select(['id'])
                 ->distinct()
                 ->join('attribute')
-                ->where([
-                    'productId' => $data['productId'],
-                    'attribute.attributeGroupId'
-                        => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
-                ])
+                ->where(
+                    [
+                        'productId' => $data['productId'],
+                        'attribute.attributeGroupId'
+                                    => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
+                    ]
+                )
                 ->find()
                 ->toArray();
 

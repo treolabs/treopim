@@ -499,6 +499,9 @@ class Product extends AbstractSelectManager
             ->getSelectManagerFactory()
             ->create('ProductAttributeValue');
 
+        // set param
+        $selectManager->isSubQuery = true;
+
         foreach ($attributes as $row) {
             // prepare attribute where
             switch ($row['type']) {
