@@ -91,7 +91,6 @@
   },
   "exceptions": {
     "Only force deleting available": "Only force deleting available",
-    "notDashletService": "Service %s must implement DashletInterface",
     "Code is invalid": "Code is invalid. Code should be unique. Only letters, numbers and char \"_\" expected."
   },
   "messages": {

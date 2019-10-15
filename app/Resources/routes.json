@@ -52,15 +52,6 @@
     }
   },
   {
-    "route": "Dashlet/:dashletName",
-    "method": "get",
-    "params": {
-      "controller": "Dashlet",
-      "action": "GetDashlet",
-      "dashletName": ":dashletName"
-    }
-  },
-  {
     "route": "Attribute/:attributeGroupId/sortOrder",
     "method": "put",
     "params": {

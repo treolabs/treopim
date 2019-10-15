@@ -1,0 +1,12 @@
+{
+  "methodsCompleteness": [
+    {
+      "entities": [
+        "Product",
+        "ProductAttributeValue",
+        "ProductFamilyAttribute"
+      ],
+      "service": "Completeness\\Services\\ProductCompleteness"
+    }
+  ]
+}
