@@ -59,7 +59,8 @@
       "layoutMassUpdateDisabled": true,
       "options": [
         "simpleProduct"
-      ]
+      ],
+      "importDisabled": true
     },
     "amount": {
       "type": "float",
