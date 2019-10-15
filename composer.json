@@ -3,20 +3,6 @@
   "description": "TreoPIM. Open source PIM application.",
   "homepage": "https://treopim.com",
   "license": "GPL-3.0-only",
-  "authors": [
-    {
-      "name": "Roman Ratsun",
-      "email": "r.ratsun@treolabs.com"
-    },
-    {
-      "name": "Yuri Kondratskyi",
-      "email": "y.kondratskyi@treolabs.com"
-    },
-    {
-      "name": "Valeriy Shamota",
-      "email": "v.shamota@treolabs.com"
-    }
-  ],
   "require": {
     "treolabs/treocore": "~3.23.7",
     "treolabs/colored-fields": "~1.7.13",
