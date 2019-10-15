@@ -239,7 +239,7 @@ TreoPIM ist eine Lösung, die auf der TreoCore Plattform basiert und hat somit a
 
   
 
-![](https://lh5.googleusercontent.com/N00DZdwpjD2ViDsYt7_YSfY7JygntPydQCWbxSmRNa4Zs7ZkmBeEj-G0D5CfB7fr2nf5yEy3V75Zjd6lx5Qv6OBd-2B64kA2-AZTujoftuEyAftE0Qwmbv-Z8eHpgVIb1BAUqxg-)
+![TreoCore](https://lh5.googleusercontent.com/N00DZdwpjD2ViDsYt7_YSfY7JygntPydQCWbxSmRNa4Zs7ZkmBeEj-G0D5CfB7fr2nf5yEy3V75Zjd6lx5Qv6OBd-2B64kA2-AZTujoftuEyAftE0Qwmbv-Z8eHpgVIb1BAUqxg-)
 
   
 
