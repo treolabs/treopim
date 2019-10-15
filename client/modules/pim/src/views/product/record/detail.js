@@ -199,6 +199,8 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 model.set(attrs, {silent: true});
             }
 
+            const panelsChanges = this.handlePanelsFetch();
+
             const overviewValidation = this.validate();
             const panelValidation = this.validatePanels();
 
@@ -221,7 +223,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
             this.handlePanelsSave();
 
             if (!attrs) {
-                this.afterNotModified(gridPackages || this.handlePanelsFetch());
+                this.afterNotModified(gridPackages || panelsChanges);
                 this.trigger('cancel:save');
                 return true;
             }
