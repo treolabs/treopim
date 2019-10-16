@@ -8,5 +8,6 @@
       ],
       "service": "Completeness\\Services\\ProductCompleteness"
     }
-  ]
+  ],
+  "ProductAttributeValue": "Product"
 }
