@@ -68,7 +68,9 @@
         "Attribute",
         "AttributeGroup",
         "ProductAttributeValue"
-      ]
+      ],
+      "sortBy": "attribute.sortOrder",
+      "asc": true
     },
     "productCategories": {
       "view": "pim:views/product/record/panels/product-categories",
