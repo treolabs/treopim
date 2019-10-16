@@ -96,7 +96,7 @@ You can start following the entity record right on the detail view page. To do t
 
 *This option is available only when the `Stream` checkbox is activated for the given entity by the administrator in the Entity Manager.*
 
-Filtering the record data display by fields, locales, and scopes is available on the [products](https://treopim.com/help/products) detail view page only via the corresponding drop-down menus:
+[Filtering](https://treopim.com/help/search-and-filtering) the record data display by fields, locales, and scopes is available on the [products](https://treopim.com/help/products) detail view page only via the corresponding drop-down menus:
 
 ![Product filters](../../_assets/views-and-panels/product-filters.jpg)
 

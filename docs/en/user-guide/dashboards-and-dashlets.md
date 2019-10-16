@@ -2,7 +2,7 @@
 
 Dashboards are designed for quick navigation within the TreoPIM entities data displayed on separate dashlets. The dashboard is the starting page of TreoPIM that can be reached any time via clicking the `TreoPIM` logo located in the upper left corner of TreoPIM page:
 
-![Dashboard](../../_assets/dashboard/dashboard-interface.jpg)
+![Dashboard](../../_assets/dashboards-and-dashlets/dashboard-interface.jpg)
 
 Both dashboards and dashlets are [user customizable](https://treopim.com/help/user-interface), i.e. you can add, rename and delete dashboards, as well as modify the dashlets layout.
 
@@ -14,7 +14,7 @@ The `My TreoCore` dashboard comes out-of-the-box and is displayed on the TreoPIM
 
 It is also possible to create custom boards. To do this, click the pencil icon on the TreoPIM starting page and enter the desired dashboard name in the editing pop-up that appears and hit `Enter`:
 
-![New dashboard](../../_assets/dashboard/dashboard-new.jpg)
+![New dashboard](../../_assets/dashboards-and-dashlets/dashboard-new.jpg)
 
 Click the `Save` button to complete the operation or `Cancel` to abort the process.
 
@@ -26,17 +26,17 @@ Creating new dashboards is useful if you wish to group a different set of dashle
 
 To change the dashboard name, click the pencil icon and make necessary changes in the corresponding dashboard name field in the editing pop-up that appears:
 
-![Dashboard editing](../../_assets/dashboard/dashboard-editing.jpg)
+![Dashboard editing](../../_assets/dashboards-and-dashlets/dashboard-editing.jpg)
 
 In the given pop-up you can also remove the desired dashboard (or dashboards) by clicking the corresponding `x` button:
 
-![Dashboard removing](../../_assets/dashboard/dashboard-removing.jpg)
+![Dashboard removing](../../_assets/dashboards-and-dashlets/dashboard-removing.jpg)
 
 ### Switching between Dashboards
 
 In order to switch between dashboards available in the system, click the button with the desired dashboard name located in the upper right corner of the TreoPIM starting page:
 
-![Custom board](../../_assets/dashboard/custom-board.jpg)
+![Custom board](../../_assets/dashboards-and-dashlets/custom-board.jpg)
 
 ## Dashlets
 
@@ -48,11 +48,11 @@ Dashlets provide you with valuable information regarding records of specific ent
 
 Use the `+` button to add as many dashlets as needed:
 
-![Custom dashlets](../../_assets/dashboard/custom-dashlets.jpg)
+![Custom dashlets](../../_assets/dashboards-and-dashlets/custom-dashlets.jpg)
 
 The added dashlets can be resized using the double-headed arrow in the bottom right corner of each block:
 
-![Dashlet resizing](../../_assets/dashboard/dashlet-resizing.jpg)
+![Dashlet resizing](../../_assets/dashboards-and-dashlets/dashlet-resizing.jpg)
 
 ### Available Dashlets
 
@@ -71,18 +71,18 @@ The following dashlets are available in TreoPIM out-of-the-box:
 
 To make changes in the dashlet on the dashboard, click `Options` in the given dashlet actions menu:
 
-![Dashlet options](../../_assets/dashboard/dashlet-options.jpg)
+![Dashlet options](../../_assets/dashboards-and-dashlets/dashlet-options.jpg)
 
 In the editing pop-up that appears you can modify the dashlet title, if needed, and define a different auto-refresh interval by choosing the desired value from the drop-down list:
 
-![Dashlet options](../../_assets/dashboard/dashlet-options-popup.jpg)
+![Dashlet options](../../_assets/dashboards-and-dashlets/dashlet-options-popup.jpg)
 
 Click the `Save` button to apply the changes or `Cancel` to abort them.
 
 To manually refresh the dashlet, use the `Refresh` option from the given dashlet actions menu:
 
-![Dashlet refresh](../../_assets/dashboard/dashlet-refresh.jpg)
+![Dashlet refresh](../../_assets/dashboards-and-dashlets/dashlet-refresh.jpg)
 
-To remove the dashlet from the dashboard, select the `Remove` option in the given dashlet actions menu and confirm your decision in the pop-up that apepars:
+To remove the dashlet from the dashboard, select the `Remove` option in the given dashlet actions menu and confirm your decision in the pop-up that appears:
 
-![Dashlet remove](../../_assets/dashboard/dashlet-remove.jpg)
+![Dashlet remove](../../_assets/dashboards-and-dashlets/dashlet-remove.jpg)

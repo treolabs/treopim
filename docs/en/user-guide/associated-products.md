@@ -36,7 +36,7 @@ Here fill in all the required fields for the entry being created. Select the `Bo
 
 *If a [backward association](https://treopim.com/help/associations) is defined for the association entry within which the products are related, the `Both directions` checkbox will be selected by default with the backward association name displayed in the corresponding field.*
 
-Alternatively, use `+` button on the `ASSOCIATED PRODUCTS` panel of the [product](https://treopim.com/help/products) detail view page or the quick create button on any TreoPIM page and fill in the required fields in the associated product creation pop-up that appears. Please, note that the `ASSOCIATED PRODUCTS` panel of the product detail view page displays which products are in relation with the currently opened product and within which association.
+Alternatively, use `+` button on the `ASSOCIATED PRODUCTS` panel of the [product](https://treopim.com/help/products) detail view page or the quick create button on any TreoPIM page and fill in the required fields in the associated product creation pop-up that appears. Please, note that the `ASSOCIATED PRODUCTS` panel of the product [detail view](https://treopim.com/help/views-and-panels) page displays which products are in relation with the currently opened product and within which association.
 
 ## Listing
 
@@ -44,7 +44,7 @@ To open the list of associated products available in the system, click `Associat
 
 ![Associated products list view page](../../_assets/associated-products/ap-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for the associated products:
+By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for the associated product records:
 
 - Association
 - Main product image
@@ -60,7 +60,7 @@ To view the associated product record details, use the `View` option from the si
 
 ### Mass Actions
 
-The following mass actions are available for associated product entities:
+The following mass actions are available for associated product records:
 - Remove
 - Mass update
 - Export
@@ -71,7 +71,7 @@ For details on these actions, please, see the **Mass Actions** section of the [*
 
 ### Single Record Actions
 
-The following single record actions are available for the associated product entities:
+The following single record actions are available for the associated product records:
 - View
 - Edit
 - Remove
@@ -96,7 +96,7 @@ To remove the associated product record, select the `Remove` option from the sin
 
 ![AP removing](../../_assets/associated-products/ap-remove-panel.jpg)
 
-or on the associated products list view page:
+or on the associated product records list view page:
 
 ![AP removing](../../_assets/associated-products/ap-remove-list.jpg)
 
