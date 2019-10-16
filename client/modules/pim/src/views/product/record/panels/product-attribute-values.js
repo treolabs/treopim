@@ -799,6 +799,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         validate() {
+            this.trigger('collapsePanel', 'show');
+
             let notValid = false;
             this.groups.forEach(group => {
                 const groupView = this.getView(group.key);
