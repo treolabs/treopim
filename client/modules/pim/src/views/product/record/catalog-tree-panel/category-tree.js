@@ -198,7 +198,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 if (!atLeastOne && this.expandableCategory) {
                     let expandableCategory = this.$el.find(`.category[data-id="${this.expandableCategory.id}"]`);
                     if (expandableCategory.size()) {
-                        this.selectCategory(this.expandableCategory.id);
+                        this.setCategoryActive(this.expandableCategory.id);
                         this.expandableCategory = null;
                     }
                 }
