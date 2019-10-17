@@ -17,11 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Pim\Repositories;
 
 use Espo\Core\Templates\Repositories\Base;
+use Espo\ORM\Entity;
 
 /**
  * Class ProductCategory
@@ -30,4 +32,65 @@ use Espo\Core\Templates\Repositories\Base;
  */
 class ProductCategory extends Base
 {
+    /**
+     * @inheritDoc
+     */
+    public function beforeSave(Entity $entity, array $options = [])
+    {
+        // call parent action
+        parent::beforeSave($entity, $options);
+
+        // set sort order
+        if (is_null($entity->get('sorting'))) {
+            $entity->set('sorting', (int)$this->max('sorting') + 1);
+        }
+
+        if (!$entity->isNew() && $entity->isAttributeChanged('sorting')) {
+            $this->updateSortOrder($entity);
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateSortOrder(Entity $entity): void
+    {
+        $data = $this
+            ->select(['id'])
+            ->where(
+                [
+                    'id!='       => $entity->get('id'),
+                    'sorting>='  => $entity->get('sorting'),
+                    'categoryId' => $entity->get('categoryId')
+                ]
+            )
+            ->order('sorting')
+            ->find()
+            ->toArray();
+
+        if (!empty($data)) {
+            // create max
+            $max = $entity->get('sorting');
+
+            // prepare sql
+            $sql = '';
+            foreach ($data as $row) {
+                // increase max
+                $max++;
+
+                // prepare id
+                $id = $row['id'];
+
+                // prepare sql
+                $sql .= "UPDATE product_category SET sorting='$max' WHERE id='$id';";
+            }
+
+            // execute sql
+            $sth = $this
+                ->getEntityManager()
+                ->getPDO()
+                ->prepare($sql);
+            $sth->execute();
+        }
+    }
 }

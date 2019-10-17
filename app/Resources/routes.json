@@ -1,13 +1,5 @@
 [
   {
-    "route": "/Product/:product_id/itemInProducts",
-    "method": "get",
-    "params": {
-      "controller": "Product",
-      "action": "GetItemInProducts"
-    }
-  },
-  {
     "route": "/Markets/Attribute/filtersData",
     "method": "get",
     "params": {
@@ -52,68 +44,12 @@
     }
   },
   {
-    "route": "ProductImage/:entityImageId/channels/:entityId",
-    "method": "get",
-    "params": {
-      "controller": "ProductImage",
-      "action": "listImageChannels"
-    }
-  },
-  {
-    "route": "ProductImage/:entityImageId/channels/:entityId",
-    "method": "put",
-    "params": {
-      "controller": "ProductImage",
-      "action": "updateImageChannels"
-    }
-  },
-  {
-    "route": "ProductImage/:entityId/sortOrder",
-    "method": "put",
-    "params": {
-      "controller": "ProductImage",
-      "action": "updateSortOrder"
-    }
-  },
-  {
-    "route": "CategoryImage/:entityImageId/channels/:entityId",
-    "method": "get",
-    "params": {
-      "controller": "CategoryImage",
-      "action": "listImageChannels"
-    }
-  },
-  {
-    "route": "CategoryImage/:entityImageId/channels/:entityId",
-    "method": "put",
-    "params": {
-      "controller": "CategoryImage",
-      "action": "updateImageChannels"
-    }
-  },
-  {
-    "route": "CategoryImage/:entityId/sortOrder",
-    "method": "put",
-    "params": {
-      "controller": "CategoryImage",
-      "action": "updateSortOrder"
-    }
-  },
-  {
     "route": "Dashlet/:dashletName",
     "method": "get",
     "params": {
       "controller": "Dashlet",
       "action": "GetDashlet",
       "dashletName": ":dashletName"
-    }
-  },
-  {
-    "route": "Attribute/:attributeGroupId/sortOrder",
-    "method": "put",
-    "params": {
-      "controller": "Attribute",
-      "action": "updateSortOrder"
     }
   },
   {

@@ -503,18 +503,20 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         setGroupCollectionDefs(group, collection) {
             collection.url = `Product/${this.model.id}/productAttributeValues`;
-            collection.where = [
-                {
-                    type: 'bool',
-                    value: ['linkedWithAttributeGroup'],
-                    data: {
-                        linkedWithAttributeGroup: {
-                            productId: this.model.id,
-                            attributeGroupId: group.key !== 'no_group' ? group.key : null
+            if (group.key !== 'no_group') {
+                collection.where = [
+                    {
+                        type: 'bool',
+                        value: ['linkedWithAttributeGroup'],
+                        data: {
+                            linkedWithAttributeGroup: {
+                                productId: this.model.id,
+                                attributeGroupId: group.key
+                            }
                         }
                     }
-                }
-            ];
+                ];
+            }
             collection.data.select = this.getSelectFields().join(',');
         },
 
@@ -649,9 +651,9 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         actionRefresh() {
+            Object.keys(this.nestedViews).forEach(view => this.clearView(view));
             this.getMetadata().fetch();
             this.fetchCollectionGroups(() => {
-                Object.keys(this.nestedViews).forEach(view => this.clearView(view));
                 this.reRender();
             });
         },
@@ -737,9 +739,15 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         getInitialAttributes() {
             const data = {};
             this.collection.forEach(model => {
-                const modelData = {};
+                const modelData = {
+                    value: model.get('value')
+                };
                 const actualFields = this.getFieldManager().getActualAttributeList(model.get('attributeType'), 'value');
-                actualFields.forEach(field => _.extend(modelData, {[field]: model.get(field)}));
+                actualFields.forEach(field => {
+                    if (model.has(field)) {
+                        _.extend(modelData, {[field]: model.get(field)});
+                    }
+                });
                 const additionalData = model.get('data');
                 if (additionalData) {
                     modelData.data = additionalData;
@@ -758,13 +766,23 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     const value = row.getView('valueField');
                     if (value.mode === 'edit') {
                         const fetchedData = value.fetch();
-                        if (!_.isEqual(this.initialAttributes[id], fetchedData)) {
+                        const initialData = this.initialAttributes[id];
+                        if (this.equalityValueCheck(fetchedData, initialData)) {
+                            value.model.set(fetchedData);
                             data = _.extend(data || {}, {[id]: fetchedData});
                         }
                     }
                 });
             });
             return data;
+        },
+
+        equalityValueCheck(fetchedData, initialData) {
+            return !_.isEqual(initialData, fetchedData) && (Object.keys(fetchedData).every(key => {
+                const initial = initialData[key];
+                const fetched = fetchedData[key];
+                return (Array.isArray(initial) ? initial.length : initial) || (Array.isArray(fetched) ? fetched.length : fetched);
+            }));
         },
 
         save() {
@@ -781,6 +799,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         validate() {
+            this.trigger('collapsePanel', 'show');
+
             let notValid = false;
             this.groups.forEach(group => {
                 const groupView = this.getView(group.key);

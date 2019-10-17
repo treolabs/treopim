@@ -24,6 +24,8 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
 
         catalogTreeData: null,
 
+        notSavedFields: ['image'],
+
         setup() {
             Dep.prototype.setup.call(this);
 
@@ -188,6 +190,11 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
         },
 
         save(callback, skipExit) {
+            (this.notSavedFields || []).forEach(field => {
+                const keys = this.getFieldManager().getAttributeList(this.model.getFieldType(field), field);
+                keys.forEach(key => delete this.model.attributes[key]);
+            });
+
             this.beforeBeforeSave();
 
             let data = this.fetch();
@@ -238,37 +245,37 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
                 gridModel.set(gridPackages, {silent: true})
             }
 
-            if (this.validate()) {
+            if (attrs) {
+                model.set(attrs, {silent: true});
+            }
+
+            const panelsChanges = this.handlePanelsFetch();
+
+            const overviewValidation = this.validate();
+            const panelValidation = this.validatePanels();
+
+            if (overviewValidation || panelValidation) {
                 if (gridPackages && packageView && beforeSaveGridPackages) {
                     packageView.getView('grid').model.attributes = beforeSaveGridPackages;
                 }
 
                 model.attributes = beforeSaveAttributes;
+
                 this.trigger('cancel:save');
                 this.afterNotValid();
                 return;
             }
 
-            let changesFromPanels = this.handlePanelsFetch();
-
-            if (this.validatePanels()) {
-                this.trigger('cancel:save');
-                this.afterNotValid();
-                return;
+            if (gridPackages && packageView) {
+                packageView.save();
             }
 
             this.handlePanelsSave();
 
             if (!attrs) {
-                this.afterNotModified(gridPackages || changesFromPanels);
+                this.afterNotModified(gridPackages || panelsChanges);
                 this.trigger('cancel:save');
                 return true;
-            }
-
-            model.set(attrs, {silent: true});
-
-            if (gridPackages && packageView) {
-                packageView.save();
             }
 
             this.beforeSave();

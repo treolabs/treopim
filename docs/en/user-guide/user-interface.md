@@ -69,11 +69,11 @@ In the Queue Manager you will see the most recent TreoPIM operations, which were
 
 ### Quick Create
 
-To create new records from anywhere, click the quick create icon in the upper right corner of the taskbar on any TreoPIM page and choose the entity for the record to be created:
+To create new records from anywhere, click the quick create button located in the upper right corner of the taskbar on any TreoPIM page and choose the entity for the record to be created:
 
 ![Quick Create](../../_assets/user-interface/quick-create.jpg)
 
-The [quick create view](https://treopim.com/help/view-and-panels) page will be opened.
+The [quick create view](https://treopim.com/help/views-and-panels) page will be opened.
 
 ## Breadcrumb Navigation
 
@@ -116,7 +116,7 @@ You can also manage your team and access control, if you have the corresponding 
 
 At the bottom of the screen you will see your personal activity stream:
 
-![UA stream](../../_assets/user-interface/user-account-stream.jpg) 
+![UA stream](../../_assets/user-interface/user-account-stream.jpg)
 
 You can manage the types of activity to be displayed here in the corresponding actions menu:
 
@@ -136,7 +136,7 @@ To reset preferences to default, please click the `Reset to default` button.
 
 TreoPIM works with IMAP mail accounts, with or without SSL protection. TreoPIM is able to send emails via SMTP Server, also with or without SSL protection, which can be enabled or not.
 
-To open your personal email accounts, click the `Email Accounts` button; the list of the existing accounts, if any, will be displayed on the "Personal Email Accounts" page:
+To open your personal email accounts, click the `Email Accounts` button on the user profile page; the list of the existing accounts, if any, will be displayed on the "Personal Email Accounts" page:
 
 ![Email Accounts](../../_assets/user-interface/email-accounts.jpg) 
 

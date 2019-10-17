@@ -33,34 +33,6 @@ use Slim\Http\Request;
 class Product extends AbstractController
 {
     /**
-     * Get item in products action
-     *
-     * @ApiDescription(description="Get item in products")
-     * @ApiMethod(type="GET")
-     * @ApiRoute(name="/Product/{product_id}/itemInProducts")
-     * @ApiParams(name="product_id", type="string", is_required=1, description="Product id")
-     * @ApiReturn(sample="[{
-     *     'total': 'integer',
-     *     'list': 'array'
-     * }]")
-     *
-     * @param array   $params
-     * @param array   $data
-     * @param Request $request
-     *
-     * @return array
-     * @throws Exceptions\Error
-     */
-    public function actionGetItemInProducts($params, $data, Request $request): array
-    {
-        if ($this->isReadAction($request, $params) && isset($params['product_id'])) {
-            return $this->getRecordService()->getItemInProducts((string)$params['product_id'], $request);
-        }
-
-        throw new Exceptions\Error();
-    }
-
-    /**
      * Action add associated products
      *
      * @param array     $params

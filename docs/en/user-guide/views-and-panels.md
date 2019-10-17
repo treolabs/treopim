@@ -96,7 +96,7 @@ You can start following the entity record right on the detail view page. To do t
 
 *This option is available only when the `Stream` checkbox is activated for the given entity by the administrator in the Entity Manager.*
 
-Filtering the record data display by fields, locales, and scopes is available on the [products](https://treopim.com/help/products) detail view page only via the corresponding drop-down menus:
+[Filtering](https://treopim.com/help/search-and-filtering) the record data display by fields, locales, and scopes is available on the [products](https://treopim.com/help/products) detail view page only via the corresponding drop-down menus:
 
 ![Product filters](../../_assets/views-and-panels/product-filters.jpg)
 
@@ -205,7 +205,7 @@ If you want to make changes to some entity (e.g. add new fields, modify its view
 
 With in-line editing you can change values *on the fly*. This ensures quick change of field values and reduces the number of clicks to do their work.
 
-Currently in-line editing is available on the [detail view](#detail-view) pages only. To edit the record information on these pages using the in-line editing, click the pencil icon above the field you want to edit:
+Currently in-line editing is available on the [detail view](#detail-view) pages only. To edit the record information on these pages using the in-line editing, click the pencil icon located in the upper right corner of the field you want to edit:
 
 ![In-line editing](../../_assets/views-and-panels/inline-editing.jpg)
 

@@ -1,6 +1,5 @@
 {
   "fields": {
-    "productImages": "Produktbilder",
     "product": "Hauptartikel",
     "brand": "Marke",
     "sku": "SKU",
@@ -27,22 +26,21 @@
     "priceConverted": "konvertierter Preis",
     "priceCurrency": "Währung der Preis",
     "productAttributeValues": "Produktattribute",
-    "productBundles": "Produktbündel",
     "productFamily": "Produktfamilie",
-    "productPackages": "Produktverpackungen",
     "products": "Produkte",
     "productStatus": "Produktstatus",
-    "productTypeBundles": "Produkttyp Bündel",
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
-    "productTypePackages": "Produkttyp  Pakete",
     "scope": "Umfang",
     "productSerie": "Product Serie",
     "association": "Assoziation",
     "catalog": "Katalog",
-    "channels": "Kanale"
+    "channels": "Kanale",
+    "pimImages": "Bilder",
+    "measuringUnit": "Maßeinheit",
+    "basePriceAmount": "Grundpreis Betrag",
+    "packedAmount": "Gepackte Menge"
   },
   "links": {
-    "productImages": "Produktbilder",
     "brand": "Marke",
     "tax": "MwSt.",
     "packaging": "Verpackung",
@@ -54,20 +52,16 @@
     "modifiedBy": "geändert von",
     "product": "Produkt",
     "productAttributeValues": "Produktattribute",
-    "productBundles": "Produktbündel",
     "productFamily": "Produktfamilie",
-    "productPackages": "Produktpakete",
     "products": "Produkte",
-    "productTypeBundles": "Produkttyp Bündel",
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
-    "productTypePackages": "Produkttyp  Pakete",
     "catalog": "Katalog",
-    "channels": "Kanale"
+    "channels": "Kanale",
+    "pimImages": "Bilder",
+    "measuringUnit": "Messeinheit"
   },
   "labels": {
     "There is no valid attributes for channel": "Es gibt keine gültigen Attribute für Kanal",
-    "Item in Products": "Artikel im Set/Bundle",
-    "Image": "Produktbilder",
     "Add Attribute Filter": "Attributfilter hinzufügen",
     "Add Import Filter": "Importfilter hinzufügen",
     "Associated Products": "Assoziierte Produkte",
@@ -76,9 +70,7 @@
     "withoutAnyCategory": "Ohne Kategorie",
     "typeCategoryToSearch": "Kategorie zum Suchen eingeben...",
     "Package Details": "Paketdetails",
-    "No Group": "Keine Gruppe",
-    "sort": "Sortieren",
-    "itemsInRow": "Einzelteile in der Reihe"
+    "No Group": "Keine Gruppe"
   },
   "options": {
     "productStatus": {
@@ -97,9 +89,7 @@
       "your tag2": "your tag2"
     },
     "type": {
-      "simpleProduct": "einfaches Produkt",
-      "bundleProduct": "Bündelprodukt",
-      "packageProduct": "Produktpakett"
+      "simpleProduct": "einfaches Produkt"
     }
   },
   "boolFilters": {

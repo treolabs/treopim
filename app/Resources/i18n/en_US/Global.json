@@ -17,7 +17,6 @@
     "Brand": "Brand",
     "Catalog": "Catalog",
     "Category": "Category",
-    "CategoryImage": "Category Image",
     "Channel": "Channel",
     "Country": "Country",
     "MeasuringUnit": "Measuring Unit",
@@ -26,12 +25,12 @@
     "Product": "Product",
     "ProductAttributeValue": "Product Attribute Value",
     "ProductFamily": "Product Family",
-    "ProductImage": "Product Image",
     "ProductPrice": "Product Price",
     "Tax": "Tax",
     "ProductSerie": "Product Serie",
     "ProductCategory": "Product Category",
-    "ProductFamilyAttribute": "Product Family Attribute"
+    "ProductFamilyAttribute": "Product Family Attribute",
+    "PimImage": "Image"
   },
   "scopeNamesPlural": {
     "Association": "Associations",
@@ -41,7 +40,6 @@
     "Brand": "Brands",
     "Catalog": "Catalogs",
     "Category": "Categories",
-    "CategoryImage": "Category Images",
     "Channel": "Channels",
     "Country": "Countries",
     "MeasuringUnit": "Measuring Units",
@@ -50,12 +48,12 @@
     "Product": "Products",
     "ProductAttributeValue": "Product Attribute Value",
     "ProductFamily": "Product Families",
-    "ProductImage": "Product Images",
     "ProductPrice": "Product Prices",
     "Tax": "Taxes",
     "ProductSerie": "Product Series",
     "ProductCategory": "Product Categories",
-    "ProductFamilyAttribute": "Product Family Attributes"
+    "ProductFamilyAttribute": "Product Family Attributes",
+    "PimImage": "Images"
   },
   "options": {
     "channelsFilter": {

@@ -175,7 +175,8 @@ class ProductAttributeValueEntity extends AbstractListener
      */
     protected function createNote(Entity $entity)
     {
-        if (!empty($data = $this->getNoteData($entity))) {
+        if ($entity->get('attribute')->get('type') !== 'image'
+                && !empty($data = $this->getNoteData($entity))) {
             $note = $this->getEntityManager()->getEntity('Note');
             $note->set('type', 'Update');
             $note->set('parentId', $entity->get('productId'));

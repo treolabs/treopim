@@ -20,42 +20,6 @@
 Espo.define('pim:views/product/fields/image', 'views/fields/image',
     Dep => Dep.extend({
 
-        urlImage: null,
-
-        imageId: null,
-
-        imageName: null,
-
-        sizeImage:{
-            'x-small': [64, 64],
-            'small': [128, 128],
-            'medium': [256, 256],
-            'large': [512, 512]
-        },
-
-        setup() {
-            Dep.prototype.setup.call(this);
-            this.getMainImage();
-
-            this.events['click a[data-action="showRemoteImagePreview"]'] = (e) => {
-                e.preventDefault();
-
-                var url = this.urlImage;
-                this.createView('preview', 'pim:views/modals/remote-image-preview', {
-                    url: url,
-                    model: this.model,
-                    name: this.model.get(this.nameName)
-                }, function (view) {
-                    view.render();
-                });
-            };
-
-            this.listenTo(this.model, 'updateProductImage', () => {
-                this.getMainImage();
-            });
-
-        },
-
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
@@ -63,51 +27,6 @@ Espo.define('pim:views/product/fields/image', 'views/fields/image',
                 this.$el.find('img').css({'max-height': '120px', 'max-width': '100%'});
             }
         },
-
-        getMainImage() {
-            if (this.model.id) {
-                this.ajaxGetRequest(`Product/${this.model.id}/productImages`, {
-                    maxSize: 1,
-                    offset: 0,
-                    sortBy: 'sortOrder'
-                })
-                    .then(data => {
-                        if (data.list.length) {
-                            this.urlImage = data.list[0].imageLink;
-                            this.imageId = data.list[0].imageId;
-                            this.imageName = data.list[0].imageName;
-                        } else {
-                            this.urlImage = null;
-                            this.imageId = null;
-                            this.imageName = null;
-                        }
-                        this.model.trigger('main-image-updated');
-                        this.reRender();
-                    })
-            }
-        },
-
-        data() {
-            return _.extend({}, Dep.prototype.data.call(this), {
-                valueIsSet: true
-            });
-        },
-
-        getValueForDisplay() {
-            let imageSize = [];
-
-            if (this.sizeImage.hasOwnProperty(this.previewSize)) {
-                imageSize = this.sizeImage[this.previewSize]
-            } else {
-                imageSize = this.sizeImage['small']
-            }
-
-            if (!this.imageId && this.urlImage && this.showPreview) {
-                return `<div class="attachment-preview"><a data-action="showRemoteImagePreview" href="${this.urlImage}"><img src="${this.urlImage}" style="max-width:${imageSize[0]}px; max-height:${imageSize[1]}px;"></a></div>`;
-            } else {
-                return Dep.prototype.getValueForDisplay.call(this);
-            }
-        }
 
     })
 );
