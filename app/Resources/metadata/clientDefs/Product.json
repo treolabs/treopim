@@ -97,14 +97,6 @@
       "selectBoolFilterList": [
         "pimImageRelation"
       ],
-      "filters": {
-        "product": {
-          "type": "bool",
-          "value": [
-            "productsByType"
-          ]
-        }
-      },
       "recordsPerPage": 200,
       "dragDrop": {
         "isActive": true,
