@@ -3,15 +3,15 @@
 There are two types of **pages** in the TreoPIM system with the corresponding views:
 
 - **List Page** – shows a table of records with main fields chosen for each entity and includes:
-  - *[navigation menu](https://treopim.com/help/user-interface);*
-  - *[taskbar](https://treopim.com/help/user-interface);*
-  - *[search and filtering panel](https://treopim.com/help/search-and-filtering);*
-  - *[breadcrumb navigation](https://treopim.com/help/user-interface) including the page name;*
+  - *[navigation menu](./user-interface.md#navigation-menu);*
+  - *[taskbar](./user-interface.md#taskbar);*
+  - *[search and filtering panel](./search-and-filtering.md);*
+  - *[breadcrumb navigation](./user-interface.md#breadcrumb-navigation) including the page name;*
   - *records list in the [list](#list-view) or [plate](#plate-view) view.* 
 - **Detail Page** – shows detailed information about the selected entity record and all its relations and includes:
-  - [*navigation menu*](https://treopim.com/help/user-interface)*;*
-  - [*taskbar*](https://treopim.com/help/user-interface)*;*
-  - [*breadcrumb navigation*](https://treopim.com/help/user-interface) *including the page name;*
+  - [*navigation menu*](./user-interface.md#navigation-menu);*
+  - *[taskbar](./user-interface.md#taskbar)*;*
+  - [*breadcrumb navigation*](./user-interface.md#breadcrumb-navigation) *including the page name;*
   - [*record details*](#detail-view)*, where detailed information about the currently open entity record is displayed.* 
 
 The **detail view** may also include:
@@ -54,8 +54,7 @@ The following mass actions are available in the TreoPIM system:
 
 To modify the mass actions list, please, contact your administrator.
 
-*For more advanced export features, please, use the **Export Feeds** module.*
-<!-- When the module is released, add a hyperlink here -->
+*For more advanced export features, please, use the [**Export Feeds**](https://treopim.com/store/export-feeds) module.*
 
 ### Single Record Actions
 
@@ -84,7 +83,7 @@ You can configure the plate view layout by selecting the desired item number to 
 
 ![Plate view cfg](../../_assets/views-and-panels/plate-view-cfg.jpg)
 
-Within the TreoPIM system the plate view is available only for [products](https://treopim.com/help/products).
+Within the TreoPIM system the plate view is available only for [products](./products.md).
 
 ## Detail View
 
@@ -96,7 +95,7 @@ You can start following the entity record right on the detail view page. To do t
 
 *This option is available only when the `Stream` checkbox is activated for the given entity by the administrator in the Entity Manager.*
 
-[Filtering](https://treopim.com/help/search-and-filtering) the record data display by fields, locales, and scopes is available on the [products](https://treopim.com/help/products) detail view page only via the corresponding drop-down menus:
+[Filtering](./search-and-filtering.md) the record data display by fields, locales, and scopes is available on the [products](./products.md) detail view page only via the corresponding drop-down menus:
 
 ![Product filters](../../_assets/views-and-panels/product-filters.jpg)
 

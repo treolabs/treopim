@@ -34,9 +34,9 @@ To create a new associated product record, click `Associated Products` in the na
 
 Here fill in all the required fields for the entry being created. Select the `Both directions` checkbox to make the association **two-way** – when product A is associated with product B; and vice versa, product B is associated with product A. Leave this checkbox unselected to make the association **one-way** – when product A is associated with product B, but not vice versa.
 
-*If a [backward association](https://treopim.com/help/associations) is defined for the association entry within which the products are related, the `Both directions` checkbox will be selected by default with the backward association name displayed in the corresponding field.*
+*If a [backward association](./associations.md) is defined for the association entry within which the products are related, the `Both directions` checkbox will be selected by default with the backward association name displayed in the corresponding field.*
 
-Alternatively, use `+` button on the `ASSOCIATED PRODUCTS` panel of the [product](https://treopim.com/help/products) detail view page or the quick create button on any TreoPIM page and fill in the required fields in the associated product creation pop-up that appears. Please, note that the `ASSOCIATED PRODUCTS` panel of the product [detail view](https://treopim.com/help/views-and-panels) page displays which products are in relation with the currently opened product and within which association.
+Alternatively, use `+` button on the `ASSOCIATED PRODUCTS` panel of the [product](./products.md#associated-products) detail view page or the [quick create](./user-interface.md#quick-create) button on any TreoPIM page and fill in the required fields in the associated product creation pop-up that appears. Please, note that the `ASSOCIATED PRODUCTS` panel of the product [detail view](./views-and-panels.md#detail-view) page displays which products are in relation with the currently opened product and within which association.
 
 ## Listing
 
@@ -44,7 +44,7 @@ To open the list of associated products available in the system, click `Associat
 
 ![Associated products list view page](../../_assets/associated-products/ap-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for the associated product records:
+By default, the following fields are displayed on the [list view](./views-and-panels.md#list-view) page for the associated product records:
 
 - Association
 - Main product image
@@ -54,7 +54,7 @@ By default, the following fields are displayed on the [list view](https://treopi
 
 To change the associated product records order in the list, click any sortable column title; this will sort the column either ascending or descending.
 
-Associated products can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
+Associated products can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
 To view the associated product record details, use the `View` option from the single record actions menu for the appropriate entry on the "Associated Products" list view page. 
 
@@ -67,7 +67,7 @@ The following mass actions are available for associated product records:
 
 ![AP mass actions](../../_assets/associated-products/ap-mass-actions.jpg)
 
-For details on these actions, please, see the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, please, see the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
 
@@ -78,7 +78,7 @@ The following single record actions are available for the associated product rec
 
 ![AP single record actions](../../_assets/associated-products/ap-single-record-actions.jpg)
   
-For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing
 
@@ -88,7 +88,7 @@ To edit the associated product, use the `Edit` option from the single record act
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
-Alternatively, make changes to the desired associated product record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the `ASSOCIATED PRODUCTS` panel of the product detail view page. 
+Alternatively, make changes to the desired associated product record in the [quick edit](./views-and-panels.md#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the `ASSOCIATED PRODUCTS` panel of the product detail view page. 
 
 ## Removing
 

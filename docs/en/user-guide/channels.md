@@ -24,7 +24,7 @@ To create a new channel record, click `Channels` in the navigation menu to get t
 
 ![Channel creation](../../_assets/channels/channels-create.jpg)
 
-Here enter the desired name for the channel record being created and activate it, if needed. Its code is automatically generated based on the entered name, but you can change it via the keyboard. Define the currencies to be used in prices for the given channel using the corresponding drop-down list. Also select the channel owner and assigned user from the corresponding lists. The channel description is an optional field and can be left empty.
+Here enter the desired name for the channel record being created and activate it, if needed. Its code is automatically generated based on the entered name, but you can change it via the keyboard. Define the currencies to be used in prices for the given channel using the corresponding drop-down list. The channel description is an optional field and can be left empty.
 
 *Please, note that the `Currencies` list is set up by the administrator.*
 
@@ -32,7 +32,7 @@ Click the `Save` button to finish the channel record creation or `Cancel` to abo
 
 If the channel code is not unique, the error message will appear notifying you about it.
 
-Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the channel creation pop-up that appears:
+Alternatively, use the [quick create](./user-interface.md#quick-create) button on any TreoPIM page and fill in the required fields in the channel creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/channels/creation-popup.jpg)
 
@@ -42,16 +42,16 @@ To open the list of channel records available in the system, click the `Channels
 
 ![Channels list view page](../../_assets/channels/channels-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for channel records:
+By default, the following fields are displayed on the [list view](./views-and-panels.md#list-view) page for channel records:
  - Name
  - Code
  - Active
 
 To change the channel records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Channel records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
+Channel records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
-To view some channel record details, click the name field value of the corresponding record in the list of channels; the [detail view](https://treopim.com/help/views-and-panels) page will open showing the channel records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
+To view some channel record details, click the name field value of the corresponding record in the list of channels; the [detail view](./views-and-panels.md#detail-view) page will open showing the channel records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
 ### Mass Actions
 
@@ -65,7 +65,7 @@ The following mass actions are available for channel records on the list view pa
 
 ![Channels mass actions](../../_assets/channels/channels-mass-actions.jpg)
 
-For details on these actions, refer to the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
 
@@ -77,21 +77,21 @@ The following single record actions are available for channel records on the lis
 
 ![Сhannels single record actions](../../_assets/channels/channels-single-actions.jpg)
 
-For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels#single-record-actions) article in this user guide.
+For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing
 
-To edit the channel, click the `Edit` button on the [detail view](https://treopim.com/help/views-and-panels) page of the currently open channel record; the following editing window will open:
+To edit the channel, click the `Edit` button on the [detail view](./views-and-panels.md#detail-view) page of the currently open channel record; the following editing window will open:
 
 ![Channel editing](../../_assets/channels/channel-edit.jpg)
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
-Besides, you can make changes in the channel record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+Besides, you can make changes in the channel record via [in-line editing](./views-and-panels.md#in-line-editing) on its detail view page.
 
-Alternatively, make changes to the desired channel record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the channels list view page:
+Alternatively, make changes to the desired channel record in the [quick edit](./views-and-panels.md#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the channels list view page:
 
-![Editing popup](../../_assets/channels/channel-editing-popup.jpg)
+![Editing pop-up](../../_assets/channels/channel-editing-popup.jpg)
 
 ## Removing
 
@@ -109,7 +109,7 @@ Use the `Duplicate` option from the actions menu to go to the channel creation p
 
 ## Working With Products Related to Channels
 
-Products that are linked to the channel are displayed on its [detail view](https://treopim.com/help/views-and-panels) page on the `PRODUCTS` panel and include the following table columns:
+Products that are linked to the channel are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `PRODUCTS` panel and include the following table columns:
  - Name
  - SKU
  - Type
@@ -129,7 +129,7 @@ To see all product records linked to the given channel, use the `Show full list`
 
 ![Channel products](../../_assets/channels/show-full-option.jpg)
 
-Then the "Products" page opens, where all product records [filtered](https://treopim.com/help/search-and-filtering) by the given channel are displayed:
+Then the "Products" page opens, where all product records [filtered](./search-and-filtering.md) by the given channel are displayed:
 
 ![Products full list](../../_assets/channels/products-full-list.jpg)
 
@@ -145,6 +145,6 @@ Use the `Unlink` option from the single record actions menu to unlink the desire
 
 To remove the product, select the `Remove` option from the single record actions drop-down list for the appropriate record.
 
-To view the channel related product record from the `PRODUCTS` panel, click its name in the products list. The [detail view](https://treopim.com/help/views-and-panels) page of the given product will open, where you can perform further actions according to your access rights, configured by the administrator. 
+To view the channel related product record from the `PRODUCTS` panel, click its name in the products list. The [detail view](./views-and-panels.md#detail-view) page of the given product will open, where you can perform further actions according to your access rights, configured by the administrator. 
 
 *Please, note that the **"Pricing"** module greatly extends the channels functionality. To learn more about the module and its features, please, visit our [store](https://treopim.com/store/pricing).*

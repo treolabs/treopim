@@ -2,7 +2,7 @@
 
 **Product** – the item in physical, virtual or cyber form as well as a service offered for sale. Every product is made at a cost and sold at a price. 
 
-There are several [types](#product-types) of products in the TreoPIM system, and each product, irregardless of its type, can be assigned to a certain [product family](https://treopim.com/help/product-families), which will define the attributes to be set for this product. A product can be assigned to several [categories](https://treopim.com/help/categories), be of a certain [brand](https://treopim.com/help/brands), described in several languages and be prepared for selling via different [channels](https://treopim.com/help/channels). A product can be in [association](https://treopim.com/help/associations) of certain type with some other product, and thus within different associations and with different products. It is possible to set different [attribute](https://treopim.com/help/attributes) values for different channels and upload product images.
+There are several [types](#product-types) of products in the TreoPIM system, and each product, irregardless of its type, can be assigned to a certain [product family](./product-families.md), which will define the attributes to be set for this product. A product can be assigned to several [categories](./categories.md), be of a certain [brand](./brands.md), described in several languages and be prepared for selling via different [channels](./channels.md). A product can be in [association](./associations.md) of certain type with some other product, and thus within different associations and with different products. It is possible to set different [attribute](./attributes.md) values for different channels and upload product images.
 
 ## Product Fields
 
@@ -44,7 +44,7 @@ Here enter the desired name and SKU value for the product record being created a
 
 Click the `Save` button to finish the product record creation and get redirected to the product [editing page](#editing), described below, or `Cancel` to abort the process.
 
-Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the product creation pop-up that appears or click the `Full Form` button to get to the common creation page:
+Alternatively, use the [quick create](./user-interface.md#quick-create) button on any TreoPIM page and fill in the required fields in the product creation pop-up that appears or click the `Full Form` button to get to the common creation page:
 
 ![Creation pop-up](../../_assets/products/product-create.jpg)
 
@@ -54,7 +54,7 @@ To open the list of product records available in the system, click the `Products
 
 ![Products list view page](../../_assets/products/products-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for product records:
+By default, the following fields are displayed on the [list view](./views-and-panels.md#list-view) page for product records:
  - Name
  - Catalog
  - SKU
@@ -63,11 +63,11 @@ By default, the following fields are displayed on the [list view](https://treopi
 
 To change the product records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Product records can be displayed not only as table list items, but also as plates. To switch to the [**plate view**](https://treopim.com/help/views-and-panels), click the plates icon located in the upper right corner of the list view page of product records:
+Product records can be displayed not only as table list items, but also as plates. To switch to the [**plate view**](./views-and-panels.md#plate-view), click the plates icon located in the upper right corner of the list view page of product records:
 
 ![Plate view](../../_assets/products/plate-view.jpg)
 
-To view some product record details, click the name field value of the corresponding record in the list of products; the [detail view](https://treopim.com/help/views-and-panels) page will open showing the product records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
+To view some product record details, click the name field value of the corresponding record in the list of products; the [detail view](./views-and-panels.md#detail-view) page will open showing the product records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
 In order to view the main image preview in a separate pop-up, click the desired one in the `Main image` column on the product records list/plate view.
 
@@ -85,7 +85,7 @@ The following mass actions are available for product records on the list/plate v
 
 ![Products mass actions](../../_assets/products/products-mass-actions.jpg)
 
-For details on these actions, refer to the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
 
@@ -97,11 +97,11 @@ The following single record actions are available for product records on the lis
 
 ![Products single record actions](../../_assets/products/products-single-actions.jpg)
 
-For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels#single-record-actions) article in this user guide.
+For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Search and Filtering Types
 
-Product records can be searched and filtered according to your needs on their list/plate view page. For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
+Product records can be searched and filtered according to your needs on their list/plate view page. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
 Besides the standard field filtering, two other types – [by attributes](#by-attributes) and [by categories](#by-categories) – are available for product records.
 
@@ -111,7 +111,7 @@ Filtering by attributes is performed on the basis of attribute values of the att
 
 ![Attribute filters](../../_assets/products/attribute-filters.jpg)
 
-For details on this type of filtering, please, refer to the **Custom Attribute Filters** section within the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide
+For details on this type of filtering, please, refer to the [**Custom Attribute Filters**](./search-and-filtering.md#custom-attribute-filters) section within the **Search and Filtering** article in this user guide.
 
 ### By Categories
 
@@ -123,7 +123,7 @@ As a result, the defined category will be highlighted in the catalog tree, and o
 
 ## Editing
 
-To edit the product, click the `Edit` button on the [detail view](https://treopim.com/help/views-and-panels) page of the currently open product record; the following editing window will open:
+To edit the product, click the `Edit` button on the [detail view](./views-and-panels.md#detail-view) page of the currently open product record; the following editing window will open:
 
 ![Product editing](../../_assets/products/products-edit.jpg)
 
@@ -131,11 +131,11 @@ Here edit the desired fields and click the `Save` button to apply your changes.
 
 Please, note that by default, deactivating a product record has no impact on the records of associated products.
 
-Besides, you can make changes in the product record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+Besides, you can make changes in the product record via [in-line editing](./views-and-panels.md#in-line-editing) on its detail view page.
 
-Alternatively, make changes to the desired product record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the products list/plate view page:
+Alternatively, make changes to the desired product record in the [quick edit](./views-and-panels.md#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the products list/plate view page:
 
-![Editing popup](../../_assets/products/product-editing-popup.jpg)
+![Editing pop-up](../../_assets/products/product-editing-popup.jpg)
 
 ## Removing
 
@@ -160,7 +160,7 @@ In the TreoPIM system, the following entities are related to products:
 - [associated products](#associated-products);
 - [images](#images).
 
-They all are displayed on the corresponding panels on the product record [detail view](https://treopim.com/help/views-and-panels) page. If any panel is missing, please, contact your administrator as to your access rights configuration.
+They all are displayed on the corresponding panels on the product record [detail view](./views-and-panels.md#detail-view) page. If any panel is missing, please, contact your administrator as to your access rights configuration.
 
 To be able to relate more entities to products, please, contact your administrator.
 
@@ -168,9 +168,9 @@ To be able to relate more entities to products, please, contact your administrat
 
 **Product attributes** are characteristics of a certain product that make it distinct from other products, e.g. size, color. Product attributes are to be used as [filters](#by-attributes).
 
-Product attribute values are predefined by the attributes assigned to the [product family](https://treopim.com/help/product-families) to which the given product belongs.
+Product attribute values are predefined by the [attributes](./attributes.md) assigned to the [product family](./product-families.md) to which the given product belongs.
 
-Product attribute records are displayed on the `PRODUCT ATTRIBUTES` panel within the product record [detail view](https://treopim.com/help/views-and-panels) page and are grouped by attribute groups. Product attributes data is shown in the following table columns:
+Product attribute records are displayed on the `PRODUCT ATTRIBUTES` panel within the product record [detail view](./views-and-panels.md#detail-view) page and are grouped by attribute groups. Product attributes data is shown in the following table columns:
  - Attribute
  - Value
  - Is required
@@ -201,7 +201,7 @@ Use the `Select` option from the actions menu located in the upper right corner 
 
 In the "Attributes" pop-up that appears, choose the desired attribute (or attributes) from the list and press the `Select` button to link the item(s) to the product record. The linked attributes have the `Global` scope by default.
 
-TreoPIM supports linking to products not only separate attributes, but also [attribute groups](https://treopim.com/help/attribute-groups). For this, use the `Select Attribute Group` option from the actions menu, and in the "Attribute Groups" pop-up that appears, select the desired groups from the list of available attribute group records.
+TreoPIM supports linking to products not only separate attributes, but also [attribute groups](./attribute-groups.md). For this, use the `Select Attribute Group` option from the actions menu, and in the "Attribute Groups" pop-up that appears, select the desired groups from the list of available attribute group records.
 
 Please, note that attributes linked to products are arranged by attribute groups correspondingly. Their placement depends on the configuration and sort order value of the attribute group to which they belong.
 
@@ -217,7 +217,7 @@ Please, note that only custom attribute records can be removed, but for the ones
 
 ### Product Categories
 
-Categories that are linked to the product record are shown on the `PRODUCT CATEGORIES` panel within the products [detail view](https://treopim.com/help/views-and-panels) page and include the following table columns:
+[Categories](./categories.md) that are linked to the product record are shown on the `PRODUCT CATEGORIES` panel within the product [detail view](./views-and-panels.md#detail-view) page and include the following table columns:
  - Category
  - Scope
  - Channels
@@ -244,7 +244,7 @@ To assign a category (or several categories) to the product record, use the `Sel
 
 In the "Categories" pop-up that appears, choose the desired category (or categories) from the list and press the `Select` button to link the item(s) to the product.
 
-Please, note that you can link both root and child categories to the product. The only condition is that their root category should be linked to the [catalog](https://treopim.com/help/catalogs) to which the given product belongs.
+Please, note that you can link both root and child categories to the product. The only condition is that their root category should be linked to the [catalog](./catalogs.md) to which the given product belongs.
 
 Product categories can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT CATEGORIES` panel:
 
@@ -252,7 +252,7 @@ Product categories can be viewed, edited, or removed via the corresponding optio
 
 ### Channels
 
-Channels that are linked to the product are displayed on its [detail view](https://treopim.com/help/views-and-panels) page on the `CHANNELS` panel and include the following table columns:
+[Channels](./channels.md) that are linked to the product are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `CHANNELS` panel and include the following table columns:
 - Name
 - Code
 - Active
@@ -271,7 +271,7 @@ To assign a channel (or several channels) to the product record, use the `Select
 
 ![Adding channels](../../_assets/products/channels-select.jpg)
 
-As soon as the channel is linked to the product, it is added to the [filtering](https://treopim.com/help/search-and-filtering) by scopes list, located in the upper right corner of the product record [detail view](https://treopim.com/help/views-and-panels) page:
+As soon as the channel is linked to the product, it is added to the [filtering](./search-and-filtering.md) by scopes list, located in the upper right corner of the product record [detail view](./views-and-panels.md#detail-view) page:
 
 ![Channel filter](../../_assets/products/channel-filter.jpg)
 
@@ -283,14 +283,14 @@ Channels linked to the product record can be viewed, edited, unlinked, or remove
 
 ### Associated Products
 
-Products that are linked to the currently open product record through the [association](https://treopim.com/help/associations), are displayed on its [detail view](https://treopim.com/help/views-and-panels) page on the `ASSOCIATED PRODUCTS` panel and include the following table columns:
+Products that are linked to the currently open product record through the [association](./associations.md), are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `ASSOCIATED PRODUCTS` panel and include the following table columns:
 - Related product image
 - Related product
 - Association
 
 ![AP panel](../../_assets/products/ap-panel.jpg)
 
-It is possible to link [associated products](https://treopim.com/help/associated-products) to a product by creating new associated product records on this panel. To do this for the currently open product record, click the `+` button located in the upper right corner of the `ASSOCIATED PRODUCTS` panel. In the associated product creation pop-up that appears, select the main and related product, define the association for their relation and whether it should be in both directions:
+It is possible to link [associated products](./associated-products.md) to a product by creating new associated product records on this panel. To do this for the currently open product record, click the `+` button located in the upper right corner of the `ASSOCIATED PRODUCTS` panel. In the associated product creation pop-up that appears, select the main and related product, define the association for their relation and whether it should be in both directions:
 
 ![AP creating](../../_assets/products/ap-creating.jpg)
 
@@ -302,7 +302,7 @@ Associated product records can be edited or removed via the corresponding option
 
 ### Images
 
-Images that are linked to the currently open product record are displayed on its [detail view](https://treopim.com/help/views-and-panels) page on the `IMAGES` panel and include the following table columns:
+Images that are linked to the currently open product record are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `IMAGES` panel and include the following table columns:
 - Image
 - Name
 - Scope
@@ -318,7 +318,7 @@ To create new image records to be linked to the currently open product record, c
 
 The following *image uploading types* are available in the TreoPIM system by default:
 - **File** / **Files** – image files that are stored locally (on your PC or other device). When the `File` type is selected on the image creation step, the desired image file is  uploaded as an attachment. To attach several image files at the same time, the `Files` type is to be defined accordingly.
-- **Link** – the URL to the image file, which is stored on the other server. When this type is selected on the image creation step, the image link must be entered in the corresponding field:
+- **Link** – the URL to the image file, which is stored on the external server. When this type is selected on the image creation step, the image link must be entered in the corresponding field:
 
 	![Image URL](../../_assets/products/image-url.jpg)
 
@@ -340,7 +340,7 @@ To see all image records linked to the given product, use the `Show full list` o
 
 ![Show full option](../../_assets/products/show-full-option.jpg)
 
-Then the "Images" page opens, where all image records [filtered](https://treopim.com/help/search-and-filtering) by the given product are displayed:
+Then the "Images" page opens, where all image records [filtered](./search-and-filtering.md) by the given product are displayed:
 
 ![Images full list](../../_assets/products/images-full-list.jpg)
 
@@ -350,15 +350,15 @@ Images linked to the given product record can be viewed, edited, or removed via 
 
 ![Images actions](../../_assets/products/images-actions-menu.jpg)
 
-On the `IMAGES` panel you can also define image records order within the given image record via their drag-and-drop:
+On the `IMAGES` panel you can also define image records order within the given product record via their drag-and-drop:
 
 ![Images order](../../_assets/products/images-order.jpg)
 
 The changes are saved on the fly.
 
-Please, note that the first image record in the list is automatically considered as main image.
+Please, note that the first image record in the list is automatically considered as the main product image.
 
-To view the product related image record from the `IMAGES` panel, click its name in the images list. The [detail view](https://treopim.com/help/views-and-panels) page of the given image will open, where you can perform further actions according to your access rights, configured by the administrator. 
+To view the product related image record from the `IMAGES` panel, click its name in the images list. The [detail view](./views-and-panels.md#detail-view) page of the given image will open, where you can perform further actions according to your access rights, configured by the administrator. 
 
 
 
