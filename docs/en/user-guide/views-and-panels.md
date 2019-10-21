@@ -9,10 +9,10 @@ There are two types of **pages** in the TreoPIM system with the corresponding vi
   - *[breadcrumb navigation](./user-interface.md#breadcrumb-navigation) including the page name;*
   - *records list in the [list](#list-view) or [plate](#plate-view) view.* 
 - **Detail Page** – shows detailed information about the selected entity record and all its relations and includes:
-  - [*navigation menu*](./user-interface.md#navigation-menu);*
-  - *[taskbar](./user-interface.md#taskbar)*;*
-  - [*breadcrumb navigation*](./user-interface.md#breadcrumb-navigation) *including the page name;*
-  - [*record details*](#detail-view)*, where detailed information about the currently open entity record is displayed.* 
+  - *[navigation menu](./user-interface.md#navigation-menu);*
+  - *[taskbar](./user-interface.md#taskbar);*
+  - *[breadcrumb navigation](./user-interface.md#breadcrumb-navigation) including the page name;*
+  - *[record details](#detail-view), where detailed information about the currently open entity record is displayed.* 
 
 The **detail view** may also include:
 - the *`OVERVIEW` panel* and some other panels, if these were configured by the administrator:
