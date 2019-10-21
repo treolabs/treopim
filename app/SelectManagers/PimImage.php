@@ -32,9 +32,9 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
 class PimImage extends AbstractSelectManager
 {
     /**
-     * @inheritDoc
+     * @param array $result
      */
-    public function applyAdditional(array &$result, array $params)
+    protected function boolFilterProductsByType(array &$result)
     {
         // prepare product types
         $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
