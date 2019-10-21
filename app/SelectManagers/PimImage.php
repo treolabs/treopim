@@ -32,6 +32,18 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
 class PimImage extends AbstractSelectManager
 {
     /**
+     * @inheritDoc
+     */
+    public function applyAdditional(array &$result, array $params)
+    {
+        // prepare product types
+        $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
+
+        // add filtering by product types
+        $result['customWhere'] .= " AND pim_image.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)";
+    }
+
+    /**
      * @param array $result
      */
     protected function boolFilterPimImageRelation(array &$result)

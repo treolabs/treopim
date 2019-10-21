@@ -1,9 +1,13 @@
 {
-    "fields": {
-        "value": "Wert",
-        "unit": "Einheit"
-    },
-    "labels": {
-        "Create MeasuringUnit": "Messeinheit erstellen"
-    }
+  "fields": {
+    "value": "Wert",
+    "unit": "Einheit",
+    "products": "Produkte"
+  },
+  "links": {
+    "products": "Produkte"
+  },
+  "labels": {
+    "Create MeasuringUnit": "Messeinheit erstellen"
+  }
 }

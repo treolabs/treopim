@@ -51,17 +51,17 @@ Attributes are automatically validated according to their type. The following at
 
 ## Creating
 
-To create a new attribute, click `Attributes` in the navigation menu to get to the attribute [list view](#listing) and then click the `Create Attribute` button. The common creation pop-up window will appear:
+To create a new attribute record, click `Attributes` in the navigation menu to get to the attribute [list view](#listing) and then click the `Create Attribute` button. The common creation pop-up window will appear:
 
 ![Attributes creation](../../_assets/attributes/attributes-create.jpg)
 
-Here enter the attribute name and code and select its type from the `Attribute Type` drop-down list. Define its attribute group using the corresponding select button, if needed. Your username is loaded to the `Owner` and `Assigned user` fields by default. You can change them via the corresponding select buttons, as well as define the team, if needed. Click the `Save` button to finish the attribute creation or `Cancel` to abort the process.
+Here enter the attribute name and code and select its type from the `Attribute Type` drop-down list. Define its attribute group using the corresponding select button, if needed. Your username is loaded to the `Owner` and `Assigned user` fields by default. You can change them via the corresponding select buttons, as well as define the team, if needed. Click the `Save` button to finish the attribute record creation or `Cancel` to abort the process.
 
 If the attribute code is not unique, the error message will appear notifying you about it.
 
 Please, note that attribute type cannot be changed after the attribute is created. 
 
-When creating attributes of the `Enum`, `Multi-Enum`, `Enum Multilang`, and `Multi-Enum Multilang` types their attribute values should also be defined:
+When creating attribute records of the `Enum`, `Multi-Enum`, `Enum Multilang`, and `Multi-Enum Multilang` types, their attribute values should also be defined:
 
 ![Enum values list](../../_assets/attributes/enum-values-list.jpg)
 
@@ -71,11 +71,11 @@ Alternatively, use the [quick create](https://treopim.com/help/user-interface) b
 
 ## Listing
 
-To open the list of attributes available in the system, click the `Attributes` option in the navigation menu:
+To open the list of attribute records available in the system, click the `Attributes` option in the navigation menu:
 
 ![Attributes list view](../../_assets/attributes/attributes-list-view.jpg)
 
-By default, the following fields are displayed on the list view page for attributes:
+By default, the following fields are displayed on the list view page for attribute records:
 - Attribute name
 - Code
 - Attribute group
@@ -83,13 +83,13 @@ By default, the following fields are displayed on the list view page for attribu
 
 To sort attribute records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Attributes can be searched and filtered according to your needs.  For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
+Attribute records can be searched and filtered according to your needs.  For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
 
-To view some attribute record details, click the name field value of the corresponding record in the list of attributes; the detail view page will open showing the attribute records. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
+To view some attribute record details, click the name field value of the corresponding record in the list of attributes; the [detail view](https://treopim.com/help/views-and-panels) page will open showing the attribute records. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
 
 ### Mass Actions
 
-The following mass actions are available for attribute entities:
+The following mass actions are available for attribute records:
 - Remove
 - Mass update
 - Export
@@ -102,7 +102,7 @@ For details on these actions, please, see the **Mass Actions** section of the [*
 
 ### Single Record Actions
 
-The following single record actions are available for attribute entities:
+The following single record actions are available for attribute records:
 - View
 - Edit
 - Remove
@@ -113,7 +113,7 @@ For details on these actions, please, refer to the **Single Record Actions** sec
 
 ## Editing
 
-To edit the attribute, click the `Edit` button on the detail view page of the currently open attribute record; the following editing window will open:
+To edit the attribute, click the `Edit` button on the [detail view](https://treopim.com/help/views-and-panels) page of the currently open attribute record; the following editing window will open:
 
 ![Attributes editing](../../_assets/attributes/attributes-edit.jpg)
 
@@ -139,7 +139,7 @@ By default, it is not possible to remove the attribute if there is any product o
 
 ![Attribute removal confirmation](../../_assets/attributes/remove-attribute.jpg)
 
-Select the checkbox to unlink the attribute from other entities and click `Remove` to complete the operation. Click `Cancel` to abort the process. 
+Select the checkbox to unlink the attribute record from other entities and click `Remove` to complete the operation. Click `Cancel` to abort the process. 
 
 ## Duplicating
 

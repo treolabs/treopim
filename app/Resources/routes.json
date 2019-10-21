@@ -1,13 +1,5 @@
 [
   {
-    "route": "/Product/:product_id/itemInProducts",
-    "method": "get",
-    "params": {
-      "controller": "Product",
-      "action": "GetItemInProducts"
-    }
-  },
-  {
     "route": "/Markets/Attribute/filtersData",
     "method": "get",
     "params": {
@@ -58,14 +50,6 @@
       "controller": "Dashlet",
       "action": "GetDashlet",
       "dashletName": ":dashletName"
-    }
-  },
-  {
-    "route": "Attribute/:attributeGroupId/sortOrder",
-    "method": "put",
-    "params": {
-      "controller": "Attribute",
-      "action": "updateSortOrder"
     }
   },
   {

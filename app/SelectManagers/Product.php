@@ -236,46 +236,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * NotConfigurabledProducts filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotConfigurabledProducts(&$result)
-    {
-        // prepare data
-        $productId = (string)$this->getSelectCondition('notConfigurabledProducts');
-
-        if (!empty($productId)) {
-            $variants = $this->getProductVariants($productId);
-            foreach ($variants as $id) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$id
-                ];
-            }
-        }
-    }
-
-    /**
-     * NotBundledProducts filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotBundledProducts(&$result)
-    {
-        //prepare data
-        $productId = (string)$this->getSelectCondition('notBundledProducts');
-
-        if (!empty($productId)) {
-            $variants = $this->getBundleItems($productId);
-            foreach ($variants as $id) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$id
-                ];
-            }
-        }
-    }
-
-    /**
      * Get assiciated products
      *
      * @param string $associationId
@@ -296,103 +256,6 @@ class Product extends AbstractSelectManager
           main_product_id =' . $pdo->quote($productId) . '
           AND association_id = ' . $pdo->quote($associationId) . '
           AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Get product variants
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    protected function getProductVariants($productId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT
-          product_id
-        FROM
-          product_type_configurable
-        WHERE
-          configurable_product_id =' . $pdo->quote($productId) . '
-          AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        return (!empty($result)) ? array_column($result, 'product_id') : [];
-    }
-
-    /**
-     * Get bundle items
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    protected function getBundleItems($productId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT
-          product_id
-        FROM
-          product_type_bundle
-        WHERE
-          bundle_product_id =' . $pdo->quote($productId) . '
-          AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        return (!empty($result)) ? array_column($result, 'product_id') : [];
-    }
-
-    /**
-     * NotLinkedWithOrder filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotLinkedWithOrder(&$result)
-    {
-        $orderId = (string)$this->getSelectCondition('notLinkedWithOrder');
-
-        if (!empty($orderId)) {
-            $orderProducts = $this->getOrderProducts($orderId);
-            foreach ($orderProducts as $row) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$row['product_id']
-                ];
-            }
-        }
-    }
-
-    /**
-     * Get order products
-     *
-     * @param string $orderId
-     *
-     * @return array
-     */
-    protected function getOrderProducts($orderId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT product_id
-                FROM order_product
-                WHERE order_id = ' . $pdo->quote($orderId);
 
         $sth = $pdo->prepare($sql);
         $sth->execute();
@@ -631,11 +494,6 @@ class Product extends AbstractSelectManager
      */
     protected function addProductAttributesFilter(array &$selectParams, array $attributes): void
     {
-        // create select manager
-        $selectManager = $this
-            ->getSelectManagerFactory()
-            ->create('ProductAttributeValue');
-
         foreach ($attributes as $row) {
             // prepare attribute where
             switch ($row['type']) {
@@ -702,7 +560,9 @@ class Product extends AbstractSelectManager
             }
 
             // create select params
-            $sp = $selectManager->getSelectParams(['where' => [$where]], true, true);
+            $sp = $this
+                ->createSelectManager('ProductAttributeValue')
+                ->getSelectParams(['where' => [$where]], true, true);
             $sp['select'] = ['productId'];
 
             // create sql

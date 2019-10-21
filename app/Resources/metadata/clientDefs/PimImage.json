@@ -28,6 +28,14 @@
               }
             }
           ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
         }
       },
       "product": {
@@ -50,6 +58,14 @@
               "data": {
                 "field": "category"
               }
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
             }
           ]
         }

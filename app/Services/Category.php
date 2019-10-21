@@ -127,25 +127,4 @@ class Category extends AbstractService
         }
         parent::afterMassRemove($idList);
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getSelectParams($params)
-    {
-        // get parent
-        $selectParams = parent::getSelectParams($params);
-
-        // prepare additional select columns
-        $additionalSelectColumns = [
-            'childrenCount' => '(SELECT COUNT(c1.id) FROM category AS c1 WHERE c1.category_parent_id=category.id AND c1.deleted=0)'
-        ];
-
-        // add additional select columns
-        foreach ($additionalSelectColumns as $alias => $sql) {
-            $selectParams['additionalSelectColumns'][$sql] = $alias;
-        }
-
-        return $selectParams;
-    }
 }

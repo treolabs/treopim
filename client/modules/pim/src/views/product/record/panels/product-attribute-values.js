@@ -503,18 +503,20 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         setGroupCollectionDefs(group, collection) {
             collection.url = `Product/${this.model.id}/productAttributeValues`;
-            collection.where = [
-                {
-                    type: 'bool',
-                    value: ['linkedWithAttributeGroup'],
-                    data: {
-                        linkedWithAttributeGroup: {
-                            productId: this.model.id,
-                            attributeGroupId: group.key !== 'no_group' ? group.key : null
+            if (group.key !== 'no_group') {
+                collection.where = [
+                    {
+                        type: 'bool',
+                        value: ['linkedWithAttributeGroup'],
+                        data: {
+                            linkedWithAttributeGroup: {
+                                productId: this.model.id,
+                                attributeGroupId: group.key
+                            }
                         }
                     }
-                }
-            ];
+                ];
+            }
             collection.data.select = this.getSelectFields().join(',');
         },
 
@@ -766,6 +768,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         const fetchedData = value.fetch();
                         const initialData = this.initialAttributes[id];
                         if (this.equalityValueCheck(fetchedData, initialData)) {
+                            value.model.set(fetchedData);
                             data = _.extend(data || {}, {[id]: fetchedData});
                         }
                     }
@@ -796,6 +799,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         validate() {
+            this.trigger('collapsePanel', 'show');
+
             let notValid = false;
             this.groups.forEach(group => {
                 const groupView = this.getView(group.key);

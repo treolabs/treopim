@@ -58,35 +58,14 @@
       "view": "pim:views/product/fields/type",
       "layoutMassUpdateDisabled": true,
       "options": [
-        "simpleProduct",
-        "bundleProduct",
-        "packageProduct"
-      ]
+        "simpleProduct"
+      ],
+      "importDisabled": true
     },
     "amount": {
       "type": "float",
       "min": 0,
       "default": 0
-    },
-    "productTypeBundles": {
-      "type": "linkMultiple",
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "layoutDetailDisabled": true,
-      "exportDisabled": true,
-      "emHidden": true
-    },
-    "productTypePackages": {
-      "type": "link",
-      "layoutFiltersDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true,
-      "readOnly": true,
-      "noSave": true,
-      "view": "views/fields/link-one",
-      "exportDisabled": true,
-      "emHidden": true
     },
     "associatedRelatedProduct": {
       "type": "linkMultiple",
@@ -124,7 +103,8 @@
       "type": "image",
       "previewSize": "medium",
       "readOnly": true,
-      "view": "pim:views/product/fields/image"
+      "view": "pim:views/product/fields/image",
+      "importDisabled": true
     },
     "productStatus": {
       "type": "enum",
@@ -235,7 +215,20 @@
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "noLoad": true
+      "noLoad": true,
+      "importDisabled": true
+    },
+    "measuringUnit": {
+      "type": "link",
+      "required": false
+    },
+    "basePriceAmount": {
+      "type": "float",
+      "default": 0
+    },
+    "packedAmount": {
+      "type": "float",
+      "default": 0
     },
     "createdAt": {
       "type": "datetime",
@@ -302,16 +295,6 @@
         "entity": "Product"
       }
     },
-    "productTypeBundles": {
-      "type": "hasMany",
-      "foreign": "product",
-      "entity": "ProductTypeBundle"
-    },
-    "productTypePackages": {
-      "type": "hasOne",
-      "foreign": "packageProduct",
-      "entity": "ProductTypePackage"
-    },
     "associatedRelatedProduct": {
       "type": "hasMany",
       "foreign": "relatedProduct",
@@ -361,6 +344,10 @@
       "foreign": "product",
       "entity": "PimImage",
       "disableMassRelation": true
+    },
+    "measuringUnit": {
+      "type": "belongsTo",
+      "entity": "MeasuringUnit"
     },
     "createdBy": {
       "type": "belongsTo",
