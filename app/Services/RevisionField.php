@@ -76,7 +76,6 @@ class RevisionField extends MultilangRevisionField
                                     $locale = $loc;
                                 }
                             }
-
                             // prepare field name
                             $fieldName = 'value';
                             $fieldName = empty($locale) ? $fieldName : $fieldName . '_' . strtolower($locale);
@@ -84,9 +83,13 @@ class RevisionField extends MultilangRevisionField
 
                             // prepare data
                             $was = $became = [];
-
-                            $was[$fieldName] = $data['attributes']['was'][$field];
-                            $became[$fieldName] = $data['attributes']['became'][$field];
+                            if(isset($data['attributes']['was']['Attribute Image'])
+                                && isset($data['attributes']['became']['Attribute Image'])) {
+                                $was[$fieldName . 'Id'] = $data['attributes']['was'][$field];
+                                $became[$fieldName . 'Id'] = $data['attributes']['became'][$field];
+                            }
+                                $was[$fieldName] = $data['attributes']['was'][$field];
+                                $became[$fieldName] = $data['attributes']['became'][$field];
 
                             if (isset($data['attributes']['was'][$field . 'Unit'])
                                 && isset($data['attributes']['became'][$field . 'Unit'])) {
