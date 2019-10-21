@@ -31,7 +31,7 @@ Click the `Save` button to finish the brand record creation or `Cancel` to abort
 
 If the brand code is not unique, the error message will appear notifying you about it.
 
-Alternatively, use the [quick create](https://treopim.com/help/user-interface#quick-create) button on any TreoPIM page and fill in the required fields in the brand creation pop-up that appears:
+Alternatively, use the [quick create](./user-interface.md#quick-create) button on any TreoPIM page and fill in the required fields in the brand creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/brands/creation-popup.jpg)
 
@@ -41,16 +41,16 @@ To open the list of brand records available in the system, click the `Brands` op
 
 ![Brands list view page](../../_assets/brands/brands-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for brand records:
+By default, the following fields are displayed on the [list view](./views-and-panels.md#list-view) page for brand records:
  - Name
  - Active
  - Code
 
 To change the brand records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Brand records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
+Brand records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
-To view some brand record details, click the name field value of the corresponding record in the list of brands; the [detail view](https://treopim.com/help/views-and-panels) page will open showing the brand records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
+To view some brand record details, click the name field value of the corresponding record in the list of brands; the [detail view](./views-and-panels.md#detail-view) page will open showing the brand records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
 ### Mass Actions
 
@@ -64,7 +64,7 @@ The following mass actions are available for brand records on the list view page
 
 ![Brands mass actions](../../_assets/brands/brands-mass-actions.jpg)
 
-For details on these actions, refer to the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
 
@@ -76,7 +76,7 @@ The following single record actions are available for brand records on the list 
 
 ![Brands single record actions](../../_assets/brands/brands-single-actions.jpg)
 
-For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels#single-record-actions) article in this user guide.
+For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing
 
@@ -86,9 +86,9 @@ To edit the brand, click the `Edit` button on the detail view page of the curren
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
-Besides, you can make changes in the brand record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+Besides, you can make changes in the brand record via [in-line editing](./views-and-panels.md#in-line-editing) on its detail view page.
 
-Alternatively, make changes to the desired brand record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the brands list view page:
+Alternatively, make changes to the desired brand record in the [quick edit](./views-and-panels.md#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the brands list view page:
 
 ![Editing popup](../../_assets/brands/brand-editing-popup.jpg)
 
@@ -110,7 +110,7 @@ Use the `Duplicate` option from the actions menu to go to the brand creation pag
 
 ## Working With Products Related to Brands
 
-Products that are linked to the brand are displayed on its [detail view](https://treopim.com/help/views-and-panels) page on the `PRODUCTS` panel and include the following table columns:
+Products that are linked to the brand are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `PRODUCTS` panel and include the following table columns:
  - Name
  - SKU
  - Type
@@ -120,7 +120,7 @@ Products that are linked to the brand are displayed on its [detail view](https:/
 
 If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to brands, please, contact your administrator.
 
-By design, if a brand record is deactivated, all the related products will automatically be deactivated as well. Otherwise, if a brand is activated, all the related products will remain in the previous activity state without any changes. To activate the products linked to this brand record, please filter them by this brand and apply the corresponding [mass action](#mass-actions).
+By design, if a brand record is deactivated, all the related products will automatically be deactivated as well. Otherwise, if a brand is activated, all the related products will remain in the previous activity state without any changes. To activate the products linked to this brand record, please filter them by this brand and apply the corresponding [mass action](./views-and-panels.md#mass-actions).
 
 To create a new product to be linked to the given brand record, use the `+` button located on the `PRODUCTS` panel and enter the necessary data in the product creation pop-up that appears:
 
@@ -134,7 +134,7 @@ To see all products linked to the given brand record, use the `Show full list` o
 
 ![Brand products](../../_assets/brands/show-full-option.jpg)
 
-Then the "Products" page opens, where all product records [filtered](https://treopim.com/help/search-and-filtering) by the given brand are displayed:
+Then the "Products" page opens, where all product records [filtered](./search-and-filtering.md) by the given brand are displayed:
 
 ![Products full list](../../_assets/brands/products-full-list.jpg)
 

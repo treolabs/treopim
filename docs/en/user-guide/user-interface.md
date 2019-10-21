@@ -8,18 +8,18 @@ The following elements make up the TreoPIM user interface:
 
 - [**Navigation Menu**](#navigation-menu) – to navigate through available entities.
 - [**Taskbar**](#taskbar) – to help the user interact with the TreoPIM system in a more efficient way; additional information or actions are displayed here. 
-- [**Search and Filtering Panel**](https://treopim.com/help/search-and-filtering) – to search and filter within one entity or its related entities.
+- [**Search and Filtering Panel**](./search-and-filtering.md) – to search and filter within one entity or its related entities.
 
 Within the TreoPIM system your information may be presented in various ways:
 
-- [**List View**](https://treopim.com/help/views-and-panels) – to view the lists of entity records.
-- [**Plate View**](https://treopim.com/help/views-and-panels) – to view entity records as plates.
-- [**Detail View**](https://treopim.com/help/views-and-panels) – to view the entity record details.
-- [**Create View**](https://treopim.com/help/views-and-panels) – to create a new entity record in the main window.
-- [**Edit View**](https://treopim.com/help/views-and-panels) – to edit the entity record.
-- [**Quick Detail View (pop-up)**](https://treopim.com/help/views-and-panels) – to view the record details in the pop-up window.
-- [**Quick Edit View (pop-up)**](https://treopim.com/help/views-and-panels) – to edit the record detail in the pop-up window.
-- [**Quick Create View**](https://treopim.com/help/views-and-panels) – to create a new entity record in the pop-up window.
+- [**List View**](./views-and-panels.md#list-view) – to view the lists of entity records.
+- [**Plate View**](./views-and-panels.md#plate-view) – to view entity records as plates.
+- [**Detail View**](./views-and-panels.md#detail-view) – to view the entity record details.
+- [**Create View**](./views-and-panels.md#create-view) – to create a new entity record in the main window.
+- [**Edit View**](./views-and-panels.md#edit-view) – to edit the entity record.
+- [**Quick Detail View (pop-up)**](./views-and-panels.md#quick-detail-view-small-detail-view) – to view the record details in the pop-up window.
+- [**Quick Edit View (pop-up)**](./views-and-panels.md#quick-edit-view) – to edit the record detail in the pop-up window.
+- [**Quick Create View**](./views-and-panels.md#quick-create-view) – to create a new entity record in the pop-up window.
 
 ## Navigation Menu
 
@@ -73,7 +73,7 @@ To create new records from anywhere, click the quick create button located in th
 
 ![Quick Create](../../_assets/user-interface/quick-create.jpg)
 
-The [quick create view](https://treopim.com/help/views-and-panels) page will be opened.
+The [quick create view](./views-and-panels.md#quick-create-view) page will be opened.
 
 ## Breadcrumb Navigation
 
@@ -160,7 +160,7 @@ Currently not available.
 
 Select the `Custom Tab List` checkbox to enable a custom navigation menu. Using the `Add` button select the entities to be linked to your custom [navigation menu](#navigation-menu).
 
-[Dashboard](https://treopim.com/help/dashboard-and-dashlets) layout and [dashlet](https://treopim.com/help/dashboard-and-dashlets) settings are also available for editing on the `USER INTERFACE` panel:
+[Dashboard](./dashboards-and-dashlets.md#dashboards) layout and [dashlet](./dashboards-and-dashlets.md#dashlets) settings are also available for editing on the `USER INTERFACE` panel:
 
 ![Dashboard settings](../../_assets/user-interface/ui-dashboard.jpg) 
 
@@ -180,7 +180,7 @@ To rearrange your dashboard view, drag-and-drop the dashlets right on the `USER 
 
 ![Dashlets order](../../_assets/user-interface/dashlets-order.jpg)
 
-Alternatively, you can customize your [dashboard](https://treopim.com/help/dashboard-and-dashlets) view in the same way on the TreoPIM starting page.
+Alternatively, you can customize your [dashboard](./dashboards-and-dashlets.md#dashboards) view in the same way on the TreoPIM starting page.
 
 ### Last Viewed
 
