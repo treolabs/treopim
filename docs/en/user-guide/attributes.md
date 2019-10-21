@@ -1,10 +1,10 @@
 # Attributes
 
-**Attributes** – characteristics of a certain [product](https://treopim.com/help/products) that distinguish it from other products, e.g. size, color, functionality, components and features that affect the product's attractiveness or acceptance in the market. 
+**Attributes** – characteristics of a certain [product](./products.md) that distinguish it from other products, e.g. size, color, functionality, components and features that affect the product's attractiveness or acceptance in the market. 
 
-An attribute can be assigned to only one [attribute group](https://treopim.com/help/attribute-groups). Value of a certain attribute set for a certain product is called *product attribute value*. It is possible to define the same product attribute different values for each channel. 
+An attribute can be assigned to only one [attribute group](./attribute-groups.md). Value of a certain attribute set for a certain product is called *product attribute value*. It is possible to define the same product attribute different values for each channel. 
 
-Attributes can be assigned to several [product families](https://treopim.com/help/product-families), so if the product for that product family is created, the selected attribute will be added to the product attributes automatically.
+Attributes can be assigned to several [product families](./product-families.md), so if the product for that product family is created, the selected attribute will be added to the product attributes automatically.
 
 Attributes can be activated or deactivated. Deactivated attributes cannot be used in the system, e.g. no values can be set to them or transferred via any channel. All the values of the deactivated attributes are hidden and will be shown again after the attribute is activated again.
 
@@ -30,24 +30,25 @@ Attributes are automatically validated according to their type. The following at
 | **Attribute Type**           | **Description**                   |
 |------------------------------|-----------------------------------|
 | Array                        | Data array, where each product attribute can get more than one value. No array values can be set upon the attribute creation or editing.|
-| Boolean                      | Checkbox for the product attribute.				|
-| Date                         | Date picker with the calender and option to set up the date manually. |
-| DateTime                     | Date and time picker.						|
+| Boolean                      | Checkbox for the product attribute				|
+| Date                         | Date picker with the calender and option to set up the date manually |
+| DateTime                     | Date and time picker						|
 | Enum                         | List of possible values, which is set up upon the attribute creation or editing; a single value can be set for the product attribute. |
-| Float                        | Number with a decimal part.		|
-| Int                          | Integer attribute.					|
+| Float                        | Number with a decimal part		|
+| Int                          | Integer attribute					|
 | Multi-Enum                   | List of possible values, which is set up upon attribute creation or editing; multiple values can be set for the product attribute. |
-| Text                         | Text area, for long multiline texts.		|
-| Unit                         | Number with a measurement value selection.  |
-| Url                          | URL with a hyperlink, which is automatically created. |
-| Varchar                      | Short text attribute.				|
-| Varchar Multilang            | Short text attribute with separate values for each locale.	|
-| Text Multilang               | Text area for long multiline texts with separate values for each locale.   |
+| Text                         | Text area, for long multiline texts		|
+| Unit                         | Number with a measurement value selection  |
+| Url                          | URL with a hyperlink, which is automatically created |
+| Varchar                      | Short text attribute				|
+| Varchar Multilang            | Short text attribute with separate values for each locale	|
+| Text Multilang               | Text area for long multiline texts with separate values for each locale   |
 | Enum Multilang               | Multilingual list of possible values, which is set up upon the attribute creation or editing; a single value can be set for the product attribute separately for each locale.  |
 | Multi-Enum Multilang         | Multilingual list of possible values, which is set up upon the attribute creation or editing, multiple values can be set for the product attribute separately for each locale. |
 | Array Multilang              | Multilingual data array, where each product attribute can get more than one value separately for each locale. No array values can be set upon the attribute creation or editing.   |
-| Wysiwyg                      | Text area for long multiline texts that contains a built-in text editor.   |
-| Wysiwyg Multilang            | Text area for long multiline texts that contains a built-in text editor with separate values for each locale.  |
+| Wysiwyg                      | Text area for long multiline texts that contains a built-in text editor   |
+| Wysiwyg Multilang            | Text area for long multiline texts that contains a built-in text editor with separate values for each locale  |
+| Image				           | Image file attachment  |
 
 ## Creating
 
@@ -65,7 +66,7 @@ When creating attribute records of the `Enum`, `Multi-Enum`, `Enum Multilang`, a
 
 ![Enum values list](../../_assets/attributes/enum-values-list.jpg)
 
-Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the attribute creation pop-up that appears:
+Alternatively, use the [quick create](./user-interface.md#quick-create) button on any TreoPIM page and fill in the required fields in the attribute creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/attributes/creation-popup.jpg)
 
@@ -83,9 +84,9 @@ By default, the following fields are displayed on the list view page for attribu
 
 To sort attribute records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Attribute records can be searched and filtered according to your needs.  For details on the search and filtering options, refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
+Attribute records can be searched and filtered according to your needs.  For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
-To view some attribute record details, click the name field value of the corresponding record in the list of attributes; the [detail view](https://treopim.com/help/views-and-panels) page will open showing the attribute records. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
+To view some attribute record details, click the name field value of the corresponding record in the list of attributes; the [detail view](./views-and-panels.md#detail-view) page will open showing the attribute records. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
 ### Mass Actions
 
@@ -98,7 +99,7 @@ The following mass actions are available for attribute records:
 
 ![Attributes mass actions](../../_assets/attributes/attributes-mass-actions.jpg)
 
-For details on these actions, please, see the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, please, see the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
 
@@ -109,19 +110,19 @@ The following single record actions are available for attribute records:
  
 ![Attributes single record actions](../../_assets/attributes/attributes-single-record-actions.jpg)
  
-For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing
 
-To edit the attribute, click the `Edit` button on the [detail view](https://treopim.com/help/views-and-panels) page of the currently open attribute record; the following editing window will open:
+To edit the attribute, click the `Edit` button on the [detail view](./views-and-panels.md#detail-view) page of the currently open attribute record; the following editing window will open:
 
 ![Attributes editing](../../_assets/attributes/attributes-edit.jpg)
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
-Besides, you can make changes in the attribute record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+Besides, you can make changes in the attribute record via [in-line editing](./views-and-panels.md#in-line-editing) on its detail view page.
 
-Alternatively, make changes to the desired attribute record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the attributes list view page:
+Alternatively, make changes to the desired attribute record in the [quick edit](./views-and-panels.md#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the attributes list view page:
 
 ![Edit option](../../_assets/attributes/attribute-editing-popup.jpg)
 

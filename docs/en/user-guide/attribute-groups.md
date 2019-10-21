@@ -1,6 +1,6 @@
 # Attribute Groups
 
-**Attribute Group** – a collection of [attributes](https://treopim.com/help/attributes) of a certain kind combined together to make it easier for the customer to understand the product and its features better. As an example, the "screen" attribute group for smartphones may combine such attributes as "screen diagonal", "resolution", "type of matrix", "number of touch points", etc. Each attribute may belong to only one attribute group, which is optional.
+**Attribute Group** – a collection of [attributes](./attributes.md) of a certain kind combined together to make it easier for the customer to understand the product and its features better. As an example, the "screen" attribute group for smartphones may combine such attributes as "screen diagonal", "resolution", "type of matrix", "number of touch points", etc. Each attribute may belong to only one attribute group, which is optional.
 
 ## Attribute Group Fields
 
@@ -10,7 +10,7 @@ The attribute group entity comes with the following preconfigured fields; mandat
 |--------------------------|--------------------------------------------|
 | Group name (multi-lang)* | Name of the attribute group (e.g. technical) |
 | Code *                   | Unique value used to identify the attribute group. It can only consist of lowercase letters, digits and underscore symbols                   |
-| Sort order               | Sorting order of the attribute group. With this parameter, attribute groups will be arranged in the appropriate order on the product [detail view](https://treopim.com/help/views-and-panels) page                   |
+| Sort order               | Sorting order of the attribute group. With this parameter, attribute groups will be arranged in the appropriate order on the product [detail view](./views-and-panels.md#detail-view) page                   |
 | Description (multi-lang) | Description of the attribute group purpose   |
 
 If you want to make changes to the attribute group entity (e.g. add new fields, or modify attribute group views), please contact your administrator.
@@ -25,7 +25,7 @@ Here enter the desired name for the attribute group record being created and its
 
 If the attribute group code is not unique, the error message will appear notifying you about it.
 
-Alternatively, use the [quick create](https://treopim.com/help/user-interface) button on any TreoPIM page and fill in the required fields in the attribute group creation pop-up that appears:
+Alternatively, use the [quick create](./user-interface.md#quick-create) button on any TreoPIM page and fill in the required fields in the attribute group creation pop-up that appears:
 
 ![Creation pop-up](../../_assets/attribute-groups/creation-popup.jpg)
 
@@ -35,16 +35,16 @@ To open the list of attribute group records available in the system, click the `
 
 ![AP list view page](../../_assets/attribute-groups/ag-list-view.jpg)
 
-By default, the following fields are displayed on the [list view](https://treopim.com/help/views-and-panels) page for attribute group records:
+By default, the following fields are displayed on the [list view](./views-and-panels.md#list-view) page for attribute group records:
 - Group name
 - Code
 - Sort order
 
 To change the attribute group records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Attribute group records can be searched and filtered according to your needs. For details on the search and filtering options,  refer to the [**Search and Filtering**](https://treopim.com/help/search-and-filtering) article in this user guide.
+Attribute group records can be searched and filtered according to your needs. For details on the search and filtering options,  refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
-To view some attribute group record details, click the name field value of the corresponding record in the list of attribute groups; the [detail view](https://treopim.com/help/views-and-panels) page will open. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](https://treopim.com/help/views-and-panels) pop-up.
+To view some attribute group record details, click the name field value of the corresponding record in the list of attribute groups; the [detail view](./views-and-panels.md#detail-view) page will open. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
 ### Mass Actions
 
@@ -57,7 +57,7 @@ The following mass actions are available for attribute group records:
 
 ![AG mass actions](../../_assets/attribute-groups/ag-mass-actions.jpg)
 
-For details on these actions, please, see the **Mass Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, please, see the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
 
@@ -68,19 +68,19 @@ The following single record actions are available for attribute group records:
 
 ![AG single record actions](../../_assets/attribute-groups/ag-single-actions.jpg)
 
-For details on these actions, please, refer to the **Single Record Actions** section of the [**Views and Panels**](https://treopim.com/help/views-and-panels) article in this user guide.
+For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing
 
-To edit the attribute group, click the `Edit` button on the [detail view](https://treopim.com/help/views-and-panels) page of the currently open attribute group record; the following editing window will open:
+To edit the attribute group, click the `Edit` button on the [detail view](./views-and-panels.md#detail-view) page of the currently open attribute group record; the following editing window will open:
 
 ![AG editing](../../_assets/attribute-groups/ag-editing.jpg)
 
 Here edit the desired fields and click the `Save` button to apply your changes.
 
-Besides, you can make changes in the attribute group record via [in-line editing](https://treopim.com/help/views-and-panels) on its detail view page.
+Besides, you can make changes in the attribute group record via [in-line editing](./views-and-panels.md#in-line-editing) on its detail view page.
 
-Alternatively, make changes to the desired attribute group record in the [quick edit](https://treopim.com/help/views-and-panels) pop-up that appears when you select the `Edit` option from the single record actions menu on the attribute groups list view page:
+Alternatively, make changes to the desired attribute group record in the [quick edit](./views-and-panels.md#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the attribute groups list view page:
 
 ![Editing pop-up](../../_assets/attribute-groups/ag-editing-popup.jpg)
 
@@ -102,7 +102,7 @@ Use the `Duplicate` option from the actions menu to go to the attribute group cr
 
 ## Working With Attributes Related to the Attribute Group
 
-Attributes that are linked to the attribute group record are displayed on its [detail view](https://treopim.com/help/views-and-panels) page on the `ATTRIBUTES` panel and include the following table columns:
+Attributes that are linked to the attribute group record are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `ATTRIBUTES` panel and include the following table columns:
 - Attribute name
 - Code
 - Attribute type
@@ -111,7 +111,7 @@ Attributes that are linked to the attribute group record are displayed on its [d
 
 If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to attribute groups, please, contact your administrator.
 
-To create a new [attribute](https://treopim.com/help/attributes) record, сlick the `+` button  located on the `ATTRIBUTES` panel and fill in the fields in the attribute creation pop-up that appears:
+To create a new [attribute](./attributes.md) record, сlick the `+` button  located on the `ATTRIBUTES` panel and fill in the fields in the attribute creation pop-up that appears:
 
 ![AG create attribute](../../_assets/attribute-groups/ag-create-attribute.jpg)
 
@@ -133,4 +133,4 @@ On this panel, you can also define attribute records order within the given attr
 
 The changes are saved on the fly.
 
-To view the attribute record from the `ATTRIBUTES` panel, click its name in the attributes list. The [detail view](https://treopim.com/help/views-and-panels) page of the given attribute will open, where you can perform further actions according to your access rights, configured by the administrator. 
+To view the attribute record from the `ATTRIBUTES` panel, click its name in the attributes list. The [detail view](./views-and-panels.md#detail-view) page of the given attribute will open, where you can perform further actions according to your access rights, configured by the administrator. 
