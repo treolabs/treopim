@@ -250,7 +250,7 @@ Espo.define('pim:views/attribute/fields/type-value', 'multilang:views/fields/arr
                             if (!item.toString().length) {
                                 error = true;
                                 let msg = this.translate('fieldIsRequired', 'messages').replace('{field}', this.translate(this.name, 'fields', this.model.name)
-                                    + " › " + name.slice(-4, -2).toLowerCase() + '_' + name.slice(-2).toUpperCase());
+                                    + " &#8250; " + name.slice(-4, -2).toLowerCase() + '_' + name.slice(-2).toUpperCase());
                                 this.showValidationMessage(msg, `input[data-name="${name}"][data-index="${index}"]`);
                                 this.trigger('customInvalid', name, index);
                             }
@@ -283,7 +283,8 @@ Espo.define('pim:views/attribute/fields/type-value', 'multilang:views/fields/arr
                 placement: 'bottom',
                 container: 'body',
                 content: message,
-                trigger: 'manual'
+                trigger: 'manual',
+                html: true
             }).popover('show');
 
             var isDestroyed = false;
