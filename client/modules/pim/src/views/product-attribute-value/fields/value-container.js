@@ -42,7 +42,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
-            if (['enum', 'enumMultiLang', 'multiEnum', 'multiEnumMultiLang'].includes(this.model.get('attributeType'))) {
+            if (this.mode === 'edit' && ['multiEnum', 'multiEnumMultiLang'].includes(this.model.get('attributeType'))) {
                 this.$el.addClass('over-visible');
             }
         },
