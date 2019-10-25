@@ -49,10 +49,6 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     public function down(): void
     {
-        $this->catalogCategoryDown();
-        $this->productCategoryDown();
-        $this->masterCatalogDown();
-        $this->channelsDown();
     }
 
     /**
@@ -74,14 +70,6 @@ class V3Dot0Dot1 extends AbstractMigration
             }
             $this->execute($sql);
         }
-    }
-
-    /**
-     * Migrate product categories down
-     */
-    protected function productCategoryDown(): void
-    {
-        $this->execute("DELETE FROM product_category WHERE 1");
     }
 
     /**
@@ -139,14 +127,6 @@ class V3Dot0Dot1 extends AbstractMigration
     }
 
     /**
-     * Migrate catelog categories down
-     */
-    protected function catalogCategoryDown(): void
-    {
-        $this->execute("DELETE FROM catalog_category WHERE 1");
-    }
-
-    /**
      * Migrate master catalog up
      */
     protected function masterCatalogUp(): void
@@ -187,15 +167,6 @@ class V3Dot0Dot1 extends AbstractMigration
                 $this->execute($sql);
             }
         }
-    }
-
-    /**
-     * Migrate master catalog down
-     */
-    protected function masterCatalogDown(): void
-    {
-        $this->execute("DELETE FROM catalog WHERE code='main_catalog_migration'");
-        $this->execute("UPDATE product SET catalog_id=NULL WHERE 1");
     }
 
     /**
@@ -254,14 +225,6 @@ class V3Dot0Dot1 extends AbstractMigration
             $this->execute('DROP TABLE product_category_linker');
         } catch (\PDOException $e) {
         }
-    }
-
-    /**
-     * Migrate channels down
-     */
-    protected function channelsDown()
-    {
-        $this->execute("DELETE FROM product_channel WHERE 1");
     }
 
     /**

@@ -45,8 +45,6 @@ class V3Dot1Dot0 extends V3Dot0Dot1
      */
     public function down(): void
     {
-        $this->channelAttributeValueDown();
-        $this->productFamilyAttributesDown();
     }
 
     /**
@@ -54,45 +52,70 @@ class V3Dot1Dot0 extends V3Dot0Dot1
      */
     protected function channelAttributeValueUp()
     {
-        $sql
-            = "SELECT cpav.*, pav.product_id, pav.attribute_id
-               FROM channel_product_attribute_value AS cpav
-               LEFT JOIN product_attribute_value AS pav ON pav.id=cpav.product_attribute_id AND pav.deleted=0
-               WHERE cpav.deleted=0
-                 AND pav.product_id IN (SELECT id FROM product WHERE deleted=0)
-                 AND cpav.channel_id IN (SELECT id FROM channel WHERE deleted=0)";
+        // prepare sql
+        $sql = "SELECT cpav.*, pav.product_id, pav.attribute_id
+                FROM channel_product_attribute_value AS cpav
+                LEFT JOIN product_attribute_value AS pav ON pav.id=cpav.product_attribute_id AND pav.deleted=0
+                WHERE cpav.deleted=0
+                  AND pav.product_id IN (SELECT id FROM product WHERE deleted=0)
+                  AND cpav.channel_id IN (SELECT id FROM channel WHERE deleted=0)";
 
-        if (!empty($data = $this->fetchAll($sql))) {
-            // prepare repository
-            $repository = $this->getEntityManager()->getRepository('ProductAttributeValue');
+        // get data
+        try {
+            $data = $this->fetchAll($sql);
+        } catch (\PDOException $e) {
+            $data = [];
+        }
+
+        if (!empty($data)) {
+            // prepare sql
+            $sql = '';
+
+            // prepare count
+            $count = 0;
+
             foreach ($data as $row) {
-                $entity = $repository->get();
-                $entity->set('productId', $row['product_id']);
-                $entity->set('attributeId', $row['attribute_id']);
-                $entity->set('scope', 'Channel');
-                $entity->set('createdById', 'system');
-                $entity->set('createdAt', date("Y-m-d H:i:s"));
-                $entity->set('value', $row['value']);
+                // prepare data
+                $id = Util::generateId();
+                $productId = $row['product_id'];
+                $attributeId = $row['attribute_id'];
+                $createdAt = date('Y-m-d H:i:s');
+                $values['value'] = $row['value'];
                 foreach ($row as $key => $value) {
                     if (strpos($key, 'value_') !== false) {
-                        $entity->set(Util::toCamelCase($key), $value);
+                        $values[$key] = $value;
                     }
                 }
-                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true, 'skipProductAttributeValueHook' => true]);
+                $valuesKeys = implode(",", array_keys($values));
+                $valuesValue = implode("','", $values);
+                $channelId = $row['channel_id'];
 
-                // relate
-                $repository->relate($entity, 'channels', $row['channel_id']);
+                // prepare sql
+                $sql .= "INSERT INTO product_attribute_value (id,product_id,attribute_id,scope,created_by_id,created_at,$valuesKeys) VALUES ('$id','$productId','$attributeId','Global','system','$createdAt','$valuesValue');";
+                $sql .= "INSERT INTO product_attribute_value_channel (product_attribute_value_id,channel_id) VALUES ('$id','$channelId');";
+
+                // prepare count
+                $count++;
+
+                if ($count == 500) {
+                    $this->execute($sql);
+
+                    // prepare sql
+                    $sql = '';
+
+                    // prepare count
+                    $count = 0;
+                }
+            }
+
+            if (!empty($sql)) {
+                $this->execute($sql);
             }
         }
-    }
-
-    /**
-     * Migrate attribute value down
-     */
-    protected function channelAttributeValueDown()
-    {
-        $this->execute("DELETE FROM product_attribute_value WHERE scope='Channel'");
-        $this->execute("DELETE FROM product_attribute_value_channel WHERE 1");
+        try {
+            $this->execute('DROP TABLE channel_product_attribute_value');
+        } catch (\PDOException $e) {
+        }
     }
 
     /**
@@ -100,6 +123,7 @@ class V3Dot1Dot0 extends V3Dot0Dot1
      */
     protected function productFamilyAttributesUp(): void
     {
+        // prepare sql
         $sql
             = "SELECT pfal.*   
                 FROM product_family_attribute_linker AS pfal 
@@ -107,37 +131,54 @@ class V3Dot1Dot0 extends V3Dot0Dot1
                 JOIN attribute AS a ON a.id=pfal.attribute_id 
                 WHERE pfal.deleted=0 AND pf.deleted=0 AND a.deleted=0";
 
-        if (!empty($data = $this->fetchAll($sql))) {
+        // get data
+        try {
+            $data = $this->fetchAll($sql);
+        } catch (\PDOException $e) {
+            $data = [];
+        }
+
+        if (!empty($data)) {
+            // prepare sql
+            $sql = '';
+
+            // prepare count
+            $count = 0;
+
             foreach ($data as $row) {
-                $entity = $this->getEntityManager()->getEntity('ProductFamilyAttribute');
-                $entity->set('productFamilyId', $row['product_family_id']);
-                $entity->set('attributeId', $row['attribute_id']);
-                $entity->set('isRequired', $row['is_required']);
-                $entity->set('scope', 'Global');
-                $entity->set('createdById', 'system');
-                $entity->set('createdAt', date("Y-m-d H:i:s"));
+                // prepare data
+                $id = Util::generateId();
+                $productFamilyId = $row['product_family_id'];
+                $attributeId = $row['attribute_id'];
+                $isRequired = (int)$row['is_required'];
+                $createdAt = date('Y-m-d H:i:s');
 
-                $this->getEntityManager()->saveEntity($entity, ['skipAll' => true, 'skipValidation' => true]);
+                // prepare sql
+                $sql .= "INSERT INTO product_family_attribute (id,product_family_id,attribute_id,is_required,scope,created_by_id,created_at) VALUES ('$id','$productFamilyId','$attributeId',$isRequired,'Global','system','$createdAt');";
+                $sql .= "UPDATE product_attribute_value SET product_family_attribute_id='$id', is_required=$isRequired WHERE scope='Global' AND attribute_id='$attributeId' AND product_id IN (SELECT id FROM product WHERE product_family_id='$productFamilyId');";
 
-                // prepare update sql
-                $sql
-                    = "UPDATE product_attribute_value
-                       SET product_family_attribute_id='" . $entity->get('id') . "', is_required=" . $row['is_required'] . "
-                       WHERE scope='Global' 
-                         AND attribute_id='" . $entity->get('attributeId') . "'
-                         AND product_id IN (SELECT id FROM product WHERE product_family_id='" . $entity->get('productFamilyId') . "')";
+                // prepare count
+                $count++;
 
+                if ($count == 500) {
+                    $this->execute($sql);
+
+                    // prepare sql
+                    $sql = '';
+
+                    // prepare count
+                    $count = 0;
+                }
+            }
+
+            if (!empty($sql)) {
                 $this->execute($sql);
             }
         }
-    }
 
-    /**
-     * Migrate product family attribute down
-     */
-    protected function productFamilyAttributesDown(): void
-    {
-        $this->execute("DELETE FROM product_family_attribute WHERE 1");
-        $this->execute("UPDATE product_attribute_value SET product_family_attribute_id=NULL WHERE 1");
+        try {
+            $this->execute('DROP TABLE product_family_attribute_linker');
+        } catch (\PDOException $e) {
+        }
     }
 }
