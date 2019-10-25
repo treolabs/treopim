@@ -37,8 +37,6 @@ class V3Dot6Dot0 extends AbstractMigration
      */
     public function up(): void
     {
-        Util::removedir('application/Espo/Modules/Pim');
-        Util::removedir('client/modules/pim');
     }
 
     /**
