@@ -74,7 +74,8 @@
     "tag": "Tag",
     "amount": "Amount",
     "mpn": "MPN",
-    "productSerie": "Product Serie"
+    "productSerie": "Product Serie",
+    "channels": "Channels"
   },
   "labels": {
     "Add Field": "Add Filter",

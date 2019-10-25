@@ -211,6 +211,13 @@
       "exportMultipleField": true,
       "view": "pim:views/product/fields/product-categories"
     },
+    "assets": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
+    },
     "pimImages": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
@@ -269,6 +276,13 @@
       "foreign": "product",
       "entity": "ProductAttributeValue",
       "disableMassRelation": true
+    },
+    "assets": {
+      "type": "hasMany",
+      "relationName": "productAsset",
+      "foreign": "products",
+      "entity": "Asset",
+      "audited": false
     },
     "productFamily": {
       "type": "belongsTo",
