@@ -75,7 +75,8 @@
     "amount": "Amount",
     "mpn": "MPN",
     "productSerie": "Product Serie",
-    "channels": "Channels"
+    "channels": "Channels",
+    "scope": "Scope"
   },
   "labels": {
     "Add Field": "Add Filter",

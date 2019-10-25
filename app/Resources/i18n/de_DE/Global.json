@@ -47,7 +47,8 @@
   "fields": {
     "productFamily": "Artikel-Familien",
     "productSerie": "Product Serie",
-    "channels": "Kanale"
+    "channels": "Kanale",
+    "scope": "Umfang"
   },
   "options": {
     "searchRanges": {
