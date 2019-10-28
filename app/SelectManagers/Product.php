@@ -35,27 +35,6 @@ class Product extends AbstractSelectManager
      */
     public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
     {
-        // include category tree in search on categories
-        if (!empty($params['where']) && is_array($params['where'])) {
-            foreach ($params['where'] as $i => $p) {
-                if (!empty($p['attribute']) && $p['attribute'] == 'categories') {
-                    $children = [];
-                    foreach ($p['value'] as $id) {
-                        // get children
-                        $rowChildren = $this
-                            ->getEntityManager()
-                            ->getRepository('Category')
-                            ->select(['id'])
-                            ->where(['categoryRoute*' => "%{$id}%"])
-                            ->find()
-                            ->toArray();
-                        $children = array_merge($children, array_column($rowChildren, 'id'));
-                    }
-                    $params['where'][$i]['value'] = array_merge($params['where'][$i]['value'], $children);
-                }
-            }
-        }
-
         // filtering by product types
         $params['where'][] = [
             'type'      => 'in',
@@ -459,8 +438,14 @@ class Product extends AbstractSelectManager
         // prepare category id
         $id = (string)$this->getSelectCondition('linkedWithCategory');
 
+        // get categories
+        $categories = $this->fetchAll("SELECT id FROM category WHERE (id='$id' OR category_route LIKE '%|$id|%') AND deleted=0");
+
+        // prepare categories ids
+        $ids = implode("','", array_column($categories, 'id'));
+
         // set custom where
-        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND scope='Global' AND category_id IN (SELECT id FROM category WHERE (id='$id' OR category_route LIKE '%|$id|%') AND deleted=0))";
+        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND scope='Global' AND category_id IN ('$ids'))";
     }
 
     /**
