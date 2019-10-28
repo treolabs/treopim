@@ -42,13 +42,12 @@ class Catalog extends Base
         $productsCount = $this
             ->getEntityManager()
             ->getRepository('Product')
+            ->select(['id'])
             ->where(['catalogId' => $entity->get('id')])
             ->count();
 
         // set products count to entity
-        if (!empty($productsCount)) {
-            $entity->set('productsCount', $productsCount);
-        }
+        $entity->set('productsCount', (int)$productsCount);
     }
 
     /**
