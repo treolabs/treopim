@@ -39,6 +39,11 @@ class PimImage extends AbstractSelectManager
         // prepare product types
         $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
 
+        // prepare custom where
+        if (!isset($result['customWhere'])) {
+            $result['customWhere'] = '';
+        }
+
         // add filtering by product types
         $result['customWhere'] .= " AND (pim_image.category_id IS NOT NULL OR (pim_image.product_id IS NOT NULL AND pim_image.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)))";
     }
