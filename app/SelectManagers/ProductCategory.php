@@ -39,6 +39,11 @@ class ProductCategory extends AbstractSelectManager
         // prepare product types
         $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
 
+        // prepare custom where
+        if (!isset($result['customWhere'])) {
+            $result['customWhere'] = '';
+        }
+
         // add filtering by product types
         $result['customWhere'] .= " AND product_category.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)";
     }

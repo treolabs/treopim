@@ -87,7 +87,7 @@ class StreamController extends AbstractListener
      */
     protected function prepareDataForUserStream(array $result): array
     {
-        if (!empty($result['list']) && $result['scope'] == 'User') {
+        if (!empty($result['list']) && isset($result['scope']) && $result['scope'] == 'User') {
             // prepare notes ids
             $noteIds = array_column($result['list'], 'id');
 

@@ -444,6 +444,11 @@ class Product extends AbstractSelectManager
         // prepare categories ids
         $ids = implode("','", array_column($categories, 'id'));
 
+        // prepare custom where
+        if (!isset($result['customWhere'])) {
+            $result['customWhere'] = '';
+        }
+
         // set custom where
         $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND scope='Global' AND category_id IN ('$ids'))";
     }
@@ -555,6 +560,11 @@ class Product extends AbstractSelectManager
                 ->getEntityManager()
                 ->getQuery()
                 ->createSelectQuery('ProductAttributeValue', $sp);
+
+            // prepare custom where
+            if (!isset($selectParams['customWhere'])) {
+                $selectParams['customWhere'] = '';
+            }
 
             $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
         }

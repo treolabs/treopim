@@ -57,6 +57,11 @@ class ProductAttributeValue extends AbstractSelectManager
         // prepare product types
         $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
 
+        // prepare custom where
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+
         // add filtering by product types
         $selectParams['customWhere'] .= " AND product_attribute_value.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)";
 
