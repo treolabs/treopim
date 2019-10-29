@@ -29,7 +29,7 @@ use Espo\ORM\Entity;
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Attachment extends \Espo\Services\Attachment
+class Attachment extends \Treo\Services\Attachment
 {
     /**
      * @inheritdoc
