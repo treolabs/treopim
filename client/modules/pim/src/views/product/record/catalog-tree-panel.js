@@ -281,15 +281,8 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
             this.$el.removeClass('catalog-tree-panel-hidden');
 
-            if (this.model) {
-                this.$el.addClass('col-md-2');
-
-                let detailContainer = this.$el.parents('#main').find('.overview');
-                detailContainer.removeClass('col-md-9 hidden-catalog-tree-panel');
-                detailContainer.addClass('col-md-7');
-            } else {
-                this.$el.addClass('col-xs-12 col-lg-3');
-
+            this.$el.addClass('col-xs-12 col-lg-3');
+            if (!this.model) {
                 let listContainer = this.$el.parents('#main').find('.list-container');
                 listContainer.removeClass('hidden-catalog-tree-panel');
                 listContainer.addClass('col-xs-12 col-lg-9');
@@ -304,15 +297,8 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
             this.$el.addClass('catalog-tree-panel-hidden');
 
-            if (this.model) {
-                this.$el.removeClass('col-md-2');
-
-                let detailContainer = this.$el.parents('#main').find('.overview');
-                detailContainer.removeClass('col-md-7');
-                detailContainer.addClass('col-md-9 hidden-catalog-tree-panel');
-            } else {
-                this.$el.removeClass('col-xs-12 col-lg-3');
-
+            this.$el.removeClass('col-xs-12 col-lg-3');
+            if (!this.model) {
                 let listContainer = this.$el.parents('#main').find('.list-container');
                 listContainer.removeClass('col-xs-12 col-lg-9');
                 listContainer.addClass('hidden-catalog-tree-panel');

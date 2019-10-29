@@ -26,6 +26,8 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
 
         notSavedFields: ['image'],
 
+        isCatalogTreePanel: false,
+
         setup() {
             Dep.prototype.setup.call(this);
 
@@ -35,7 +37,9 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
                 });
             }
 
-            if (this.getAcl().check('Catalog', 'read') && this.getAcl().check('Category', 'read')) {
+            if (!this.isWide && this.type !== 'editSmall' && this.type !== 'detailSmall'
+                && this.getAcl().check('Catalog', 'read') && this.getAcl().check('Category', 'read')) {
+                this.isCatalogTreePanel = true;
                 this.setupCatalogTreePanel();
             }
         },
@@ -78,7 +82,7 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
 
         data() {
             return _.extend({
-                isCatalogTreePanel: this.getAcl().check('Catalog', 'read') && this.getAcl().check('Category', 'read')
+                isCatalogTreePanel: this.isCatalogTreePanel
             }, Dep.prototype.data.call(this))
         },
 
