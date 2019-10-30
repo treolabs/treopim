@@ -81,9 +81,13 @@ class V3Dot1Dot0 extends V3Dot0Dot1
                 $attributeId = $row['attribute_id'];
                 $createdAt = date('Y-m-d H:i:s');
                 $values['value'] = $row['value'];
-                foreach ($row as $key => $value) {
-                    if (strpos($key, 'value_') !== false) {
-                        $values[$key] = $value;
+                if (!empty($this->getConfig()->get('isMultilangActive'))) {
+                    foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
+                        // prepare key
+                        $key = 'value_' . strtolower($locale);
+
+                        // push
+                        $values[$key] = $row[$key];
                     }
                 }
                 $valuesKeys = implode(",", array_keys($values));
