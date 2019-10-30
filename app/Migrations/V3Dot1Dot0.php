@@ -36,13 +36,6 @@ class V3Dot1Dot0 extends V3Dot0Dot1
      */
     public function up(): void
     {
-//
-//
-
-        echo '<pre>';
-        print_r(strtolower('de_DE'));
-        die();
-
         $this->channelAttributeValueUp();
         $this->productFamilyAttributesUp();
     }
