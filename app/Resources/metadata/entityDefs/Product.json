@@ -337,7 +337,11 @@
     "productCategories": {
       "type": "hasMany",
       "foreign": "product",
-      "entity": "ProductCategory"
+      "entity": "ProductCategory",
+      "customDefs": {
+        "link": "categories",
+        "entity": "Category"
+      }
     },
     "pimImages": {
       "type": "hasMany",
