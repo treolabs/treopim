@@ -66,13 +66,10 @@ class Attribute extends Base
      */
     public function max($field)
     {
-        $sth = $this
+        $data = $this
             ->getEntityManager()
-            ->getPDO()
-            ->prepare("SELECT MAX(sort_order) AS max FROM attribute WHERE deleted=0");
-        $sth->execute();
-
-        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+            ->nativeQuery("SELECT MAX(sort_order) AS max FROM attribute WHERE deleted=0")
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $data['max'];
     }
@@ -157,11 +154,7 @@ class Attribute extends Base
             }
 
             // execute sql
-            $sth = $this
-                ->getEntityManager()
-                ->getPDO()
-                ->prepare($sql);
-            $sth->execute();
+            $this->getEntityManager()->nativeQuery($sql);
         }
     }
 }
