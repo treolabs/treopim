@@ -105,6 +105,22 @@ class PimImage extends Base
     /**
      * @inheritDoc
      */
+    public function max($field)
+    {
+        $sth = $this
+            ->getEntityManager()
+            ->getPDO()
+            ->prepare("SELECT MAX(sort_order) AS max FROM pim_image WHERE deleted=0");
+        $sth->execute();
+
+        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+
+        return $data['max'];
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function init()
     {
         parent::init();

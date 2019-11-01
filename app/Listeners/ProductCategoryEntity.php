@@ -73,9 +73,10 @@ class ProductCategoryEntity extends AbstractListener
      */
     protected function isUnique(Entity $entity): bool
     {
-        $count = $this
+        $category = $this
             ->getEntityManager()
             ->getRepository('ProductCategory')
+            ->select(['id'])
             ->where(
                 [
                     'id!='       => $entity->get('id'),
@@ -84,9 +85,9 @@ class ProductCategoryEntity extends AbstractListener
                     'scope'      => $entity->get('scope'),
                 ]
             )
-            ->count();
+            ->findOne();
 
-        return empty($count);
+        return empty($category);
     }
 
     /**

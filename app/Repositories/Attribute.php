@@ -62,6 +62,22 @@ class Attribute extends Base
     }
 
     /**
+     * @inheritDoc
+     */
+    public function max($field)
+    {
+        $sth = $this
+            ->getEntityManager()
+            ->getPDO()
+            ->prepare("SELECT MAX(sort_order) AS max FROM attribute WHERE deleted=0");
+        $sth->execute();
+
+        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+
+        return $data['max'];
+    }
+
+    /**
      * @inheritdoc
      */
     protected function beforeUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
