@@ -32,16 +32,5 @@
   "recordViews": {
     "detail": "pim:views/record/detail",
     "list": "pim:views/record/list"
-  },
-  "relationshipPanels": {
-    "pricings": {
-      "view": "pim:views/channel/record/panels/pricings",
-      "rowActionsView": "views/record/row-actions/relationship-unlink-only",
-      "layout": "listForPricingsInChannel",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "notLinkedWithChannel"
-      ]
-    }
   }
 }
