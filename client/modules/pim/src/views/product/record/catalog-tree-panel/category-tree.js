@@ -84,7 +84,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             let hash = this.getRandomHash();
             let html = '';
             if (fullLoad) {
-                (category.childs || []).forEach(child => html += child.childs.length ? this.getParentHtml(child, true) : this.getChildHtml(child));
+                (category.childs || []).forEach(child => html += (child.childs || []).length ? this.getParentHtml(child, true) : this.getChildHtml(child));
             }
             return `
                 <li data-id="${category.id}" class="list-group-item child">
