@@ -60,14 +60,15 @@ abstract class AbstractEntityListener extends AbstractListener
      */
     protected function isCodeValid(Entity $entity): bool
     {
-        // prepare result
-        $result = false;
-
-        if (!empty($entity->get('code')) && preg_match(self::$codePattern, $entity->get('code'))) {
-            $result = $this->isUnique($entity, 'code');
+        if (!$entity->isAttributeChanged('code')) {
+            return true;
         }
 
-        return $result;
+        if (!empty($entity->get('code')) && preg_match(self::$codePattern, $entity->get('code'))) {
+            return $this->isUnique($entity, 'code');
+        }
+
+        return true;
     }
 
     /**
