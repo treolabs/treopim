@@ -23,6 +23,7 @@
   },
   "exceptions": {
     "You have no ACL rights to read attribute values": "You have no ACL rights to read attribute values",
-    "You can't change product in attribute from Product Family": "You can't change product in attribute from ProductFamily"
+    "You can't change product in attribute from Product Family": "You can't change product in attribute from ProductFamily",
+    "Such product attribute '%s' already exists": "Such product attribute '%s' already exists"
   }
 }
