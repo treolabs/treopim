@@ -178,6 +178,14 @@
               "attribute": "id"
             }
           ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "isEmpty",
+              "attribute": "id"
+            }
+          ]
         }
       }
     }
