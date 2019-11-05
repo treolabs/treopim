@@ -95,7 +95,7 @@ class V3Dot1Dot0 extends V3Dot0Dot1
                 $channelId = $row['channel_id'];
 
                 // prepare sql
-                $sql .= "INSERT INTO product_attribute_value (id,product_id,attribute_id,scope,created_by_id,created_at,$valuesKeys) VALUES ('$id','$productId','$attributeId','Global','system','$createdAt','$valuesValue');";
+                $sql .= "INSERT INTO product_attribute_value (id,product_id,attribute_id,scope,created_by_id,created_at,$valuesKeys) VALUES ('$id','$productId','$attributeId','Channel','system','$createdAt','$valuesValue');";
                 $sql .= "INSERT INTO product_attribute_value_channel (product_attribute_value_id,channel_id) VALUES ('$id','$channelId');";
 
                 // prepare count
