@@ -57,7 +57,7 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                 }
             }
 
-            if (!this.readOnly && !this.defs.readOnly) {
+            if (!this.readOnly && !this.defs.readOnly && this.getAcl().check('Category', 'create')) {
                 if (!('create' in this.defs)) {
                     this.defs.create = true;
                 }
