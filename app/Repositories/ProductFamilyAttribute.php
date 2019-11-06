@@ -139,22 +139,10 @@ class ProductFamilyAttribute extends Base
      */
     protected function updateProductAttributeValues(Entity $entity): bool
     {
-        // get products
-        $products = $this
-            ->getEntityManager()
-            ->getRepository('Product')
-            ->select(['id'])
-            ->where(['productFamilyId' => $entity->get('productFamilyId'), 'type!=' => 'productVariant'])
-            ->find()
-            ->toArray();
-
-        // exit
-        if (empty($products)) {
+        // get products ids
+        if (empty($productsIds = $entity->get('productFamily')->get('productsIds'))) {
             return true;
         }
-
-        // prepare products ids
-        $productsIds = array_column($products, 'id');
 
         // prepare repository
         $repository = $this->getEntityManager()->getRepository('ProductAttributeValue');
