@@ -99,11 +99,6 @@ class ProductHandler extends AbstractHandler
             $restore = new \stdClass();
 
             try {
-                // prepare product images if needed
-                if (!empty($entity) && !empty(array_column($data['data']['configuration'], 'pimImage'))) {
-                    $this->images = $entity->get('pimImages');
-                }
-
                 // begin transaction
                 $this->getEntityManager()->getPDO()->beginTransaction();
 
@@ -138,6 +133,11 @@ class ProductHandler extends AbstractHandler
                     $entity = $this->updateEntity($service, (string)$id, $input);
 
                     $this->saveRestoreRow('updated', $entityType, [$id => $restore]);
+                }
+
+                // prepare product images if needed
+                if (!empty($entity) && !empty(array_column($data['data']['configuration'], 'pimImage'))) {
+                    $this->images = $entity->get('pimImages');
                 }
 
                 foreach ($additionalFields as $value) {
