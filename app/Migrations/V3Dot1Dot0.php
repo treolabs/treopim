@@ -184,5 +184,10 @@ class V3Dot1Dot0 extends V3Dot0Dot1
             $this->execute('DROP TABLE product_family_attribute_linker');
         } catch (\PDOException $e) {
         }
+
+        try {
+            $this->execute('ALTER TABLE `product_attribute_value` DROP `product_family_id`');
+        } catch (\PDOException $e) {
+        }
     }
 }
