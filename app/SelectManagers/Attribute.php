@@ -82,21 +82,9 @@ class Attribute extends AbstractSelectManager
         // prepare data
         $data = (array)$this->getSelectCondition('notLinkedProductFamilyAttributes');
 
-        if (isset($data['productFamilyId']) && isset($data['scope'])) {
-            // get linked to product attributes
-            $attributes = $this
-                ->getEntityManager()
-                ->getRepository('ProductFamilyAttribute')
-                ->select(['attributeId'])
-                ->where([
-                    'productFamilyId' => $data['productFamilyId'],
-                    'scope' => $data['scope']
-                ])
-                ->find()
-                ->toArray();
-
+        if (isset($data['productFamilyId'])) {
             $result['whereClause'][] = [
-                'id!=' => array_column($attributes, 'attributeId')
+                'id!=' => $this->getEntityManager()->getRepository('ProductFamily')->getLinkedAttributesIds($data['productFamilyId'])
             ];
         }
     }
