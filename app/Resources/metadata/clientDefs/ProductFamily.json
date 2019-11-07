@@ -21,7 +21,6 @@
       "selectBoolFilterList": [
         "notLinkedProductFamilyAttributes"
       ],
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "view": "pim:views/product-family/record/panels/product-family-attributes",
       "aclScopesList": [
         "Attribute",
