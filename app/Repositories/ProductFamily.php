@@ -17,10 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 
 /**
@@ -28,8 +30,27 @@ use Espo\ORM\Entity;
  *
  * @author r.ratsun@treolabs.com
  */
-class ProductFamily extends \Espo\Core\Templates\Repositories\Base
+class ProductFamily extends Base
 {
+    /**
+     * @param string $id
+     * @param string $scope
+     *
+     * @return array
+     */
+    public function getLinkedAttributesIds(string $id, string $scope = 'Global'): array
+    {
+        $data = $this
+            ->getEntityManager()
+            ->getRepository('ProductFamilyAttribute')
+            ->select(['attributeId'])
+            ->where(['productFamilyId' => $id, 'scope' => $scope])
+            ->find()
+            ->toArray();
+
+        return array_column($data, 'attributeId');
+    }
+
     /**
      * @inheritdoc
      */
