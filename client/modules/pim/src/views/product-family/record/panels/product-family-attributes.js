@@ -553,11 +553,8 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                     var model = this.collection.get(id);
                     this.notify('Removing...');
                     $.ajax({
-                        url: this.collection.url,
+                        url: 'ProductFamilyAttribute/' + id,
                         type: 'DELETE',
-                        data: JSON.stringify({
-                            id: id
-                        }),
                         contentType: 'application/json',
                         success: function () {
                             this.notify('Removed', 'success');
