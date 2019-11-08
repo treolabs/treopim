@@ -83,6 +83,32 @@ class ProductFamily extends Base
     }
 
     /**
+     * @param array       $productFamiliesIds
+     * @param string|null $attributeGroupId
+     *
+     * @return array
+     */
+    public function getLinkedWithAttributeGroup(array $productFamiliesIds, ?string $attributeGroupId): array
+    {
+        $data = $this
+            ->getEntityManager()
+            ->getRepository('ProductFamilyAttribute')
+            ->select(['id'])
+            ->distinct()
+            ->join('attribute')
+            ->where(
+                [
+                    'productFamilyId'            => $productFamiliesIds,
+                    'attribute.attributeGroupId' => ($attributeGroupId != '') ? $attributeGroupId : null
+                ]
+            )
+            ->find()
+            ->toArray();
+
+        return array_column($data, 'id');
+    }
+
+    /**
      * @inheritdoc
      */
     protected function afterRemove(Entity $entity, array $options = [])

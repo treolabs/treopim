@@ -53,14 +53,7 @@ class ProductFamilyAttribute extends Base
         }
 
         // is valid
-        if (empty($productFamily = $entity->get('productFamily')) || empty($attribute = $entity->get('attribute'))) {
-            throw new BadRequest($this->exception('ProductFamily and Attribute cannot be empty'));
-        }
-
-        // is unique
-        if (!$this->isUnique($entity)) {
-            throw new BadRequest($this->exception('Such record already exists'));
-        }
+        $this->isValid($entity);
 
         // clearing channels ids
         if ($entity->get('scope') == 'Global') {
@@ -90,6 +83,26 @@ class ProductFamilyAttribute extends Base
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
             ->removeCollectionByProductFamilyAttribute($entity->get('id'));
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @throws BadRequest
+     */
+    protected function isValid(Entity $entity): void
+    {
+        if (!$entity->isNew() && $entity->isAttributeChanged('attributeId')) {
+            throw new BadRequest($this->exception('Product family attribute cannot be changed'));
+        }
+
+        if (empty($entity->get('productFamilyId')) || empty($entity->get('attributeId'))) {
+            throw new BadRequest($this->exception('ProductFamily and Attribute cannot be empty'));
+        }
+
+        if (!$this->isUnique($entity)) {
+            throw new BadRequest($this->exception('Such record already exists'));
+        }
     }
 
     /**

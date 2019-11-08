@@ -39,22 +39,12 @@ class ProductFamilyAttribute extends AbstractSelectManager
         $data = (array)$this->getSelectCondition('linkedWithAttributeGroup');
 
         if (isset($data['productFamilyId'])) {
-            $attributes = $this
-                ->getEntityManager()
-                ->getRepository('ProductFamilyAttribute')
-                ->select(['id'])
-                ->distinct()
-                ->join('attribute')
-                ->where([
-                    'productFamilyId' => $data['productFamilyId'],
-                    'attribute.attributeGroupId'
-                        => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
-                ])
-                ->find()
-                ->toArray();
+            // prepare data
+            $ids = [$data['productFamilyId']];
+            $attributeGroupId = ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null;
 
             $result['whereClause'][] = [
-                'id' => array_column($attributes, 'id')
+                'id' => $this->getEntityManager()->getRepository('ProductFamily')->getLinkedWithAttributeGroup($ids, $attributeGroupId)
             ];
         }
     }
