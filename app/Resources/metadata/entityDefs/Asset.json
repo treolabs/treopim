@@ -6,6 +6,13 @@
             "layoutMassUpdateDisabled": true,
             "importDisabled": true,
             "noLoad": true
+        },
+        "categories": {
+            "type": "linkMultiple",
+            "layoutDetailDisabled": true,
+            "layoutMassUpdateDisabled": true,
+            "importDisabled": true,
+            "noLoad": true
         }
     },
     "links": {
@@ -14,6 +21,13 @@
             "relationName": "productAsset",
             "foreign": "assets",
             "entity": "Product",
+            "audited": false
+        },
+        "categories": {
+            "type": "hasMany",
+            "relationName": "categoryAsset",
+            "foreign": "assets",
+            "entity": "Category",
             "audited": false
         }
     }

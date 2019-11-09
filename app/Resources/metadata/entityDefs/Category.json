@@ -134,6 +134,13 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
+    },
+    "assets": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -192,6 +199,13 @@
       "foreign": "category",
       "entity": "PimImage",
       "disableMassRelation": true
+    },
+    "assets": {
+      "type": "hasMany",
+      "relationName": "categoryAsset",
+      "foreign": "categories",
+      "entity": "Asset",
+      "audited": false
     }
   },
   "collection": {

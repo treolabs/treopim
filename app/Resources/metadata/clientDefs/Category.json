@@ -91,6 +91,16 @@
       ]
     }
   },
+  "bottomPanels": {
+    "detail": [
+      {
+        "name": "asset_relations",
+        "label": "Asset Relations",
+        "view": "dam:views/asset_relation/record/panels/bottom-panel",
+        "entityName": "Category"
+      }
+    ]
+  },
   "dynamicLogic": {
     "panels": {
       "catalogs": {
