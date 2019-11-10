@@ -90,22 +90,6 @@
       "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity"
     },
-    "pimImages": {
-      "view": "pim:views/record/panels/pim-images",
-      "layout": "listSmallForRelate",
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "pimImageRelation"
-      ],
-      "recordsPerPage": 200,
-      "dragDrop": {
-        "isActive": true,
-        "sortField": "sortOrder"
-      },
-      "sortBy": "sortOrder",
-      "asc": true
-    },
     "associatedMainProducts": {
       "view": "pim:views/product/record/panels/associated-main-product",
       "label": "Associated Products",

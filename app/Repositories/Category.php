@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Templates\Repositories\Base;
+
 /**
  * Class Category
  *
  * @author r.ratsun@treolabs.com
  */
-class Category extends AbstractRepository
+class Category extends Base
 {
 }

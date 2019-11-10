@@ -49,17 +49,21 @@ class AssetRelation extends AssetRelationDam
                 ->nativeQuery(
                     "SELECT a.file_id
                             FROM asset a
-                                RIGHT JOIN asset_relation ar ON ar.asset_id = a.id
-                            WHERE ar.entity_name = '{$entityName}' AND ar.entity_id = '{$entityId}'
+                                RIGHT JOIN asset_relation ar ON ar.asset_id = a.id AND ar.deleted = 0
+                            WHERE 
+                            a.deleted = 0 
+                            AND type = 'Gallery Image'
+                            AND ar.entity_name = '{$entityName}' 
+                            AND ar.entity_id = '{$entityId}'
                             ORDER BY ar.sort_order, ar.created_at")
                 ->fetch(PDO::FETCH_COLUMN);
-
+            //prepare image
+            $imageId = !empty($imageId) ? $imageId : null;
             // update main image if it needs
             if (!empty($foreign) && $imageId != $foreign->get('imageId')) {
                 $foreign->set('imageId', $imageId);
-                // set keep attachment param
                 $foreign->keepAttachment = true;
-                $this->getEntityManager()->saveEntity($foreign);
+                $this->getEntityManager()->saveEntity($foreign, ['skipAfterSave' => true]);
             }
         }
     }

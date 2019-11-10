@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
-use Espo\Core\Exceptions\Error;
+use Dam\Entities\Asset;
 use Treo\Core\EventManager\Event;
 use Treo\Listeners\AbstractListener;
 
@@ -42,7 +42,7 @@ class AssetRelationEntity extends AbstractListener
     public function afterSave(Event $event)
     {
         $assetRelation = $event->getArgument('entity');
-        if (!empty($assetRelation)) {
+        if (!empty($assetRelation) && $assetRelation->isNew()) {
             $this->getService('AssetRelation')
                 ->updateMainImage($assetRelation->get('entityName'), $assetRelation->get('entityId'));
         }
@@ -54,7 +54,7 @@ class AssetRelationEntity extends AbstractListener
     public function afterRemove(Event $event)
     {
         $assetRelation = $event->getArgument('entity');
-        if (!empty($assetRelation)) {
+        if (!empty($assetRelation) && $assetRelation->isNew()) {
             $this->getService('AssetRelation')
                 ->updateMainImage($assetRelation->get('entityName'), $assetRelation->get('entityId'));
         }
