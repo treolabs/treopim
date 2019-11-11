@@ -44,7 +44,7 @@ class ProductFamily extends Base
             ->getEntityManager()
             ->getRepository('Product')
             ->select(['id'])
-            ->where(['productFamilyId' => $this->get('id'), 'type!=' => 'productVariant'])
+            ->where(['productFamilyId' => $this->get('id')])
             ->find()
             ->toArray();
 
