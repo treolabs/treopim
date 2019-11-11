@@ -102,8 +102,9 @@ class V3Dot11Dot13 extends AbstractMigration
             ->nativeQuery('SELECT pim_image_id, channel_id FROM pim_image_channel WHERE deleted = 0')
             ->fetchAll(PDO::FETCH_KEY_PAIR);
 
+        //for storing assetId with Channels
         $assetIdsWithChannel = '';
-
+        //creating asset
         foreach ($attachments as $attachment) {
             $foreign = !empty($attachment['product_id']) ? 'products' : 'categories';
             $foreignId = !empty($attachment['product_id']) ? $attachment['product_id'] : $attachment['category_id'];
@@ -112,11 +113,13 @@ class V3Dot11Dot13 extends AbstractMigration
                 $assetIdsWithChannel .= "'{$idAsset}',";
             }
         }
+        //remove last symbol(coma)
         $assetIdsWithChannel = substr($assetIdsWithChannel, 0, -1);
         if (!empty($assetIdsWithChannel)) {
+            //update scope
             $this->getEntityManager()
                 ->nativeQuery("UPDATE asset_relation SET scope = 'Channel' WHERE asset_id IN ({$assetIdsWithChannel})");
-
+            //create link asset_relation_channel
             $this->getEntityManager()
                 ->nativeQuery(" 
                 INSERT INTO asset_relation_channel (channel_id, asset_relation_id)
@@ -127,7 +130,7 @@ class V3Dot11Dot13 extends AbstractMigration
                     LEFT JOIN asset_relation AS ar ON ar.asset_id = asset.id AND ar.deleted = 0
                 WHERE pi.deleted = 0 AND pi.scope = 'Channel' AND ar.asset_id IN ({$assetIdsWithChannel})");
         }
-
+        //update sort order
         $this->getEntityManager()
             ->nativeQuery("
                     UPDATE asset_relation ar
@@ -140,8 +143,8 @@ class V3Dot11Dot13 extends AbstractMigration
 
         $this->getEntityManager()
             ->nativeQuery('
-                        DELETE FROM pim_image; 
-                        DELETE FROM pim_image_channel;');
+                        DROP TABLE pim_image; 
+                        DROP TABLE pim_image_channel;');
     }
 
     /**
@@ -167,7 +170,7 @@ class V3Dot11Dot13 extends AbstractMigration
 
         foreach ($attachments as $k => $attachment) {
             $oldPath = ($attachment['private'] == '1' ? DAMUploadDir::PRIVATE_PATH : DAMUploadDir::PUBLIC_PATH)
-                        . "master/" . $attachment['storage_file_path'] . "/" . $attachment['name'];
+                . "master/" . $attachment['storage_file_path'] . "/" . $attachment['name'];
 
             if (file_exists($oldPath)) {
                 $attachmentUpdate = [];
@@ -191,7 +194,7 @@ class V3Dot11Dot13 extends AbstractMigration
 
         if (!empty($assetIds)) {
             $assetIds = "'" . implode("','", $assetIds) . "'";
-
+            //insert pimImages
             $this->getEntityManager()
                 ->nativeQuery("
                             INSERT INTO pim_image 
@@ -220,7 +223,7 @@ class V3Dot11Dot13 extends AbstractMigration
                             WHERE a.type = 'Gallery Image'
                               AND a.deleted = 0 
                               AND a.id IN ({$assetIds})");
-
+            //insert pim_image_channel
             $this->getEntityManager()
                 ->nativeQuery("INSERT INTO pim_image_channel (channel_id, pim_image_id)
                                     SELECT arc.channel_id, pi.id AS pim_image_id
