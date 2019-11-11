@@ -89,6 +89,7 @@ class V3Dot11Dot13 extends AbstractMigration
             $dataUpdate = [];
             $dataUpdate['hash_md5'] = hash_file('md5', $pathFile);
             $dataUpdate['related_type'] = 'Asset';
+            $dataUpdate['parent_type'] = 'Asset';
             if (empty($attachment['tmp_path'])) {
                 $dataUpdate['tmp_path'] = $pathFile;
             }
