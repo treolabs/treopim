@@ -34,6 +34,7 @@ use Treo\Core\FilePathBuilder;
 use Treo\Core\FileStorage\Storages\UploadDir;
 use Treo\Core\Migration\AbstractMigration;
 use Treo\Core\Utils\Auth;
+use Treo\Repositories\Attachment;
 
 /**
  * Migration class for version 3.11.13
@@ -80,9 +81,19 @@ class V3Dot11Dot13 extends AbstractMigration
                                 WHERE a.deleted = 0 AND a.storage = \'UploadDir\'')
             ->fetchAll(PDO::FETCH_ASSOC);
 
+        $pimImageChannels = $this
+            ->getEntityManager()
+            ->nativeQuery('SELECT pim_image_id, channel_id FROM pim_image_channel WHERE deleted = 0')
+            ->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        //for storing assetId with Channels
+        $assetIdsWithChannel = '';
+        /** @var Attachment $repAttachment */
+        $repAttachment = $this->getEntityManager()->getRepository('Attachment');
         foreach ($attachments as $k => $attachment) {
-            $pathFile = UploadDir::BASE_PATH . $attachment['storage_file_path'] . '/' . $attachment['name'];
-            if (!file_exists($pathFile)) {
+            $attachmentEntity = $this->getEntityManager()->getEntity('Attachment', $attachment['id']);
+            $pathFile = $repAttachment->getFilePath($attachmentEntity);
+            if (empty($pathFile) || !file_exists($pathFile)) {
                 unset($attachments[$k]);
                 continue;
             }
@@ -94,26 +105,24 @@ class V3Dot11Dot13 extends AbstractMigration
                 $dataUpdate['tmp_path'] = $pathFile;
             }
             $this->updateById('attachment', $dataUpdate, $attachment['id']);
-        }
+            $this->executeUpdate($this->sqlUpdate);
 
-        $this->executeUpdate($this->sqlUpdate);
-
-        $pimImageChannels = $this
-            ->getEntityManager()
-            ->nativeQuery('SELECT pim_image_id, channel_id FROM pim_image_channel WHERE deleted = 0')
-            ->fetchAll(PDO::FETCH_KEY_PAIR);
-
-        //for storing assetId with Channels
-        $assetIdsWithChannel = '';
-        //creating asset
-        foreach ($attachments as $attachment) {
+            //creating asset
             $foreign = !empty($attachment['product_id']) ? 'products' : 'categories';
             $foreignId = !empty($attachment['product_id']) ? $attachment['product_id'] : $attachment['category_id'];
-            $idAsset = $this->createAsset($attachment['id'], $attachment['name'], $foreign, $foreignId);
+            try {
+                $idAsset = $this->createAsset($attachment['id'], $attachment['name'], $foreign, $foreignId);
+            } catch (\Exception $e) {
+                $GLOBALS['log']->error(
+                    'Error migration pimImage to Asset. 
+                    AttachmentId: ' . $attachment['id'] . '; pimImageId: ' . $attachment['pimImage_id'] . ';' .
+                    $e->getMessage());
+            }
             if (!empty($pimImageChannels[$attachment['pimImage_id']])) {
                 $assetIdsWithChannel .= "'{$idAsset}',";
             }
         }
+
         //remove last symbol(coma)
         $assetIdsWithChannel = substr($assetIdsWithChannel, 0, -1);
         if (!empty($assetIdsWithChannel)) {
@@ -183,7 +192,6 @@ class V3Dot11Dot13 extends AbstractMigration
                     $attachmentUpdate['storage'] = 'UploadDir';
                     $attachmentUpdate['related_type'] = 'PimImage';
                     $attachmentUpdate['related_id'] = null;
-                    $dataUpdate['parent_type'] = 'PimImage';
                     $this->updateById('attachment', $attachmentUpdate, $attachment['id']);
                     $assetIds[] = $attachment['asset_id'];
                 }
