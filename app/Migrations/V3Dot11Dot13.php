@@ -183,6 +183,7 @@ class V3Dot11Dot13 extends AbstractMigration
                     $attachmentUpdate['storage'] = 'UploadDir';
                     $attachmentUpdate['related_type'] = 'PimImage';
                     $attachmentUpdate['related_id'] = null;
+                    $dataUpdate['parent_type'] = 'PimImage';
                     $this->updateById('attachment', $attachmentUpdate, $attachment['id']);
                     $assetIds[] = $attachment['asset_id'];
                 }
