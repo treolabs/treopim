@@ -5,9 +5,19 @@
                 "visible": {
                     "conditionGroup": [
                         {
-                            "type": "equals",
-                            "attribute": "entityName",
-                            "value": "Product"
+                            "type": "or",
+                            "value": [
+                                {
+                                    "type": "equals",
+                                    "attribute": "entityName",
+                                    "value": "Product"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "entityName",
+                                    "value": "Category"
+                                }
+                            ]
                         }
                     ]
                 }

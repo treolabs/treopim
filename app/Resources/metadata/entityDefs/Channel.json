@@ -108,13 +108,6 @@
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
       "noLoad": true
-    },
-    "pimImages": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
-      "noLoad": true
     }
   },
   "links": {
@@ -169,12 +162,6 @@
       "relationName": "productFamilyAttributeChannel",
       "foreign": "channels",
       "entity": "ProductFamilyAttribute"
-    },
-    "pimImages": {
-      "type": "hasMany",
-      "relationName": "pimImageChannel",
-      "foreign": "channels",
-      "entity": "PimImage"
     }
   },
   "collection": {

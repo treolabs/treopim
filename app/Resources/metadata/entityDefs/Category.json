@@ -128,12 +128,12 @@
       "noLoad": true,
       "importDisabled": true
     },
-    "pimImages": {
+    "assets": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "noLoad": true,
-      "importDisabled": true
+      "importDisabled": true,
+      "noLoad": true
     }
   },
   "links": {
@@ -187,11 +187,12 @@
       "foreign": "category",
       "entity": "ProductCategory"
     },
-    "pimImages": {
+    "assets": {
       "type": "hasMany",
-      "foreign": "category",
-      "entity": "PimImage",
-      "disableMassRelation": true
+      "relationName": "categoryAsset",
+      "foreign": "categories",
+      "entity": "Asset",
+      "audited": false
     }
   },
   "collection": {

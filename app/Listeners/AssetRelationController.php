@@ -20,25 +20,30 @@
 
 declare(strict_types=1);
 
-namespace Pim\Services;
+namespace Pim\Listeners;
 
-use Espo\Core\Templates\Services\Base;
-use Espo\ORM\Entity;
+use Espo\Core\Exceptions\Error;
+use Treo\Core\EventManager\Event;
+use Treo\Listeners\AbstractListener;
 
 /**
- * Class PimImage
+ * Class AssetRelationEntity
+ * @package Pim\Listeners
  *
- * @author r.ratsun <r.ratsun@treolabs.com>
+ * @author m.kokhanskyi <m.kokhanskyi@treolabs.com>
  */
-class PimImage extends Base
+class AssetRelationController extends AbstractListener
 {
-    /**
-     * @inheritDoc
-     */
-    public function prepareEntityForOutput(Entity $entity)
-    {
-        parent::prepareEntityForOutput($entity);
+    protected $hasMainImage = ['Product', 'Category'];
 
-        $entity->set('type', 'File');
+    /**
+     * @param Event $event
+     */
+    public function afterActionSortOrder(Event $event)
+    {
+        $entityName = $event->getArgument('params')['entity_name'];
+        $entityId = $event->getArgument('params')['entity_id'];
+
+        $this->getService('AssetRelation')->updateMainImage($entityName, $entityId);
     }
 }

@@ -31,7 +31,6 @@
     "catalog": "Catalog",
     "channels": "Channels",
     "productCategories": "Product Categories",
-    "pimImages": "Images",
     "measuringUnit": "Measuring Unit",
     "basePriceAmount": "Base Price Amount",
     "packedAmount": "Packed Amount"
@@ -51,8 +50,7 @@
     "packaging": "Packaging",
     "catalog": "Catalog",
     "channels": "Channels",
-    "productCategories": "Product Categories",
-    "pimImages": "Images"
+    "productCategories": "Product Categories"
   },
   "labels": {
     "Create Product": "Create Product",
