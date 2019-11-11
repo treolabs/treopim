@@ -471,7 +471,7 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                                 const rowView = view.getView(id);
                                 if (rowView) {
                                     const fieldView = rowView.getView('isRequiredField');
-                                    if (fieldView) {
+                                    if (fieldView && rowView.$el.find('a[data-action=removeRelated]').length > 0) {
                                         fieldView.setMode('edit');
                                         fieldView.reRender();
                                     }
