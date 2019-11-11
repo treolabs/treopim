@@ -46,8 +46,7 @@ class AssetRelation extends AssetRelationDam
             $foreign = $this->getEntityManager()->getEntity($entityName, $entityId);
             // find first image
             $imageId = $this->getEntityManager()
-                ->nativeQuery(
-                    "SELECT a.file_id
+                ->nativeQuery("SELECT a.file_id
                             FROM asset a
                                 RIGHT JOIN asset_relation ar ON ar.asset_id = a.id AND ar.deleted = 0
                             WHERE 
