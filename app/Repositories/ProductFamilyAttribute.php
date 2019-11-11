@@ -66,10 +66,10 @@ class ProductFamilyAttribute extends Base
      */
     public function afterSave(Entity $entity, array $options = [])
     {
-        parent::afterSave($entity, $options);
-
         // update product attribute values
         $this->updateProductAttributeValues($entity);
+
+        parent::afterSave($entity, $options);
     }
 
     /**
@@ -77,12 +77,12 @@ class ProductFamilyAttribute extends Base
      */
     public function afterRemove(Entity $entity, array $options = [])
     {
-        parent::afterRemove($entity, $options);
-
         $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
             ->removeCollectionByProductFamilyAttribute($entity->get('id'));
+
+        parent::afterRemove($entity, $options);
     }
 
     /**
