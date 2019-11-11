@@ -113,8 +113,7 @@ class V3Dot11Dot13 extends AbstractMigration
                 $idAsset = $this->createAsset($attachment['id'], $attachment['name'], $foreign, $foreignId);
             } catch (\Exception $e) {
                 $GLOBALS['log']->error(
-                    'Error migration pimImage to Asset. 
-                    AttachmentId: ' . $attachment['id'] . '; pimImageId: ' . $attachment['pimImage_id'] . ';' .
+                    'Error migration pimImage to Asset. AttachmentId: ' . $attachment['id'] . ';' .
                     $e->getMessage());
                 continue;
             }
