@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Pim\Migrations;
 
-use Dam\Core\FileStorage\DAMUploadDir;
-use Dam\Entities\Collection;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\Core\Utils\File\Manager;
@@ -78,7 +76,7 @@ class V3Dot11Dot13 extends AbstractMigration
                                        pi.sort_order
                                 FROM attachment a
                                          RIGHT JOIN pim_image AS pi ON pi.image_id = a.id AND pi.deleted = 0 
-                                WHERE a.deleted = 0 AND a.storage = \'UploadDir\'')
+                                WHERE a.deleted = 0')
             ->fetchAll(PDO::FETCH_ASSOC);
 
         $pimImageChannels = $this
@@ -92,6 +90,7 @@ class V3Dot11Dot13 extends AbstractMigration
         $repAttachment = $this->getEntityManager()->getRepository('Attachment');
         foreach ($attachments as $k => $attachment) {
             $attachmentEntity = $this->getEntityManager()->getEntity('Attachment', $attachment['id']);
+            $attachmentEntity->set('relatedType',  !empty($attachment['product_id']) ? 'Product' : 'Category');
             $pathFile = $repAttachment->getFilePath($attachmentEntity);
             if (empty($pathFile) || !file_exists($pathFile)) {
                 unset($attachments[$k]);
@@ -117,6 +116,7 @@ class V3Dot11Dot13 extends AbstractMigration
                     'Error migration pimImage to Asset. 
                     AttachmentId: ' . $attachment['id'] . '; pimImageId: ' . $attachment['pimImage_id'] . ';' .
                     $e->getMessage());
+                continue;
             }
             if (!empty($pimImageChannels[$attachment['pimImage_id']])) {
                 $assetIdsWithChannel .= "'{$idAsset}',";
@@ -179,7 +179,7 @@ class V3Dot11Dot13 extends AbstractMigration
         $assetIds = [];
 
         foreach ($attachments as $k => $attachment) {
-            $oldPath = ($attachment['private'] == '1' ? DAMUploadDir::PRIVATE_PATH : DAMUploadDir::PUBLIC_PATH)
+            $oldPath = ($attachment['private'] == '1' ? 'data/dam/private/' : 'data/dam/public/')
                 . "master/" . $attachment['storage_file_path'] . "/" . $attachment['name'];
 
             if (file_exists($oldPath)) {
@@ -347,7 +347,6 @@ class V3Dot11Dot13 extends AbstractMigration
         if (empty($this->collectionId)) {
             $this->collectionId = $this->findCollection();
             if (empty($this->collectionId)) {
-                /** @var Collection $collection */
                 $collection = $this->getEntityManager()->getEntity('Collection');
                 $collection->set('isActive', true);
                 $collection->set('name', 'PimCollection');
