@@ -324,7 +324,6 @@ Espo.define('pim:views/product/record/search', ['views/record/search', 'search-m
         },
 
         createFilter: function (name, params, callback, noRender) {
-            debugger;
             if (((params || {}).fieldParams || {}).isAttribute) {
                 this.createAttributeFilter(name, params, callback);
             } else {
