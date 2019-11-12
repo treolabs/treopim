@@ -1,6 +1,6 @@
 # Search and Filtering
 
-Search and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity list or plate [view](https://treopim.com/help/views-and-panels):
+Search and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity [list](./views-and-panels.md#list-view) or [plate](./views-and-panels.md#plate-view) view page:
 
 ![Search and filtering](../../_assets/search-and-filtering/search-filter.jpg)
 *Search and filtering on the products list view page*
@@ -149,7 +149,7 @@ To extend the list of fields to be used for filtering, please, contact your admi
 
 ## Custom Attribute Filters
 
-TreoPIM supports the ability to filter [product](https://treopim.com/help/products) records not only by field values, but also by [attribute](https://treopim.com/help/attributes) values. This type of filtering is performed by values of the attributes that are linked to products. For your convenience, product attributes are grouped by product families and the `All` list contains all product attributes available in the system. 
+TreoPIM supports the ability to filter [product](./products.md) records not only by field values, but also by [attribute](./attributes.md) values. This type of filtering is performed by values of the attributes that are linked to products. For your convenience, product attributes are grouped by product families and the `All` list contains all product attributes available in the system. 
 
 To add a custom attribute filter, select the `Add attribute filter > 'product family' (or `All`) > 'product attribute'` option from the filtering drop-down list:
 

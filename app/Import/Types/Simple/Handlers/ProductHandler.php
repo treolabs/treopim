@@ -35,6 +35,11 @@ use Treo\Core\Exceptions\NoChange;
 class ProductHandler extends AbstractHandler
 {
     /**
+     * @var array
+     */
+    protected $images = [];
+
+    /**
      * @param array $fileData
      * @param array $data
      *
@@ -94,21 +99,23 @@ class ProductHandler extends AbstractHandler
             $restore = new \stdClass();
 
             try {
+                // prepare product images if needed
+                if (!empty($entity) && !empty(array_column($data['data']['configuration'], 'pimImage'))) {
+                    $this->images = $entity->get('pimImages');
+                }
+
                 // begin transaction
                 $this->getEntityManager()->getPDO()->beginTransaction();
 
-                $attributes = $categories = [];
+                $additionalFields = [];
 
                 foreach ($data['data']['configuration'] as $item) {
-                    if (isset($item['attributeId'])) {
-                        $attributes[] = [
-                            'item' => $item,
-                            'row' => $row
-                        ];
-
+                    if ($item['name'] == 'id') {
                         continue;
-                    } elseif ($item['name'] == 'productCategories') {
-                        $categories[] = [
+                    }
+
+                    if (isset($item['attributeId']) || isset($item['pimImage']) || $item['name'] == 'productCategories') {
+                        $additionalFields[] = [
                             'item' => $item,
                             'row' => $row
                         ];
@@ -133,12 +140,25 @@ class ProductHandler extends AbstractHandler
                     $this->saveRestoreRow('updated', $entityType, [$id => $restore]);
                 }
 
-                foreach ($categories as $value) {
-                    $this->importCategories($entity, $value, $delimiter);
+                foreach ($additionalFields as $value) {
+                    if ($value['item']['name'] == 'productCategories') {
+                        // import categories
+                        $this->importCategories($entity, $value, $delimiter);
+                    } elseif (isset($value['item']['attributeId'])) {
+                        // import attributes
+                        $this->importAttribute($entity, $value, $delimiter);
+                    } elseif (isset($value['item']['pimImage'])) {
+                        // import product images
+                        $this->importImages($entity, $value);
+                    }
                 }
 
-                foreach ($attributes as $value) {
-                    $this->importAttribute($entity, $value, $delimiter);
+                if (!is_null($entity)) {
+                    // prepare action
+                    $action = empty($id) ? 'create' : 'update';
+
+                    // push log
+                    $this->log($entityType, $importResultId, $action, (string)$fileRow, (string)$entity->get('id'));
                 }
 
                 $this->getEntityManager()->getPDO()->commit();
@@ -148,13 +168,6 @@ class ProductHandler extends AbstractHandler
 
                 // push log
                 $this->log($entityType, $importResultId, 'error', (string)$fileRow, $e->getMessage());
-            }
-            if (!is_null($entity)) {
-                // prepare action
-                $action = empty($id) ? 'create' : 'update';
-
-                // push log
-                $this->log($entityType, $importResultId, $action, (string)$fileRow, (string)$entity->get('id'));
             }
         }
 
@@ -313,6 +326,81 @@ class ProductHandler extends AbstractHandler
         return $result;
     }
 
+    /**
+     * @param Entity $product
+     * @param array $data
+     *
+     * @throws \Espo\Core\Exceptions\Error
+     */
+    protected function importImages(Entity $product, array $data)
+    {
+        // prepare image entity type
+        $entityType = 'PimImage';
+
+        // prepare data
+        $conf = $data['item'];
+        $row = $data['row'];
+
+        // prepare input row
+        $input = new \stdClass();
+        $input->scope = $conf['scope'];
+        if ($conf['scope'] == 'Channel') {
+            $input->channelsIds = $conf['channelsIds'];
+        }
+
+        // prepare where
+        if (isset($row[$conf['column']]) && !empty($row[$conf['column']])) {
+            $field = 'link';
+            $value = $row[$conf['column']];
+            $input->link = $row[$conf['column']];
+        } else {
+            $field = 'imageId';
+            $value = $conf['default'];
+        }
+
+        // check exist product image
+        $exist = null;
+        if (!empty($this->images)) {
+            foreach ($this->images as $image) {
+                if ($image->get($field) == $value) {
+                    $exist = $image;
+                    break;
+                }
+            }
+        }
+
+        // prepare service
+        $service = $this->getServiceFactory()->create($entityType);
+
+        if (empty($exist)) {
+            // convert image
+            $this->convertItem($input, $entityType, $conf, $row, '');
+
+            // get attachment
+            $attachment = $this->getEntityManager()->getEntity('Attachment', $input->{$conf['name'] . 'Id'});
+
+            // prepare input row
+            $input->productId = $product->get('id');
+            $input->name = $attachment->get('name');
+
+            // create entity
+            $entity = $service->createEntity($input);
+
+            // save restore row
+            $this->saveRestoreRow('created', $entityType, $entity->get('id'));
+        } else {
+            // prepare restore row
+            $restore = new \stdClass();
+            $restore->scope = $exist->get('scope');
+            $restore->channelsIds = array_column($exist->get('channels')->toArray(), 'id');
+
+            // update entity
+            $entity = $this->updateEntity($service, $exist->get('id'), $input);
+
+            // save restore row
+            $this->saveRestoreRow('updated', $entityType, [$exist->get('id') => $restore]);
+        }
+    }
     /**
      * @inheritDoc
      */

@@ -39,6 +39,14 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             });
         },
 
+        afterRender() {
+            Dep.prototype.afterRender.call(this);
+
+            if (this.mode === 'edit' && ['multiEnum', 'multiEnumMultiLang'].includes(this.model.get('attributeType'))) {
+                this.$el.addClass('over-visible');
+            }
+        },
+
         getConfiguratedValueModel(model) {
             model = this.model.clone();
             model.id = this.model.id;

@@ -175,5 +175,9 @@
         "deleted"
       ]
     }
+  },
+  "collection": {
+    "sortBy": "attribute.sortOrder",
+    "asc": true
   }
 }

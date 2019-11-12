@@ -36,6 +36,7 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     public function up(): void
     {
+        $this->dropTriggers();
         $this->catalogCategoryUp();
         $this->productCategoryUp();
         $this->masterCatalogUp();
@@ -87,7 +88,7 @@ class V3Dot0Dot1 extends AbstractMigration
      */
     protected function productCategoryUp(): void
     {
-        $this->execute("DELETE FROM catalog_category WHERE 1");
+        $this->execute("DELETE FROM product_category WHERE 1");
 
         $sql
             = "SELECT pcl.* 
@@ -193,7 +194,6 @@ class V3Dot0Dot1 extends AbstractMigration
             $productCategories[$row['productId']] = array_merge($productCategories[$row['productId']], $categoryIds);
         }
 
-        $insertSql = "";
         foreach ($productCategories as $productId => $categories) {
             $sql
                 = "SELECT 
@@ -202,13 +202,13 @@ class V3Dot0Dot1 extends AbstractMigration
                    JOIN catalog ON catalog.id=channel.catalog_id AND catalog.deleted=0 AND catalog.category_id IN ('" . implode("','", $categories) . "')
                    WHERE channel.deleted = 0";
 
+            $insertSql = "";
             foreach ($this->fetchAll($sql) as $row) {
                 $insertSql .= "INSERT INTO product_channel (product_id, channel_id) VALUES ('$productId', '" . $row['channelId'] . "');";
             }
-        }
-
-        if (!empty($insertSql)) {
-            $this->execute($insertSql);
+            if (!empty($insertSql)) {
+                $this->execute($insertSql);
+            }
         }
     }
 
@@ -219,7 +219,6 @@ class V3Dot0Dot1 extends AbstractMigration
     {
         $this->execute("DELETE FROM product_channel WHERE 1");
     }
-
 
     /**
      * @param string $sql
@@ -247,5 +246,18 @@ class V3Dot0Dot1 extends AbstractMigration
         return $this
             ->execute($sql)
             ->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Drop triggers
+     */
+    protected function dropTriggers()
+    {
+        $sql = "DROP TRIGGER IF EXISTS trigger_after_insert_product_family_attribute_linker;";
+        $sql .= "DROP TRIGGER IF EXISTS trigger_after_update_product_family_attribute_linker;";
+        $sql .= "DROP TRIGGER IF EXISTS trigger_after_insert_product;";
+        $sql .= "DROP TRIGGER IF EXISTS trigger_after_update_product;";
+
+        $this->execute($sql);
     }
 }

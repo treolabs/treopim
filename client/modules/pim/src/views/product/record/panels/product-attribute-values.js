@@ -204,7 +204,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
                 this.setFilter(this.filter);
                 this.updateBaseSelectFields();
-                this.listenTo(this.model, 'updateAttributes change:productFamilyId update-all after:relate after:unrelate', () => {
+                this.listenTo(this.model, 'updateAttributes change:productFamilyId update-all', () => {
                     this.actionRefresh();
                 });
 

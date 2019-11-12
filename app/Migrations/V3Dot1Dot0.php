@@ -36,7 +36,6 @@ class V3Dot1Dot0 extends V3Dot0Dot1
      */
     public function up(): void
     {
-        $this->dropTriggers();
         $this->channelAttributeValueUp();
         $this->productFamilyAttributesUp();
     }
@@ -51,31 +50,17 @@ class V3Dot1Dot0 extends V3Dot0Dot1
     }
 
     /**
-     * Drop triggers
-     */
-    protected function dropTriggers()
-    {
-        $sql = "DROP TRIGGER IF EXISTS trigger_after_insert_product_family_attribute_linker;";
-        $sql .= "DROP TRIGGER IF EXISTS trigger_after_update_product_family_attribute_linker;";
-        $sql .= "DROP TRIGGER IF EXISTS trigger_after_insert_product;";
-        $sql .= "DROP TRIGGER IF EXISTS trigger_after_update_product;";
-
-        $this->execute($sql);
-    }
-
-    /**
      * Migrate attribute value up
      */
     protected function channelAttributeValueUp()
     {
         $sql
-            = "SELECT cpav.*, p.id as product_id, a.id as attribute_id   
-                FROM channel_product_attribute_value AS cpav 
-                JOIN channel AS c ON c.id=cpav.channel_id 
-                JOIN product_attribute_value AS pav ON pav.id=cpav.product_attribute_id
-                JOIN product AS p ON p.id=pav.product_id
-                JOIN attribute AS a ON a.id=pav.attribute_id  
-                WHERE cpav.deleted=0 AND c.deleted=0 AND pav.deleted=0 AND p.deleted=0 AND a.deleted=0";
+            = "SELECT cpav.*, pav.product_id, pav.attribute_id
+               FROM channel_product_attribute_value AS cpav
+               LEFT JOIN product_attribute_value AS pav ON pav.id=cpav.product_attribute_id AND pav.deleted=0
+               WHERE cpav.deleted=0
+                 AND pav.product_id IN (SELECT id FROM product WHERE deleted=0)
+                 AND cpav.channel_id IN (SELECT id FROM channel WHERE deleted=0)";
 
         if (!empty($data = $this->fetchAll($sql))) {
             // prepare repository

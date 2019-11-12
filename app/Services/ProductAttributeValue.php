@@ -74,9 +74,9 @@ class ProductAttributeValue extends AbstractService
                     $entity->set('value', (bool)$entity->get('value'));
                     break;
                 case 'int':
-                case 'unit':
                     $entity->set('value', (int)$entity->get('value'));
                     break;
+                case 'unit':
                 case 'float':
                     $entity->set('value', (float)$entity->get('value'));
                     break;
