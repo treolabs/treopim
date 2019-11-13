@@ -26,6 +26,7 @@ use Espo\ORM\Entity;
 use Espo\Services\Record;
 use Import\Types\Simple\Handlers\AbstractHandler;
 use Treo\Core\Exceptions\NoChange;
+use Treo\Core\Utils\Util;
 
 /**
  * Class Product
@@ -38,6 +39,11 @@ class ProductHandler extends AbstractHandler
      * @var array
      */
     protected $images = [];
+
+    /**
+     * @var array
+     */
+    protected $attributes = [];
 
     /**
      * @param array $fileData
@@ -138,6 +144,7 @@ class ProductHandler extends AbstractHandler
                 // prepare product images if needed
                 if (!empty($entity) && !empty(array_column($data['data']['configuration'], 'pimImage'))) {
                     $this->images = $entity->get('pimImages');
+                    $this->attributes = $entity->get('productAttributeValues');
                 }
 
                 foreach ($additionalFields as $value) {
@@ -206,7 +213,7 @@ class ProductHandler extends AbstractHandler
         $conf = $data['item'];
         $row = $data['row'];
 
-        foreach ($product->get('productAttributeValues') as $item) {
+        foreach ($this->attributes as $item) {
             if ($item->get('attributeId') == $conf['attributeId'] && $item->get('scope') == $conf['scope']) {
                 if ($conf['scope'] == 'Global') {
                     $inputRow->id = $item->get('id');
@@ -225,8 +232,6 @@ class ProductHandler extends AbstractHandler
 
         // convert attribute value
         $this->convertItem($inputRow, $entityType, $conf, $row, $delimiter);
-        $inputRow->value = $inputRow->{$conf['name']};
-        unset($inputRow->{$conf['name']});
 
         if (!isset($inputRow->id)) {
             $inputRow->productId = $product->get('id');
@@ -238,6 +243,7 @@ class ProductHandler extends AbstractHandler
             }
 
             $entity = $service->createEntity($inputRow);
+            $this->attributes[] = $entity;
 
             $this->saveRestoreRow('created', $entityType, $entity->get('id'));
         } else {
@@ -401,6 +407,30 @@ class ProductHandler extends AbstractHandler
             $this->saveRestoreRow('updated', $entityType, [$exist->get('id') => $restore]);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function convertItem(\stdClass $inputRow, string $entityType, array $item, array $row, string $delimiter)
+    {
+        $field = $item['name'];
+
+        // prepare attribute data
+        if (isset($item['attributeId']) && !empty($item['attributeId'])) {
+            $field = 'value';
+            $item['name'] = $field;
+        }
+
+        // check for multiLang fields
+        if (isset($item['locale']) && !empty($item['locale'])) {
+            $field = Util::toCamelCase($field . '_' . $item['locale']);
+        }
+
+        $item['name'] = $field;
+
+        parent::convertItem($inputRow, $entityType, $item, $row, $delimiter);
+    }
+
     /**
      * @inheritDoc
      */

@@ -63,7 +63,7 @@ class ImportFeedEntity extends AbstractListener
             if (isset($item['attributeId'])) {
                 foreach ($configurator as $k => $i) {
                     if (isset($i['attributeId']) && $i['attributeId'] == $item['attributeId']
-                        && $i['scope'] == $item['scope'] && $key != $k) {
+                        && $i['scope'] == $item['scope'] && $key != $k && $key['locale'] == $k['locale']) {
                         if ($item['scope'] == 'Channel'
                             && empty(array_intersect($item['channelsIds'], $i['channelsIds']))) {
                             continue;
