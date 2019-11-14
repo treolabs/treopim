@@ -48,7 +48,8 @@
     "productFamily": "Artikel-Familien",
     "productSerie": "Product Serie",
     "channels": "Kanale",
-    "scope": "Umfang"
+    "scope": "Umfang",
+    "role": "Rolle"
   },
   "options": {
     "searchRanges": {

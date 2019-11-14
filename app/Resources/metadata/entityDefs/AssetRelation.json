@@ -21,6 +21,18 @@
             "required": false,
             "readOnly": false,
             "tooltip": false
+        },
+        "role": {
+            "type": "multiEnum",
+            "storeArrayValues": true,
+            "required": false,
+            "fontSize": 1,
+            "options": [
+                "Main"
+            ],
+            "audited": false,
+            "readOnly": false,
+            "tooltip": false
         }
     },
     "links": {

@@ -152,6 +152,29 @@
       }
     ]
   },
+  "sidePanels" : {
+    "edit" : [
+      {
+        "name" : "image",
+        "label": "",
+        "view" : "pim:views/product/fields/image"
+      }
+    ],
+    "detail" : [
+      {
+        "name" : "image",
+        "label": "",
+        "view" : "pim:views/product/fields/image"
+      }
+    ],
+    "detailSmall" : [
+      {
+        "name" : "image",
+        "label": "",
+        "view" : "pim:views/product/fields/image"
+      }
+    ]
+  },
   "dynamicLogic": {
     "fields": {
       "type": {
