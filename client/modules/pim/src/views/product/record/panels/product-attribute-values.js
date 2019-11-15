@@ -22,7 +22,19 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         template: 'pim:product/record/panels/product-attribute-values',
 
-        baseSelectFields: ['attributeId', 'attributeName', 'value', 'isRequired', 'scope', 'channelsIds', 'channelsNames', 'data', 'productFamilyAttributeId'],
+        baseSelectFields: [
+            'channelsIds',
+            'channelsNames',
+            'data',
+            'attributeGroupId',
+            'attributeGroupName',
+            'attributeId',
+            'attributeName',
+            'isRequired',
+            'productFamilyAttributeId',
+            'scope',
+            'value'
+        ],
 
         groupKey: 'attributeGroupId',
 
@@ -505,20 +517,18 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         setGroupCollectionDefs(group, collection) {
             collection.url = `Product/${this.model.id}/productAttributeValues`;
-            if (group.key !== 'no_group') {
-                collection.where = [
-                    {
-                        type: 'bool',
-                        value: ['linkedWithAttributeGroup'],
-                        data: {
-                            linkedWithAttributeGroup: {
-                                productId: this.model.id,
-                                attributeGroupId: group.key
-                            }
+            collection.where = [
+                {
+                    type: 'bool',
+                    value: ['linkedWithAttributeGroup'],
+                    data: {
+                        linkedWithAttributeGroup: {
+                            productId: this.model.id,
+                            attributeGroupId: group.key !== 'no_group' ? group.key : null
                         }
                     }
-                ];
-            }
+                }
+            ];
             collection.data.select = this.getSelectFields().join(',');
         },
 
