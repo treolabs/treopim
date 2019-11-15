@@ -154,9 +154,23 @@ Please, note that you can link the same attribute to the product family record m
 
 ![PF attribute scope](../../_assets/product-families/pf-attribute-scope.jpg)
 
-Please, note that when the attribute is linked to the product family record, it is automatically linked to all [products](./products.md) belonging to the given product family. Also note that it is not possible to link to the product family record the attribute, which is already used in the product belonging to the given family. You will be notified about it with the corresponding error message. 
+Please, note that when the attribute is linked to the product family record, it is automatically linked to all [products](./products.md) belonging to the given product family. 
 
-To assign an existing an existing attribute (or several attributes) to the product family record, use the `Select` option from the actions menu:
+When you are trying to link to the product family record the attribute, which is already linked to the product record belonging to the given family, different rules are applied depending on the product attribute scope level: 
+
+1. **`Global`** product attribute becomes `Global` product family attribute. Its value (or values) is preserved in the product record.
+
+2. **`Channel`** product attribute becomes `Channel` product family attribute with the following peculiarities:
+
+    - its values are preserved in the given product record provided that channel names defined for the product family *coincide* with the ones used in the given product record;
+    - two `Channel` attribute records appear in the product record, when you select *less channels* to the product family attribute than there are in the product record attribute. The first attribute is created with the same channels as in the product family record, but without the value, and the second attribute is left with the preserved value with the channels that are left, i.e. this attribute remains custom;
+    - two `Channel` attribute records appear in the product record, when you select *more channels* to the product family attribute than there are in the product record attribute. The initial custom attribute remains with the preserved value, but without channel name, and the second attribute is created with channel names used in the product family, but without values. 
+
+![PF-product-attributes](../../_assets/product-families/pf-product-attributes.jpg)
+
+Please, note that attributes, which are added to the product family record, are of higher priority, whereas custom product attributes adapt to the changes made in the product family attributes. <!--The interrelations between product families and product records can be configured and structured even more with the help of the **Advanced Classification** module. For more details, please, visit our [store](https://treopim.com/store). -->  *<!--Unclose this note when the module is described-->*
+
+To assign an existing attribute (or several attributes) to the product family record, use the `Select` option from the actions menu:
 
 ![Adding attributes](../../_assets/product-families/attributes-select.jpg)
 
@@ -164,17 +178,21 @@ In the "Attributes" pop-up that appears, choose the desired attribute (or attrib
 
 TreoPIM supports linking to product families not only separate attributes, but also [attribute groups](./attribute-groups.md). For this, use the `Select Attribute Group` option from the actions menu, and in the "Attribute Groups" pop-up that appears, select the desired groups from the list of available attribute groups.
 
-Please, note that attributes linked to product families are arranged by attribute groups correspondingly. Their placement depends on the configuration and the sort order value of the attribute group to which they belong.
+Please, note that attributes linked to product families are arranged by attribute groups correspondingly. Their placement depends on the configuration and the sort order value of the attribute group to which they belong. The attribute records that don't belong to any product family, are placed at the bottom of the `PRODUCT FAMILY ATTRIBUTES` panel in `No Group`.
 
-Attributes linked to the given product family record can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT FAMILY ATTRIBUTES` panel:
+Attributes linked to the given product family record can be viewed, edited, unlinked or removed via the corresponding options from the single record actions menu on the `PRODUCT FAMILY ATTRIBUTES` panel:
 
 ![Attributes actions](../../_assets/product-families/attributes-actions-menu.jpg)
+
+When the attribute is unlinked from the product family record, it still remains in the product record. However, when you unlink the *required* attribute from the family record, the given attribute becomes non-required in the product record.
 
 The attribute record is removed from the product family only after the action is confirmed:
 
 ![Removal confirmation](../../_assets/product-families/attribute-remove-confirmation.jpg)
 
-Unlinking of the attributes is performed through unlinking the attribute groups on the `PRODUCT FAMILY ATTRIBUTES` panel. To do this, use the corresponding option from the attribute group actions menu and confirm your decision:
+Please, beware that removing the attribute record from the product family leads to removing it from the product record as well.
+
+Additionally, you can unlink attribute groups on the `PRODUCT FAMILY ATTRIBUTES` panel. To do this, use the `Unlink` option from the attribute group actions menu located to the right of the desired attribute group name, and confirm your decision in the pop-up that appears:
 
 ![AG unlink](../../_assets/product-families/ag-unlink.jpg)
 
