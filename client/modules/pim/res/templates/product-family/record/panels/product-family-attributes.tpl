@@ -5,14 +5,16 @@
         <div class="group-name">
             {{#if id}}
             <a href="#{{../../groupScope}}/view/{{id}}"><strong>{{label}}</strong></a>
+            {{#if editable}}
             <div class="pull-right btn-group">
 	            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 	                <span class="caret"></span>
 	            </button>
 	            <ul class="dropdown-menu">
-	                <li><a href="javascript:" class="action" data-action="unlinkAttributeGroup" data-id="{{id}}">{{translate 'Unlink'}}</a></li>
+	                <li><a href="javascript:" class="action" data-action="unlinkAttributeGroup" data-id="{{id}}">{{translate 'Remove'}}</a></li>
 	            </ul>
 			</div>
+			{{/if}}
             {{else}}
             <strong>{{label}}</strong>
             {{/if}}
