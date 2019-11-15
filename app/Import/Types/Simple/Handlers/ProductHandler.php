@@ -111,11 +111,23 @@ class ProductHandler extends AbstractHandler
                 $additionalFields = [];
 
                 foreach ($data['data']['configuration'] as $item) {
-                    if ($item['name'] == 'id') {
+                    $field = !isset($item['attributeId']) ? $item['name'] : 'value';
+
+                    if ($field == 'id') {
                         continue;
                     }
 
-                    if (isset($item['attributeId']) || isset($item['pimImage']) || $item['name'] == 'productCategories') {
+                    // check for multiLang fields
+                    if (isset($item['locale']) && !is_null($item['locale'])) {
+                        if ($this->getConfig()->get('isMultilangActive')) {
+                            $field .= Util::toCamelCase(strtolower($item['locale']), '_', true);
+                            $item['name'] = $field;
+                        } else {
+                            continue;
+                        }
+                    }
+
+                    if (isset($item['attributeId']) || isset($item['pimImage']) || $field == 'productCategories') {
                         $additionalFields[] = [
                             'item' => $item,
                             'row' => $row
@@ -144,8 +156,10 @@ class ProductHandler extends AbstractHandler
                 // prepare product images if needed
                 if (!empty($entity) && !empty(array_column($data['data']['configuration'], 'pimImage'))) {
                     $this->images = $entity->get('pimImages');
-                    $this->attributes = $entity->get('productAttributeValues');
                 }
+
+                // prepare product attributes
+                $this->attributes = $entity->get('productAttributeValues');
 
                 foreach ($additionalFields as $value) {
                     if ($value['item']['name'] == 'productCategories') {
@@ -217,14 +231,14 @@ class ProductHandler extends AbstractHandler
             if ($item->get('attributeId') == $conf['attributeId'] && $item->get('scope') == $conf['scope']) {
                 if ($conf['scope'] == 'Global') {
                     $inputRow->id = $item->get('id');
-                    $restoreRow->value = $item->get('value');
+                    $restoreRow->{$conf['name']} = $item->get($conf['name']);
                 } elseif ($conf['scope'] == 'Channel') {
                     $channels = array_column($item->get('channels')->toArray(), 'id');
 
                     if (empty($diff = array_diff($conf['channelsIds'], $channels))
                         && empty($diff = array_diff($channels, $conf['channelsIds']))) {
                         $inputRow->id = $item->get('id');
-                        $restoreRow->value = $item->get('value');
+                        $restoreRow->{$conf['name']} = $item->get($conf['name']);
                     }
                 }
             }
@@ -406,29 +420,6 @@ class ProductHandler extends AbstractHandler
             // save restore row
             $this->saveRestoreRow('updated', $entityType, [$exist->get('id') => $restore]);
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function convertItem(\stdClass $inputRow, string $entityType, array $item, array $row, string $delimiter)
-    {
-        $field = $item['name'];
-
-        // prepare attribute data
-        if (isset($item['attributeId']) && !empty($item['attributeId'])) {
-            $field = 'value';
-            $item['name'] = $field;
-        }
-
-        // check for multiLang fields
-        if (isset($item['locale']) && !empty($item['locale'])) {
-            $field = Util::toCamelCase($field . '_' . $item['locale']);
-        }
-
-        $item['name'] = $field;
-
-        parent::convertItem($inputRow, $entityType, $item, $row, $delimiter);
     }
 
     /**
