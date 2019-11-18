@@ -95,7 +95,7 @@ class AssetRelationEntity extends AbstractListener
             //checking for the existence of channels with a role Main
             $channelsCount = count($this->getAssetRelations($relation, $type, 'Main', 'Channel', $channelsId));
             if (!empty($channelsCount)) {
-                throw new BadRequest('The asset of the main role is already defined for the selected channels (all or several of them).');
+                throw new BadRequest($this->exception('assetMainRole'));
             }
         }
         return true;
@@ -195,5 +195,15 @@ class AssetRelationEntity extends AbstractListener
     protected function isMainRole(AssetRelation $assetRelation): bool
     {
         return in_array('Main', (array)$assetRelation->get('role'));
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function exception(string $key): string
+    {
+        return $this->getContainer()->get('language')->translate($key, 'exceptions', 'AssetRelation');
     }
 }

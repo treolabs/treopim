@@ -98,7 +98,7 @@ class V3Dot11Dot13 extends AbstractMigration
                 }
                 $this->migratedAttachment[$id] = $idAsset;
             } else {
-               $scope = $attachment['scope'] == 'Channel' ?  $attachment['scope'] : null;
+                $scope = $attachment['scope'] == 'Channel' ?  $attachment['scope'] : null;
                 $this->getEntityManager()
                     ->nativeQuery("
                     INSERT INTO asset_relation
@@ -129,7 +129,10 @@ class V3Dot11Dot13 extends AbstractMigration
         if (!empty($assetIdsWithChannel)) {
             //update scope
             $this->getEntityManager()
-                ->nativeQuery("UPDATE asset_relation SET scope = 'Channel' WHERE  scope = 'Global' AND asset_id IN ({$assetIdsWithChannel})");
+                ->nativeQuery("UPDATE 
+                                    asset_relation 
+                                SET scope = 'Channel' 
+                                WHERE scope = 'Global' AND asset_id IN ({$assetIdsWithChannel})");
             //create link asset_relation_channel
             $this->getEntityManager()
                 ->nativeQuery(" 
@@ -149,14 +152,18 @@ class V3Dot11Dot13 extends AbstractMigration
             
                    UPDATE asset_relation ar
                         RIGHT JOIN asset a ON a.id = ar.asset_id
-                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id and pi.product_id = ar.entity_id and pi.category_id IS NULL
+                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id 
+                            AND pi.product_id = ar.entity_id 
+                            AND pi.category_id IS NULL
                     SET ar.sort_order = pi.sort_order
                     WHERE ar.deleted = 0
                       AND ar.entity_name = 'Product';
 
                     UPDATE asset_relation ar
                         RIGHT JOIN asset a ON a.id = ar.asset_id
-                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id and pi.category_id = ar.entity_id and pi.product_id IS NULL
+                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id 
+                            AND pi.category_id = ar.entity_id 
+                            AND pi.product_id IS NULL
                     SET ar.sort_order = pi.sort_order
                     WHERE ar.deleted = 0
                       AND ar.entity_name = 'Category';
@@ -194,7 +201,6 @@ class V3Dot11Dot13 extends AbstractMigration
                         DROP TABLE pim_image_channel;');
         
         $this->updateComposer();
-
     }
 
     /**
@@ -318,7 +324,10 @@ class V3Dot11Dot13 extends AbstractMigration
 
             $this
                 ->getEntityManager()
-                ->nativeQuery("DELETE FROM asset_relation_channel WHERE asset_relation_id IN (SELECT id FROM asset_relation WHERE asset_id IN ({$assetIds}))");
+                ->nativeQuery("DELETE 
+                                    FROM asset_relation_channel 
+                                    WHERE asset_relation_id 
+                                            IN (SELECT id FROM asset_relation WHERE asset_id IN ({$assetIds}))");
 
             $this
                 ->getEntityManager()
