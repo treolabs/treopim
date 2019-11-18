@@ -274,20 +274,24 @@ class V3Dot11Dot13 extends AbstractMigration
                             INSERT INTO pim_image 
                             (id, name, image_id, deleted, sort_order, scope, assigned_user_id, product_id, category_id)
                             SELECT 
-                                SUBSTR(MD5(CONCAT(ar.id, ar.sort_order)), 16) as id,
-                                 a.name, 
-                                 a.file_id AS image_id, 
-                                 a.deleted, ar.sort_order, 
-                                 ar.scope, 
-                                 ar.assigned_user_id,
-                                   CASE
-                                       WHEN ar.entity_name = 'Product' THEN ar.entity_id
-                                       ELSE NULL
-                                   END AS product_id,
-                                   CASE
-                                       WHEN ar.entity_name = 'Category' THEN ar.entity_id
-                                       ELSE NULL
-                                   END AS category_id
+                                SUBSTR(MD5(CONCAT(ar.id, RAND())), 16) as id,
+                                a.name,
+                                a.file_id AS image_id,
+                                a.deleted,
+                                CASE
+                                    WHEN ar.sort_order IS NOT NULL THEN ar.sort_order
+                                    ELSE (SELECT @n := @n + max(ar1.sort_order) FROM asset_relation AS ar1, (SELECT @n := 1) s WHERE ar.entity_id = ar.entity_id)
+                                END AS sort_order,
+                                ar.scope,
+                                ar.assigned_user_id,
+                               CASE
+                                   WHEN ar.entity_name = 'Product' THEN ar.entity_id
+                                   ELSE NULL
+                               END AS product_id,
+                               CASE
+                                   WHEN ar.entity_name = 'Category' THEN ar.entity_id
+                                   ELSE NULL
+                               END AS category_id
                             FROM asset AS a
                                      RIGHT JOIN asset_relation AS ar
                                                 ON a.id = ar.asset_id 
