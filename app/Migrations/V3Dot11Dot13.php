@@ -32,7 +32,7 @@ use Treo\Core\FilePathBuilder;
 use Treo\Core\FileStorage\Storages\UploadDir;
 use Treo\Core\Migration\AbstractMigration;
 use Treo\Core\Utils\Auth;
-use Treo\Repositories\Attachment;
+use Treo\Services\Composer;
 
 /**
  * Migration class for version 3.11.13
@@ -53,72 +53,74 @@ class V3Dot11Dot13 extends AbstractMigration
      * @var string|null
      */
     protected $collectionId = null;
+    /**
+     * @var array
+     */
+    protected $migratedAttachment = [];
 
     /**
      * @inheritdoc
      * @throws Error
-     * @throws Forbidden
      */
     public function up(): void
     {
         (new Auth($this->getContainer()))->useNoAuth();
 
-        $attachments = $this
-            ->getEntityManager()
-            ->nativeQuery('SELECT a.id,
-                                       a.storage_file_path,
-                                       a.storage,
-                                       a.name,
-                                       a.tmp_path,
-                                       pi.product_id,
-                                       pi.category_id,
-                                       pi.id as pimImage_id,
-                                       pi.sort_order
-                                FROM attachment a
-                                         RIGHT JOIN pim_image AS pi ON pi.image_id = a.id AND pi.deleted = 0 
-                                WHERE a.deleted = 0')
-            ->fetchAll(PDO::FETCH_ASSOC);
-
-        $pimImageChannels = $this
-            ->getEntityManager()
-            ->nativeQuery('SELECT pim_image_id, channel_id FROM pim_image_channel WHERE deleted = 0')
-            ->fetchAll(PDO::FETCH_KEY_PAIR);
-
+        $attachments = $this->getAttachmentsForUp();
+        $pimImageChannels = $this->getPimImageChannels();
         //for storing assetId with Channels
         $assetIdsWithChannel = '';
-        /** @var Attachment $repAttachment */
         $repAttachment = $this->getEntityManager()->getRepository('Attachment');
-        foreach ($attachments as $k => $attachment) {
-            $attachmentEntity = $this->getEntityManager()->getEntity('Attachment', $attachment['id']);
-            $attachmentEntity->set('relatedType',  !empty($attachment['product_id']) ? 'Product' : 'Category');
-            $pathFile = $repAttachment->getFilePath($attachmentEntity);
-            if (empty($pathFile) || !file_exists($pathFile)) {
-                unset($attachments[$k]);
-                continue;
-            }
-            $dataUpdate = [];
-            $dataUpdate['hash_md5'] = hash_file('md5', $pathFile);
-            $dataUpdate['related_type'] = 'Asset';
-            $dataUpdate['parent_type'] = 'Asset';
-            if (empty($attachment['tmp_path'])) {
-                $dataUpdate['tmp_path'] = $pathFile;
-            }
-            $this->updateById('attachment', $dataUpdate, $attachment['id']);
-            $this->executeUpdate($this->sqlUpdate);
-
-            //creating asset
-            $foreign = !empty($attachment['product_id']) ? 'products' : 'categories';
+        foreach ($attachments as $key => $attachment) {
+            $id = $attachment['id'];
+            $foreignName = !empty($attachment['product_id']) ? 'Product' : 'Category';
             $foreignId = !empty($attachment['product_id']) ? $attachment['product_id'] : $attachment['category_id'];
-            try {
-                $idAsset = $this->createAsset($attachment['id'], $attachment['name'], $foreign, $foreignId);
-            } catch (\Exception $e) {
-                $GLOBALS['log']->error(
-                    'Error migration pimImage to Asset. AttachmentId: ' . $attachment['id'] . ';' .
-                    $e->getMessage());
-                continue;
-            }
-            if (!empty($pimImageChannels[$attachment['pimImage_id']])) {
-                $assetIdsWithChannel .= "'{$idAsset}',";
+
+            if (empty($this->migratedAttachment[$id])) {
+                $attachmentEntity = $this->getEntityManager()->getEntity('Attachment', $id);
+                $attachmentEntity->set('relatedType', $foreignName);
+                $pathFile = $repAttachment->getFilePath($attachmentEntity);
+                if (empty($pathFile) || !file_exists($pathFile)) {
+                    unset($attachments[$key]);
+                    continue;
+                }
+                $this->updateAttachment($id, $attachment, $pathFile);
+                //creating asset
+                $foreign = !empty($attachment['product_id']) ? 'products' : 'categories';
+                try {
+                    $idAsset = $this->createAsset($id, $attachment['name'], $foreign, $foreignId);
+                } catch (\Exception $e) {
+                    $this->setLog($id, $e);
+                    continue;
+                }
+                if (!empty($pimImageChannels[$attachment['pimImage_id']])) {
+                    $assetIdsWithChannel .= "'{$idAsset}',";
+                }
+                $this->migratedAttachment[$id] = $idAsset;
+            } else {
+                $scope = $attachment['scope'] == 'Channel' ?  $attachment['scope'] : null;
+                $this->getEntityManager()
+                    ->nativeQuery("
+                    INSERT INTO asset_relation
+                    (id,
+                     name,
+                     entity_name,
+                     entity_id,
+                     asset_id,
+                     sort_order,
+                     created_by_id,
+                     assigned_user_id,
+                     scope)
+                VALUES (SUBSTR(MD5('{$attachment['pimImage_id']}_{$foreignId}'), 16),
+                        '{$attachment['name']}',
+                        '{$foreignName}',
+                        '{$foreignId}',
+                        '{$this->migratedAttachment[$id]}',
+                        '{$attachment['sort_order']}',
+                        'system',
+                        'system',
+                        '{$scope}'
+                        )");
             }
         }
 
@@ -127,33 +129,96 @@ class V3Dot11Dot13 extends AbstractMigration
         if (!empty($assetIdsWithChannel)) {
             //update scope
             $this->getEntityManager()
-                ->nativeQuery("UPDATE asset_relation SET scope = 'Channel' WHERE asset_id IN ({$assetIdsWithChannel})");
+                ->nativeQuery("UPDATE 
+                                    asset_relation 
+                                SET scope = 'Channel' 
+                                WHERE scope = 'Global' AND asset_id IN ({$assetIdsWithChannel})");
             //create link asset_relation_channel
             $this->getEntityManager()
                 ->nativeQuery(" 
                 INSERT INTO asset_relation_channel (channel_id, asset_relation_id)
-                SELECT pic.channel_id, ar.id FROM pim_image AS pi
+                SELECT DISTINCT pic.channel_id, ar.id FROM pim_image AS pi
                     RIGHT JOIN attachment AS a ON a.id = pi.image_id AND pi.deleted = 0
                     RIGHT JOIN pim_image_channel AS pic ON pi.id = pic.pim_image_id AND pic.deleted = 0
                     LEFT JOIN asset ON asset.file_id = a.id AND asset.deleted = 0
-                    LEFT JOIN asset_relation AS ar ON ar.asset_id = asset.id AND ar.deleted = 0
+                    LEFT JOIN asset_relation AS ar ON ar.asset_id = asset.id AND ar.deleted = 0 AND ar.scope = 'Channel'
                 WHERE pi.deleted = 0 AND pi.scope = 'Channel' AND ar.asset_id IN ({$assetIdsWithChannel})");
         }
+
         //update sort order
         $this->getEntityManager()
             ->nativeQuery("
-                    UPDATE asset_relation ar
-                        RIGHT JOIN asset a ON ar.asset_id = a.id AND a.deleted = 0
-                        RIGHT JOIN attachment AS att ON att.id = a.file_id AND a.deleted = 0
-                        RIGHT JOIN pim_image pi ON pi.image_id = att.id AND pi.deleted = 0
+                    UPDATE asset_relation SET scope = 'Global' WHERE scope IS NULL OR scope = '';
+            
+                   UPDATE asset_relation ar
+                        RIGHT JOIN asset a ON a.id = ar.asset_id
+                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id 
+                            AND pi.product_id = ar.entity_id 
+                            AND pi.category_id IS NULL
                     SET ar.sort_order = pi.sort_order
-                    WHERE ar.deleted = 0 
-                        AND ar.entity_name IN ('Product', 'Category')");
+                    WHERE ar.deleted = 0
+                      AND ar.entity_name = 'Product';
+
+                    UPDATE asset_relation ar
+                        RIGHT JOIN asset a ON a.id = ar.asset_id
+                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id 
+                            AND pi.category_id = ar.entity_id 
+                            AND pi.product_id IS NULL
+                    SET ar.sort_order = pi.sort_order
+                    WHERE ar.deleted = 0
+                      AND ar.entity_name = 'Category';
+            
+                      UPDATE product p
+                            LEFT JOIN (SELECT ar.entity_id, min(ar.sort_order) as sort
+                                       FROM asset_relation ar
+                                       WHERE ar.scope = 'Global'
+                                         AND ar.entity_name = 'Product'
+                                         AND ar.deleted = 0
+                                       GROUP BY ar.entity_id
+                            ) as sort ON sort.entity_id = p.id
+                            LEFT JOIN asset_relation ar ON ar.entity_id = sort.entity_id AND ar.sort_order = sort.sort
+                            LEFT JOIN asset a ON ar.asset_id = a.id
+                        SET p.image_id = a.file_id, ar.role = '[\"Main\"]'
+                        WHERE p.deleted = 0;
+                        
+                        UPDATE category c
+                            LEFT JOIN (SELECT ar.entity_id, min(ar.sort_order) as sort
+                                       FROM asset_relation ar
+                                       WHERE ar.scope = 'Global'
+                                         AND ar.entity_name = 'Category'
+                                         AND ar.deleted = 0
+                                       GROUP BY ar.entity_id
+                            ) as sort ON sort.entity_id = c.id
+                            LEFT JOIN asset_relation ar ON ar.entity_id = sort.entity_id AND ar.sort_order = sort.sort
+                            LEFT JOIN asset a ON ar.asset_id = a.id
+                        SET c.image_id = a.file_id, ar.role = '[\"Main\"]'
+                        WHERE c.deleted = 0;
+                      ");
 
         $this->getEntityManager()
             ->nativeQuery('
-                        DROP TABLE pim_image; 
+                        DROP TABLE pim_image;
                         DROP TABLE pim_image_channel;');
+        
+        $this->updateComposer();
+    }
+
+    /**
+     * @param $id
+     * @param $attachment
+     * @param $pathFile
+     */
+    protected function updateAttachment($id, $attachment, $pathFile)
+    {
+        $dataUpdate = [];
+        $dataUpdate['hash_md5'] = hash_file('md5', $pathFile);
+        $dataUpdate['related_type'] = 'Asset';
+        $dataUpdate['parent_type'] = 'Asset';
+        if (empty($attachment['tmp_path'])) {
+            $dataUpdate['tmp_path'] = $pathFile;
+        }
+        $this->updateById('attachment', $dataUpdate, $id);
+        $this->executeUpdate($this->sqlUpdate);
     }
 
     /**
@@ -209,20 +274,24 @@ class V3Dot11Dot13 extends AbstractMigration
                             INSERT INTO pim_image 
                             (id, name, image_id, deleted, sort_order, scope, assigned_user_id, product_id, category_id)
                             SELECT 
-                                SUBSTR(MD5(a.id), 16) as id,
-                                 a.name, 
-                                 a.file_id AS image_id, 
-                                 a.deleted, ar.sort_order, 
-                                 ar.scope, 
-                                 ar.assigned_user_id,
-                                   CASE
-                                       WHEN ar.entity_name = 'Product' THEN ar.entity_id
-                                       ELSE NULL
-                                   END AS product_id,
-                                   CASE
-                                       WHEN ar.entity_name = 'Category' THEN ar.entity_id
-                                       ELSE NULL
-                                   END AS category_id
+                                SUBSTR(MD5(CONCAT(ar.id, RAND())), 16) as id,
+                                a.name,
+                                a.file_id AS image_id,
+                                a.deleted,
+                                CASE
+                                    WHEN ar.sort_order IS NOT NULL THEN ar.sort_order
+                                    ELSE (SELECT @n := @n + max(ar1.sort_order) FROM asset_relation AS ar1, (SELECT @n := 1) s WHERE ar.entity_id = ar.entity_id)
+                                END AS sort_order,
+                                ar.scope,
+                                ar.assigned_user_id,
+                               CASE
+                                   WHEN ar.entity_name = 'Product' THEN ar.entity_id
+                                   ELSE NULL
+                               END AS product_id,
+                               CASE
+                                   WHEN ar.entity_name = 'Category' THEN ar.entity_id
+                                   ELSE NULL
+                               END AS category_id
                             FROM asset AS a
                                      RIGHT JOIN asset_relation AS ar
                                                 ON a.id = ar.asset_id 
@@ -235,7 +304,7 @@ class V3Dot11Dot13 extends AbstractMigration
             //insert pim_image_channel
             $this->getEntityManager()
                 ->nativeQuery("INSERT INTO pim_image_channel (channel_id, pim_image_id)
-                                    SELECT arc.channel_id, pi.id AS pim_image_id
+                                    SELECT DISTINCT arc.channel_id, pi.id AS pim_image_id
                                     FROM asset AS a
                                              RIGHT JOIN attachment AS att ON att.id = a.file_id AND a.deleted = 0
                                              RIGHT JOIN asset_relation ar 
@@ -250,11 +319,20 @@ class V3Dot11Dot13 extends AbstractMigration
                                                 ON pi.image_id = att.id 
                                                     AND pi.deleted = 0 
                                                     AND pi.scope = 'Channel'
-                                    WHERE a.deleted = 0 AND a.id IN ({$assetIds});");
+                                    WHERE a.deleted = 0 AND a.id IN ({$assetIds});
+                                    ");
 
             $this
                 ->getEntityManager()
                 ->nativeQuery("DELETE FROM asset WHERE id IN ({$assetIds});");
+
+            $this
+                ->getEntityManager()
+                ->nativeQuery("DELETE 
+                                    FROM asset_relation_channel 
+                                    WHERE asset_relation_id 
+                                            IN (SELECT id FROM asset_relation WHERE asset_id IN ({$assetIds}))");
+
             $this
                 ->getEntityManager()
                 ->nativeQuery("DELETE FROM asset_relation WHERE asset_id IN ({$assetIds})");
@@ -349,7 +427,7 @@ class V3Dot11Dot13 extends AbstractMigration
                 $collection = $this->getEntityManager()->getEntity('Collection');
                 $collection->set('isActive', true);
                 $collection->set('name', 'PimCollection');
-                $collection->set('code', 'pimcollection' . time());
+                $collection->set('code', 'pimcollection');
                 $this->collectionId = $this->getEntityManager()->saveEntity($collection);
             }
         }
@@ -385,6 +463,37 @@ class V3Dot11Dot13 extends AbstractMigration
         return $this->getContainer()->get('fileManager');
     }
 
+    protected function getAttachmentsForUp(): array
+    {
+        return $this
+            ->getEntityManager()
+            ->nativeQuery('SELECT a.id,
+                                       a.storage_file_path,
+                                       a.storage,
+                                       a.name,
+                                       a.tmp_path,
+                                       pi.product_id,
+                                       pi.category_id,
+                                       pi.id as pimImage_id,
+                                       pi.scope,
+                                       pi.sort_order
+                                FROM attachment a
+                                         RIGHT JOIN pim_image AS pi ON pi.image_id = a.id AND pi.deleted = 0 
+                                WHERE a.deleted = 0')
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPimImageChannels(): array
+    {
+        return $this
+            ->getEntityManager()
+            ->nativeQuery('SELECT pim_image_id, channel_id FROM pim_image_channel WHERE deleted = 0')
+            ->fetchAll(PDO::FETCH_KEY_PAIR);
+    }
+
     /**
      * @return string|null
      */
@@ -399,5 +508,23 @@ class V3Dot11Dot13 extends AbstractMigration
             ->findOne();
 
         return !empty($collection) ? $collection->get('id') : null;
+    }
+
+    protected function updateComposer()
+    {
+        $composer = Composer::getComposerJson();
+        if (!empty($composer["require"]["treolabs/pim"])) {
+            $composer["require"]["treolabs/pim"] = '^3.11.17';
+            Composer::setComposerJson($composer);
+        }
+    }
+
+    /**
+     * @param string $id
+     * @param \Exception $e
+     */
+    protected function setLog(string $id, \Exception $e): void
+    {
+        $GLOBALS['log']->error('Error migration pimImage to Asset. AttachmentId: ' . $id . ';' . $e->getMessage());
     }
 }
