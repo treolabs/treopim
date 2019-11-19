@@ -147,7 +147,7 @@
       {
         "name": "asset_relations",
         "label": "Asset Relations",
-        "view": "dam:views/asset_relation/record/panels/bottom-panel",
+        "view": "pim:views/product/record/panels/asset-relation-bottom-panel",
         "entityName": "Product"
       }
     ]
