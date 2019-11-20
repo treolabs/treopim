@@ -60,11 +60,14 @@ class AssetRelationEntity extends AbstractListener
     {
         $assetRelation = $event->getArgument('entity');
         $asset = $this->getEntityManager()->getEntity('Asset', $assetRelation->get('assetId'));
+        $isGalleryImage = $asset->get('type') == 'Gallery Image';
         if ($this->isMainGlobalRole($assetRelation, $asset)) {
             $this->clearingRoleForType($assetRelation, $asset->get('type'), 'Main');
-            if ($asset->get('type') == 'Gallery Image') {
+            if ($isGalleryImage) {
                 $this->updateMainImage($assetRelation, $asset);
             }
+        } elseif ($this->isMainRole($assetRelation) && !$this->hasMainImageEntity($assetRelation, $isGalleryImage)) {
+            $this->updateMainImage($assetRelation, null);
         }
     }
 
@@ -90,10 +93,11 @@ class AssetRelationEntity extends AbstractListener
     protected function validation(AssetRelation $relation, Asset $asset): bool
     {
         $type = (string)$asset->get('type');
-        $channelsId  = array_column($relation->get('channels')->toArray(), 'id');
-        if ($this->isMainRole($relation) && $relation->get('scope') == 'Channel' && !empty($channelsId)) {
+        $channelsIds  = $relation->get('channelsIds');
+
+        if ($this->isMainRole($relation) && $relation->get('scope') == 'Channel' && !empty($channelsIds)) {
             //checking for the existence of channels with a role Main
-            $channelsCount = count($this->getAssetRelations($relation, $type, 'Main', 'Channel', $channelsId));
+            $channelsCount = $this->countRelation($relation, $type, 'Main', 'Channel', $channelsIds);
             if (!empty($channelsCount)) {
                 throw new BadRequest($this->exception('assetMainRole'));
             }
@@ -154,7 +158,42 @@ class AssetRelationEntity extends AbstractListener
      */
     protected function getAssetRelations(AssetRelation $relation, string $type, string $role, string $scope, array $channelsId = null): array
     {
-        $sql = "SELECT ar.id, ar.role
+        $sql = $this->getSqlForAssetRelation($relation, $type, $role, $scope, 'ar.id, ar.role', $channelsId);
+        return $this
+            ->getEntityManager()
+            ->nativeQuery($sql)
+            ->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param AssetRelation $relation
+     * @param string $type
+     * @param string $role
+     * @param string $scope
+     * @param array|null $channelsId
+     * @return int
+     */
+    protected function countRelation(AssetRelation $relation, string $type, string $role, string $scope, array $channelsId = null): int
+    {
+        $sql = $this->getSqlForAssetRelation($relation, $type, $role, $scope, 'count(*)', $channelsId);
+        return (int) $this
+            ->getEntityManager()
+            ->nativeQuery($sql)
+            ->fetchColumn();
+    }
+
+    /**
+     * @param AssetRelation $relation
+     * @param string $type
+     * @param string $role
+     * @param string $scope
+     * @param string $select
+     * @param array|null $channelsId
+     * @return string
+     */
+    protected function getSqlForAssetRelation(AssetRelation $relation, string $type, string $role, string $scope, string $select, array $channelsId = null): string
+    {
+        $sql = "SELECT {$select}
                     FROM asset_relation ar
                          LEFT JOIN asset a ON ar.asset_id = a.id
                          LEFT JOIN asset_relation_channel arc ON arc.asset_relation_id = ar.id AND arc.deleted = 0
@@ -169,10 +208,8 @@ class AssetRelationEntity extends AbstractListener
             $channelsId = "'" . implode("','", $channelsId) . "'";
             $sql .= " AND arc.channel_id IN ({$channelsId})";
         }
-        return $this
-            ->getEntityManager()
-            ->nativeQuery($sql)
-            ->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $sql;
     }
 
     /**
@@ -205,5 +242,16 @@ class AssetRelationEntity extends AbstractListener
     protected function exception(string $key): string
     {
         return $this->getContainer()->get('language')->translate($key, 'exceptions', 'AssetRelation');
+    }
+
+    /**
+     * @param AssetRelation $assetRelation
+     * @param bool $isGalleryImage
+     * @return bool
+     */
+    protected function hasMainImageEntity(AssetRelation $assetRelation, bool $isGalleryImage): bool
+    {
+        return $isGalleryImage
+                && $this->countRelation($assetRelation, 'Gallery Image', 'Main', 'Global') > 0;
     }
 }

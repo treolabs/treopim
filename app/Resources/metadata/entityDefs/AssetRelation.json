@@ -30,6 +30,9 @@
             "options": [
                 "Main"
             ],
+            "optionColors": {
+                "Main": "00BFFF"
+            },
             "audited": false,
             "readOnly": false,
             "tooltip": false
