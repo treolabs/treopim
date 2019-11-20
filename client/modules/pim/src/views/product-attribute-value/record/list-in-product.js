@@ -57,13 +57,11 @@ Espo.define('pim:views/product-attribute-value/record/list-in-product', 'views/r
         setListMode() {
             this.mode = 'list';
             this.updateModeInFields(this.mode);
-            this.reduceValueField();
         },
 
         setEditMode() {
             this.mode = 'edit';
             this.updateModeInFields(this.mode);
-            this.widenValueField();
         },
 
         updateModeInFields(mode) {
@@ -77,20 +75,6 @@ Espo.define('pim:views/product-attribute-value/record/list-in-product', 'views/r
                         fieldView.reRender();
                     }
                 }
-            });
-        },
-
-        widenValueField() {
-            this.hiddenInEditColumns.forEach(name => {
-                this.$el.find('.cell[data-name="value"]').attr('colspan', this.hiddenInEditColumns.length + 1);
-                this.$el.find(`.cell[data-name="${name}"]`).addClass('hidden');
-            });
-        },
-
-        reduceValueField() {
-            this.hiddenInEditColumns.forEach(name => {
-                this.$el.find('.cell[data-name="value"]').removeAttr('colspan');
-                this.$el.find(`.cell[data-name="${name}"]`).removeClass('hidden');
             });
         }
 
