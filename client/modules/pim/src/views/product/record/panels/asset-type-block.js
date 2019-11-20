@@ -2,7 +2,6 @@ Espo.define('pim:views/product/record/panels/asset-type-block', 'dam:views/asset
     Dep => Dep.extend({
         setup() {
             this.listenTo(this.model, 'advanced-filters', () => {
-                debugger
                 this.applyOverviewFilters();
             });
             Dep.prototype.setup.call(this);
