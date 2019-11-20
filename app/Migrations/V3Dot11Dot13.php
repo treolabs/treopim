@@ -99,6 +99,9 @@ class V3Dot11Dot13 extends AbstractMigration
                 $this->migratedAttachment[$id] = $idAsset;
             } else {
                 $scope = $attachment['scope'] == 'Channel' ?  $attachment['scope'] : null;
+                if (!empty($pimImageChannels[$attachment['pimImage_id']])) {
+                    $assetIdsWithChannel .= "'{$this->migratedAttachment[$id]}',";
+                }
                 $this->getEntityManager()
                     ->nativeQuery("
                     INSERT INTO asset_relation
@@ -135,7 +138,7 @@ class V3Dot11Dot13 extends AbstractMigration
                                 WHERE scope = 'Global' AND asset_id IN ({$assetIdsWithChannel})");
             //create link asset_relation_channel
             $this->getEntityManager()
-                ->nativeQuery(" 
+                ->nativeQuery("
                 INSERT INTO asset_relation_channel (channel_id, asset_relation_id)
                 SELECT DISTINCT pic.channel_id, ar.id FROM pim_image AS pi
                     RIGHT JOIN attachment AS a ON a.id = pi.image_id AND pi.deleted = 0
