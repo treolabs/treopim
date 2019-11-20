@@ -55,7 +55,7 @@
       "previewSize": "small",
       "readOnly": true,
       "notStorable": true,
-      "view": "pim:views/associated-product/fields/image"
+      "view": "pim:views/fields/full-width-list-image"
     },
     "bothDirections": {
       "type": "bool",
@@ -71,7 +71,7 @@
       "previewSize": "small",
       "readOnly": true,
       "notStorable": true,
-      "view": "pim:views/associated-product/fields/image"
+      "view": "pim:views/fields/full-width-list-image"
     }
   },
   "links": {

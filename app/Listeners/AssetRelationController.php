@@ -36,29 +36,31 @@ class AssetRelationController extends AbstractListener
      */
     public function afterActionByEntity(Event $event)
     {
-        $this->putAdditionalFields($event);
+        $this->addAdditionalFields($event);
     }
 
     /**
      * Set Channels and fox view Role
      * @param Event $event
      */
-    protected function putAdditionalFields(Event $event)
+    protected function addAdditionalFields(Event $event)
     {
         $result = $event->getArgument('result');
         $list = &$result['list'];
         $ids = "'" . join("','", array_column($list, 'id')) . "'";
         $channelsRelations = $this
             ->getEntityManager()
-            ->nativeQuery("
-              SELECT ar.id,
+            ->nativeQuery(
+                "SELECT ar.id,
                   (SELECT GROUP_CONCAT(c.id ORDER BY c.id  SEPARATOR '##')
                              FROM asset_relation_channel arc
-                             RIGHT JOIN channel c ON c.id = arc.channel_id WHERE arc.asset_relation_id = ar.id
+                             RIGHT JOIN channel c ON c.id = arc.channel_id 
+                             WHERE arc.asset_relation_id = ar.id AND arc.deleted = 0
                   ) AS channelsIds,
                   (SELECT GROUP_CONCAT(c.name ORDER BY c.id SEPARATOR '##')
                    FROM asset_relation_channel arc
-                            RIGHT JOIN channel c ON c.id = arc.channel_id WHERE arc.asset_relation_id = ar.id
+                            RIGHT JOIN channel c ON c.id = arc.channel_id 
+                            WHERE arc.asset_relation_id = ar.id AND arc.deleted = 0
                   ) AS channelsNames
               FROM asset_relation ar
               WHERE ar.deleted = 0 AND ar.scope = 'Channel' AND ar.id IN ({$ids})"
