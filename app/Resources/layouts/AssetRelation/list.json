@@ -1,0 +1,13 @@
+[
+    {
+        "name": "role",
+        "notSortable": true
+    },
+    {
+        "name": "scope"
+    },
+    {
+        "name": "channels",
+        "notSortable": true
+    }
+]

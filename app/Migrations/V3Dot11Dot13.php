@@ -132,78 +132,43 @@ class V3Dot11Dot13 extends AbstractMigration
         if (!empty($assetIdsWithChannel)) {
             //update scope
             $this->getEntityManager()
-                ->nativeQuery("UPDATE 
-                                    asset_relation 
-                                SET scope = 'Channel' 
-                                WHERE scope = 'Global' AND asset_id IN ({$assetIdsWithChannel})");
-            //create link asset_relation_channel
+                ->nativeQuery("UPDATE
+                                        asset_relation ar
+                                            RIGHT JOIN asset a ON a.id = ar.asset_id
+                                            RIGHT JOIN pim_image pi ON 
+                                                a.file_id = pi.image_id 
+                                                AND pi.product_id IS NOT NULL 
+                                                AND pi.product_id != ''
+                                                AND ar.entity_id = pi.product_id
+                                    SET ar.scope = 'Channel'
+                                    WHERE ar.scope = 'Global' AND pi.scope = 'Channel' AND ar.asset_id IN ({$assetIdsWithChannel})");
             $this->getEntityManager()
-                ->nativeQuery("
-                INSERT INTO asset_relation_channel (channel_id, asset_relation_id)
-                SELECT DISTINCT pic.channel_id, ar.id FROM pim_image AS pi
-                    RIGHT JOIN attachment AS a ON a.id = pi.image_id AND pi.deleted = 0
-                    RIGHT JOIN pim_image_channel AS pic ON pi.id = pic.pim_image_id AND pic.deleted = 0
-                    LEFT JOIN asset ON asset.file_id = a.id AND asset.deleted = 0
-                    LEFT JOIN asset_relation AS ar ON ar.asset_id = asset.id AND ar.deleted = 0 AND ar.scope = 'Channel'
-                WHERE pi.deleted = 0 AND pi.scope = 'Channel' AND ar.asset_id IN ({$assetIdsWithChannel})");
+                ->nativeQuery("UPDATE
+                                        asset_relation ar
+                                            RIGHT JOIN asset a ON a.id = ar.asset_id
+                                            RIGHT JOIN pim_image pi ON 
+                                                    a.file_id = pi.image_id 
+                                                    AND pi.category_id IS NOT NULL 
+                                                    AND pi.category_id != ''
+                                                    AND ar.entity_id = pi.category_id
+                                    SET ar.scope = 'Channel'
+                                    WHERE  ar.scope = 'Global' AND pi.scope = 'Channel' AND ar.asset_id IN ({$assetIdsWithChannel})");
+            //create link asset_relation_channel
+            $this->insertAssetRelationChannel('Product', $assetIdsWithChannel);
+            $this->insertAssetRelationChannel('Category', $assetIdsWithChannel);
         }
 
         //update sort order
         $this->getEntityManager()
-            ->nativeQuery("
-                    UPDATE asset_relation SET scope = 'Global' WHERE scope IS NULL OR scope = '';
-            
-                   UPDATE asset_relation ar
-                        RIGHT JOIN asset a ON a.id = ar.asset_id
-                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id 
-                            AND pi.product_id = ar.entity_id 
-                            AND pi.category_id IS NULL
-                    SET ar.sort_order = pi.sort_order
-                    WHERE ar.deleted = 0
-                      AND ar.entity_name = 'Product';
+            ->nativeQuery("UPDATE asset_relation SET scope = 'Global' WHERE scope IS NULL OR scope = '';");
 
-                    UPDATE asset_relation ar
-                        RIGHT JOIN asset a ON a.id = ar.asset_id
-                        RIGHT JOIN pim_image pi ON a.file_id = pi.image_id 
-                            AND pi.category_id = ar.entity_id 
-                            AND pi.product_id IS NULL
-                    SET ar.sort_order = pi.sort_order
-                    WHERE ar.deleted = 0
-                      AND ar.entity_name = 'Category';
-            
-                      UPDATE product p
-                            LEFT JOIN (SELECT ar.entity_id, min(ar.sort_order) as sort
-                                       FROM asset_relation ar
-                                       WHERE ar.scope = 'Global'
-                                         AND ar.entity_name = 'Product'
-                                         AND ar.deleted = 0
-                                       GROUP BY ar.entity_id
-                            ) as sort ON sort.entity_id = p.id
-                            LEFT JOIN asset_relation ar ON ar.entity_id = sort.entity_id AND ar.sort_order = sort.sort
-                            LEFT JOIN asset a ON ar.asset_id = a.id
-                        SET p.image_id = a.file_id, ar.role = '[\"Main\"]'
-                        WHERE p.deleted = 0;
-                        
-                        UPDATE category c
-                            LEFT JOIN (SELECT ar.entity_id, min(ar.sort_order) as sort
-                                       FROM asset_relation ar
-                                       WHERE ar.scope = 'Global'
-                                         AND ar.entity_name = 'Category'
-                                         AND ar.deleted = 0
-                                       GROUP BY ar.entity_id
-                            ) as sort ON sort.entity_id = c.id
-                            LEFT JOIN asset_relation ar ON ar.entity_id = sort.entity_id AND ar.sort_order = sort.sort
-                            LEFT JOIN asset a ON ar.asset_id = a.id
-                        SET c.image_id = a.file_id, ar.role = '[\"Main\"]'
-                        WHERE c.deleted = 0;
-                      ");
+        $this->updateMainImage('Product');
+        $this->updateMainImage('Category');
 
         $this->getEntityManager()
             ->nativeQuery('
                         DROP TABLE pim_image;
                         DROP TABLE pim_image_channel;');
-        
-        $this->updateComposer();
     }
 
     /**
@@ -268,62 +233,15 @@ class V3Dot11Dot13 extends AbstractMigration
             }
         }
         $this->executeUpdate($this->sqlUpdate);
-
         if (!empty($assetIds)) {
             $assetIds = "'" . implode("','", $assetIds) . "'";
             //insert pimImages
-            $this->getEntityManager()
-                ->nativeQuery("
-                            INSERT INTO pim_image 
-                            (id, name, image_id, deleted, sort_order, scope, assigned_user_id, product_id, category_id)
-                            SELECT 
-                                SUBSTR(MD5(CONCAT(ar.id, RAND())), 16) as id,
-                                a.name,
-                                a.file_id AS image_id,
-                                a.deleted,
-                                CASE
-                                    WHEN ar.sort_order IS NOT NULL THEN ar.sort_order
-                                    ELSE (SELECT @n := @n + max(ar1.sort_order) FROM asset_relation AS ar1, (SELECT @n := 1) s WHERE ar.entity_id = ar.entity_id)
-                                END AS sort_order,
-                                ar.scope,
-                                ar.assigned_user_id,
-                               CASE
-                                   WHEN ar.entity_name = 'Product' THEN ar.entity_id
-                                   ELSE NULL
-                               END AS product_id,
-                               CASE
-                                   WHEN ar.entity_name = 'Category' THEN ar.entity_id
-                                   ELSE NULL
-                               END AS category_id
-                            FROM asset AS a
-                                     RIGHT JOIN asset_relation AS ar
-                                                ON a.id = ar.asset_id 
-                                                    AND ar.deleted = 0 
-                                                    AND ar.entity_name IN ('Product', 'Category')
-                                     RIGHT JOIN attachment AS att ON a.file_id = att.id AND att.deleted = 0
-                            WHERE a.type = 'Gallery Image'
-                              AND a.deleted = 0 
-                              AND a.id IN ({$assetIds})");
+            $this->insertPimImage('Product', $assetIds);
+            $this->insertPimImage('Category', $assetIds);
+
             //insert pim_image_channel
-            $this->getEntityManager()
-                ->nativeQuery("INSERT INTO pim_image_channel (channel_id, pim_image_id)
-                                    SELECT DISTINCT arc.channel_id, pi.id AS pim_image_id
-                                    FROM asset AS a
-                                             RIGHT JOIN attachment AS att ON att.id = a.file_id AND a.deleted = 0
-                                             RIGHT JOIN asset_relation ar 
-                                                ON ar.asset_id = a.id 
-                                                    AND ar.deleted = 0 
-                                                    AND ar.scope = 'Channel' 
-                                                    AND ar.entity_name IN ('Product', 'Category')
-                                             RIGHT JOIN asset_relation_channel arc 
-                                                ON ar.id = arc.asset_relation_id 
-                                                    AND arc.deleted = 0
-                                             LEFT JOIN pim_image pi 
-                                                ON pi.image_id = att.id 
-                                                    AND pi.deleted = 0 
-                                                    AND pi.scope = 'Channel'
-                                    WHERE a.deleted = 0 AND a.id IN ({$assetIds});
-                                    ");
+            $this->insertPimImageChannel('Product', $assetIds);
+            $this->insertPimImageChannel('Category', $assetIds);
 
             $this
                 ->getEntityManager()
@@ -335,7 +253,6 @@ class V3Dot11Dot13 extends AbstractMigration
                                     FROM asset_relation_channel 
                                     WHERE asset_relation_id 
                                             IN (SELECT id FROM asset_relation WHERE asset_id IN ({$assetIds}))");
-
             $this
                 ->getEntityManager()
                 ->nativeQuery("DELETE FROM asset_relation WHERE asset_id IN ({$assetIds})");
@@ -359,6 +276,155 @@ class V3Dot11Dot13 extends AbstractMigration
                 ->getEntityManager()
                 ->nativeQuery($sql);
         }
+    }
+
+    /**
+     * @param string $entityName
+     * @param string $assetIds
+     */
+    protected function insertPimImage(string $entityName, string $assetIds)
+    {
+        if ($entityName == 'Product') {
+            $select = " ar.entity_id AS product_id,
+                        null AS category_id";
+        } elseif($entityName == 'Category') {
+            $select = " null AS product_id,
+                        ar.entity_id AS category_id";
+        } else {
+            return;
+        }
+        $sql = "                
+                INSERT INTO pim_image
+                (id, name, image_id, deleted, sort_order, scope, assigned_user_id, product_id, category_id)
+                SELECT
+                    SUBSTR(MD5(CONCAT(ar.id, RAND())), 16) as id,
+                    a.name,
+                    a.file_id AS image_id,
+                    a.deleted,
+                    CASE
+                       WHEN ar.sort_order IS NOT NULL THEN ar.sort_order
+                       ELSE (SELECT @n := @n + CASE WHEN max(ar1.sort_order) is not null THEN max(ar1.sort_order) ELSE 1 END
+                             FROM asset_relation AS ar1,
+                                  (SELECT @n := 1) s
+                             WHERE ar1.entity_id = ar.entity_id)
+                       END AS sort_order,
+                    ar.scope,
+                    ar.assigned_user_id,
+                    {$select}
+                FROM asset AS a
+                         RIGHT JOIN asset_relation AS ar
+                                    ON a.id = ar.asset_id
+                                        AND ar.deleted = 0
+                                        AND ar.entity_name = '{$entityName}'
+                         RIGHT JOIN attachment AS att ON a.file_id = att.id AND att.deleted = 0
+                WHERE a.type = 'Gallery Image'
+                    AND a.deleted = 0
+                  AND a.id IN ({$assetIds});";
+
+        $this->getEntityManager()->nativeQuery($sql);
+    }
+
+    /**
+     * @param string $entityName
+     */
+    protected function updateMainImage(string $entityName)
+    {
+        if ($entityName == 'Product') {
+            $where = ' AND pi.product_id IS NOT NULL AND pi.product_id != \'\'';
+        } elseif($entityName == 'Category') {
+            $where = ' AND pi.category_id IS NOT NULL AND pi.category_id != \'\'';
+        } else {
+            return;
+        }
+
+        $table = lcfirst($entityName);
+
+        $this->getEntityManager()
+            ->nativeQuery("
+                UPDATE asset_relation ar
+                    RIGHT JOIN asset a ON a.id = ar.asset_id
+                    RIGHT JOIN pim_image pi ON a.file_id = pi.image_id {$where}
+                SET ar.sort_order = pi.sort_order
+                WHERE ar.deleted = 0
+                  AND ar.entity_name = '{$entityName}';
+                  
+                UPDATE {$table} p
+                       LEFT JOIN (SELECT ar.entity_id, min(ar.sort_order) as sort
+                                   FROM asset_relation ar
+                                   WHERE ar.scope = 'Global'
+                                     AND ar.entity_name = '{$entityName}'
+                                     AND ar.deleted = 0
+                                   GROUP BY ar.entity_id
+                            ) as sort ON sort.entity_id = p.id
+                            LEFT JOIN asset_relation ar ON ar.entity_id = sort.entity_id AND ar.sort_order = sort.sort
+                            LEFT JOIN asset a ON ar.asset_id = a.id
+                        SET p.image_id = a.file_id, ar.role = '[\"Main\"]'
+                        WHERE p.deleted = 0;
+                  ");
+    }
+
+    /**
+     * @param string $entityName
+     * @param string $assetIdsWithChannel
+     */
+    protected function insertAssetRelationChannel(string $entityName, string $assetIdsWithChannel)
+    {
+        $where = '';
+        if ($entityName == 'Product') {
+            $where = ' pi.product_id IS NOT NULL AND pi.product_id != \'\'';
+        } elseif($entityName == 'Category') {
+            $where = ' pi.category_id IS NOT NULL AND pi.category_id != \'\'';
+        } else {
+            return;
+        }
+
+        $this->getEntityManager()
+            ->nativeQuery("
+             INSERT INTO asset_relation_channel (channel_id, asset_relation_id)
+                SELECT  pic.channel_id, ar.id
+                FROM pim_image AS pi
+                    RIGHT JOIN pim_image_channel AS pic ON pi.id = pic.pim_image_id AND pic.deleted = 0
+                    LEFT JOIN asset ON asset.file_id = pi.image_id AND asset.deleted = 0
+                    LEFT JOIN asset_relation AS ar
+                       ON ar.entity_name = '{$entityName}' AND ar.asset_id = asset.id
+                          AND ar.deleted = 0 AND ar.scope = 'Channel'
+                WHERE {$where}
+                  AND pi.deleted = 0
+                  AND pi.scope = 'Channel'
+                  AND ar.asset_id IN ({$assetIdsWithChannel});");
+    }
+
+    /**
+     * @param string $entityName
+     * @param string $assetIds
+     */
+    protected function insertPimImageChannel(string $entityName, string $assetIds)
+    {
+        $where = '';
+        if ($entityName == 'Product') {
+            $where = ' pi.product_id IS NOT NULL AND pi.product_id != \'\'';
+        } elseif($entityName == 'Category') {
+            $where = ' pi.category_id IS NOT NULL AND pi.category_id != \'\'';
+        } else {
+            return;
+        }
+        $this->getEntityManager()
+            ->nativeQuery("INSERT INTO pim_image_channel (channel_id, pim_image_id)
+                                    SELECT arc.channel_id, pi.id AS pim_image_id
+                                    FROM asset AS a
+                                             RIGHT JOIN asset_relation ar
+                                                        ON ar.asset_id = a.id
+                                                            AND ar.deleted = 0
+                                                            AND ar.scope = 'Channel'
+                                                            AND ar.entity_name = '{$entityName}'
+                                             RIGHT JOIN asset_relation_channel arc
+                                                        ON ar.id = arc.asset_relation_id
+                                                            AND arc.deleted = 0
+                                             LEFT JOIN pim_image pi
+                                                       ON pi.image_id = a.file_id
+                                                           AND pi.deleted = 0
+                                                           AND pi.scope = 'Channel'
+                                    WHERE {$where} AND a.deleted = 0 AND a.type = 'Gallery Image' AND a.id IN ({$assetIds});");
     }
 
     /**
@@ -511,15 +577,6 @@ class V3Dot11Dot13 extends AbstractMigration
             ->findOne();
 
         return !empty($collection) ? $collection->get('id') : null;
-    }
-
-    protected function updateComposer()
-    {
-        $composer = Composer::getComposerJson();
-        if (!empty($composer["require"]["treolabs/pim"])) {
-            $composer["require"]["treolabs/pim"] = '^3.11.17';
-            Composer::setComposerJson($composer);
-        }
     }
 
     /**
