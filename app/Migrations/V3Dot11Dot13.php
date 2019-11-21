@@ -32,7 +32,6 @@ use Treo\Core\FilePathBuilder;
 use Treo\Core\FileStorage\Storages\UploadDir;
 use Treo\Core\Migration\AbstractMigration;
 use Treo\Core\Utils\Auth;
-use Treo\Services\Composer;
 
 /**
  * Migration class for version 3.11.13
