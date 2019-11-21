@@ -32,6 +32,26 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
 class ProductFamilyAttribute extends AbstractSelectManager
 {
     /**
+     * @inheritdoc
+     */
+    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    {
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        $types = implode("','", $this->getMetadata()->get('entityDefs.Attribute.fields.type.options', []));
+
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+
+        // add filtering by attributes types
+        $selectParams['customWhere'] .= " 
+            AND product_family_attribute.attribute_id IN (SELECT id 
+                                                            FROM attribute 
+                                                            WHERE type IN ('{$types}') AND deleted=0)";
+
+        return $selectParams;
+    }
+    /**
      * @param array $result
      */
     protected function boolFilterLinkedWithAttributeGroup(array &$result)
