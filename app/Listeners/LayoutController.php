@@ -51,7 +51,7 @@ class LayoutController extends AbstractListener
             $result = Json::decode($event->getArgument('result'), true);
 
             // push row
-            $result[0]['rows'][] = [['name' => 'isMultilang'], false];
+            $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
 
             // push row
             $result[0]['rows'][] = [['name' => 'name'], ['name' => 'typeValue']];
