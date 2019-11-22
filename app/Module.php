@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim;
 
+use Espo\Core\Utils\Json;
 use Treo\Core\ModuleManager\AbstractModule;
 
 /**
@@ -37,5 +38,27 @@ class Module extends AbstractModule
     public static function getLoadOrder(): int
     {
         return 5120;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function loadMetadata(\stdClass &$data)
+    {
+        parent::loadMetadata($data);
+
+        // prepare result
+        $result = Json::decode(Json::encode($data), true);
+
+        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue']['visible']['conditionGroup'] = [
+            [
+                'type'      => 'in',
+                'attribute' => 'type',
+                'value'     => ['enum', 'multiEnum']
+            ]
+        ];
+
+        // set data
+        $data = Json::decode(Json::encode($result));
     }
 }

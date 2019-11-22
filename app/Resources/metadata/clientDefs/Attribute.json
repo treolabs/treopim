@@ -40,84 +40,19 @@
           ]
         }
       },
-      "typeValue": {
-        "readOnly": {
-          "conditionGroup": [
-            {
-              "type": "and",
-              "value": [
-                {
-                  "type": "isNotEmpty",
-                  "attribute": "id"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "unit"
-                }
-              ]
-            }
-          ]
-        },
+      "isMultilang": {
         "visible": {
           "conditionGroup": [
             {
-              "type": "or",
+              "type": "in",
+              "attribute": "type",
               "value": [
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "enum"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "multiEnum"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "enumMultiLang"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "multiEnumMultiLang"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "unit"
-                }
-              ]
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "or",
-              "value": [
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "enum"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "multiEnum"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "enumMultiLang"
-                },
-                {
-                  "type": "equals",
-                  "attribute": "type",
-                  "value": "multiEnumMultiLang"
-                }
+                "bool",
+                "enum",
+                "multiEnum",
+                "varchar",
+                "text",
+                "wysiwyg"
               ]
             }
           ]
