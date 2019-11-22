@@ -22,6 +22,7 @@ namespace Pim\Listeners;
 
 use Espo\Core\Utils\Json;
 use Treo\Core\EventManager\Event;
+use Treo\Core\Utils\Util;
 use Treo\Listeners\AbstractListener;
 
 /**
@@ -49,20 +50,21 @@ class LayoutController extends AbstractListener
             /** @var array $result */
             $result = Json::decode($event->getArgument('result'), true);
 
-            $result[] = [
-                'label' => 'Data',
-                'style' => 'default',
-                'rows'  => [
-                    [
-                        ['name' => 'isMultilang'],
-                        false
-                    ],
-                    [
-                        ['name' => 'name'],
-                        ['name' => 'typeValue']
-                    ],
-                ]
-            ];
+            // push row
+            $result[0]['rows'][] = [['name' => 'isMultilang'], false];
+
+            // push row
+            $result[0]['rows'][] = [['name' => 'name'], ['name' => 'typeValue']];
+
+            if ($this->getConfig()->get('isMultilangActive', false)) {
+                foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
+                    // prepare key
+                    $key = ucfirst(Util::toCamelCase(strtolower($locale)));
+
+                    // push row
+                    $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
+                }
+            }
 
             $event->setArgument('result', Json::encode($result));
         }

@@ -24,6 +24,8 @@ namespace Pim;
 
 use Espo\Core\Utils\Json;
 use Treo\Core\ModuleManager\AbstractModule;
+use Treo\Core\Utils\Config;
+use Treo\Core\Utils\Util;
 
 /**
  * Class Module
@@ -54,9 +56,41 @@ class Module extends AbstractModule
             [
                 'type'      => 'in',
                 'attribute' => 'type',
-                'value'     => ['enum', 'multiEnum']
+                'value'     => [
+                    'enum',
+                    'multiEnum'
+                ]
             ]
         ];
+
+        /** @var Config $config */
+        $config = $this->container->get('config');
+
+        if ($config->get('isMultilangActive', false)) {
+            foreach ($config->get('inputLanguageList', []) as $locale) {
+                // prepare key
+                $key = ucfirst(Util::toCamelCase(strtolower($locale)));
+
+                $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['visible']['conditionGroup'] = [
+                    [
+                        'type'      => 'isTrue',
+                        'attribute' => 'isMultilang'
+                    ]
+                ];
+
+                $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['visible']['conditionGroup'] = [
+                    [
+                        'type'      => 'in',
+                        'attribute' => 'type',
+                        'value'     => ['enum', 'multiEnum']
+                    ],
+                    [
+                        'type'      => 'isTrue',
+                        'attribute' => 'isMultilang'
+                    ]
+                ];
+            }
+        }
 
         // set data
         $data = Json::decode(Json::encode($result));
