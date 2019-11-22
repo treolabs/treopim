@@ -76,7 +76,8 @@
         "multiEnumMultiLang",
         "arrayMultiLang",
         "wysiwyg",
-        "wysiwygMultiLang"
+        "wysiwygMultiLang",
+        "image"
       ],
       "default": "text",
       "layoutMassUpdateDisabled": true,
@@ -123,17 +124,11 @@
     },
     "sortOrder": {
       "type": "int",
-      "required": false,
-      "default": 0,
-      "disableFormatting": false,
-      "audited": false,
-      "readOnly": false,
-      "tooltip": false,
+      "default": null,
       "layoutDetailDisabled": true,
       "layoutListDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "isCustom": false
+      "layoutFiltersDisabled": true
     },
     "isRequired": {
       "notStorable": true,

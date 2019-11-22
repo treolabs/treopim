@@ -28,11 +28,10 @@
     },
     "channels": {
       "type": "linkMultiple",
-      "required": true,
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
-      "noLoad": true,
+      "noLoad": false,
       "view": "pim:views/product-family-attribute/fields/channels"
     },
     "productAttributeValues": {

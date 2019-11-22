@@ -22,7 +22,19 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         template: 'pim:product/record/panels/product-attribute-values',
 
-        baseSelectFields: ['attributeId', 'attributeName', 'value', 'isRequired', 'scope', 'channelsIds', 'channelsNames', 'data', 'productFamilyAttributeId'],
+        baseSelectFields: [
+            'channelsIds',
+            'channelsNames',
+            'data',
+            'attributeGroupId',
+            'attributeGroupName',
+            'attributeId',
+            'attributeName',
+            'isRequired',
+            'productFamilyAttributeId',
+            'scope',
+            'value'
+        ],
 
         groupKey: 'attributeGroupId',
 
@@ -37,6 +49,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             label: 'No Group'
         },
 
+        initialAttributes: null,
+
         boolFilterData: {
             notLinkedProductAttributeValues() {
                 return {
@@ -47,7 +61,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         events: _.extend({
-            'click [data-action="unlinkAttributeGroup"]': function(e) {
+            'click [data-action="unlinkAttributeGroup"]': function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 let data = $(e.currentTarget).data();
@@ -202,8 +216,10 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
                 this.setFilter(this.filter);
                 this.updateBaseSelectFields();
-                this.listenTo(this.model, 'updateAttributes change:productFamilyId update-all after:relate after:unrelate', () => {
-                    this.actionRefresh();
+                this.listenTo(this.model, 'updateAttributes change:productFamilyId update-all after:relate after:unrelate', link => {
+                    if (!link || link === 'productAttributeValues') {
+                        this.actionRefresh();
+                    }
                 });
 
                 if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
@@ -287,6 +303,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 dialog.render();
                 this.notify(false);
                 dialog.once('select', selectObj => {
+                    this.notify('Loading...');
                     if (!Array.isArray(selectObj)) {
                         return;
                     }
@@ -342,6 +359,10 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             Dep.prototype.afterRender.call(this);
 
             this.buildGroups();
+
+            if (this.mode === 'edit') {
+                this.setEditMode();
+            }
         },
 
         fetchCollectionGroups(callback) {
@@ -448,6 +469,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         buildGroups() {
+            let count = 0;
             this.groups.forEach(group => {
                 this.getCollectionFactory().create(this.scope, collection => {
                     group.rowList.forEach(id => {
@@ -457,6 +479,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     this.setGroupCollectionDefs(group, collection);
 
                     this.listenTo(collection, 'sync', () => {
+                        this.initialAttributes = this.getInitialAttributes();
                         this.model.trigger('attributes-updated');
                         collection.models.sort((a, b) => a.get('sortOrder') - b.get('sortOrder'));
                         if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
@@ -476,11 +499,17 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         el: `${this.options.el} .group[data-name="${group.key}"] .list-container`,
                         showMore: false
                     };
+
                     this.createView(group.key, viewName, this.modifyListOptions(options), view => {
                         if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
                             view.listenTo(view, 'after:render', () => this.applyOverviewFilters());
                         }
-                        view.render();
+                        view.render(() => {
+                            count++;
+                            if (count === this.groups.length) {
+                                this.trigger('groups-rendered');
+                            }
+                        });
                     });
                 });
             });
@@ -634,8 +663,11 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         actionRefresh() {
+            Object.keys(this.nestedViews).forEach(view => this.clearView(view));
             this.getMetadata().fetch();
-            this.fetchCollectionGroups(() => this.reRender());
+            this.fetchCollectionGroups(() => {
+                this.reRender();
+            });
         },
 
         unlinkAttributeGroup(data) {
@@ -672,6 +704,127 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     }.bind(this),
                 });
             }, this);
+        },
+
+        setListMode() {
+            this.mode = 'list';
+
+            this.groups.forEach(group => {
+                let groupView = this.getView(group.key);
+                if (groupView) {
+                    groupView.setListMode();
+                }
+            });
+
+            this.reRender();
+        },
+
+        setEditMode() {
+            this.initialAttributes = this.getInitialAttributes();
+
+            const groupsRendered = this.groups.every(group => {
+                const groupView = this.getView(group.key);
+                return groupView && groupView.isRendered();
+            });
+
+            const updateMode = () => {
+                this.mode = 'edit';
+                this.groups.forEach(group => {
+                    let groupView = this.getView(group.key);
+                    if (groupView) {
+                        groupView.setEditMode();
+                    }
+                });
+            };
+
+            if (groupsRendered) {
+                updateMode();
+            } else {
+                this.listenToOnce(this, 'groups-rendered', () => updateMode());
+            }
+        },
+
+        cancelEdit() {
+            this.actionRefresh();
+        },
+
+        getInitialAttributes() {
+            const data = {};
+            this.collection.forEach(model => {
+                const modelData = {
+                    value: model.get('value')
+                };
+                const actualFields = this.getFieldManager().getActualAttributeList(model.get('attributeType'), 'value');
+                actualFields.forEach(field => {
+                    if (model.has(field)) {
+                        _.extend(modelData, {[field]: model.get(field)});
+                    }
+                });
+                const additionalData = model.get('data');
+                if (additionalData) {
+                    modelData.data = additionalData;
+                }
+                data[model.id] = Espo.Utils.cloneDeep(modelData);
+            });
+            return data;
+        },
+
+        panelFetch() {
+            let data = false;
+            this.groups.forEach(group => {
+                const groupView = this.getView(group.key);
+                (groupView.rowList || []).forEach(id => {
+                    const row = groupView.getView(id);
+                    const value = row.getView('valueField');
+                    if (value.mode === 'edit') {
+                        const fetchedData = value.fetch();
+                        const initialData = this.initialAttributes[id];
+                        if (this.equalityValueCheck(fetchedData, initialData)) {
+                            value.model.set(fetchedData);
+                            data = _.extend(data || {}, {[id]: fetchedData});
+                        }
+                    }
+                });
+            });
+            return data;
+        },
+
+        equalityValueCheck(fetchedData, initialData) {
+            return !_.isEqual(initialData, fetchedData) && (Object.keys(fetchedData).every(key => {
+                const initial = initialData[key];
+                const fetched = fetchedData[key];
+                return (Array.isArray(initial) ? initial.length : initial) || (Array.isArray(fetched) ? fetched.length : fetched);
+            }));
+        },
+
+        save() {
+            const data = this.panelFetch();
+            if (data) {
+                const promises = [];
+                $.each(data, (id, attrs) => {
+                    this.collection.get(id).set(attrs, {silent: true});
+                    promises.push(this.ajaxPutRequest(`${this.collection.name}/${id}`, attrs))
+                });
+                this.notify('Saving...');
+                Promise.all(promises).then(response => this.notify('Saved', 'success'), error => this.actionRefresh());
+            }
+        },
+
+        validate() {
+            this.trigger('collapsePanel', 'show');
+
+            let notValid = false;
+            this.groups.forEach(group => {
+                const groupView = this.getView(group.key);
+                (groupView.rowList || []).forEach(id => {
+                    const row = groupView.getView(id);
+                    const value = row.getView('valueField');
+                    if (value.mode === 'edit' && !value.disabled && !value.readOnly) {
+                        notValid = value.validate() || notValid;
+                    }
+                });
+            });
+            return notValid;
         }
 
     })

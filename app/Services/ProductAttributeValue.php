@@ -43,11 +43,7 @@ class ProductAttributeValue extends AbstractService
         $entity->set('isCustom', $this->isCustom($entity));
         $entity->set('attributeType', (!empty($entity->get('attribute'))) ? $entity->get('attribute')->get('type') : null);
 
-        if ($entity->get('attributeType') == 'bool') {
-            $entity->set('value', (bool)$entity->get('value'));
-        }
-
-        $this->prepareArrayType($entity);
+        $this->convertValue($entity);
     }
 
     /**
@@ -67,6 +63,44 @@ class ProductAttributeValue extends AbstractService
 
     /**
      * @param Entity $entity
+     */
+    protected function convertValue(Entity $entity)
+    {
+        $type = $entity->get('attributeType');
+
+        if (!empty($type)) {
+            switch ($type) {
+                case 'bool':
+                    $entity->set('value', (bool)$entity->get('value'));
+                    break;
+                case 'int':
+                    $entity->set('value', (int)$entity->get('value'));
+                    break;
+                case 'unit':
+                case 'float':
+                    $entity->set('value', (float)$entity->get('value'));
+                    break;
+                case 'array':
+                case 'arrayMultiLang':
+                case 'multiEnum':
+                case 'multiEnumMultiLang':
+                    $entity->set('value', Json::decode($entity->get('value'), true));
+
+                    if ($this->getConfig()->get('isMultilangActive')
+                        && in_array($type, ['arrayMultiLang', 'multiEnumMultiLang'])) {
+                        foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                            $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
+                            $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
+                        }
+
+                        break;
+                    }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
      *
      * @return bool
      */
@@ -81,28 +115,5 @@ class ProductAttributeValue extends AbstractService
         }
 
         return $isCustom;
-    }
-
-    /**
-     * Convert array attributes value to needed format
-     *
-     * @param Entity $entity
-     */
-    protected function prepareArrayType(Entity $entity)
-    {
-        $type = $entity->get('attributeType');
-
-        if (in_array($type, ['array', 'arrayMultiLang', 'multiEnum', 'multiEnumMultiLang'])) {
-            $entity->set('value', Json::decode($entity->get('value'), true));
-
-            // for multiLang fields
-            if ($this->getConfig()->get('isMultilangActive')
-                && in_array($type, ['arrayMultiLang', 'multiEnumMultiLang'])) {
-                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                    $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
-                    $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
-                }
-            }
-        }
     }
 }

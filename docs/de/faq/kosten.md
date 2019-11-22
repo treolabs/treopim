@@ -26,7 +26,7 @@ Für jedes Projekt erstellen wir basierend auf der Besprechung der Kundenanforde
 
 In seltenen Fällen kann es vorkommen, dass die tatsächlichen Kosten von der Schätzung abweichen (z.B. wenn diese objektiv nicht schätzbar sind oder ein drittes System oder eine weitere Partei in die Lösung involviert werden). In diesen Fällen werden wir es dem Kunden rechtzeitig melden und eine Absprache halten, was dann mit der Anforderung zu tun ist.
 
-Es gelten ohne Ausnahmen die AGBs von TreoLabs GmbH.
+Es gelten ohne Ausnahmen die [AGBs](https://treopim.com/de/agb) von TreoLabs GmbH.
 
 
 
@@ -34,7 +34,7 @@ Es gelten ohne Ausnahmen die AGBs von TreoLabs GmbH.
 
 Für die Umsetzung eines Projektes werden die Milestones / Sprints definiert. Nachdem ein Milestone vom Kunden abgenommen wurde, werden auch die damit verbundenen Kosten abgerechnet.
 
-Es gelten ohne Ausnahmen die [AGBs]([https://treopim.com/de/agb](https://treopim.com/de/agb)) von TreoLabs GmbH.
+Es gelten ohne Ausnahmen die [AGBs](https://treopim.com/de/agb) von TreoLabs GmbH.
 
   
 

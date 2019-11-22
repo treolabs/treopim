@@ -76,6 +76,39 @@ class ProductAttributeValue extends AbstractSelectManager
     }
 
     /**
+     * @inheritDoc
+     */
+    public function applyAdditional(array &$result, array $params)
+    {
+        if ($this->isSubQuery) {
+            return false;
+        }
+
+        // prepare additional select columns
+        $additionalSelectColumns = [
+            'typeValue' => 'attribute.type_value',
+            'attributeGroupId' => 'ag1.id',
+            'attributeGroupName' => 'ag1.name'
+        ];
+
+        // prepare for multiLang fields
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                $field = Util::toCamelCase('typeValue_' . strtolower($locale));
+                $dbField = 'attribute.type_value_' . strtolower($locale);
+
+                $additionalSelectColumns[$field] = $dbField;
+            }
+        }
+
+        $result['customJoin'] .= " LEFT JOIN attribute_group AS ag1 ON ag1.id=attribute.attribute_group_id AND ag1.deleted=0";
+
+        foreach ($additionalSelectColumns as $alias => $sql) {
+            $result['additionalSelectColumns'][$sql] = $alias;
+        }
+    }
+
+    /**
      * Prepare where for array attributes
      *
      * @param array $data
@@ -153,11 +186,13 @@ class ProductAttributeValue extends AbstractSelectManager
                 ->select(['id'])
                 ->distinct()
                 ->join('attribute')
-                ->where([
-                    'productId' => $data['productId'],
-                    'attribute.attributeGroupId'
-                        => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
-                ])
+                ->where(
+                    [
+                        'productId' => $data['productId'],
+                        'attribute.attributeGroupId'
+                                    => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
+                    ]
+                )
                 ->find()
                 ->toArray();
 

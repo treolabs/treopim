@@ -11,7 +11,6 @@
     "notEntity",
     "notAssociatedProducts",
     "onlySimple",
-    "notBundledProducts",
     "notLinkedWithOrder",
     "notLinkedWithChannel",
     "notLinkedWithWarehouse",
@@ -30,7 +29,6 @@
     "notEntity",
     "notAssociatedProducts",
     "onlySimple",
-    "notBundledProducts",
     "notLinkedWithOrder",
     "notLinkedWithChannel",
     "notLinkedWithWarehouse",
@@ -59,6 +57,7 @@
   "massRelationView": "pim:views/product/modals/select-entity-and-records",
   "relationshipPanels": {
     "productAttributeValues": {
+      "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
         "notLinkedProductAttributeValues"
@@ -70,7 +69,9 @@
         "Attribute",
         "AttributeGroup",
         "ProductAttributeValue"
-      ]
+      ],
+      "sortBy": "attribute.sortOrder",
+      "asc": true
     },
     "productCategories": {
       "view": "pim:views/product/record/panels/product-categories",
@@ -89,20 +90,21 @@
       "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity"
     },
-    "productImages": {
-      "label": "Image",
-      "view": "pim:views/product/record/panels/product-images",
-      "recordListView": "pim:views/product-image/record/list-in-product",
-      "modalDetailView": "pim:views/product-image/modals/detail-in-product",
-      "modalEditView": "pim:views/product-image/modals/edit-in-product",
-      "layout": "listForProductImagesInProduct",
-      "detailLayout": "detailForProductImagesInProduct",
-      "createAction": "createRelatedProductImage",
+    "pimImages": {
+      "view": "pim:views/record/panels/pim-images",
+      "layout": "listSmallForRelate",
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
-        "notLinkedWithProduct"
+        "pimImageRelation"
       ],
-      "recordsPerPage": 200
+      "recordsPerPage": 200,
+      "dragDrop": {
+        "isActive": true,
+        "sortField": "sortOrder"
+      },
+      "sortBy": "sortOrder",
+      "asc": true
     },
     "associatedMainProducts": {
       "view": "pim:views/product/record/panels/associated-main-product",
@@ -112,56 +114,7 @@
       "aclScopesList": [
         "Association"
       ]
-    },
-    "productTypeBundles": {
-      "label": "Items",
-      "view": "pim:views/product/record/panels/product-bundles",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "onlySimple",
-        "onlyActive",
-        "notEntity",
-        "notBundledProducts"
-      ]
-    },
-    "productTypePackages": {
-      "label": "Package Details",
-      "view": "pim:views/product/record/panels/product-packages"
     }
-  },
-  "bottomPanels": {
-    "detail": [
-      {
-        "name": "itemInProducts",
-        "label": "Item in Products",
-        "view": "pim:views/product/record/panels/item-in-products",
-        "layout": "listForItemInProducts",
-        "rowActionsView": "views/record/row-actions/empty",
-        "sortBy": "type",
-        "asc": true,
-        "order": 10
-      }
-    ]
-  },
-  "optionalBottomPanels": {
-    "itemInProducts": [
-      {
-        "field": "type",
-        "value": "simpleProduct"
-      }
-    ],
-    "productTypePackages": [
-      {
-        "field": "type",
-        "value": "packageProduct"
-      }
-    ],
-    "productTypeBundles": [
-      {
-        "field": "type",
-        "value": "bundleProduct"
-      }
-    ]
   },
   "menu": {
     "list": {
@@ -222,6 +175,19 @@
           "conditionGroup": [
             {
               "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "notEquals",
+              "attribute": "type",
+              "value": "productVariant"
+            },
+            {
+              "type": "isEmpty",
               "attribute": "id"
             }
           ]

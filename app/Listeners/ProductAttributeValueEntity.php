@@ -71,7 +71,12 @@ class ProductAttributeValueEntity extends AbstractListener
         }
 
         if (!$this->isUnique($entity)) {
-            throw new BadRequest($this->exception('Such record already exists'));
+            throw new BadRequest(
+                sprintf(
+                    $this->exception('Such product attribute \'%s\' already exists'),
+                    $entity->get('attribute')->get('name')
+                )
+            );
         }
 
         // clearing channels ids
@@ -172,6 +177,8 @@ class ProductAttributeValueEntity extends AbstractListener
 
     /**
      * @param Entity $entity
+     *
+     * @throws \Espo\Core\Exceptions\Error
      */
     protected function createNote(Entity $entity)
     {
@@ -220,7 +227,7 @@ class ProductAttributeValueEntity extends AbstractListener
                 $result['attributes']['was'][$fieldName] = Json::decode(self::$beforeSaveData['value'], true);
                 $result['attributes']['became'][$fieldName] = Json::decode($entity->get('value'), true);
             } else {
-                $result['attributes']['was'][$fieldName] = self::$beforeSaveData['value'];
+                $result['attributes']['was'][$fieldName] = (!empty(self::$beforeSaveData['value'])) ? self::$beforeSaveData['value'] : null;
                 $result['attributes']['became'][$fieldName] = $entity->get('value');
             }
 

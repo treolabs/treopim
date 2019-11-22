@@ -17,10 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Espo\Core\Exceptions\Error;
 
@@ -29,7 +31,7 @@ use Espo\Core\Exceptions\Error;
  *
  * @author r.ratsun@treolabs.com
  */
-class Attribute extends \Espo\Core\Templates\Repositories\Base
+class Attribute extends Base
 {
     /**
      * @inheritdoc
@@ -39,6 +41,37 @@ class Attribute extends \Espo\Core\Templates\Repositories\Base
         parent::init();
 
         $this->addDependency('language');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function beforeSave(Entity $entity, array $options = [])
+    {
+        // call parent action
+        parent::beforeSave($entity, $options);
+
+        // set sort order
+        if (is_null($entity->get('sortOrder'))) {
+            $entity->set('sortOrder', (int)$this->max('sortOrder') + 1);
+        }
+
+        if (!$entity->isNew() && $entity->isAttributeChanged('sortOrder')) {
+            $this->updateSortOrder($entity);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function max($field)
+    {
+        $data = $this
+            ->getEntityManager()
+            ->nativeQuery("SELECT MAX(sort_order) AS max FROM attribute WHERE deleted=0")
+            ->fetch(\PDO::FETCH_ASSOC);
+
+        return $data['max'];
     }
 
     /**
@@ -83,5 +116,45 @@ class Attribute extends \Espo\Core\Templates\Repositories\Base
     protected function exception(string $key): string
     {
         return $this->getInjection('language')->translate($key, "exceptions", "Attribute");
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateSortOrder(Entity $entity): void
+    {
+        $data = $this
+            ->select(['id'])
+            ->where(
+                [
+                    'id!='             => $entity->get('id'),
+                    'sortOrder>='      => $entity->get('sortOrder'),
+                    'attributeGroupId' => $entity->get('attributeGroupId')
+                ]
+            )
+            ->order('sortOrder')
+            ->find()
+            ->toArray();
+
+        if (!empty($data)) {
+            // create max
+            $max = $entity->get('sortOrder');
+
+            // prepare sql
+            $sql = '';
+            foreach ($data as $row) {
+                // increase max
+                $max++;
+
+                // prepare id
+                $id = $row['id'];
+
+                // prepare sql
+                $sql .= "UPDATE attribute SET sort_order='$max' WHERE id='$id';";
+            }
+
+            // execute sql
+            $this->getEntityManager()->nativeQuery($sql);
+        }
     }
 }

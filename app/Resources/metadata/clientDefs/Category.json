@@ -3,7 +3,6 @@
   "iconClass": "fas fa-th",
   "boolFilterList": [
     "onlyMy",
-    "hasNoChildCategory",
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
@@ -13,7 +12,6 @@
     "notLinkedProductCategories"
   ],
   "hiddenBoolFilterList": [
-    "hasNoChildCategory",
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
@@ -35,32 +33,33 @@
     "detail": "pim:views/category/record/detail"
   },
   "relationshipPanels": {
-    "categoryImages": {
-      "view": "pim:views/category/record/panels/category-images",
-      "recordListView": "pim:views/category-image/record/list-in-category",
-      "modalDetailView": "pim:views/category-image/modals/detail-in-category",
-      "modalEditView": "pim:views/category-image/modals/edit-in-category",
-      "layout": "listForCategoryImagesInCategory",
-      "detailLayout": "detailForCategoryImagesInCategory",
-      "createAction": "createRelatedCategoryImage",
+    "pimImages": {
+      "view": "pim:views/record/panels/pim-images",
+      "layout": "listSmallForRelate",
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
-        "notLinkedWithCategory"
+        "pimImageRelation"
       ],
-      "recordsPerPage": 200
+      "recordsPerPage": 200,
+      "dragDrop": {
+        "isActive": true,
+        "sortField": "sortOrder"
+      },
+      "sortBy": "sortOrder",
+      "asc": true
     },
-    "products": {
-      "view": "pim:views/category/record/panels/products",
-      "layout": "listForProductsInCategory",
-      "recordListView": "pim:views/record/list-with-model-edit-check",
-      "rowActionsView": "views/record/row-actions/relationship-unlink-only",
-      "createAction": "createRelatedConfigured",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "onlyActive",
-        "notLinkedWithCategory",
-        "onlyCatalogProducts"
-      ]
+    "productCategories": {
+      "layout": "listForProductCategoriesInCategory",
+      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
+      "select": false,
+      "recordsPerPage": 200,
+      "dragDrop": {
+        "isActive": true,
+        "sortField": "sorting"
+      },
+      "sortBy": "sorting",
+      "asc": true
     },
     "catalogs": {
       "selectAction": "selectRelatedEntity",

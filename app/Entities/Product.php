@@ -238,46 +238,6 @@ class Product extends Base
     }
 
     /**
-     * Get images
-     *
-     * @return array
-     *
-     * @deprecated this method is deprecated!
-     */
-    public function getImages(): array
-    {
-        // prepare data
-        $productId = $this->get('id');
-
-        $sql
-            = "SELECT
-                  pi.id          AS id,
-                  pi.name        AS code,
-                  pi.alt         AS alt,
-                  pi.width       AS width,
-                  pi.height      AS height,
-                  pi.size        AS size,
-                  pi.image_type  AS imageType,
-                  pi.type        AS type,
-                  pi.image_id    AS imageId,
-                  pi.image_link  AS imageLink,
-                  pip.scope      AS scope,
-                  pic.channel_id AS channelId
-                FROM product_image_product AS pip
-                JOIN product_image AS pi ON pi.id=pip.product_image_id AND pi.deleted=0
-                LEFT JOIN product_image_channel AS pic 
-                  ON pic.product_image_id=pi.id AND pic.product_id=pip.product_id AND pic.deleted=0
-                WHERE 
-                     pip.deleted = 0 
-                 AND pip.product_id='$productId'
-                ORDER BY pip.sort_order ASC";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
-
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
      * @param string $locale
      *
      * @return null|string

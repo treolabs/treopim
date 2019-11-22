@@ -7,7 +7,7 @@
 		<div class="option-group">
 			{{#each options}}
 			<div class="option-item" data-name="{{name}}" data-index="{{@../index}}">
-				<span class="text-muted">{{shortLang}} {{#if shortLang}}›{{/if}}</span>
+				<span class="text-muted">{{shortLang}} {{#if shortLang}}&#8250;{{/if}}</span>
 				<input class="form-control" value="{{value}}" data-name="{{name}}" data-index="{{@../index}}">
 			</div>
 			{{/each}}
