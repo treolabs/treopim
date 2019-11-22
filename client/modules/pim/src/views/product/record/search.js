@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/record/search', 'views/record/search',
-    Dep => Dep.extend({
+Espo.define('pim:views/product/record/search', ['views/record/search', 'search-manager'],
+    (Dep, SearchManager) => Dep.extend({
 
         template: 'pim:product/record/search',
 
@@ -201,6 +201,29 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
                 }, this);
                 view.searchParams = this.advanced[field];
             }
+        },
+
+        updateCollection() {
+            const defaultFilters = this.searchManager.get();
+            const catalogTreeData = this.getCatalogTreeData();
+            let extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), catalogTreeData);
+            this.searchManager.set(extendedFilters);
+
+            Dep.prototype.updateCollection.call(this);
+
+            this.searchManager.set(defaultFilters);
+        },
+
+        getCatalogTreeData() {
+            let result = {};
+            const list = this.getParentView();
+            if (list) {
+                const treePanel = list.getView('catalogTreePanel');
+                if (treePanel && treePanel.catalogTreeData) {
+                    result = treePanel.catalogTreeData;
+                }
+            }
+            return result;
         },
 
         resetFilters() {

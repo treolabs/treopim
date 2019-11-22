@@ -1,0 +1,49 @@
+{
+    "fields": {
+        "scope": {
+            "type": "enum",
+            "required": false,
+            "options": [
+                "Global",
+                "Channel"
+            ],
+            "default": "Global",
+            "isSorted": false,
+            "audited": false,
+            "readOnly": false,
+            "tooltip": false
+        },
+        "channels": {
+            "type": "linkMultiple",
+            "importDisabled": true,
+            "noLoad": false,
+            "view": "pim:views/product-attribute-value/fields/channels",
+            "required": false,
+            "readOnly": false,
+            "tooltip": false
+        },
+        "role": {
+            "type": "multiEnum",
+            "storeArrayValues": true,
+            "required": false,
+            "fontSize": 1,
+            "options": [
+                "Main"
+            ],
+            "optionColors": {
+                "Main": "00BFFF"
+            },
+            "audited": false,
+            "readOnly": false,
+            "tooltip": false
+        }
+    },
+    "links": {
+        "channels": {
+            "type": "hasMany",
+            "relationName": "assetRelationChannel",
+            "foreign": "assetRelations",
+            "entity": "Channel"
+        }
+    }
+}

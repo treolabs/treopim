@@ -16,20 +16,16 @@
           "name": "name"
         },
         {
-          "name": "image"
-        }
-      ],
-      [
-        {
           "name": "sku"
-        },
-        false
+        }
       ],
       [
         {
           "name": "catalog"
         },
-        false
+        {
+          "name": "tag"
+        }
       ],
       [
         {
@@ -91,15 +87,12 @@
         {
           "name": "amount"
         },
-        {
-          "name": "tag"
-        }
+        false
       ],
       [
         {
           "name": "longDescription"
-        },
-        false
+        }
       ]
     ]
   }

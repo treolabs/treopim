@@ -35,7 +35,6 @@
     "association": "Assoziation",
     "catalog": "Katalog",
     "channels": "Kanale",
-    "pimImages": "Bilder",
     "measuringUnit": "Maßeinheit",
     "basePriceAmount": "Grundpreis Betrag",
     "packedAmount": "Gepackte Menge"
@@ -57,7 +56,6 @@
     "productTypeConfigurables": "konfigurierbarer Produkttyp",
     "catalog": "Katalog",
     "channels": "Kanale",
-    "pimImages": "Bilder",
     "measuringUnit": "Messeinheit"
   },
   "labels": {
