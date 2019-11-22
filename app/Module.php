@@ -52,6 +52,28 @@ class Module extends AbstractModule
         // prepare result
         $result = Json::decode(Json::encode($data), true);
 
+        // prepare attribute scope
+        $result = $this->attributeScope($result);
+
+        // set data
+        $data = Json::decode(Json::encode($result));
+    }
+
+    /**
+     * @param array $result
+     *
+     * @return array
+     */
+    protected function attributeScope(array $result): array
+    {
+        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name']['required']['conditionGroup'] = [
+            [
+                'type'      => 'notIn',
+                'attribute' => 'type',
+                'value'     => [md5('some-str')]
+            ]
+        ];
+
         $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue']['visible']['conditionGroup'] = [
             [
                 'type'      => 'in',
@@ -70,6 +92,13 @@ class Module extends AbstractModule
             foreach ($config->get('inputLanguageList', []) as $locale) {
                 // prepare key
                 $key = ucfirst(Util::toCamelCase(strtolower($locale)));
+
+                $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['required']['conditionGroup'] = [
+                    [
+                        'type'      => 'isTrue',
+                        'attribute' => 'isMultilang'
+                    ]
+                ];
 
                 $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['visible']['conditionGroup'] = [
                     [
@@ -92,7 +121,6 @@ class Module extends AbstractModule
             }
         }
 
-        // set data
-        $data = Json::decode(Json::encode($result));
+        return $result;
     }
 }
