@@ -46,27 +46,57 @@ class LayoutController extends AbstractListener
         /** @var bool $isAdminPage */
         $isAdminPage = $event->getArgument('request')->get('isAdminPage') === 'true';
 
-        if (!$isAdminPage && $scope == 'Attribute' && $name == 'detail') {
-            /** @var array $result */
-            $result = Json::decode($event->getArgument('result'), true);
-
-            // push row
-            $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
-
-            // push row
-            $result[0]['rows'][] = [['name' => 'name'], ['name' => 'typeValue']];
-
-            if ($this->getConfig()->get('isMultilangActive', false)) {
-                foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
-                    // prepare key
-                    $key = ucfirst(Util::toCamelCase(strtolower($locale)));
-
-                    // push row
-                    $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
-                }
-            }
-
-            $event->setArgument('result', Json::encode($result));
+        $method = 'modify' . $scope . ucfirst($name);
+        if (!$isAdminPage && method_exists($this, $method)) {
+            $this->{$method}($event);
         }
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyAttributeDetail(Event $event)
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+
+        $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
+        $result[0]['rows'][] = [['name' => 'name'], ['name' => 'typeValue']];
+
+        foreach ($this->getInputLanguageList() as $locale => $key) {
+            $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
+        }
+
+        $event->setArgument('result', Json::encode($result));
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyProductAttributeValueDetailSmall(Event $event)
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+
+        foreach ($this->getInputLanguageList() as $locale => $key) {
+            $result[0]['rows'][] = [['name' => 'value' . $key], false];
+        }
+
+        $event->setArgument('result', Json::encode($result));
+    }
+
+    /**
+     * @return array
+     */
+    protected function getInputLanguageList(): array
+    {
+        $result = [];
+        if ($this->getConfig()->get('isMultilangActive', false)) {
+            foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
+                $result[$locale] = ucfirst(Util::toCamelCase(strtolower($locale)));
+            }
+        }
+
+        return $result;
     }
 }

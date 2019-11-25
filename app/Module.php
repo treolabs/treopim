@@ -85,39 +85,62 @@ class Module extends AbstractModule
             ]
         ];
 
+        foreach ($this->getInputLanguageList() as $locale => $key) {
+            /**
+             * Attribute
+             */
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['required']['conditionGroup'] = [
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isMultilang'
+                ]
+            ];
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isMultilang'
+                ]
+            ];
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => ['enum', 'multiEnum']
+                ],
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isMultilang'
+                ]
+            ];
+
+            /**
+             * ProductAttributeValue
+             */
+            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['readOnly']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'attributeType',
+                    'value'     => ['enum', 'multiEnum']
+                ]
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getInputLanguageList(): array
+    {
+        $result = [];
+
         /** @var Config $config */
         $config = $this->container->get('config');
 
         if ($config->get('isMultilangActive', false)) {
             foreach ($config->get('inputLanguageList', []) as $locale) {
-                // prepare key
-                $key = ucfirst(Util::toCamelCase(strtolower($locale)));
-
-                $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['required']['conditionGroup'] = [
-                    [
-                        'type'      => 'isTrue',
-                        'attribute' => 'isMultilang'
-                    ]
-                ];
-
-                $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['visible']['conditionGroup'] = [
-                    [
-                        'type'      => 'isTrue',
-                        'attribute' => 'isMultilang'
-                    ]
-                ];
-
-                $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['visible']['conditionGroup'] = [
-                    [
-                        'type'      => 'in',
-                        'attribute' => 'type',
-                        'value'     => ['enum', 'multiEnum']
-                    ],
-                    [
-                        'type'      => 'isTrue',
-                        'attribute' => 'isMultilang'
-                    ]
-                ];
+                $result[$locale] = ucfirst(Util::toCamelCase(strtolower($locale)));
             }
         }
 
