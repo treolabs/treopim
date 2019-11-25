@@ -140,7 +140,9 @@ class V3Dot11Dot13 extends AbstractMigration
                                                 AND pi.product_id != ''
                                                 AND ar.entity_id = pi.product_id
                                     SET ar.scope = 'Channel'
-                                    WHERE ar.scope = 'Global' AND pi.scope = 'Channel' AND ar.asset_id IN ({$assetIdsWithChannel})");
+                                    WHERE ar.scope = 'Global' 
+                                        AND pi.scope = 'Channel' 
+                                        AND ar.asset_id IN ({$assetIdsWithChannel})");
             $this->getEntityManager()
                 ->nativeQuery("UPDATE
                                         asset_relation ar
@@ -151,7 +153,9 @@ class V3Dot11Dot13 extends AbstractMigration
                                                     AND pi.category_id != ''
                                                     AND ar.entity_id = pi.category_id
                                     SET ar.scope = 'Channel'
-                                    WHERE  ar.scope = 'Global' AND pi.scope = 'Channel' AND ar.asset_id IN ({$assetIdsWithChannel})");
+                                    WHERE  ar.scope = 'Global' 
+                                        AND pi.scope = 'Channel' 
+                                        AND ar.asset_id IN ({$assetIdsWithChannel})");
             //create link asset_relation_channel
             $this->insertAssetRelationChannel('Product', $assetIdsWithChannel);
             $this->insertAssetRelationChannel('Category', $assetIdsWithChannel);
@@ -289,7 +293,7 @@ class V3Dot11Dot13 extends AbstractMigration
         if ($entityName == 'Product') {
             $select = " ar.entity_id AS product_id,
                         null AS category_id";
-        } elseif($entityName == 'Category') {
+        } elseif ($entityName == 'Category') {
             $select = " null AS product_id,
                         ar.entity_id AS category_id";
         } else {
@@ -305,7 +309,10 @@ class V3Dot11Dot13 extends AbstractMigration
                     a.deleted,
                     CASE
                        WHEN ar.sort_order IS NOT NULL THEN ar.sort_order
-                       ELSE (SELECT @n := @n + CASE WHEN max(ar1.sort_order) is not null THEN max(ar1.sort_order) ELSE 1 END
+                       ELSE (SELECT @n := @n + CASE 
+                                                WHEN max(ar1.sort_order) is not null 
+                                                THEN max(ar1.sort_order) 
+                                                ELSE 1 END
                              FROM asset_relation AS ar1,
                                   (SELECT @n := 1) s
                              WHERE ar1.entity_id = ar.entity_id)
@@ -335,7 +342,7 @@ class V3Dot11Dot13 extends AbstractMigration
             $where = ' AND pi.product_id IS NOT NULL AND pi.product_id != \'\'';
             $wherePimImage = ' AND pim_image.product_id IS NOT NULL AND pim_image.product_id != \'\'';
             $fieldLink = 'product_id';
-        } elseif($entityName == 'Category') {
+        } elseif ($entityName == 'Category') {
             $where = ' AND pi.category_id IS NOT NULL AND pi.category_id != \'\'';
             $wherePimImage = ' AND pim_image.category_id IS NOT NULL AND pim_image.category_id != \'\'';
             $fieldLink = 'category_id';
@@ -366,7 +373,7 @@ class V3Dot11Dot13 extends AbstractMigration
     {
         if ($entityName == 'Product') {
             $where = ' AND pi.product_id IS NOT NULL AND pi.product_id != \'\'';
-        } elseif($entityName == 'Category') {
+        } elseif ($entityName == 'Category') {
             $where = ' AND pi.category_id IS NOT NULL AND pi.category_id != \'\'';
         } else {
             return;
@@ -407,7 +414,7 @@ class V3Dot11Dot13 extends AbstractMigration
         $where = '';
         if ($entityName == 'Product') {
             $where = ' pi.product_id IS NOT NULL AND pi.product_id != \'\'';
-        } elseif($entityName == 'Category') {
+        } elseif ($entityName == 'Category') {
             $where = ' pi.category_id IS NOT NULL AND pi.category_id != \'\'';
         } else {
             return;
@@ -438,7 +445,7 @@ class V3Dot11Dot13 extends AbstractMigration
         $where = '';
         if ($entityName == 'Product') {
             $where = ' pi.product_id IS NOT NULL AND pi.product_id != \'\'';
-        } elseif($entityName == 'Category') {
+        } elseif ($entityName == 'Category') {
             $where = ' pi.category_id IS NOT NULL AND pi.category_id != \'\'';
         } else {
             return;
@@ -459,7 +466,10 @@ class V3Dot11Dot13 extends AbstractMigration
                                                        ON pi.image_id = a.file_id
                                                            AND pi.deleted = 0
                                                            AND pi.scope = 'Channel'
-                                    WHERE {$where} AND a.deleted = 0 AND a.type = 'Gallery Image' AND a.id IN ({$assetIds});");
+                                    WHERE {$where} 
+                                        AND a.deleted = 0 
+                                        AND a.type = 'Gallery Image' 
+                                        AND a.id IN ({$assetIds});");
     }
 
     /**
