@@ -96,7 +96,8 @@
       "readOnly": false,
       "tooltip": false,
       "isMultilang": true,
-      "layoutDetailDisabled": true
+      "layoutDetailDisabled": true,
+      "view": "pim:views/attribute/fields/type-value"
     },
     "isSystem": {
       "notNull": true,
