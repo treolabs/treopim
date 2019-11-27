@@ -10,20 +10,13 @@
     "isSystem": "Ist das System",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
-    "nameDeDe": "Name DeDe",
-    "nameEnUs": "Name EnUs",
-    "nameEsEs": "Name EsEs",
-    "nameFrFr": "Name FrFr",
     "productAttributes": "Produktattribute",
     "productAttributeValues": "Werte des Produktattributes",
     "products": "Produkte",
     "typeValue": "Werttyp",
-    "typeValueDeDe": "Werttyp DeDe",
-    "typeValueEnUs": "Werttyp EnUs",
-    "typeValueEsEs": "Werttyp EsEs",
-    "typeValueFrFr": "Werttyp FrFr",
     "type": "Typ",
-    "productFamilyAttributes": "Produktfamilie Attribute"
+    "productFamilyAttributes": "Produktfamilie Attribute",
+    "isMultilang": "Mehrsprachig"
   },
   "options": {
     "type": {
@@ -39,13 +32,7 @@
       "unit": "Maßeinheit",
       "url": "URL",
       "varchar": "Varchar",
-      "varcharMultiLang": "Varchar Multi Lang",
-      "textMultiLang": "Text Multi Lang",
-      "enumMultiLang": "Enum Multi Lang",
-      "multiEnumMultiLang": "Multi-Enum Multi Lang",
-      "arrayMultiLang": "Array Multi Lang",
       "wysiwyg": "Wysiwyg",
-      "wysiwygMultiLang": "Wysiwyg Multi Lang",
       "image": "Bild"
     }
   },

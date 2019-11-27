@@ -42,6 +42,7 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
             this.changeFieldsReadOnlyStatus(['attribute', 'channels', 'product', 'scope'], !this.model.get('isCustom'));
             if (this.model.get('attributeId')) {
                 let type = this.model.get('attributeType');
+                let isMultiLang = this.model.get('isMultilang');
                 let typeValue = this.model.get('typeValue');
                 if (type) {
                     let fieldDefs = {
@@ -50,7 +51,7 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                         view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
                         required: !!this.model.get('isRequired')
                     };
-                    if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(type)) {
+                    if (isMultiLang) {
                         fieldDefs.isMultilang = true;
                         this.getFieldManager().getActualAttributeList(type, 'typeValue').splice(1).forEach(item => {
                             fieldDefs[`options${item.replace('typeValue', '')}`] = this.model.get(item);

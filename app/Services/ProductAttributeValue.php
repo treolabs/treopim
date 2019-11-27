@@ -24,7 +24,7 @@ namespace Pim\Services;
 
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Util;
+use Treo\Core\Utils\Util;
 
 /**
  * ProductAttributeValue service
@@ -41,7 +41,8 @@ class ProductAttributeValue extends AbstractService
         parent::prepareEntityForOutput($entity);
 
         $entity->set('isCustom', $this->isCustom($entity));
-        $entity->set('attributeType', (!empty($entity->get('attribute'))) ? $entity->get('attribute')->get('type') : null);
+        $entity->set('attributeType', !empty($entity->get('attribute')) ? $entity->get('attribute')->get('type') : null);
+        $entity->set('attributeIsMultilang', !empty($entity->get('attribute')) ? $entity->get('attribute')->get('isMultilang') : false);
 
         $this->convertValue($entity);
     }
@@ -80,19 +81,13 @@ class ProductAttributeValue extends AbstractService
                 case 'float':
                     $entity->set('value', (float)$entity->get('value'));
                     break;
-                case 'array':
-                case 'arrayMultiLang':
                 case 'multiEnum':
-                case 'multiEnumMultiLang':
                     $entity->set('value', Json::decode($entity->get('value'), true));
-
-                    if ($this->getConfig()->get('isMultilangActive')
-                        && in_array($type, ['arrayMultiLang', 'multiEnumMultiLang'])) {
+                    if ($this->getConfig()->get('isMultilangActive')) {
                         foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                            $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
+                            $multiLangField = Util::toCamelCase('value_' . strtolower($locale));
                             $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
                         }
-
                         break;
                     }
             }

@@ -86,6 +86,84 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
             }, Dep.prototype.data.call(this))
         },
 
+        applyOverviewFilters() {
+            // fields filter
+            this.fieldsFilter();
+
+            // multi-language fields filter
+            this.multiLangFieldsFilter();
+
+            // hide generic fields
+            this.genericFieldsFilter();
+
+            // trigger
+            this.model.trigger('overview-filters-applied');
+        },
+
+        getFilterFieldViews: function () {
+            let fields = {};
+            $.each(this.getFieldViews(), function (name, fieldView) {
+                if (!fieldView.model.getFieldParam(name, 'advancedFilterDisabled')) {
+                    fields[name] = fieldView;
+                }
+            });
+
+            return fields;
+        },
+
+        fieldsFilter: function () {
+            // prepare self
+            let self = this;
+
+            // get filter param
+            let filter = (this.model.advancedEntityView || {}).fieldsFilter;
+
+            $.each(this.getFilterFieldViews(), function (name, fieldView) {
+                let actualFields = self.getFieldManager().getActualAttributeList(fieldView.model.getFieldType(name), name);
+                let actualFieldValues = actualFields.map(field => fieldView.model.get(field));
+                actualFieldValues = actualFieldValues.concat(self.getAlternativeValues(fieldView));
+
+                let hide = !actualFieldValues.every(value => self.checkFieldValue(filter, value, fieldView.isRequired()));
+                self.controlFieldVisibility(fieldView, hide);
+            });
+        },
+
+        multiLangFieldsFilter: function () {
+            // get locale
+            let locale = (this.model.advancedEntityView || {}).localesFilter;
+
+            $.each(this.getFilterFieldViews(), function (name, fieldView) {
+                let multilangLocale = fieldView.model.getFieldParam(name, 'multilangLocale');
+
+                if (multilangLocale !== null) {
+                    if (locale !== null && locale !== '' && multilangLocale !== locale) {
+                        fieldView.hide();
+                    } else {
+                        fieldView.show();
+                    }
+                }
+            });
+        },
+
+        genericFieldsFilter: function () {
+            // prepare this
+            let self = this;
+
+            // prepare is show param
+            let isShow = (this.model.advancedEntityView || {}).showGenericFields;
+
+            $.each(this.getFilterFieldViews(), function (name, fieldView) {
+                let field = fieldView.model.getFieldParam(name, 'multilangField');
+                if (field !== null) {
+                    if (isShow) {
+                        self.getFieldView(field).show();
+                    } else {
+                        self.getFieldView(field).hide();
+                    }
+                }
+            });
+        },
+
         hotKeySave: function (e) {
             e.preventDefault();
             if (this.mode === 'edit') {
