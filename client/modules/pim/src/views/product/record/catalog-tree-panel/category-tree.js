@@ -20,9 +20,9 @@
 Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
     Dep => Dep.extend({
 
-        loadedCategories: [],
-
         template: 'pim:product/record/catalog-tree-panel/category-tree',
+
+        // loadedCategories: [],
 
         expandableCategory: null,
 
@@ -51,7 +51,9 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 this.fold($(e.currentTarget).data('id'));
             },
             'click button.category.child-category': function (e) {
-                this.selectCategory($(e.currentTarget).data('id'));
+                const id = $(e.currentTarget).data('id');
+                this.setCategoryActive(id);
+                this.selectCategory(id);
             }
         },
         
@@ -66,10 +68,15 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         setup() {
             this.categories = this.options.categories || [];
             this.catalog = this.options.catalog;
-            this.trigger('category-tree-select', category);
+            this.loadedCategories = [];
         },
 
         getRootCategoriesList() {
+            if (this.catalog.id === '5b8d3e5eb25db57e9') {
+                debugger;
+                this;
+            }
+
             return this.categories
                 .filter(category => this.catalog.categoriesIds.includes(category.id))
                 .map(category => {
@@ -214,6 +221,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         expandCategoryHandler(category) {
+            debugger
             if (typeof category === 'string') {
                 category = this.categories.find(item => item.id === category);
             }
@@ -258,10 +266,12 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             }
         },
 
-        selectCategory(id) {
-            let category = this.categories.find(item => item.id === id);
-            category.catalogId = this.catalog.id;
-            this.setCategoryActive(id);
+        selectCategory(category) {
+            debugger
+            if (typeof category === 'string') {
+                category = this.categories.find(item => item.id === category);
+                category.catalogId = this.catalog.id;
+            }
             this.trigger('category-tree-select', category);
         },
 

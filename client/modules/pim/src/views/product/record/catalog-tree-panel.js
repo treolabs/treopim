@@ -88,21 +88,32 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         },
 
         expandTreeWithProductCategory() {
-            this.ajaxGetRequest(`Product/${this.model.id}/productCategories`).then(productCategories => {
+            this.ajaxGetRequest(`Product/${this.model.id}/productCategories`, this.getSortingParams()).then(productCategories => {
                 let id = (((productCategories.list || [])[0] || {}).categoryId);
                 if (id) {
                     this.ajaxGetRequest(`Category/${id}`).then(category => {
                         let parentCategoryId = !category.categoryParentId ? id : (category.categoryRoute || '').split('|').find(element => element);
-                        let catalog = this.catalogs.find(catalog => (catalog.categoriesIds || []).includes(parentCategoryId));
+                        let catalog = this.catalogs
+                            .find(catalog => catalog.id === this.model.get('catalogId') && (catalog.categoriesIds || []).includes(parentCategoryId));
                         if (catalog) {
                             let catalogTree = this.getView(`category-tree-${catalog.id}`);
-                            if (catalogTree && typeof catalogTree.expandCategoryHandler === 'function') {
+                            if (catalogTree) {
                                 catalogTree.expandCategoryHandler(category);
                             }
                         }
                     });
                 }
             });
+        },
+
+        getSortingParams() {
+            const panelDefs = this.getMetadata().get(['clientDefs', this.scope, 'relationshipPanels', 'productCategories']);
+            const scopeDefs = this.getMetadata().get(['entityDefs', 'ProductCategory', 'collection']);
+
+            return {
+                sortBy: (panelDefs || {}).sortBy || (scopeDefs || {}).sortBy,
+                asc: (panelDefs || {}).asc || (scopeDefs || {}).asc
+            };
         },
 
         getFullEntity(url, params, callback, container) {
@@ -172,6 +183,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                     let categoryTree = this.getView(`category-tree-${category.catalogId}`);
                     if (categoryTree) {
                         categoryTree.expandCategoryHandler(category);
+                        categoryTree.selectCategory(category);
                     }
                 });
             });
@@ -234,7 +246,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                     }
                 };
             }
-            this.trigger('select-category', data);
+            this.trigger('select-category', this.catalogTreeData);
         },
 
         selectCategoryButton(button) {

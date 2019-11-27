@@ -94,6 +94,7 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
         resetSorting() {
             Dep.prototype.resetSorting.call(this);
 
+            this.catalogTreeData = null;
             let catalogTreePanel = this.getView('catalogTreePanel');
             if (catalogTreePanel) {
                 catalogTreePanel.trigger('resetFilters');
