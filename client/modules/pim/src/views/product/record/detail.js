@@ -17,10 +17,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
-    Dep => Dep.extend({
+Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'search-manager'],
+    (Dep, SearchManager) => Dep.extend({
+
+        template: 'pim:product/record/detail',
+
+        catalogTreeData: null,
 
         notSavedFields: ['image'],
+
+        isCatalogTreePanel: false,
 
         setup() {
             Dep.prototype.setup.call(this);
@@ -30,6 +36,54 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                     this.applyOverviewFilters();
                 });
             }
+
+            if (!this.isWide && this.type !== 'editSmall' && this.type !== 'detailSmall'
+                && this.getAcl().check('Catalog', 'read') && this.getAcl().check('Category', 'read')) {
+                this.isCatalogTreePanel = true;
+                this.setupCatalogTreePanel();
+            }
+        },
+
+        setupCatalogTreePanel() {
+            this.createView('catalogTreePanel', 'pim:views/product/record/catalog-tree-panel', {
+                el: `${this.options.el} .catalog-tree-panel`,
+                scope: this.scope,
+                model: this.model
+            }, view => {
+                view.render();
+                view.listenTo(view, 'select-category', data => this.navigateToList(data));
+            });
+        },
+
+        navigateToList(data) {
+            this.catalogTreeData = Espo.Utils.cloneDeep(data || {});
+            const options = {
+                isReturn: true,
+                callback: this.expandCatalogTreeOnListView.bind(this)
+            };
+            this.getRouter().navigate(`#${this.scope}`);
+            this.getRouter().dispatch(this.scope, null, options);
+        },
+
+        expandCatalogTreeOnListView(list) {
+            list.sortCollectionWithCatalogTree(this.catalogTreeData);
+            list.render(() => {
+                const catalogTreePanel = list.getView('catalogTreePanel');
+                if (catalogTreePanel) {
+                    const catalogId = (((this.catalogTreeData || {}).advanced || {}).catalog || {}).value;
+                    const categoryTree = catalogTreePanel.getView(`category-tree-${catalogId}`);
+                    const categoryId = ((this.catalogTreeData || {}).boolData || {}).linkedWithCategory;
+                    if (categoryTree && categoryId) {
+                        categoryTree.expandCategoryHandler(categoryId);
+                    }
+                }
+            });
+        },
+
+        data() {
+            return _.extend({
+                isCatalogTreePanel: this.isCatalogTreePanel
+            }, Dep.prototype.data.call(this))
         },
 
         applyOverviewFilters() {

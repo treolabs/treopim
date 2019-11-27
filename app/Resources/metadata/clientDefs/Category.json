@@ -33,22 +33,6 @@
     "detail": "pim:views/category/record/detail"
   },
   "relationshipPanels": {
-    "pimImages": {
-      "view": "pim:views/record/panels/pim-images",
-      "layout": "listSmallForRelate",
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "pimImageRelation"
-      ],
-      "recordsPerPage": 200,
-      "dragDrop": {
-        "isActive": true,
-        "sortField": "sortOrder"
-      },
-      "sortBy": "sortOrder",
-      "asc": true
-    },
     "productCategories": {
       "layout": "listForProductCategoriesInCategory",
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
@@ -90,6 +74,39 @@
         }
       ]
     }
+  },
+  "bottomPanels": {
+    "detail": [
+      {
+        "name": "asset_relations",
+        "label": "Asset Relations",
+        "view": "dam:views/asset_relation/record/panels/bottom-panel",
+        "entityName": "Category"
+      }
+    ]
+  },
+  "sidePanels" : {
+    "edit" : [
+      {
+        "name" : "image",
+        "label": "",
+        "view" : "pim:views/product/fields/image"
+      }
+    ],
+    "detail" : [
+      {
+        "name" : "image",
+        "label": "",
+        "view" : "pim:views/product/fields/image"
+      }
+    ],
+    "detailSmall" : [
+      {
+        "name" : "image",
+        "label": "",
+        "view" : "pim:views/product/fields/image"
+      }
+    ]
   },
   "dynamicLogic": {
     "panels": {

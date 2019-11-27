@@ -1,4 +1,5 @@
-/*
+<?php
+/**
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -17,16 +18,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/associated-product/fields/image', 'pim:views/fields/remote-image',
-    Dep => Dep.extend({
+declare(strict_types=1);
 
-        urlField: null,
+namespace Pim\Migrations;
 
-        setup() {
-            Dep.prototype.setup.call(this);
+use Treo\Core\Migration\AbstractMigration;
 
-            this.urlField = this.urlField || this.name + 'Link';
-        },
+/**
+ * Migration class for version 3.11.13
+ *
+ * @author m.kokhanskyi@treolabs.com
+ */
+class V3Dot11Dot13 extends AbstractMigration
+{
 
-    })
-);
+    /**
+     * @inheritDoc
+     */
+    public function up(): void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function down(): void
+    {
+    }
+}

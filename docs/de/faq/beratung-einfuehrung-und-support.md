@@ -1,4 +1,4 @@
-# Beratung, Einführung, Service und Support
+# Beratung, Einführung und Support
 
   
 
