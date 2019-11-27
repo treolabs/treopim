@@ -24,7 +24,7 @@ namespace Pim\Services;
 
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Util;
+use Treo\Core\Utils\Util;
 
 /**
  * ProductAttributeValue service
@@ -80,19 +80,13 @@ class ProductAttributeValue extends AbstractService
                 case 'float':
                     $entity->set('value', (float)$entity->get('value'));
                     break;
-                case 'array':
-                case 'arrayMultiLang':
                 case 'multiEnum':
-                case 'multiEnumMultiLang':
                     $entity->set('value', Json::decode($entity->get('value'), true));
-
-                    if ($this->getConfig()->get('isMultilangActive')
-                        && in_array($type, ['arrayMultiLang', 'multiEnumMultiLang'])) {
+                    if ($this->getConfig()->get('isMultilangActive')) {
                         foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                            $multiLangField =  Util::toCamelCase('value_' . strtolower($locale));
+                            $multiLangField = Util::toCamelCase('value_' . strtolower($locale));
                             $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
                         }
-
                         break;
                     }
             }
