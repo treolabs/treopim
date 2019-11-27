@@ -29,6 +29,22 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
  */
 class Attribute extends AbstractSelectManager
 {
+    /**
+     * @inheritdoc
+     */
+    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    {
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        $types = implode("','", $this->getMetadata()->get('entityDefs.Attribute.fields.type.options', []));
+
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+        // add filtering by attributes types
+        $selectParams['customWhere'] .= " AND attribute.type IN ('{$types}')";
+
+        return $selectParams;
+    }
 
     /**
      * NotLinkedWithProduct filter
