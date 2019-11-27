@@ -41,7 +41,8 @@ class ProductAttributeValue extends AbstractService
         parent::prepareEntityForOutput($entity);
 
         $entity->set('isCustom', $this->isCustom($entity));
-        $entity->set('attributeType', (!empty($entity->get('attribute'))) ? $entity->get('attribute')->get('type') : null);
+        $entity->set('attributeType', !empty($entity->get('attribute')) ? $entity->get('attribute')->get('type') : null);
+        $entity->set('attributeIsMultilang', !empty($entity->get('attribute')) ? $entity->get('attribute')->get('isMultilang') : false);
 
         $this->convertValue($entity);
     }

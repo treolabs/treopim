@@ -142,6 +142,12 @@ class Module extends AbstractModule
             /**
              * ProductAttributeValue
              */
+            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'attributeIsMultilang'
+                ]
+            ];
             $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['readOnly']['conditionGroup'] = [
                 [
                     'type'      => 'in',
