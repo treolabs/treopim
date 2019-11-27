@@ -39,24 +39,6 @@
             }
           ]
         }
-      },
-      "isMultilang": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "bool",
-                "enum",
-                "multiEnum",
-                "varchar",
-                "text",
-                "wysiwyg"
-              ]
-            }
-          ]
-        }
       }
     }
   }

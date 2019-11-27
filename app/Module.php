@@ -35,6 +35,19 @@ use Treo\Core\Utils\Util;
 class Module extends AbstractModule
 {
     /**
+     * @var array
+     */
+    public static $multiLangTypes
+        = [
+            'bool',
+            'enum',
+            'multiEnum',
+            'varchar',
+            'text',
+            'wysiwyg'
+        ];
+
+    /**
      * @inheritdoc
      */
     public static function getLoadOrder(): int
@@ -89,6 +102,13 @@ class Module extends AbstractModule
             /**
              * Attribute
              */
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['isMultilang']['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => self::$multiLangTypes
+                ]
+            ];
             $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['required']['conditionGroup'] = [
                 [
                     'type'      => 'isTrue',
@@ -96,6 +116,11 @@ class Module extends AbstractModule
                 ]
             ];
             $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => self::$multiLangTypes
+                ],
                 [
                     'type'      => 'isTrue',
                     'attribute' => 'isMultilang'
