@@ -28,6 +28,8 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         rootCategoriesIds: [],
 
+        catalogTreeData: null,
+
         events: {
             'click .category-buttons button[data-action="selectAll"]': function (e) {
                 this.selectCategoryButtonApplyFilter($(e.currentTarget), {type: 'anyOf'});
@@ -49,39 +51,57 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         setup() {
             this.scope = this.options.scope || this.scope;
-            this.wait(true);
 
+            this.wait(true);
             this.getFullEntity('Catalog', {select: 'name,categoriesIds,categoriesNames'}, catalogs => {
                 this.catalogs = catalogs;
                 this.rootCategoriesIds = this.getRootCategoriesIds();
                 this.getFullEntity('Category', {
-                    select: 'name,categoryParentId',
+                    select: 'name,categoryParentId,categoryRoute,childrenCount',
                     where: [
                         {
-                            type: 'or',
-                            value: [
-                                {
-                                    type: 'in',
-                                    attribute: 'id',
-                                    value: this.rootCategoriesIds
-                                },
-                                {
-                                    type: 'in',
-                                    attribute: 'categoryParentId',
-                                    value: this.rootCategoriesIds
-                                }
-                            ]
+                            type: 'in',
+                            attribute: 'id',
+                            value: this.rootCategoriesIds
                         }
                     ]
                 }, categories => {
                     this.categories = categories;
                     this.setupPanels();
+                    if (this.model) {
+                        this.expandTreeWithProductCategory();
+                    }
                     this.wait(false);
                 });
             });
 
             this.listenTo(this, 'resetFilters', () => {
+                this.catalogTreeData = null;
                 this.selectCategoryButtonApplyFilter(this.$el.find('button[data-action="selectAll"]'), false);
+            });
+
+            if (this.model) {
+                this.listenTo(Backbone, 'menu-expanded', () => {
+                    this.actionCollapsePanel(true);
+                });
+            }
+        },
+
+        expandTreeWithProductCategory() {
+            this.ajaxGetRequest(`Product/${this.model.id}/productCategories`).then(productCategories => {
+                let id = (((productCategories.list || [])[0] || {}).categoryId);
+                if (id) {
+                    this.ajaxGetRequest(`Category/${id}`).then(category => {
+                        let parentCategoryId = !category.categoryParentId ? id : (category.categoryRoute || '').split('|').find(element => element);
+                        let catalog = this.catalogs.find(catalog => (catalog.categoriesIds || []).includes(parentCategoryId));
+                        if (catalog) {
+                            let catalogTree = this.getView(`category-tree-${catalog.id}`);
+                            if (catalogTree && typeof catalogTree.expandCategoryHandler === 'function') {
+                                catalogTree.expandCategoryHandler(category);
+                            }
+                        }
+                    });
+                }
             });
         },
 
@@ -135,6 +155,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             if (filterParams) {
                 this.applyCategoryFilter(filterParams.type);
             }
+
+            if (this.model && !this.getStorage().get('catalog-tree-panel', this.scope)) {
+                Backbone.trigger('tree-panel-expanded');
+            }
         },
 
         setupPanels() {
@@ -145,7 +169,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             }, view => {
                 view.render();
                 this.listenTo(view, 'category-search-select', category => {
-                    this.selectCategory(category, true);
+                    let categoryTree = this.getView(`category-tree-${category.catalogId}`);
+                    if (categoryTree) {
+                        categoryTree.expandCategoryHandler(category);
+                    }
                 });
             });
 
@@ -156,34 +183,30 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                         el: `${this.options.el} > .category-panel > .category-tree > .panel[data-name="${catalog.id}"]`,
                         scope: this.scope,
                         catalog: catalog,
-                        categories: this.categories
+                        categories: this.categories.filter(category => catalog.categoriesIds.includes(category.id))
                     }, view => {
-                        view.render();
                         view.listenTo(view, 'category-tree-select', category => {
                             this.selectCategory(category);
                         });
+                        view.render();
                     });
                 }
             });
         },
 
-        selectCategory(category, notSkipCollapse) {
+        selectCategory(category) {
             if (category && category.id && category.catalogId) {
-                this.setCategoryActive(category.id, category.catalogId);
                 if ($(window).width() <= 767) {
                     this.actionCollapsePanel();
-                }
-                if (notSkipCollapse) {
-                    this.collapseCategory(category.id, category.catalogId);
                 }
                 this.applyCategoryFilter('anyOf', category);
             }
         },
 
         applyCategoryFilter(type, category) {
-            let data = {};
+            this.catalogTreeData = {};
             if (type === 'isEmpty') {
-                data.advanced = {
+                this.catalogTreeData.advanced = {
                     productCategories: {
                         type: 'isNotLinked',
                         data: {
@@ -192,13 +215,13 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                     }
                 };
             } else if (type === 'anyOf' && category) {
-                data.bool = {
+                this.catalogTreeData.bool = {
                     linkedWithCategory: true
                 };
-                data.boolData = {
+                this.catalogTreeData.boolData = {
                     linkedWithCategory: category.id
                 };
-                data.advanced = {
+                this.catalogTreeData.advanced = {
                     catalog: {
                         type: 'equals',
                         field: 'catalogId',
@@ -214,21 +237,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             this.trigger('select-category', data);
         },
 
-        collapseCategory(id, catalogId) {
-            let activeCategory = this.$el.find(`.panel[data-name="${catalogId}"] li.child[data-id="${id}"]:eq()`);
-            activeCategory.parents('.panel-collapse.collapse').collapse('show');
-        },
-
-        setCategoryActive(id, catalogId) {
-            this.$el.find('.category-buttons > button').removeClass('active');
-            this.$el.find('ul.list-group-tree li.child').removeClass('active');
-            if (catalogId) {
-                this.$el.find(`.panel[data-name="${catalogId}"] li.child[data-id="${id}"]:eq()`).addClass('active');
-            } else {
-                this.$el.find(`li.child[data-id="${id}"]:eq()`).addClass('active');
-            }
-        },
-
         selectCategoryButton(button) {
             this.$el.find('.panel-collapse.collapse[class^="catalog-"].in').collapse('hide');
             this.$el.find('ul.list-group-tree li.child').removeClass('active');
@@ -238,30 +246,61 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
         actionCollapsePanel(forceHide) {
             let categoryPanel = this.$el.find('.category-panel');
-            let button = this.$el.find('button[data-action="collapsePanel"]');
-            let listContainer = this.$el.parent('#main').find('.list-container');
             if (categoryPanel.hasClass('hidden') && !forceHide) {
                 categoryPanel.removeClass('hidden');
-                button.removeClass('collapsed');
-                button.find('span.toggle-icon-left').removeClass('hidden');
-                button.find('span.toggle-icon-right').addClass('hidden');
-                this.$el.removeClass('catalog-tree-panel-hidden');
-                this.$el.addClass('col-xs-12 col-lg-3');
-                listContainer.removeClass('hidden-catalog-tree-panel');
-                listContainer.addClass('col-xs-12 col-lg-9');
+                this.showUtilityElements();
                 this.getStorage().set('catalog-tree-panel', this.scope, '');
+                if (this.model) {
+                    Backbone.trigger('tree-panel-expanded');
+                }
             } else {
                 categoryPanel.addClass('hidden');
-                button.addClass('collapsed');
-                button.find('span.toggle-icon-left').addClass('hidden');
-                button.find('span.toggle-icon-right').removeClass('hidden');
-                this.$el.removeClass('col-xs-12 col-lg-3');
-                this.$el.addClass('catalog-tree-panel-hidden');
-                listContainer.removeClass('col-xs-12 col-lg-9');
-                listContainer.addClass('hidden-catalog-tree-panel');
+                this.hideUtilityElements();
                 this.getStorage().set('catalog-tree-panel', this.scope, 'collapsed');
             }
             $(window).trigger('resize');
+        },
+
+        showUtilityElements() {
+            let button = this.$el.find('button[data-action="collapsePanel"]');
+            button.removeClass('collapsed');
+            button.find('span.toggle-icon-left').removeClass('hidden');
+            button.find('span.toggle-icon-right').addClass('hidden');
+
+            this.$el.removeClass('catalog-tree-panel-hidden');
+
+            this.$el.addClass('col-xs-12 col-lg-3');
+            if (this.model) {
+
+                let detailContainer = this.$el.parents('#main').find('.overview');
+                detailContainer.removeClass('col-lg-9');
+                detailContainer.addClass('col-lg-6');
+
+            } else {
+                let listContainer = this.$el.parents('#main').find('.list-container');
+                listContainer.addClass('col-xs-12 col-lg-9');
+            }
+        },
+
+        hideUtilityElements() {
+            let button = this.$el.find('button[data-action="collapsePanel"]');
+            button.addClass('collapsed');
+            button.find('span.toggle-icon-left').addClass('hidden');
+            button.find('span.toggle-icon-right').removeClass('hidden');
+
+            this.$el.addClass('catalog-tree-panel-hidden');
+
+            this.$el.removeClass('col-xs-12 col-lg-3');
+            if (this.model) {
+
+                let detailContainer = this.$el.parents('#main').find('.overview');
+                detailContainer.addClass('col-lg-9');
+                detailContainer.removeClass('col-lg-6');
+
+            } else {
+                let listContainer = this.$el.parents('#main').find('.list-container');
+                listContainer.removeClass('col-xs-12 col-lg-9');
+            }
         },
 
         getCatalogDataList: function () {
