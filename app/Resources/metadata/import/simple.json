@@ -1,0 +1,7 @@
+{
+  "fields": {
+    "enumMultiLang": {
+      "converter": "\\Pim\\Import\\Types\\Simple\\FieldConverters\\EnumMultiLang"
+    }
+  }
+}

@@ -40,6 +40,11 @@ class ProductHandler extends AbstractHandler
     protected $images = [];
 
     /**
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * @param array $fileData
      * @param array $data
      *
@@ -197,6 +202,7 @@ class ProductHandler extends AbstractHandler
      */
     protected function importAttribute(Entity $product, array $data, string $delimiter)
     {
+        $attribute = null;
         $entityType = 'ProductAttributeValue';
         $service = $this->getServiceFactory()->create($entityType);
 
@@ -204,6 +210,7 @@ class ProductHandler extends AbstractHandler
         $restoreRow = new \stdClass();
 
         $conf = $data['item'];
+        $conf['name'] = 'value';
         $row = $data['row'];
 
         foreach ($product->get('productAttributeValues') as $item) {
@@ -223,10 +230,17 @@ class ProductHandler extends AbstractHandler
             }
         }
 
+        // prepare attribute
+        if (!isset($this->attributes[$conf['attributeId']])) {
+            $attribute = $this->getEntityManager()->getEntity('Attribute', $conf['attributeId']);
+            $this->attributes[$conf['attributeId']] = $attribute;
+        } else {
+            $attribute = $this->attributes[$conf['attributeId']];
+        }
+        $conf['attribute'] = $attribute;
+
         // convert attribute value
         $this->convertItem($inputRow, $entityType, $conf, $row, $delimiter);
-        $inputRow->value = $inputRow->{$conf['name']};
-        unset($inputRow->{$conf['name']});
 
         if (!isset($inputRow->id)) {
             $inputRow->productId = $product->get('id');
