@@ -46,35 +46,26 @@ class ChannelsDashlet extends AbstractDashletService
         $data = $this
             ->getEntityManager()
             ->getRepository('Channel')
+            ->select(['id', 'name'])
             ->find();
 
         if (count($data) > 0) {
-            $channels = [];
             foreach ($data as $row) {
-                $channels[$row->get('id')]['channelId'] = $row->get('id');
-                $channels[$row->get('id')]['channelName'] = $row->get('name');
-                $channels[$row->get('id')]['products'] = array_column($row->get('products')->toArray(), 'isActive');
-            }
-
-            foreach ($channels as $row) {
-                // prepare counts
-                $count = count($row['products']);
-                $active = 0;
-                if ($count > 0) {
-                    foreach ($row['products'] as $v) {
-                        if ($v) {
-                            $active++;
-                        }
-                    }
-                }
-                $inActive = $count - $active;
+                // prepare channel id
+                $channelId = $row->get('id');
 
                 $result['list'][] = [
-                    'id'          => $row['channelId'],
-                    'name'        => $row['channelName'],
-                    'products'    => $count,
-                    'active'      => $active,
-                    'notActive'   => $inActive
+                    'id'        => $row->get('id'),
+                    'name'      => $row->get('name'),
+                    'products'  => $this->count(
+                        "SELECT COUNT(pc.id) AS total FROM product_channel AS pc JOIN product AS p ON p.id=pc.product_id AND p.deleted=0 WHERE pc.channel_id='$channelId'"
+                    ),
+                    'active'    => $this->count(
+                        "SELECT COUNT(pc.id) AS total FROM product_channel AS pc JOIN product AS p ON p.id=pc.product_id AND p.deleted=0 AND p.is_active=1 WHERE pc.channel_id='$channelId'"
+                    ),
+                    'notActive' => $this->count(
+                        "SELECT COUNT(pc.id) AS total FROM product_channel AS pc JOIN product AS p ON p.id=pc.product_id AND p.deleted=0 AND p.is_active=0 WHERE pc.channel_id='$channelId'"
+                    )
                 ];
             }
 
@@ -82,5 +73,15 @@ class ChannelsDashlet extends AbstractDashletService
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @return int
+     */
+    protected function count(string $sql): int
+    {
+        return (int)$this->getEntityManager()->nativeQuery($sql)->fetchAll(\PDO::FETCH_ASSOC)[0]['total'];
     }
 }
