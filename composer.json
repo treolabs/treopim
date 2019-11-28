@@ -4,7 +4,7 @@
   "homepage": "https://treopim.com",
   "license": "GPL-3.0-only",
   "require": {
-    "treolabs/treocore": "~3.23.34",
+    "treolabs/treocore": ">=3.23.34 <3.25.0",
     "treolabs/colored-fields": "~1.7.13",
     "treolabs/multi-languages": "~1.14.0",
     "treolabs/import-feeds-common": "~1.3.0"
