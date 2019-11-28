@@ -139,28 +139,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * Products without Attribute filter
-     *
-     * @param $result
-     */
-    protected function boolFilterWithoutProductAttributes(&$result)
-    {
-        $result['whereClause'][] = [
-            'id' => array_column($this->getProductWithoutProductAttributes(), 'id')
-        ];
-    }
-
-    /**
-     * Get product without Attribute
-     *
-     * @return array
-     */
-    protected function getProductWithoutProductAttributes(): array
-    {
-        return $this->fetchAll($this->getGeneralStatisticService()->getQueryProductWithoutAttribute());
-    }
-
-    /**
      * Products without Image filter
      *
      * @param $result
