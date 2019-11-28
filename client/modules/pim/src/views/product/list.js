@@ -22,8 +22,6 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
 
         template: 'pim:product/list',
 
-        catalogTreeData: null,
-
         setup() {
             Dep.prototype.setup.call(this);
 
@@ -37,21 +35,19 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
                 el: '#main > .catalog-tree-panel',
                 scope: this.scope
             }, view => {
-                view.render();
                 view.listenTo(view, 'select-category', data => this.sortCollectionWithCatalogTree(data));
             });
         },
 
         sortCollectionWithCatalogTree(data) {
             this.notify('Please wait...');
-            this.catalogTreeData = Espo.Utils.cloneDeep(data || {});
-            this.updateCollectionWithCatalogTree();
+            this.updateCollectionWithCatalogTree(data);
             this.collection.fetch().then(() => this.notify(false));
         },
 
-        updateCollectionWithCatalogTree() {
+        updateCollectionWithCatalogTree(data) {
             const defaultFilters = this.searchManager.get();
-            let extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), this.catalogTreeData);
+            let extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), Espo.Utils.cloneDeep(data || {}));
             this.searchManager.set(extendedFilters);
             this.collection.where = this.searchManager.getWhere();
             this.searchManager.set(defaultFilters);
@@ -94,7 +90,6 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
         resetSorting() {
             Dep.prototype.resetSorting.call(this);
 
-            this.catalogTreeData = null;
             let catalogTreePanel = this.getView('catalogTreePanel');
             if (catalogTreePanel) {
                 catalogTreePanel.trigger('resetFilters');

@@ -50,13 +50,11 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 scope: this.scope,
                 model: this.model
             }, view => {
-                view.render();
                 view.listenTo(view, 'select-category', data => this.navigateToList(data));
             });
         },
 
         navigateToList(data) {
-            debugger
             this.catalogTreeData = Espo.Utils.cloneDeep(data || {});
             const options = {
                 isReturn: true,
@@ -69,7 +67,6 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
         expandCatalogTree(list) {
             list.sortCollectionWithCatalogTree(this.catalogTreeData);
             list.render(() => {
-                debugger
                 const catalogTreePanel = list.getView('catalogTreePanel');
                 if (catalogTreePanel) {
                     const catalogId = (((this.catalogTreeData || {}).advanced || {}).catalog || {}).value;

@@ -22,7 +22,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
 
         template: 'pim:product/record/catalog-tree-panel/category-tree',
 
-        // loadedCategories: [],
+        loadedCategories: [],
 
         expandableCategory: null,
 
@@ -72,11 +72,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         getRootCategoriesList() {
-            if (this.catalog.id === '5b8d3e5eb25db57e9') {
-                debugger;
-                this;
-            }
-
             return this.categories
                 .filter(category => this.catalog.categoriesIds.includes(category.id))
                 .map(category => {
@@ -221,7 +216,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         expandCategoryHandler(category) {
-            debugger
             if (typeof category === 'string') {
                 category = this.categories.find(item => item.id === category);
             }

@@ -77,6 +77,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
             this.listenTo(this, 'resetFilters', () => {
                 this.catalogTreeData = null;
+                this.getStorage().set('catalog-tree-panel-data', this.scope, '');
                 this.selectCategoryButtonApplyFilter(this.$el.find('button[data-action="selectAll"]'), false);
             });
 
@@ -155,6 +156,23 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
 
             if ($(window).width() <= 767 || !!this.getStorage().get('catalog-tree-panel', this.scope)) {
                 this.actionCollapsePanel();
+            }
+
+            this.expandCategory();
+        },
+
+        expandCategory() {
+            const catalogTreeData = this.getStorage().get('catalog-tree-panel-data', this.scope);
+            if (catalogTreeData) {
+                const type = catalogTreeData.type;
+                const category = catalogTreeData.category;
+                if (type === 'anyOf' && category) {
+                    const categoryTree = this.getView(`category-tree-${category.catalogId}`);
+                    categoryTree.expandCategoryHandler(category);
+                } else {
+                    this.selectCategoryButton(this.$el.find('button[data-action="selectWithoutCategory"]'));
+                }
+                this.applyCategoryFilter(type, category);
             }
         },
 
@@ -246,6 +264,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                     }
                 };
             }
+            this.getStorage().set('catalog-tree-panel-data', this.scope, {type: type, category: category});
             this.trigger('select-category', this.catalogTreeData);
         },
 
