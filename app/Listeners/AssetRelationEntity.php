@@ -93,8 +93,7 @@ class AssetRelationEntity extends AbstractListener
     protected function validation(AssetRelation $relation, Asset $asset): bool
     {
         $type = (string)$asset->get('type');
-        $channelsIds  = $relation->get('channelsIds');
-
+        $channelsIds = $this->getChannelsIds($relation);
         if ($this->isMainRole($relation) && $relation->get('scope') == 'Channel' && !empty($channelsIds)) {
             //checking for the existence of channels with a role Main
             $channelsCount = $this->countRelation($relation, $type, 'Main', 'Channel', $channelsIds);
@@ -103,6 +102,22 @@ class AssetRelationEntity extends AbstractListener
             }
         }
         return true;
+    }
+
+    /**
+     * @param AssetRelation $relation
+     * @return array|mixed|null
+     */
+    protected function getChannelsIds(AssetRelation $relation): ?array
+    {
+        $channelsIds  = $relation->get('channelsIds');
+        if (empty($channelsIds)) {
+            foreach ($relation->get('channels') as $channel) {
+                $channelsIds[] = $channel->get('id');
+            }
+        }
+
+        return $channelsIds;
     }
 
     /**
