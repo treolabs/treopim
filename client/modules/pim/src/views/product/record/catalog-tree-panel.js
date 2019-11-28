@@ -68,9 +68,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 }, categories => {
                     this.categories = categories;
                     this.setupPanels();
-                    if (this.model) {
-                        this.expandTreeWithProductCategory();
-                    }
+                    this.expandTreeWithProductCategory();
                     this.wait(false);
                 });
             });
@@ -89,22 +87,33 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         },
 
         expandTreeWithProductCategory() {
-            this.ajaxGetRequest(`Product/${this.model.id}/productCategories`, this.getSortingParams()).then(productCategories => {
-                let id = (((productCategories.list || [])[0] || {}).categoryId);
-                if (id) {
-                    this.ajaxGetRequest(`Category/${id}`).then(category => {
-                        let parentCategoryId = !category.categoryParentId ? id : (category.categoryRoute || '').split('|').find(element => element);
-                        let catalog = this.catalogs
-                            .find(catalog => catalog.id === this.model.get('catalogId') && (catalog.categoriesIds || []).includes(parentCategoryId));
-                        if (catalog) {
-                            let catalogTree = this.getView(`category-tree-${catalog.id}`);
-                            if (catalogTree) {
-                                catalogTree.expandCategoryHandler(category);
-                            }
+            const catalogTreeData = this.getStorage().get('catalog-tree-panel-data', this.scope);
+            if (this.model && (!catalogTreeData || !catalogTreeData.category)) {
+                this.ajaxGetRequest(`Product/${this.model.id}/productCategories`, this.getSortingParams())
+                    .then(productCategories => {
+                        let id = (((productCategories.list || [])[0] || {}).categoryId);
+                        if (id) {
+                            this.ajaxGetRequest(`Category/${id}`).then(category => {
+                                let parentCategoryId = id;
+                                if (category.categoryParentId) {
+                                    parentCategoryId = (category.categoryRoute || '').split('|').find(element => element);
+                                }
+
+                                let catalog = this.catalogs.find(catalog => {
+                                    return catalog.id === this.model.get('catalogId')
+                                        && (catalog.categoriesIds || []).includes(parentCategoryId);
+                                });
+
+                                if (catalog) {
+                                    let catalogTree = this.getView(`category-tree-${catalog.id}`);
+                                    if (catalogTree) {
+                                        catalogTree.expandCategoryHandler(category);
+                                    }
+                                }
+                            });
                         }
                     });
-                }
-            });
+            }
         },
 
         getSortingParams() {
@@ -172,7 +181,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 } else {
                     this.selectCategoryButton(this.$el.find('button[data-action="selectWithoutCategory"]'));
                 }
-                this.applyCategoryFilter(type, category);
+                this.configCatalogTreeData(type, category);
+                if (!this.model) {
+                    this.trigger('select-category', this.catalogTreeData);
+                }
             }
         },
 
@@ -234,6 +246,12 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         },
 
         applyCategoryFilter(type, category) {
+            this.configCatalogTreeData(type, category);
+            this.getStorage().set('catalog-tree-panel-data', this.scope, {type: type, category: category});
+            this.trigger('select-category', this.catalogTreeData);
+        },
+
+        configCatalogTreeData(type, category) {
             this.catalogTreeData = {};
             if (type === 'isEmpty') {
                 this.catalogTreeData.advanced = {
@@ -264,8 +282,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                     }
                 };
             }
-            this.getStorage().set('catalog-tree-panel-data', this.scope, {type: type, category: category});
-            this.trigger('select-category', this.catalogTreeData);
         },
 
         selectCategoryButton(button) {

@@ -385,11 +385,13 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
         },
 
         updateCollection() {
+            debugger
             const defaultFilters = this.searchManager.get();
 
             const list = this.getParentView();
-            if (list && list.catalogTreeData) {
-                const extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), list.catalogTreeData);
+            const catalogTreePanel = list.getView('catalogTreePanel');
+            if (catalogTreePanel && catalogTreePanel.catalogTreeData) {
+                const extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), catalogTreePanel.catalogTreeData);
                 this.searchManager.set(extendedFilters);
             }
 

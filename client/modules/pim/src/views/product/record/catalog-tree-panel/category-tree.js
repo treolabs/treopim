@@ -261,7 +261,6 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         },
 
         selectCategory(category) {
-            debugger
             if (typeof category === 'string') {
                 category = this.categories.find(item => item.id === category);
                 category.catalogId = this.catalog.id;
