@@ -31,6 +31,9 @@ use Treo\Core\EventManager\Event;
  */
 class ProductController extends AbstractEntityListener
 {
+    /**
+     * @param Event $event
+     */
     public function afterActionListLinked(Event $event)
     {
         $params = $event->getArgument('params');
