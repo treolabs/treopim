@@ -108,6 +108,12 @@
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
       "noLoad": true
+    },
+    "isActiveEntity": {
+      "type": "bool",
+      "notStorable": true,
+      "default": true,
+      "readOnly": false
     }
   },
   "links": {
