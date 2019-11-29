@@ -197,19 +197,5 @@
         }
       }
     }
-  },
-  "additionalMassActions": {
-    "actionMassUpdateAttribute": {
-      "name": "Mass Update Attribute",
-      "label": "Mass Update Attribute",
-      "actionViewPath": "pim:views/product/actions/actionMassUpdateAttribute",
-      "action": "actionMassUpdateAttribute",
-      "optionsToPass": [
-        "checkedList",
-        "allResultIsChecked",
-        "collection",
-        "scope"
-      ]
-    }
   }
 }
