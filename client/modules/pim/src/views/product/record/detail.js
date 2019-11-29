@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'search-manager'],
-    (Dep, SearchManager) => Dep.extend({
+Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
+    Dep => Dep.extend({
 
         template: 'pim:product/record/detail',
 
@@ -50,7 +50,6 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
                 scope: this.scope,
                 model: this.model
             }, view => {
-                view.render();
                 view.listenTo(view, 'select-category', data => this.navigateToList(data));
             });
         },
@@ -59,25 +58,15 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
             this.catalogTreeData = Espo.Utils.cloneDeep(data || {});
             const options = {
                 isReturn: true,
-                callback: this.expandCatalogTreeOnListView.bind(this)
+                callback: this.expandCatalogTree.bind(this)
             };
             this.getRouter().navigate(`#${this.scope}`);
             this.getRouter().dispatch(this.scope, null, options);
         },
 
-        expandCatalogTreeOnListView(list) {
+        expandCatalogTree(list) {
             list.sortCollectionWithCatalogTree(this.catalogTreeData);
-            list.render(() => {
-                const catalogTreePanel = list.getView('catalogTreePanel');
-                if (catalogTreePanel) {
-                    const catalogId = (((this.catalogTreeData || {}).advanced || {}).catalog || {}).value;
-                    const categoryTree = catalogTreePanel.getView(`category-tree-${catalogId}`);
-                    const categoryId = ((this.catalogTreeData || {}).boolData || {}).linkedWithCategory;
-                    if (categoryTree && categoryId) {
-                        categoryTree.expandCategoryHandler(categoryId);
-                    }
-                }
-            });
+            list.render();
         },
 
         data() {

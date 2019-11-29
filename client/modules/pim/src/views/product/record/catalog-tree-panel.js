@@ -68,15 +68,14 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 }, categories => {
                     this.categories = categories;
                     this.setupPanels();
-                    if (this.model) {
-                        this.expandTreeWithProductCategory();
-                    }
+                    this.expandTreeWithProductCategory();
                     this.wait(false);
                 });
             });
 
             this.listenTo(this, 'resetFilters', () => {
                 this.catalogTreeData = null;
+                this.getStorage().set('catalog-tree-panel-data', this.scope, '');
                 this.selectCategoryButtonApplyFilter(this.$el.find('button[data-action="selectAll"]'), false);
             });
 
@@ -88,21 +87,43 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         },
 
         expandTreeWithProductCategory() {
-            this.ajaxGetRequest(`Product/${this.model.id}/productCategories`).then(productCategories => {
-                let id = (((productCategories.list || [])[0] || {}).categoryId);
-                if (id) {
-                    this.ajaxGetRequest(`Category/${id}`).then(category => {
-                        let parentCategoryId = !category.categoryParentId ? id : (category.categoryRoute || '').split('|').find(element => element);
-                        let catalog = this.catalogs.find(catalog => (catalog.categoriesIds || []).includes(parentCategoryId));
-                        if (catalog) {
-                            let catalogTree = this.getView(`category-tree-${catalog.id}`);
-                            if (catalogTree && typeof catalogTree.expandCategoryHandler === 'function') {
-                                catalogTree.expandCategoryHandler(category);
-                            }
+            const catalogTreeData = this.getStorage().get('catalog-tree-panel-data', this.scope);
+            if (this.model && (!catalogTreeData || !catalogTreeData.category)) {
+                this.ajaxGetRequest(`Product/${this.model.id}/productCategories`, this.getSortingParams())
+                    .then(productCategories => {
+                        let id = (((productCategories.list || [])[0] || {}).categoryId);
+                        if (id) {
+                            this.ajaxGetRequest(`Category/${id}`).then(category => {
+                                let parentCategoryId = id;
+                                if (category.categoryParentId) {
+                                    parentCategoryId = (category.categoryRoute || '').split('|').find(element => element);
+                                }
+
+                                let catalog = this.catalogs.find(catalog => {
+                                    return catalog.id === this.model.get('catalogId')
+                                        && (catalog.categoriesIds || []).includes(parentCategoryId);
+                                });
+
+                                if (catalog) {
+                                    let catalogTree = this.getView(`category-tree-${catalog.id}`);
+                                    if (catalogTree) {
+                                        catalogTree.expandCategoryHandler(category);
+                                    }
+                                }
+                            });
                         }
                     });
-                }
-            });
+            }
+        },
+
+        getSortingParams() {
+            const panelDefs = this.getMetadata().get(['clientDefs', this.scope, 'relationshipPanels', 'productCategories']);
+            const scopeDefs = this.getMetadata().get(['entityDefs', 'ProductCategory', 'collection']);
+
+            return {
+                sortBy: (panelDefs || {}).sortBy || (scopeDefs || {}).sortBy,
+                asc: (panelDefs || {}).asc || (scopeDefs || {}).asc
+            };
         },
 
         getFullEntity(url, params, callback, container) {
@@ -146,8 +167,24 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                 this.actionCollapsePanel();
             }
 
-            if (this.model && !this.getStorage().get('catalog-tree-panel', this.scope)) {
-                Backbone.trigger('tree-panel-expanded');
+            this.expandFilters();
+        },
+
+        expandFilters() {
+            const catalogTreeData = this.getStorage().get('catalog-tree-panel-data', this.scope);
+            if (catalogTreeData) {
+                const type = catalogTreeData.type;
+                const category = catalogTreeData.category;
+                if (type === 'anyOf' && category) {
+                    const categoryTree = this.getView(`category-tree-${category.catalogId}`);
+                    categoryTree.expandCategoryHandler(category);
+                } else if (type === 'isEmpty') {
+                    this.selectCategoryButton(this.$el.find('button[data-action="selectWithoutCategory"]'));
+                }
+                this.configCatalogTreeData(type, category);
+                if (!this.model) {
+                    this.trigger('select-category', this.catalogTreeData);
+                }
             }
         },
 
@@ -158,6 +195,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
             }
             if (filterParams) {
                 this.applyCategoryFilter(filterParams.type);
+            }
+
+            if (this.model && !this.getStorage().get('catalog-tree-panel', this.scope)) {
+                Backbone.trigger('tree-panel-expanded');
             }
         },
 
@@ -172,6 +213,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                     let categoryTree = this.getView(`category-tree-${category.catalogId}`);
                     if (categoryTree) {
                         categoryTree.expandCategoryHandler(category);
+                        categoryTree.selectCategory(category);
                     }
                 });
             });
@@ -204,6 +246,12 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         },
 
         applyCategoryFilter(type, category) {
+            this.configCatalogTreeData(type, category);
+            this.getStorage().set('catalog-tree-panel-data', this.scope, {type: type, category: category});
+            this.trigger('select-category', this.catalogTreeData);
+        },
+
+        configCatalogTreeData(type, category) {
             this.catalogTreeData = {};
             if (type === 'isEmpty') {
                 this.catalogTreeData.advanced = {
@@ -211,8 +259,7 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                         type: 'isNotLinked',
                         data: {
                             type: type
-                        },
-                        hidden: true
+                        }
                     }
                 };
             } else if (type === 'anyOf' && category) {
@@ -231,12 +278,10 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
                             type: 'is',
                             idValue: category.catalogId,
                             nameValue: (this.catalogs.find(catalog => catalog.id === category.catalogId) || {}).name
-                        },
-                        hidden: true
+                        }
                     }
                 };
             }
-            this.trigger('select-category', this.catalogTreeData);
         },
 
         selectCategoryButton(button) {

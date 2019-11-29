@@ -61,6 +61,6 @@ Espo.define('pim:controllers/product', 'controllers/record', Dep => Dep.extend({
                 params: options
             }, callback, isReturn, key);
         }, this, false);
-    },
+    }
 
 }));
