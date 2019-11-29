@@ -112,8 +112,8 @@ class AssetRelationEntity extends AbstractListener
     {
         $channelsIds  = $relation->get('channelsIds');
         if (empty($channelsIds)) {
-            foreach ($relation->get('channels') as $channel) {
-                $channelsIds[] = $channel->get('id');
+            foreach ($relation->get('channels')->toArray() as $channel) {
+                $channelsIds[] = $channel['id'];
             }
         }
 
