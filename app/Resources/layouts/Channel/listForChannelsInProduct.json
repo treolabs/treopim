@@ -4,8 +4,7 @@
         "link": true
     },
     {
-        "name": "isActive",
-        "customLabel": "Active"
+        "name": "isActive"
     },
     {
         "name": "isActiveEntity",
