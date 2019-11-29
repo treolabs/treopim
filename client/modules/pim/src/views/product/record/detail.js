@@ -66,17 +66,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
 
         expandCatalogTree(list) {
             list.sortCollectionWithCatalogTree(this.catalogTreeData);
-            list.render(() => {
-                const catalogTreePanel = list.getView('catalogTreePanel');
-                if (catalogTreePanel) {
-                    const catalogId = (((this.catalogTreeData || {}).advanced || {}).catalog || {}).value;
-                    const categoryTree = catalogTreePanel.getView(`category-tree-${catalogId}`);
-                    const categoryId = ((this.catalogTreeData || {}).boolData || {}).linkedWithCategory;
-                    if (categoryTree && categoryId) {
-                        categoryTree.expandCategoryHandler(categoryId);
-                    }
-                }
-            });
+            list.render();
         },
 
         data() {

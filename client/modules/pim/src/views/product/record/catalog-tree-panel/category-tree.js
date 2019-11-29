@@ -86,7 +86,9 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             let hash = this.getRandomHash();
             let html = '';
             if (fullLoad) {
-                (category.childs || []).forEach(child => html +=  (child.childs || []).length ? this.getParentHtml(child, true) : this.getChildHtml(child));
+                (category.childs || []).forEach(child => {
+                    html += child.childrenCount ? this.getParentHtml(child, (child.childs || []).length) : this.getChildHtml(child);
+                });
             }
             return `
                 <li data-id="${category.id}" class="list-group-item child">
@@ -234,7 +236,16 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             catalogCollapse.collapse("show");
             let routes = (category.categoryRoute || '').split('|').filter(element => element);
             if (routes.length) {
-                catalogCollapse.find(`.collapse[data-id="${routes[0]}"]`).collapse('show');
+                routes.some(routeId => {
+                    const nextCollapse = catalogCollapse.find(`.collapse[data-id="${routeId}"]`);
+                    if (nextCollapse.hasClass('in')) {
+                        this.expandCategoriesFromRoute(routeId);
+                        return false;
+                    } else {
+                        nextCollapse.collapse('show');
+                        return true;
+                    }
+                });
             } else {
                 this.setCategoryActive(this.expandableCategory.id);
             }

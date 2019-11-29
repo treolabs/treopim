@@ -385,7 +385,6 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
         },
 
         updateCollection() {
-            debugger
             const defaultFilters = this.searchManager.get();
 
             const list = this.getParentView();
