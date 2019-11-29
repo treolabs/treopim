@@ -332,7 +332,17 @@
       "type": "hasMany",
       "relationName": "productChannel",
       "foreign": "products",
-      "entity": "Channel"
+      "entity": "Channel",
+      "additionalColumns": {
+        "isActive": {
+          "type": "bool",
+          "default": true,
+          "notNull": true,
+          "audited": false,
+          "readOnly": false,
+          "tooltip": false
+        }
+      }
     },
     "productCategories": {
       "type": "hasMany",
