@@ -42,6 +42,8 @@ class ProductController extends AbstractEntityListener
                 $item->isActiveEntity = (bool)$isActives[$item->id]['isActive'];
             }
         }
+
+        $event->setArgument('result', $result);
     }
 
     /**
