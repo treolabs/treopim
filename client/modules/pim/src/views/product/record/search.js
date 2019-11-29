@@ -381,5 +381,21 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
             this.reRender();
             this.updateCollection();
         },
+
+        updateCollection() {
+            const defaultFilters = this.searchManager.get();
+
+            const list = this.getParentView();
+            const catalogTreePanel = list.getView('catalogTreePanel');
+            if (catalogTreePanel && catalogTreePanel.catalogTreeData) {
+                const extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), catalogTreePanel.catalogTreeData);
+                this.searchManager.set(extendedFilters);
+            }
+
+            Dep.prototype.updateCollection.call(this);
+
+            this.searchManager.set(defaultFilters);
+        }
+
     })
 );
