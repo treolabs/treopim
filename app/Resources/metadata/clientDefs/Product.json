@@ -87,8 +87,11 @@
       "layout": "listForProductCategoriesInProduct"
     },
     "channels": {
+      "view": "pim:views/product/record/panels/product-channels",
+      "recordListView": "pim:views/channel/record/list-in-product",
       "createAction": "createRelatedConfigured",
-      "selectAction": "selectRelatedEntity"
+      "selectAction": "selectRelatedEntity",
+      "layout": "listForChannelsInProduct"
     },
     "pimImages": {
       "view": "pim:views/record/panels/pim-images",
@@ -193,6 +196,20 @@
           ]
         }
       }
+    }
+  },
+  "additionalMassActions": {
+    "actionMassUpdateAttribute": {
+      "name": "Mass Update Attribute",
+      "label": "Mass Update Attribute",
+      "actionViewPath": "pim:views/product/actions/actionMassUpdateAttribute",
+      "action": "actionMassUpdateAttribute",
+      "optionsToPass": [
+        "checkedList",
+        "allResultIsChecked",
+        "collection",
+        "scope"
+      ]
     }
   }
 }

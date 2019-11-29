@@ -22,6 +22,9 @@ declare(strict_types=1);
 
 namespace Pim\Services;
 
+use Espo\Core\Exceptions\BadRequest;
+use Treo\Core\Utils\Util;
+
 /**
  * Service of Channel
  *
@@ -89,6 +92,33 @@ class Channel extends AbstractService
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $channelId
+     * @param \StdClass $data
+     * @return bool
+     */
+    public function setIsActiveEntity(string $channelId, \StdClass $data): bool
+    {
+        $linkToChannel= $this->getMetadata()->get(['entityDefs', $data->entityName, 'links', 'channels']);
+        if (empty($linkToChannel['additionalColumns']['isActive'])) {
+            throw new BadRequest();
+        }
+
+        $nameTable = Util::fromCamelCase($linkToChannel['relationName']);
+        $fieldForeign = $data->entityName . '_id';
+        $sql = "UPDATE {$nameTable} linker 
+                        SET is_active = :isActive
+                        WHERE {$fieldForeign} = :entityId AND channel_id = :channelId AND deleted = 0";
+        $this
+            ->getEntityManager()
+            ->nativeQuery($sql, [
+                'isActive' => (int)$data->value,
+                'entityId' => (string)$data->entityId,
+                'channelId' => (string)$channelId]);
+
+        return true;
     }
 
     /**
