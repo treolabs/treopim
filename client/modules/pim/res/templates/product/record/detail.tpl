@@ -31,17 +31,17 @@
     </div>
     <div class="detail-button-container button-container edit-buttons hidden clearfix">
         <div class="btn-group" role="group">
-            {{#each buttonEditList}}{{button name scope=../../entityType label=label style=style hidden=hidden html=html}}{{/each}}
-            {{#if dropdownEditItemList}}
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu pull-left">
-                {{#each dropdownEditItemList}}
-                <li class="{{#if hidden}}hidden{{/if}}"><a href="javascript:" class="action" data-action="{{name}}">{{#if html}}{{{html}}}{{else}}{{translate label scope=../../entityType}}{{/if}}</a></li>
-                {{/each}}
-            </ul>
-            {{/if}}
+        {{#each buttonEditList}}{{button name scope=../../entityType label=label style=style hidden=hidden html=html}}{{/each}}
+        {{#if dropdownEditItemList}}
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-left">
+            {{#each dropdownEditItemList}}
+            <li class="{{#if hidden}}hidden{{/if}}"><a href="javascript:" class="action" data-action="{{name}}">{{#if html}}{{{html}}}{{else}}{{translate label scope=../../entityType}}{{/if}}</a></li>
+            {{/each}}
+        </ul>
+        {{/if}}
         </div>
     </div>
     {{/unless}}
@@ -55,7 +55,7 @@
             <div class="bottom">{{{bottom}}}</div>
         </div>
         <div class="side{{#if isWide}} col-md-12{{else}}{{#if isSmall}} col-md-5{{else}}{{#if isCatalogTreePanel}} col-md-4 col-lg-3{{else}} col-md-3{{/if}}{{/if}}{{/if}}">
-            {{{side}}}
+        {{{side}}}
         </div>
     </div>
 </div>

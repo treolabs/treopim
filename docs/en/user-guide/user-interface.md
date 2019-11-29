@@ -31,7 +31,7 @@ Each user can customize his/her own navigation menu in the `User Interface` sect
 
 ![Navigation Menu Cfg](../../_assets/user-interface/navigation-user-cfg.jpg)
 
-Here select the `Custom Tab List` option and add the desired tabs using the `Add` button.
+Here select the `Custom Tab List` option and add the desired tabs using the `Add` button.  You can also define the tabs order via their drag-and-drop in the tab list.
 
 ## Taskbar
 
@@ -152,10 +152,6 @@ Click the `Create Email Account` button; the following creation page will open:
 
 Here and fill in the required fields (marked with an asterisk) and configure the IMAP, SMTP options available in accordance with your email account server.
 
-#### External Accounts
-
-Currently not available.
-
 #### User Interface Settings
 
 Select the `Custom Tab List` checkbox to enable a custom navigation menu. Using the `Add` button select the entities to be linked to your custom [navigation menu](#navigation-menu).
@@ -184,13 +180,13 @@ Alternatively, you can customize your [dashboard](./dashboards-and-dashlets.md#d
 
 ### Last Viewed
 
-Select the `Last Viewed` option from the main drop-down menu to see the history of your visited pages within the TreoPIM system:
+Select the `Last Viewed` option from the user drop-down menu to see the history of your visited pages within the TreoPIM system:
 
 ![Last viewed](../../_assets/user-interface/last-viewed.jpg)
 
 ### Clear Local Cache
 
-TreoPIM is a single page application (SPA). To improve the page loading time, it actively uses cache for content as well for the user interface.
+TreoPIM is a single page application (SPA). To improve the page loading time, it actively uses cache for content as well as for the user interface.
 
-If you want to be sure in getting the latest information and application functions, please use the `Clear Local Cache` option from the main drop-down menu.
+If you want to be sure in getting the latest information and application functions, please use the `Clear Local Cache` option from the user drop-down menu.
 

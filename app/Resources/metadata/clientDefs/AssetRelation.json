@@ -1,0 +1,47 @@
+{
+    "dynamicLogic": {
+        "fields": {
+            "scope": {
+                "visible": {
+                    "conditionGroup": [
+                        {
+                            "type": "or",
+                            "value": [
+                                {
+                                    "type": "equals",
+                                    "attribute": "entityName",
+                                    "value": "Product"
+                                },
+                                {
+                                    "type": "equals",
+                                    "attribute": "entityName",
+                                    "value": "Category"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "channels": {
+                "visible": {
+                    "conditionGroup": [
+                        {
+                            "type": "equals",
+                            "attribute": "scope",
+                            "value": "Channel"
+                        }
+                    ]
+                },
+                "required": {
+                    "conditionGroup": [
+                        {
+                            "type": "equals",
+                            "attribute": "scope",
+                            "value": "Channel"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
