@@ -73,6 +73,14 @@ class LayoutController extends AbstractListener
     /**
      * @param Event $event
      */
+    protected function modifyAttributeDetailSmall(Event $event)
+    {
+        $this->modifyAttributeDetail($event);
+    }
+
+    /**
+     * @param Event $event
+     */
     protected function modifyProductAttributeValueDetailSmall(Event $event)
     {
         /** @var array $result */

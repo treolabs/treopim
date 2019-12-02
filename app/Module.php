@@ -79,6 +79,9 @@ class Module extends AbstractModule
      */
     protected function attributeScope(array $result): array
     {
+        /**
+         * Attribute
+         */
         $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name']['required']['conditionGroup'] = [
             [
                 'type'      => 'notIn',
@@ -96,6 +99,26 @@ class Module extends AbstractModule
                     'multiEnum',
                     'unit'
                 ]
+            ]
+        ];
+        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue']['required']['conditionGroup'] = [
+            [
+                'type'      => 'in',
+                'attribute' => 'type',
+                'value'     => [
+                    'enum',
+                    'multiEnum'
+                ]
+            ]
+        ];
+
+        /**
+         * ProductAttributeValue
+         */
+        $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value']['required']['conditionGroup'] = [
+            [
+                'type'      => 'isTrue',
+                'attribute' => 'isRequired'
             ]
         ];
 
@@ -138,6 +161,16 @@ class Module extends AbstractModule
                     'attribute' => 'isMultilang'
                 ]
             ];
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['required']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => [
+                        'enum',
+                        'multiEnum'
+                    ]
+                ]
+            ];
 
             /**
              * ProductAttributeValue
@@ -153,6 +186,12 @@ class Module extends AbstractModule
                     'type'      => 'in',
                     'attribute' => 'attributeType',
                     'value'     => ['enum', 'multiEnum']
+                ]
+            ];
+            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['required']['conditionGroup'] = [
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isRequired'
                 ]
             ];
         }
