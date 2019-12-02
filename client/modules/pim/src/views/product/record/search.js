@@ -389,7 +389,9 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
             const catalogTreePanel = list.getView('catalogTreePanel');
             if (catalogTreePanel && catalogTreePanel.catalogTreeData) {
                 const extendedFilters = Espo.Utils.cloneDeep(defaultFilters);
-                $.each(catalogTreePanel.catalogTreeData, (key, value) => _.extend(extendedFilters[key], value));
+                $.each(catalogTreePanel.catalogTreeData, (key, value) => {
+                    extendedFilters[key] = _.extend({}, extendedFilters[key], value);
+                });
                 this.searchManager.set(extendedFilters);
             }
 
