@@ -112,7 +112,7 @@
     "isActiveEntity": {
       "type": "bool",
       "notStorable": true,
-      "default": true,
+      "default": false,
       "readOnly": false
     }
   },
