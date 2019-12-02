@@ -543,29 +543,35 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             Object.keys(fields).forEach(name => {
                 let fieldView = fields[name];
                 let hide = !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
-                hide = this.updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope);
-                hide = this.updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter);
+                if (!hide){
+                    hide = this.updateCheckByChannelFilter(fieldView, attributesWithChannelScope);
+                }
+                if (!hide){
+                    hide = this.updateCheckByLocaleFilter(fieldView, currentFieldFilter);
+                }
                 this.controlRowVisibility(fieldView, name, hide);
             });
             this.hideChannelAttributesWithGlobalScope(fields, attributesWithChannelScope);
         },
 
-        updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope) {
+        updateCheckByChannelFilter(fieldView, attributesWithChannelScope) {
+            let hide = false;
             let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
             if (currentChannelFilter) {
                 if (currentChannelFilter === 'onlyGlobalScope') {
-                    hide = hide || fieldView.model.get('scope') !== 'Global';
+                    hide = fieldView.model.get('scope') !== 'Global';
                 } else {
-                    hide = hide || (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    hide = (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
                     if ((fieldView.model.get('channelsIds') || []).includes(currentChannelFilter)) {
                         attributesWithChannelScope.push(fieldView.model.get('attributeId'));
                     }
                 }
             }
+
             return hide;
         },
 
-        updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter) {
+        updateCheckByLocaleFilter(fieldView, currentFieldFilter) {
             // get filter
             let filter = (this.model.advancedEntityView || {}).localesFilter;
 
@@ -601,6 +607,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             if (currentFieldFilter === 'emptyAndRequired') {
                 check = (value === null || value === '' || (Array.isArray(value) && !value.length)) && required;
             }
+
             return check;
         },
 
