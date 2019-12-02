@@ -46,8 +46,12 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
         },
 
         updateCollectionWithCatalogTree(data) {
-            const defaultFilters = this.searchManager.get();
-            let extendedFilters = _.extend(Espo.Utils.cloneDeep(defaultFilters), Espo.Utils.cloneDeep(data || {}));
+            data = data || {};
+            const defaultFilters = Espo.Utils.cloneDeep(this.searchManager.get());
+            const extendedFilters = Espo.Utils.cloneDeep(defaultFilters);
+
+            $.each(data, (key, value) => _.extend(extendedFilters[key], value));
+
             this.searchManager.set(extendedFilters);
             this.collection.where = this.searchManager.getWhere();
             this.searchManager.set(defaultFilters);
