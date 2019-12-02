@@ -403,24 +403,36 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
             let groups = [];
 
             this.collection.forEach(model => {
+                // prepare key
                 let key = model.get(this.groupKey);
                 if (key === null || typeof key === 'undefined') {
                     key = this.noGroup.key;
                 }
+
+                // prepare label
                 let label = model.get(this.groupLabel);
                 if (label === null || typeof label === 'undefined') {
                     label = this.translate(this.noGroup.label, 'labels', 'Global');
                 }
+
+                // prepare is inherited param
+                let isInherited = model.get('isInherited');
+                if (isInherited === null || typeof isInherited === 'undefined') {
+                    isInherited = false;
+                }
+
                 let group = groups.find(item => item.key === key);
                 if (group) {
                     group.rowList.push(model.id);
                     group.rowList.sort((a, b) => this.collection.get(a).get('sortOrder') - this.collection.get(b).get('sortOrder'));
+                    group.editable = (!group.editable) ? !isInherited : group.editable;
                 } else {
                     groups.push({
                         key: key,
                         id: key !== this.noGroup.key ? key : null,
                         label: label,
-                        rowList: [model.id]
+                        rowList: [model.id],
+                        editable: !isInherited
                     });
                 }
             });
@@ -471,7 +483,7 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                                 const rowView = view.getView(id);
                                 if (rowView) {
                                     const fieldView = rowView.getView('isRequiredField');
-                                    if (fieldView && rowView.$el.find('a[data-action=removeRelated]').length > 0) {
+                                    if (fieldView && !rowView.model.get('isInherited')) {
                                         fieldView.setMode('edit');
                                         fieldView.reRender();
                                     }
@@ -515,6 +527,17 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                 return;
             }
 
+            // prepare ids
+            let ids = [];
+            group.rowList.forEach(id => {
+                if (!this.collection.get(id).get('isInherited')){
+                    ids.push(id);
+                }
+            });
+            if (!ids) {
+                return;
+            }
+
             this.confirm({
                 message: this.translate('unlinkAttributeGroupConfirmation', 'messages', 'AttributeGroup'),
                 confirmText: this.translate('Unlink')
@@ -524,7 +547,7 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                     url: `${this.model.name}/${this.link}/relation`,
                     data: JSON.stringify({
                         ids: [this.model.id],
-                        foreignIds: group.rowList
+                        foreignIds: ids
                     }),
                     type: 'DELETE',
                     contentType: 'application/json',

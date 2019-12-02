@@ -10,7 +10,8 @@
     "products": "Products",
     "productAttributeValues": "Product Attribute Values",
     "isRequired": "Required",
-    "productFamilyAttributes": "Product Family Attributes"
+    "productFamilyAttributes": "Product Family Attributes",
+    "isMultilang": "Multi-Language"
   },
   "options": {
     "type": {
@@ -26,13 +27,7 @@
       "unit": "Unit",
       "url": "Url",
       "varchar": "Varchar",
-      "varcharMultiLang": "Varchar Multi Lang",
-      "textMultiLang": "Text Multi Lang",
-      "enumMultiLang": "Enum Multi Lang",
-      "multiEnumMultiLang": "Multi-Enum Multi Lang",
-      "arrayMultiLang": "Array Multi Lang",
       "wysiwyg": "Wysiwyg",
-      "wysiwygMultiLang": "Wysiwyg Multi Lang",
       "image": "Image"
     }
   },
