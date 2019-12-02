@@ -208,8 +208,7 @@
       "layoutFiltersDisabled": true,
       "noLoad": true,
       "importMultipleField": true,
-      "exportMultipleField": true,
-      "view": "pim:views/product/fields/product-categories"
+      "exportMultipleField": true
     },
     "pimImages": {
       "type": "linkMultiple",
