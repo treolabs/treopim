@@ -336,7 +336,7 @@
       "additionalColumns": {
         "isActive": {
           "type": "bool",
-          "default": true,
+          "default": false,
           "notNull": true,
           "audited": false,
           "readOnly": false,
