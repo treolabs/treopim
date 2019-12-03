@@ -71,8 +71,14 @@ class ProductAttributeValue extends AbstractService
 
         if (!empty($type)) {
             switch ($type) {
+                case 'array':
+                    $entity->set('value', Json::decode($entity->get('value'), true));
+                    break;
                 case 'bool':
                     $entity->set('value', (bool)$entity->get('value'));
+                    foreach ($this->getInputLanguageList() as $multiLangField) {
+                        $entity->set($multiLangField, (bool)$entity->get($multiLangField));
+                    }
                     break;
                 case 'int':
                     $entity->set('value', (int)$entity->get('value'));
@@ -83,15 +89,27 @@ class ProductAttributeValue extends AbstractService
                     break;
                 case 'multiEnum':
                     $entity->set('value', Json::decode($entity->get('value'), true));
-                    if ($this->getConfig()->get('isMultilangActive')) {
-                        foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                            $multiLangField = Util::toCamelCase('value_' . strtolower($locale));
-                            $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
-                        }
-                        break;
+                    foreach ($this->getInputLanguageList() as $multiLangField) {
+                        $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
                     }
+                    break;
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getInputLanguageList(): array
+    {
+        // prepare result
+        $result = [];
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                $result[$locale] = Util::toCamelCase('value_' . strtolower($locale));
+            }
+        }
+        return $result;
     }
 
     /**
