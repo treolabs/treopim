@@ -29,8 +29,7 @@
     "Tax": "Tax",
     "ProductSerie": "Product Serie",
     "ProductCategory": "Product Category",
-    "ProductFamilyAttribute": "Product Family Attribute",
-    "PimImage": "Image"
+    "ProductFamilyAttribute": "Product Family Attribute"
   },
   "scopeNamesPlural": {
     "Association": "Associations",
@@ -52,8 +51,7 @@
     "Tax": "Taxes",
     "ProductSerie": "Product Series",
     "ProductCategory": "Product Categories",
-    "ProductFamilyAttribute": "Product Family Attributes",
-    "PimImage": "Images"
+    "ProductFamilyAttribute": "Product Family Attributes"
   },
   "options": {
     "channelsFilter": {
@@ -74,7 +72,10 @@
     "tag": "Tag",
     "amount": "Amount",
     "mpn": "MPN",
-    "productSerie": "Product Serie"
+    "productSerie": "Product Serie",
+    "channels": "Channels",
+    "scope": "Scope",
+    "role": "Role"
   },
   "labels": {
     "Add Field": "Add Filter",
