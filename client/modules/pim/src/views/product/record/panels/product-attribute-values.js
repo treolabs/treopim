@@ -264,7 +264,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         assignedUserName: this.getUser().get('name'),
                         scope: 'Global'
                     };
-                    if (['enum', 'enumMultiLang'].includes(attributeModel.get('type'))) {
+                    if (['enum'].includes(attributeModel.get('type'))) {
                         attributes.value = (attributeModel.get('typeValue') || [])[0];
                         if (this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length) {
                             let typeValues = this.getFieldManager().getActualAttributeList(attributeModel.get('type'), 'typeValue').splice(1);
@@ -543,47 +543,39 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             Object.keys(fields).forEach(name => {
                 let fieldView = fields[name];
                 let hide = !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
-                hide = this.updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope);
-                hide = this.updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter);
+                if (!hide){
+                    hide = this.updateCheckByChannelFilter(fieldView, attributesWithChannelScope);
+                }
+                if (!hide){
+                    hide = this.updateCheckByLocaleFilter(fieldView, currentFieldFilter);
+                }
                 this.controlRowVisibility(fieldView, name, hide);
             });
             this.hideChannelAttributesWithGlobalScope(fields, attributesWithChannelScope);
         },
 
-        updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope) {
+        updateCheckByChannelFilter(fieldView, attributesWithChannelScope) {
+            let hide = false;
             let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
             if (currentChannelFilter) {
                 if (currentChannelFilter === 'onlyGlobalScope') {
-                    hide = hide || fieldView.model.get('scope') !== 'Global';
+                    hide = fieldView.model.get('scope') !== 'Global';
                 } else {
-                    hide = hide || (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    hide = (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
                     if ((fieldView.model.get('channelsIds') || []).includes(currentChannelFilter)) {
                         attributesWithChannelScope.push(fieldView.model.get('attributeId'));
                     }
                 }
             }
+
             return hide;
         },
 
-        updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter) {
-            let currentLocaleFilter = (this.model.advancedEntityView || {}).localesFilter;
-            let showGenericFields = (this.model.advancedEntityView || {}).showGenericFields;
-            if (currentLocaleFilter !== null && this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length &&
-                ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang', 'wysiwygMultiLang'].includes(fieldView.model.get('attributeType'))) {
-                let hiddenLocales = currentLocaleFilter ? this.getConfig().get('inputLanguageList').filter(lang => lang !== currentLocaleFilter) : [];
-                fieldView.setHiddenLocales(hiddenLocales);
-                let langFieldNameList = fieldView.getLangFieldNameList();
-                langFieldNameList = langFieldNameList.filter(field => {
-                    return this.checkFieldValue(currentFieldFilter, fieldView.model.get(field), fieldView.model.get('isRequired'));
-                });
-                fieldView.langFieldNameList = langFieldNameList;
-                fieldView.hideMainOption = (showGenericFields !== null && typeof showGenericFields !== 'undefined' && !showGenericFields)
-                    || !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
-                fieldView.expandLocales = fieldView.hideMainOption || !!(hiddenLocales.length || currentLocaleFilter);
-                hide = hide || !fieldView.langFieldNameList.length && fieldView.hideMainOption;
-                fieldView.reRender();
-            }
-            return hide;
+        updateCheckByLocaleFilter(fieldView, currentFieldFilter) {
+            // get filter
+            let filter = (this.model.advancedEntityView || {}).localesFilter;
+
+            return filter !== null && filter !== '' && !fieldView.model.get('attributeIsMultilang');
         },
 
         getValueFields() {
@@ -615,6 +607,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             if (currentFieldFilter === 'emptyAndRequired') {
                 check = (value === null || value === '' || (Array.isArray(value) && !value.length)) && required;
             }
+
             return check;
         },
 

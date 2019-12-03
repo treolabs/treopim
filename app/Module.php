@@ -22,7 +22,10 @@ declare(strict_types=1);
 
 namespace Pim;
 
+use Espo\Core\Utils\Json;
 use Treo\Core\ModuleManager\AbstractModule;
+use Treo\Core\Utils\Config;
+use Treo\Core\Utils\Util;
 
 /**
  * Class Module
@@ -32,10 +35,186 @@ use Treo\Core\ModuleManager\AbstractModule;
 class Module extends AbstractModule
 {
     /**
+     * @var array
+     */
+    public static $multiLangTypes
+        = [
+            'bool',
+            'enum',
+            'multiEnum',
+            'varchar',
+            'text',
+            'wysiwyg'
+        ];
+
+    /**
      * @inheritdoc
      */
     public static function getLoadOrder(): int
     {
         return 5120;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function loadMetadata(\stdClass &$data)
+    {
+        parent::loadMetadata($data);
+
+        // prepare result
+        $result = Json::decode(Json::encode($data), true);
+
+        // prepare attribute scope
+        $result = $this->attributeScope($result);
+
+        // set data
+        $data = Json::decode(Json::encode($result));
+    }
+
+    /**
+     * @param array $result
+     *
+     * @return array
+     */
+    protected function attributeScope(array $result): array
+    {
+        /**
+         * Attribute
+         */
+        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name']['required']['conditionGroup'] = [
+            [
+                'type'      => 'notIn',
+                'attribute' => 'type',
+                'value'     => [md5('some-str')]
+            ]
+        ];
+
+        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue']['visible']['conditionGroup'] = [
+            [
+                'type'      => 'in',
+                'attribute' => 'type',
+                'value'     => [
+                    'enum',
+                    'multiEnum',
+                    'unit'
+                ]
+            ]
+        ];
+        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue']['required']['conditionGroup'] = [
+            [
+                'type'      => 'in',
+                'attribute' => 'type',
+                'value'     => [
+                    'enum',
+                    'multiEnum'
+                ]
+            ]
+        ];
+
+        /**
+         * ProductAttributeValue
+         */
+        $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value']['required']['conditionGroup'] = [
+            [
+                'type'      => 'isTrue',
+                'attribute' => 'isRequired'
+            ]
+        ];
+
+        foreach ($this->getInputLanguageList() as $locale => $key) {
+            /**
+             * Attribute
+             */
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['isMultilang']['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => self::$multiLangTypes
+                ]
+            ];
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['required']['conditionGroup'] = [
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isMultilang'
+                ]
+            ];
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => self::$multiLangTypes
+                ],
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isMultilang'
+                ]
+            ];
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => ['enum', 'multiEnum']
+                ],
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isMultilang'
+                ]
+            ];
+            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['required']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'type',
+                    'value'     => [
+                        'enum',
+                        'multiEnum'
+                    ]
+                ]
+            ];
+
+            /**
+             * ProductAttributeValue
+             */
+            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'attributeIsMultilang'
+                ]
+            ];
+            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['readOnly']['conditionGroup'] = [
+                [
+                    'type'      => 'in',
+                    'attribute' => 'attributeType',
+                    'value'     => ['enum', 'multiEnum']
+                ]
+            ];
+            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['required']['conditionGroup'] = [
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isRequired'
+                ]
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getInputLanguageList(): array
+    {
+        $result = [];
+
+        /** @var Config $config */
+        $config = $this->container->get('config');
+
+        if ($config->get('isMultilangActive', false)) {
+            foreach ($config->get('inputLanguageList', []) as $locale) {
+                $result[$locale] = ucfirst(Util::toCamelCase(strtolower($locale)));
+            }
+        }
+
+        return $result;
     }
 }
