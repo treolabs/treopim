@@ -71,6 +71,9 @@ class ProductAttributeValue extends AbstractService
 
         if (!empty($type)) {
             switch ($type) {
+                case 'array':
+                    $entity->set('value', Json::decode($entity->get('value'), true));
+                    break;
                 case 'bool':
                     $entity->set('value', (bool)$entity->get('value'));
                     break;
