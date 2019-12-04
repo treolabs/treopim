@@ -46,7 +46,10 @@
   },
   "fields": {
     "productFamily": "Artikel-Familien",
-    "productSerie": "Product Serie"
+    "productSerie": "Product Serie",
+    "channels": "Kanale",
+    "scope": "Umfang",
+    "role": "Rolle"
   },
   "options": {
     "searchRanges": {

@@ -1,0 +1,34 @@
+{
+    "fields": {
+        "products": {
+            "type": "linkMultiple",
+            "layoutDetailDisabled": true,
+            "layoutMassUpdateDisabled": true,
+            "importDisabled": true,
+            "noLoad": true
+        },
+        "categories": {
+            "type": "linkMultiple",
+            "layoutDetailDisabled": true,
+            "layoutMassUpdateDisabled": true,
+            "importDisabled": true,
+            "noLoad": true
+        }
+    },
+    "links": {
+        "products": {
+            "type": "hasMany",
+            "relationName": "productAsset",
+            "foreign": "assets",
+            "entity": "Product",
+            "audited": false
+        },
+        "categories": {
+            "type": "hasMany",
+            "relationName": "categoryAsset",
+            "foreign": "assets",
+            "entity": "Category",
+            "audited": false
+        }
+    }
+}

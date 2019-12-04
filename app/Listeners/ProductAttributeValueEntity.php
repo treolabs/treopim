@@ -23,9 +23,11 @@ declare(strict_types=1);
 namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Exceptions\Error;
 use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
+use Pim\Entities\ProductAttributeValue;
 use Treo\Core\EventManager\Event;
 use Treo\Listeners\AbstractListener;
 
@@ -99,6 +101,7 @@ class ProductAttributeValueEntity extends AbstractListener
         $entity = $event->getArgument('entity');
         $options = $event->getArgument('options');
 
+        $this->moveImageFromTmp($entity);
         // exit
         if (!empty($options['skipProductAttributeValueHook'])) {
             return true;
@@ -271,5 +274,20 @@ class ProductAttributeValueEntity extends AbstractListener
     protected function exception(string $key): string
     {
         return $this->getContainer()->get('language')->translate($key, 'exceptions', 'ProductAttributeValue');
+    }
+
+    /**
+     * @param ProductAttributeValue $attributeValue
+     * @return void
+     * @throws Error
+     */
+    protected function moveImageFromTmp(ProductAttributeValue $attributeValue): void
+    {
+        $attribute = $attributeValue->get('attribute');
+        if (!empty($attribute) && $attribute->get('type') === 'image' && !empty($attributeValue->get('value'))) {
+            $file = $this->getEntityManager()->getEntity('Attachment', $attributeValue->get('value'));
+            $this->getService($file->getEntityType())->moveFromTmp($file);
+            $this->getEntityManager()->saveEntity($file);
+        }
     }
 }
