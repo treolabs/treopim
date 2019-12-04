@@ -368,19 +368,23 @@ class ProductHandler extends AbstractHandler
 
         // prepare input row
         $input = new \stdClass();
-        $input->scope = $conf['scope'];
-        if ($conf['scope'] == 'Channel') {
-            $input->channelsIds = $conf['channelsIds'];
-        }
 
         // prepare where
         if (isset($row[$conf['column']]) && !empty($row[$conf['column']])) {
             $field = 'link';
             $value = $row[$conf['column']];
             $input->link = $row[$conf['column']];
-        } else {
+        } elseif (!empty($conf['default'])) {
             $field = 'imageId';
             $value = $conf['default'];
+        } else {
+            return;
+        }
+
+        // prepare scope
+        $input->scope = $conf['scope'];
+        if ($conf['scope'] == 'Channel') {
+            $input->channelsIds = $conf['channelsIds'];
         }
 
         // check exist product image
