@@ -85,4 +85,38 @@ class Product extends AbstractController
 
         return $this->getRecordService()->removeAssociateProducts($data);
     }
+
+    /**
+     * @param array $params
+     * @param \stdClass $data
+     * @param Request $request
+     * @return array
+     * @throws Exceptions\BadRequest
+     * @throws Exceptions\Forbidden
+     */
+    public function actionGetAttributesForMassUpdate($params, $data, Request $request)
+    {
+        if (empty($data->ids) && empty($data->where)) {
+            throw new Exceptions\BadRequest();
+        }
+
+        if (!$this->getAcl()->check('Product', 'edit') && !$this->getAcl()->check('Attribute', 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        $attributes = $this->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->select(['attributeId', ['attribute.name', 'name'], ['attribute.type','attributeType'], ['attribute.typeValue','typeValue']])
+            ->leftJoin(['attribute'])
+            ->where(['scope' => 'Global', 'productId=' => $data->ids])
+            ->groupBy(['product_attribute_value.attributeId'])
+            ->find()->toArray();
+        $result = [];
+
+        foreach ($attributes as $attribute) {
+            $result[$attribute['attributeId']] = $attribute;
+        }
+
+        return $result;
+    }
 }

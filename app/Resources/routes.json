@@ -83,5 +83,13 @@
       "controller": "Channel",
       "action": "setIsActiveEntity"
     }
+  },
+  {
+    "route": "/Product/massUpdateAttribute/getAttributes",
+    "method": "post",
+    "params": {
+      "controller": "Product",
+      "action": "getAttributesForMassUpdate"
+    }
   }
 ]
