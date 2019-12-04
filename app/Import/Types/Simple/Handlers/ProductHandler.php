@@ -26,6 +26,7 @@ use Espo\ORM\Entity;
 use Espo\Services\Record;
 use Import\Types\Simple\Handlers\AbstractHandler;
 use Treo\Core\Exceptions\NoChange;
+use Treo\Core\Utils\Util;
 
 /**
  * Class Product
@@ -145,6 +146,9 @@ class ProductHandler extends AbstractHandler
                     $this->images = $entity->get('pimImages');
                 }
 
+                // prepare product attributes
+                $this->attributes = $entity->get('productAttributeValues');
+
                 foreach ($additionalFields as $value) {
                     if ($value['item']['name'] == 'productCategories') {
                         // import categories
@@ -211,20 +215,26 @@ class ProductHandler extends AbstractHandler
 
         $conf = $data['item'];
         $conf['name'] = 'value';
+        // check for multiLang
+        if (isset($conf['locale']) && !is_null($conf['locale'])) {
+            if ($this->getConfig()->get('isMultilangActive')) {
+                $conf['name'] .= Util::toCamelCase(strtolower($conf['locale']), '_', true);
+            }
+        }
         $row = $data['row'];
 
-        foreach ($product->get('productAttributeValues') as $item) {
+        foreach ($this->attributes as $item) {
             if ($item->get('attributeId') == $conf['attributeId'] && $item->get('scope') == $conf['scope']) {
                 if ($conf['scope'] == 'Global') {
                     $inputRow->id = $item->get('id');
-                    $restoreRow->value = $item->get('value');
+                    $restoreRow->{$conf['name']} = $item->get($conf['name']);
                 } elseif ($conf['scope'] == 'Channel') {
                     $channels = array_column($item->get('channels')->toArray(), 'id');
 
                     if (empty($diff = array_diff($conf['channelsIds'], $channels))
                         && empty($diff = array_diff($channels, $conf['channelsIds']))) {
                         $inputRow->id = $item->get('id');
-                        $restoreRow->value = $item->get('value');
+                        $restoreRow->{$conf['name']} = $item->get($conf['name']);
                     }
                 }
             }
@@ -252,6 +262,7 @@ class ProductHandler extends AbstractHandler
             }
 
             $entity = $service->createEntity($inputRow);
+            $this->attributes[] = $entity;
 
             $this->saveRestoreRow('created', $entityType, $entity->get('id'));
         } else {
@@ -415,6 +426,7 @@ class ProductHandler extends AbstractHandler
             $this->saveRestoreRow('updated', $entityType, [$exist->get('id') => $restore]);
         }
     }
+
     /**
      * @inheritDoc
      */
