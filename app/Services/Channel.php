@@ -97,9 +97,11 @@ class Channel extends AbstractService
     /**
      * @param string $channelId
      * @param \StdClass $data
+     * @param bool $useDeleted
      * @return bool
+     * @throws BadRequest
      */
-    public function setIsActiveEntity(string $channelId, \StdClass $data): bool
+    public function setIsActiveEntity(string $channelId, \StdClass $data, bool $useDeleted = false): bool
     {
         $linkToChannel= $this->getMetadata()->get(['entityDefs', $data->entityName, 'links', 'channels']);
         if (empty($linkToChannel['additionalColumns']['isActive'])) {
@@ -108,9 +110,10 @@ class Channel extends AbstractService
 
         $nameTable = Util::fromCamelCase($linkToChannel['relationName']);
         $fieldForeign = $data->entityName . '_id';
+        $deleted = (int)$useDeleted;
         $sql = "UPDATE {$nameTable} linker 
                         SET is_active = :isActive
-                        WHERE {$fieldForeign} = :entityId AND channel_id = :channelId AND deleted = 0";
+                        WHERE {$fieldForeign} = :entityId AND channel_id = :channelId AND deleted = {$deleted}";
         $this
             ->getEntityManager()
             ->nativeQuery($sql, [
