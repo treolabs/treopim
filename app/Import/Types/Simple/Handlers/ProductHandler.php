@@ -117,16 +117,6 @@ class ProductHandler extends AbstractHandler
                         continue;
                     }
 
-                    // check for multiLang fields
-                    if (isset($item['locale']) && !is_null($item['locale'])) {
-                        if ($this->getConfig()->get('isMultilangActive')) {
-                            $field .= Util::toCamelCase(strtolower($item['locale']), '_', true);
-                            $item['name'] = $field;
-                        } else {
-                            continue;
-                        }
-                    }
-
                     if (isset($item['attributeId']) || isset($item['pimImage']) || $field == 'productCategories') {
                         $additionalFields[] = [
                             'item' => $item,
@@ -227,6 +217,12 @@ class ProductHandler extends AbstractHandler
 
         $conf = $data['item'];
         $conf['name'] = 'value';
+        // check for multiLang
+        if (isset($conf['locale']) && !is_null($conf['locale'])) {
+            if ($this->getConfig()->get('isMultilangActive')) {
+                $conf['name'] .= Util::toCamelCase(strtolower($conf['locale']), '_', true);
+            }
+        }
         $row = $data['row'];
 
         foreach ($this->attributes as $item) {
