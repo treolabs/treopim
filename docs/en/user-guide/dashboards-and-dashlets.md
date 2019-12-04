@@ -1,6 +1,6 @@
 # Dashboards and Dashlets
 
-Dashboards are designed for quick navigation within the TreoPIM entities data displayed on separate dashlets. The dashboard is the starting page of TreoPIM that can be reached any time via clicking the `TreoPIM` logo located in the upper left corner of TreoPIM page:
+Dashboards are designed for quick navigation within the TreoPIM entities data displayed on separate dashlets. The dashboard is the starting page of TreoPIM that can be reached any time via clicking the `TreoPIM` logo located in the upper left corner of the TreoPIM pages:
 
 ![Dashboard](../../_assets/dashboards-and-dashlets/dashboard-interface.jpg)
 
