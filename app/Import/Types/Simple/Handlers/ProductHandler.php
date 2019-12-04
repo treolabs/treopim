@@ -111,13 +111,11 @@ class ProductHandler extends AbstractHandler
                 $additionalFields = [];
 
                 foreach ($data['data']['configuration'] as $item) {
-                    $field = !isset($item['attributeId']) ? $item['name'] : 'value';
-
-                    if ($field == 'id') {
+                    if ($item['name'] == 'id') {
                         continue;
                     }
 
-                    if (isset($item['attributeId']) || isset($item['pimImage']) || $field == 'productCategories') {
+                    if (isset($item['attributeId']) || isset($item['pimImage']) || $item['name'] == 'productCategories') {
                         $additionalFields[] = [
                             'item' => $item,
                             'row' => $row
