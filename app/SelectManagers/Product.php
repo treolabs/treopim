@@ -22,6 +22,7 @@ namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
 use Pim\Services\GeneralStatisticsDashlet;
+use Treo\Core\Utils\Util;
 
 /**
  * Product select manager
@@ -463,69 +464,14 @@ class Product extends AbstractSelectManager
     protected function addProductAttributesFilter(array &$selectParams, array $attributes): void
     {
         foreach ($attributes as $row) {
-            // prepare attribute where
-            switch ($row['type']) {
-                case 'isTrue':
-                    $where = [
-                        'type'  => 'and',
-                        'value' => [
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'attributeId',
-                                'value'     => $row['attribute']
-                            ],
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'value',
-                                'value'     => 'TreoBoolIsTrue'
-                            ]
-                        ]
-                    ];
-                    break;
-                case 'isFalse':
-                    $where = [
-                        'type'  => 'and',
-                        'value' => [
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'attributeId',
-                                'value'     => $row['attribute']
-                            ],
-                            [
-                                'type'  => 'or',
-                                'value' => [
-                                    [
-                                        'type'      => 'isNull',
-                                        'attribute' => 'value'
-                                    ],
-                                    [
-                                        'type'      => 'equals',
-                                        'attribute' => 'value',
-                                        'value'     => 'TreoBoolIsFalse'
-                                    ]
-                                ]
-                            ],
-                        ]
-                    ];
-                    break;
-                default:
-                    $where = [
-                        'type'  => 'and',
-                        'value' => [
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'attributeId',
-                                'value'     => $row['attribute']
-                            ],
-                            [
-                                'type'      => $row['type'],
-                                'attribute' => 'value',
-                                'value'     => $row['value']
-                            ]
-                        ]
-                    ];
-                    break;
+            // find prepare method
+            $method = 'prepareType' . ucfirst($row['type']);
+            if (!method_exists($this, $method)) {
+                $method = 'prepareTypeDefault';
             }
+
+            // prepare where
+            $where = $this->{$method}($row);
 
             // create select params
             $sp = $this
@@ -546,5 +492,130 @@ class Product extends AbstractSelectManager
 
             $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
         }
+    }
+
+    /**
+     * @param string $attributeId
+     *
+     * @return array
+     */
+    protected function getValues(string $attributeId): array
+    {
+        // prepare result
+        $result = ['value'];
+
+        if ($this->getConfig()->get('isMultilangActive', false) && !empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
+            // is attribute multi-languages ?
+            $isMultiLang = $this
+                ->getEntityManager()
+                ->getRepository('Attribute')
+                ->select(['isMultilang'])
+                ->where(['id' => $attributeId])
+                ->findOne()
+                ->get('isMultilang');
+
+            if ($isMultiLang) {
+                foreach ($locales as $locale) {
+                    $result[] = 'value' . ucfirst(Util::toCamelCase(strtolower($locale)));
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeIsTrue(array $row): array
+    {
+        $where = ['type' => 'or', 'value' => []];
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][] = [
+                'type'  => 'and',
+                'value' => [
+                    [
+                        'type'      => 'equals',
+                        'attribute' => 'attributeId',
+                        'value'     => $row['attribute']
+                    ],
+                    [
+                        'type'      => 'equals',
+                        'attribute' => $v,
+                        'value'     => '1'
+                    ]
+                ]
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeIsFalse(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => []
+                ],
+            ]
+        ];
+
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][1]['value'][] = [
+                'type'      => 'isNull',
+                'attribute' => $v
+            ];
+            $where['value'][1]['value'][] = [
+                'type'      => 'notEquals',
+                'attribute' => $v,
+                'value'     => '1'
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeDefault(array $row): array
+    {
+        $where = ['type' => 'or', 'value' => []];
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][] = [
+                'type'  => 'and',
+                'value' => [
+                    [
+                        'type'      => 'equals',
+                        'attribute' => 'attributeId',
+                        'value'     => $row['attribute']
+                    ],
+                    [
+                        'type'      => $row['type'],
+                        'attribute' => $v,
+                        'value'     => $row['value']
+                    ]
+                ]
+            ];
+        }
+
+        return $where;
     }
 }
