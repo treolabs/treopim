@@ -49,10 +49,70 @@ class Product extends AbstractSelectManager
         // get select params
         $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
 
+        // prepare custom where
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+
         // add product attributes filter
         $this->addProductAttributesFilter($selectParams, $productAttributes);
 
         return $selectParams;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function textFilter($textFilter, &$result)
+    {
+        // call parent
+        parent::textFilter($textFilter, $result);
+
+        if (empty($result['whereClause'])) {
+            return;
+        }
+
+        // get last
+        $last = array_pop($result['whereClause']);
+
+        if (!isset($last['OR'])) {
+            return;
+        }
+
+        // prepare rows
+        $rows = [];
+
+        // push for fields
+        foreach ($last['OR'] as $name => $value) {
+            $rows[] = "product." . Util::toUnderScore(str_replace('*', '', $name)) . " LIKE '$value'";
+        }
+
+        // get attributes ids
+        $attributes = $this
+            ->getEntityManager()
+            ->getRepository('Attribute')
+            ->select(['id'])
+            ->where(['type' => ['varchar', 'text', 'wysiwyg']])
+            ->find()
+            ->toArray();
+
+        // prepare attributes where
+        $attributesIds = implode("','", array_column($attributes, 'id'));
+
+        // prepare attributes values
+        $attributesValues = ["value LIKE '%$textFilter%'"];
+        if ($this->getConfig()->get('isMultilangActive', false) && !empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
+            foreach ($locales as $locale) {
+                $attributesValues[] = "value_" . strtolower($locale) . " LIKE '%$textFilter%'";
+            }
+        }
+        $attributesValues = implode(" OR ", $attributesValues);
+
+        // push for attributes
+        $rows[] = "product.id IN (SELECT product_id FROM product_attribute_value WHERE deleted=0 AND attribute_id IN ('$attributesIds') AND ($attributesValues))";
+
+        // prepare custom where
+        $result['customWhere'] .= " AND (" . implode(" OR ", $rows) . ")";
     }
 
     /**
@@ -486,10 +546,6 @@ class Product extends AbstractSelectManager
                 ->createSelectQuery('ProductAttributeValue', $sp);
 
             // prepare custom where
-            if (!isset($selectParams['customWhere'])) {
-                $selectParams['customWhere'] = '';
-            }
-
             $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
         }
     }
