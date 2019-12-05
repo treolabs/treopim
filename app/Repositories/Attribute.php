@@ -173,7 +173,7 @@ class Attribute extends Base
      */
     protected function isTypeValueValid(Entity $entity): bool
     {
-        if ($this->getConfig()->get('isMultilangActive', false) && in_array($entity->get('type'), ['enum', 'multiEnum'])) {
+        if (!empty($entity->get('isMultilang')) && $this->getConfig()->get('isMultilangActive', false) && in_array($entity->get('type'), ['enum', 'multiEnum'])) {
             $count = count($entity->get('typeValue'));
             foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
                 $field = 'typeValue' . ucfirst(Util::toCamelCase(strtolower($locale)));
