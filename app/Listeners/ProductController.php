@@ -22,287 +22,42 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
-use Espo\Core\Utils\Util;
-use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
 
 /**
  * Class ProductController
  *
- * @author r.zablodskiy@treolabs.com
+ * @author m.kokhanksyi <m.kokhanksyi@treolabs.com>
  */
-class ProductController extends AbstractListener
+class ProductController extends AbstractEntityListener
 {
-    /**
-     * @param Event $event
-     */
-    public function beforeActionList(Event $event)
-    {
-        // get where
-        $where = $event->getArgument('request')->get('where', []);
-
-        // prepare where
-        $where = $this
-            ->getContainer()
-            ->get('eventManager')
-            ->dispatch('ProductController', 'prepareForProductType', new Event(['where' => $where]))
-            ->getArgument('where');
-
-        $where = $this
-            ->getContainer()
-            ->get('eventManager')
-            ->dispatch('ProductController', 'prepareForAttributes', new Event(['where' => $where]))
-            ->getArgument('where');
-
-        // set where
-        $event->getArgument('request')->setQuery('where', $where);
-    }
-
     /**
      * @param Event $event
      */
     public function afterActionListLinked(Event $event)
     {
-        // get data
-        $data = $event->getArguments();
+        $params = $event->getArgument('params');
+        $result = $event->getArgument('result');
 
-        if ($data['params']['link'] == 'productAttributeValues' && !empty($data['result']['list'])) {
-            $attributes = $this
-                ->getEntityManager()
-                ->getRepository('Attribute')
-                ->where(['id' => array_column($data['result']['list'], 'attributeId')])
-                ->find();
-
-            if (count($attributes) > 0) {
-                foreach ($attributes as $attribute) {
-                    foreach ($data['result']['list'] as $key => $item) {
-                        if ($item->attributeId == $attribute->get('id')) {
-                            // add type value to result
-                            $data['result']['list'][$key]->typeValue = $attribute->get('typeValue');
-
-                            // add attribute group
-                            $data['result']['list'][$key]->attributeGroupId = $attribute->get('attributeGroupId');
-                            $data['result']['list'][$key]->attributeGroupName = $attribute->get('attributeGroupName');
-
-                            // add sort order
-                            $data['result']['list'][$key]->sortOrder = $attribute->get('sortOrder');
-
-                            // for multiLang fields
-                            if ($this->getConfig()->get('isMultilangActive')) {
-                                foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                                    $multiLangField = Util::toCamelCase('typeValue_' . strtolower($locale));
-                                    $data['result']['list'][$key]->$multiLangField = $attribute->get($multiLangField);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            $event->setArgument('result', $data['result']);
-        } elseif ($data['params']['link'] == 'productImages' && !empty($data['result']['list'])) {
-            $productId = $data['params']['id'];
-            $imagesIds = array_column($data['result']['list'], 'id');
-            $channels = $this->getProductImageChannels($productId, $imagesIds);
-
-            foreach ($data['result']['list'] as $key => $value) {
-
-                $data['result']['list'][$key]->channelsIds = [];
-                $data['result']['list'][$key]->channelsNames = [];
-
-                if ($value->scope == 'Channel' && isset($channels[$value->id])) {
-                    $ids = $names = [];
-
-                    foreach ($channels[$value->id] as $item) {
-                        $ids[] = $item['id'];
-                        $names[$item['id']] = $item['name'];
-                    }
-
-                    $data['result']['list'][$key]->channelsIds = $ids;
-                    $data['result']['list'][$key]->channelsNames = $names;
-                }
-            }
-            $event->setArgument('result', $data['result']);
-        }
-    }
-
-    /**
-     * @param Event $event
-     */
-    public function prepareForProductType(Event $event)
-    {
-        $where = $event->getArgument('where');
-
-        // prepare types
-        $types = $this
-            ->getContainer()
-            ->get('metadata')
-            ->get('pim.productType');
-
-        // prepare where
-        $where[] = [
-            'type'      => 'in',
-            'attribute' => 'type',
-            'value'     => array_keys($types)
-        ];
-
-        $event->setArgument('where', $where);
-    }
-
-    /**
-     * @param Event $event
-     */
-    public function prepareForAttributes(Event $event)
-    {
-        $data = $event->getArgument('where');
-
-        $event->setArgument('where', $this->prepareAttributesWhere($data));
-    }
-
-    /**
-     * Get products filtered by attributes
-     *
-     * @param array $where
-     *
-     * @return array
-     */
-    protected function getProductIds(array $where = []): array
-    {
-        // prepare result
-        $result = ['empty-id-filter'];
-
-        // get data
-        $data = $this
-            ->getContainer()
-            ->get('serviceFactory')
-            ->create('ProductAttributeValue')
-            ->findEntities(['where' => $where]);
-
-        if ($data['total'] > 0) {
-            $result = [];
-            foreach ($data['collection'] as $entity) {
-                if (!empty($entity->get('product')) && !in_array($entity->get('productId'), $result)) {
-                    $result[] = $entity->get('productId');
-                }
+        if ($params['link'] === 'channels') {
+            $isActives = $this->getIsActive($params['id']);
+            foreach ($result['list'] as &$item) {
+                $item->isActiveEntity = (bool)$isActives[$item->id]['isActive'];
             }
         }
 
-        return $result;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function prepareAttributesWhere(array $data): array
-    {
-        foreach ($data as $k => $row) {
-            // check if exists array by key value
-            $isValueArray = !empty($row['value']) && is_array($row['value']);
-            if (empty($row['isAttribute']) && $isValueArray) {
-                $data[$k]['value'] = $this->prepareAttributesWhere($row['value']);
-            } elseif (!empty($row['isAttribute'])) {
-                // prepare attribute where
-                switch ($row['type']) {
-                    case 'isTrue':
-                        $where = [
-                            'type'  => 'and',
-                            'value' => [
-                                [
-                                    'type'      => 'equals',
-                                    'attribute' => 'attributeId',
-                                    'value'     => $row['attribute']
-                                ],
-                                [
-                                    'type'      => 'equals',
-                                    'attribute' => 'value',
-                                    'value'     => 'TreoBoolIsTrue'
-                                ]
-                            ]
-                        ];
-                        break;
-                    case 'isFalse':
-                        $where = [
-                            'type'  => 'and',
-                            'value' => [
-                                [
-                                    'type'      => 'equals',
-                                    'attribute' => 'attributeId',
-                                    'value'     => $row['attribute']
-                                ],
-                                [
-                                    'type'  => 'or',
-                                    'value' => [
-                                        [
-                                            'type'      => 'isNull',
-                                            'attribute' => 'value'
-                                        ],
-                                        [
-                                            'type'      => 'equals',
-                                            'attribute' => 'value',
-                                            'value'     => 'TreoBoolIsFalse'
-                                        ]
-                                    ]
-                                ],
-                            ]
-                        ];
-                        break;
-                    default:
-                        $where = [
-                            'type'  => 'and',
-                            'value' => [
-                                [
-                                    'type'      => 'equals',
-                                    'attribute' => 'attributeId',
-                                    'value'     => $row['attribute']
-                                ],
-                                [
-                                    'type'      => $row['type'],
-                                    'attribute' => 'value',
-                                    'value'     => $row['value']
-                                ]
-                            ]
-                        ];
-                        break;
-                }
-
-                $productWhere = [
-                    'type'      => 'equals',
-                    'attribute' => 'id',
-                    'value'     => $this->getProductIds([$where])
-                ];
-
-                // prepare where clause
-                $data[$k] = $productWhere;
-            }
-        }
-
-        return $data;
+        $event->setArgument('result', $result);
     }
 
     /**
      * @param string $productId
-     * @param array $imagesIds
-     *
      * @return array
      */
-    protected function getProductImageChannels(string $productId, array $imagesIds): array
+    protected function getIsActive(string $productId): array
     {
-        $sql = "
-                SELECT pic.product_image_id ,ch.id, ch.name
-                FROM product_image_channel pic
-                JOIN channel AS ch
-                  ON ch.id = pic.channel_id AND ch.deleted = 0 
-                WHERE pic.product_image_id IN ('" . implode($imagesIds, "','") ."')  AND pic.product_id = '$productId'
-            ";
-
-        $sth = $this
+        return $this
             ->getEntityManager()
-            ->getPDO()
-            ->prepare($sql);
-
-        $sth->execute();
-
-        return $sth->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_ASSOC);
+            ->nativeQuery("SELECT channel_id, is_active AS isActive FROM product_channel pc WHERE product_id = '{$productId}' AND pc.deleted = 0")
+            ->fetchAll(\PDO::FETCH_ASSOC|\PDO::FETCH_UNIQUE);
     }
 }

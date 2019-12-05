@@ -76,6 +76,7 @@ class AssociatedProductController extends AbstractListener
      */
     protected function setAssociatedProductsImage(array $result): array
     {
+        // prepare products ids
         $productIds = [];
         foreach ($result as $item) {
             if (isset($item->{'mainProductId'}) && !in_array($item->{'mainProductId'}, $productIds)) {
@@ -87,24 +88,25 @@ class AssociatedProductController extends AbstractListener
             }
         }
 
-        $images = $this
-            ->getService('Product')
-            ->getDBAssociatedProductsMainImage($productIds);
+        // get product images
+        $data = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->select(['id', 'imageId'])
+            ->where(['id' => $productIds])
+            ->find()
+            ->toArray();
+
+        // prepare images
+        $images = array_column($data, 'imageId', 'id');
 
         foreach ($result as $key => $item) {
             if ($images[$item->mainProductId]) {
-                $result[$key]->{'mainProductImageId'} = !empty($images[$item->mainProductId]['imageId'])
-                    ? $images[$item->mainProductId]['imageId'] : null;
-                $result[$key]->{'mainProductImageLink'} = !empty($images[$item->mainProductId]['imageLink'])
-                    ? $images[$item->mainProductId]['imageLink'] : null;
+                $result[$key]->{'mainProductImageId'} = !empty($images[$item->mainProductId]) ? $images[$item->mainProductId] : null;
             }
 
             if ($images[$item->relatedProductId]) {
-                $result[$key]->{'relatedProductImageId'} = !empty($images[$item->relatedProductId]['imageId'])
-                    ? $images[$item->relatedProductId]['imageId'] : null;
-                $result[$key]->{'relatedProductImageLink'} = !empty($images[$item->relatedProductId]['imageLink'])
-                    ? $images[$item->relatedProductId]['imageLink'] : null;
-
+                $result[$key]->{'relatedProductImageId'} = !empty($images[$item->relatedProductId]) ? $images[$item->relatedProductId] : null;
             }
         }
 

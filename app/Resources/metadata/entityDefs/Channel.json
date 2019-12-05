@@ -98,6 +98,19 @@
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
       "noLoad": true
+    },
+    "pimImages": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
+    },
+    "isActiveEntity": {
+      "type": "bool",
+      "notStorable": true,
+      "default": false,
+      "readOnly": false
     }
   },
   "links": {
@@ -146,6 +159,12 @@
       "relationName": "productFamilyAttributeChannel",
       "foreign": "channels",
       "entity": "ProductFamilyAttribute"
+    },
+    "pimImages": {
+      "type": "hasMany",
+      "relationName": "pimImageChannel",
+      "foreign": "channels",
+      "entity": "PimImage"
     }
   },
   "collection": {

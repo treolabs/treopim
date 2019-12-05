@@ -1,7 +1,6 @@
 {
   "fields": {
     "categories": "Categories",
-    "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
     "productAttributeValues": "Product Attributes",
@@ -13,10 +12,6 @@
     "sku": "SKU",
     "isActive": "Active",
     "type": "Type",
-    "productTypeBundles": "Product Type Bundles",
-    "productBundles": "Product Bundles",
-    "productTypePackages": "Product Type Packages",
-    "productPackages": "Product Packages",
     "productTypeConfigurables": "Product Type Configurables",
     "amount": "Amount",
     "channelProducts": "Product Channels",
@@ -35,11 +30,14 @@
     "association": "Association",
     "catalog": "Catalog",
     "channels": "Channels",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "pimImages": "Images",
+    "measuringUnit": "Measuring Unit",
+    "basePriceAmount": "Base Price Amount",
+    "packedAmount": "Packed Amount"
   },
   "links": {
     "categories": "Product Categories",
-    "productImages": "Product Images",
     "product": "Main Product",
     "products": "Products",
     "productAttributeValues": "Product Attributes",
@@ -47,33 +45,29 @@
     "brand": "Brand",
     "associatedRelatedProduct": "Associated Related Product",
     "associatedMainProducts": "Associated Products",
-    "productTypeBundles": "Product Type Bundles",
-    "productBundles": "Product Bundles",
-    "productTypePackages": "Product Type Packages",
-    "productPackages": "Product Packages",
     "productTypeConfigurables": "Product Type Configurables",
     "channelProducts": "Product Channels",
     "tax": "Tax",
     "packaging": "Packaging",
     "catalog": "Catalog",
     "channels": "Channels",
-    "productCategories": "Product Categories"
+    "productCategories": "Product Categories",
+    "pimImages": "Images"
   },
   "labels": {
     "Create Product": "Create Product",
     "Product Attributes": "Attributes",
     "There is no valid attributes for channel": "There is no valid attributes for channel",
     "Add Attribute Filter": "Add Attribute Filter",
-    "Item in Products": "Item in Products",
     "Channels": "Channels",
     "Product Channel Attributes": "Channel Attributes",
     "Associated Products": "Associated Products",
-    "Image": "Images",
     "withoutAnyCategory": "Without Any Category",
     "typeCategoryToSearch": "Type category to search...",
     "No Group": "No Group",
     "sort": "Sort",
-    "itemsInRow": "Items in row"
+    "itemsInRow": "Items in row",
+    "productImage": "Product Image"
   },
   "options": {
     "productStatus": {
@@ -84,9 +78,7 @@
       "ready": "Ready"
     },
     "type": {
-      "simpleProduct": "Simple Product",
-      "bundleProduct": "Bundle Product",
-      "packageProduct": "Package Product"
+      "simpleProduct": "Simple Product"
     },
     "tag": {
       "blue": "blue",
@@ -104,6 +96,8 @@
     "withoutImageAssets": "Without Image Assets"
   },
   "exceptions": {
-    "Product with such SKU already exist": "Product with such SKU already exist"
+    "Product with such SKU already exist": "Product with such SKU already exist",
+    "You can't change Product Family in Product": "You can't change Product Family in Product",
+    "You can't change field of Type in Product": "You can't change field of Type in Product"
   }
 }

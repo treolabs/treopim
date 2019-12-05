@@ -2,6 +2,7 @@
   "fields": {
     "product": "Product",
     "category": "Category",
+    "sorting": "Sorting",
     "scope": "Scope",
     "channels": "Channels"
   },

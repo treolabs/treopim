@@ -59,6 +59,17 @@ class StreamController extends AbstractListener
                 foreach ($result['list'] as $key => $item) {
                     if (isset($attributes[$item['attributeId']])) {
                         $result['list'][$key]['attributeType'] = $attributes[$item['attributeId']];
+                        if ($result["list"][$key]["attributeType"] === 'image') {
+                            foreach ($result['list'][$key]['data']->fields as $field) {
+                                $becameValue = $result["list"][$key]["data"]->attributes->became->{$field};
+                                $result["list"][$key]["data"]->attributes->became->{$field . 'Id'} = $becameValue;
+                                unset ($result["list"][$key]["data"]->attributes->became->{$field});
+
+                                $wasValue = $result["list"][$key]["data"]->attributes->was->{$field};
+                                $result["list"][$key]["data"]->attributes->was->{$field . 'Id'} = $wasValue;
+                                unset ($result["list"][$key]["data"]->attributes->was->{$field});
+                            }
+                        }
                     }
                 }
             }
@@ -76,7 +87,7 @@ class StreamController extends AbstractListener
      */
     protected function prepareDataForUserStream(array $result): array
     {
-        if (!empty($result['list']) && $result['scope'] == 'User') {
+        if (!empty($result['list']) && isset($result['scope']) && $result['scope'] == 'User') {
             // prepare notes ids
             $noteIds = array_column($result['list'], 'id');
 

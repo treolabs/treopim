@@ -56,10 +56,6 @@ class ProductCategoryEntity extends AbstractListener
             throw new BadRequest($this->exception('No such product catalog'));
         }
 
-        if (count($catalog->get('categories')) == 0) {
-            throw new BadRequest($this->exception('No category trees in product catalog'));
-        }
-
         if (!$this->isCategoryInCatalog($category, $catalog)) {
             throw new BadRequest($this->exception('Category should be in catalog trees'));
         }
@@ -77,9 +73,10 @@ class ProductCategoryEntity extends AbstractListener
      */
     protected function isUnique(Entity $entity): bool
     {
-        $count = $this
+        $category = $this
             ->getEntityManager()
             ->getRepository('ProductCategory')
+            ->select(['id'])
             ->where(
                 [
                     'id!='       => $entity->get('id'),
@@ -88,9 +85,9 @@ class ProductCategoryEntity extends AbstractListener
                     'scope'      => $entity->get('scope'),
                 ]
             )
-            ->count();
+            ->findOne();
 
-        return empty($count);
+        return empty($category);
     }
 
     /**

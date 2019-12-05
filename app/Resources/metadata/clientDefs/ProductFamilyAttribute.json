@@ -21,6 +21,19 @@
               "attribute": "attributeId"
             }
           ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "scope",
+              "value": "Channel"
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "attributeId"
+            }
+          ]
         }
       },
       "scope": {
@@ -29,6 +42,16 @@
             {
               "type": "isNotEmpty",
               "attribute": "attributeId"
+            }
+          ]
+        }
+      },
+      "attribute": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
             }
           ]
         }

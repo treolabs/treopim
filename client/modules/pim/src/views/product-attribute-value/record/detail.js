@@ -39,27 +39,40 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
         },
 
         updateModelDefs() {
-            this.changeFieldsReadOnlyStatus(['attribute', 'channels', 'product', 'scope'], !this.model.get('isCustom'));
-            if (this.model.get('attributeId')) {
-                let type = this.model.get('attributeType');
-                let typeValue = this.model.get('typeValue');
+            // prepare self
+            let self = this;
+
+            // readOnly
+            self.changeFieldsReadOnlyStatus(['attribute', 'channels', 'product', 'scope'], !self.model.get('isCustom'));
+
+            if (self.model.get('attributeId')) {
+                // prepare data
+                let type = self.model.get('attributeType');
+                let typeValue = self.model.get('typeValue');
+
                 if (type) {
+                    // prepare field defs
                     let fieldDefs = {
                         type: type,
                         options: typeValue,
-                        view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
-                        required: !!this.model.get('isRequired')
+                        view: type !== 'bool' ? self.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
+                        required: !!self.model.get('isRequired')
                     };
-                    if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(type)) {
-                        fieldDefs.isMultilang = true;
-                        this.getFieldManager().getActualAttributeList(type, 'typeValue').splice(1).forEach(item => {
-                            fieldDefs[`options${item.replace('typeValue', '')}`] = this.model.get(item);
-                        });
-                    }
+
+                    // for unit
                     if (type === 'unit') {
                         fieldDefs.measure = (typeValue || ['Length'])[0];
                     }
-                    this.model.defs.fields.value = fieldDefs;
+
+                    // set field defs
+                    self.model.defs.fields.value = fieldDefs;
+
+                    // for multi-language
+                    $.each(self.model.defs.fields, function (field, row) {
+                        if (row.multilangField === 'value') {
+                            self.model.defs.fields[field] = fieldDefs;
+                        }
+                    });
                 }
             }
         },
@@ -72,14 +85,14 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
             let data = Dep.prototype.fetch.call(this);
             let view = this.getFieldView('value');
             if (view) {
-                _.extend(data, this.getAdditionalFieldData(view, data));
+                this.extendFieldData(view, data);
             }
             return data;
         },
 
-        getAdditionalFieldData(view, data) {
-            let result = {};
+        extendFieldData(view, data) {
             let additionalData = false;
+
             if (view.type === 'unit') {
                 let actualFieldDefs = this.getMetadata().get(['fields', view.type, 'actualFields']) || [];
                 let actualFieldValues = this.getFieldManager().getActualAttributes(view.type, view.name) || [];
@@ -90,10 +103,14 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                     }
                 });
             }
-            if (additionalData) {
-                result.data = _.extend((data.data || {}), additionalData);
+
+            if (view.type === 'image') {
+                _.extend((data || {}), {value: (data || {}).valueId});
             }
-            return result;
+
+            if (additionalData) {
+                _.extend((data || {}), {data: additionalData});
+            }
         }
 
     })

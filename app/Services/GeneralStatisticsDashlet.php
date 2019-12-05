@@ -42,22 +42,22 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
             [
                 'id'     => 'product',
                 'name'   => 'product',
-                'amount' => $this->getAmountProduct()
+                'amount' => (int)$this->getRepository('Product')->select(['id'])->where(['type' => $this->getProductTypes()])->count()
             ],
             [
                 'id'     => 'category',
                 'name'   => 'category',
-                'amount' => $this->getAmountEntity('Category')
+                'amount' => (int)$this->getRepository('Category')->select(['id'])->count()
             ],
             [
                 'id'     => 'productFamily',
                 'name'   => 'productFamily',
-                'amount' => $this->getAmountEntity('ProductFamily')
+                'amount' => (int)$this->getRepository('ProductFamily')->select(['id'])->count()
             ],
             [
                 'id'     => 'attribute',
                 'name'   => 'attribute',
-                'amount' => $this->getAmountEntity('Attribute')
+                'amount' => (int)$this->getRepository('Attribute')->select(['id'])->count()
             ],
             [
                 'id'     => 'productWithoutAssociatedProduct',
@@ -68,11 +68,6 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
                 'id'     => 'productWithoutCategory',
                 'name'   => 'productWithoutCategory',
                 'amount' => $this->getAmountProductWithoutCategory()
-            ],
-            [
-                'id'     => 'productWithoutAttribute',
-                'name'   => 'productWithoutAttribute',
-                'amount' => $this->getAmountProductWithoutAttribute()
             ],
             [
                 'id'     => 'productWithoutImage',
@@ -96,16 +91,12 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
     public function getQueryProductWithoutImage($count = false): string
     {
         $select = $count ? 'COUNT(p.id)' : 'p.id AS id';
-        $sql =
-            "SELECT " . $select . " 
+        $sql
+            = "SELECT " . $select . " 
                 FROM product as p 
-                WHERE
-                    (SELECT COUNT(pi.id)
-                    FROM product_image AS pi
-                      JOIN 
-                      product_image_product AS pip ON pip.deleted = 0 AND pip.product_image_id = pi.id
-                    WHERE pi.deleted = 0 AND pip.product_id = p.id) = 0 
-                AND p.deleted = 0 AND p.type IN " . $this->getProductTypesCondition();
+                WHERE p.image_id IS NULL 
+                  AND p.deleted = 0 
+                  AND p.type IN " . $this->getProductTypesCondition();
 
         return $sql;
     }
@@ -146,76 +137,18 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
      */
     public function getQueryProductWithoutCategory($count = false): string
     {
-        $select = $count ? 'COUNT(p.id)' : 'p.id AS id';
-        $sql
-            = "SELECT " . $select . " 
-                FROM product as p 
-                WHERE
-                    (SELECT COUNT(c.id)
-                    FROM category AS c
-                      JOIN 
-                      product_category AS pcl ON pcl.deleted = 0 AND c.id = pcl.category_id
-                    WHERE c.deleted = 0 AND pcl.product_id = p.id) = 0 
-                AND p.deleted = 0 AND p.type IN " . $this->getProductTypesCondition();
+        // prepare types
+        $types = $this->getProductTypesCondition();
 
-        return $sql;
-    }
+        // prepare select
+        $select = $count ? 'COUNT(p.id)' : 'p.id as id';
 
-    /**
-     * Get query for Product without Attribute
-     *
-     * @param bool $count
-     *
-     * @return string
-     */
-    public function getQueryProductWithoutAttribute($count = false): string
-    {
-        $select = $count ? 'COUNT(DISTINCT p.id)' : 'DISTINCT p.id AS id';
-        $sql =
-            "SELECT " . $select . " 
-                FROM product as p
-                    LEFT JOIN product_attribute_value AS pal ON pal.product_id = p.id AND pal.deleted = 0
-                    LEFT JOIN product_family AS pf ON pf.deleted = 0 AND pf.id = p.product_family_id
-                    LEFT JOIN product_family_attribute AS pfa ON pfa.deleted = 0 AND pfa.product_family_id = pf.id
-                    LEFT JOIN attribute AS a ON a.deleted = 0 AND (a.id = pfa.attribute_id OR a.id = pal.attribute_id)
-                WHERE a.id IS NULL AND p.deleted = 0 AND p.type IN " . $this->getProductTypesCondition();
-
-        return $sql;
-    }
-
-    /**
-     * Get amount product
-     *
-     * @return int
-     */
-    protected function getAmountProduct(): int
-    {
-        return $this->getRepository('Product')->where(['type' => $this->getProductTypes()])->count();
-    }
-
-    /**
-     * Get amount Entity
-     *
-     * @param $entityType
-     *
-     * @return int
-     */
-    protected function getAmountEntity($entityType): int
-    {
-        return $this->getRepository($entityType)->count();
-    }
-
-    /**
-     * Get Amount Product without Attribute
-     *
-     * @return int
-     */
-    protected function getAmountProductWithoutAttribute(): int
-    {
-        $sth = $this->getPDO()->prepare($this->getQueryProductWithoutAttribute(true));
-        $sth->execute();
-
-        return (int)$sth->fetchColumn();
+        return "SELECT $select 
+                FROM product p 
+                LEFT JOIN product_category pc ON pc.product_id=p.id AND pc.deleted=0
+                WHERE p.deleted=0 
+                  AND p.type IN $types
+                  AND pc.id IS NULL";
     }
 
     /**

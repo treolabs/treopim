@@ -22,8 +22,7 @@ namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
 use Pim\Services\GeneralStatisticsDashlet;
-use Pim\Services\Product as ProductService;
-use Treo\Core\EventManager\Event;
+use Treo\Core\Utils\Util;
 
 /**
  * Product select manager
@@ -37,27 +36,6 @@ class Product extends AbstractSelectManager
      */
     public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
     {
-        // include category tree in search on categories
-        if (!empty($params['where']) && is_array($params['where'])) {
-            foreach ($params['where'] as $i => $p) {
-                if (!empty($p['attribute']) && $p['attribute'] == 'categories') {
-                    $children = [];
-                    foreach ($p['value'] as $id) {
-                        // get children
-                        $rowChildren = $this
-                            ->getEntityManager()
-                            ->getRepository('Category')
-                            ->select(['id'])
-                            ->where(['categoryRoute*' => "%{$id}%"])
-                            ->find()
-                            ->toArray();
-                        $children = array_merge($children, array_column($rowChildren, 'id'));
-                    }
-                    $params['where'][$i]['value'] = array_merge($params['where'][$i]['value'], $children);
-                }
-            }
-        }
-
         // filtering by product types
         $params['where'][] = [
             'type'      => 'in',
@@ -65,8 +43,16 @@ class Product extends AbstractSelectManager
             'value'     => array_keys($this->getMetadata()->get('pim.productType', []))
         ];
 
-        // call parent
-        return parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        // get product attributes filter
+        $productAttributes = $this->getProductAttributeFilter($params);
+
+        // get select params
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
+
+        // add product attributes filter
+        $this->addProductAttributesFilter($selectParams, $productAttributes);
+
+        return $selectParams;
     }
 
     /**
@@ -154,28 +140,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * Products without Attribute filter
-     *
-     * @param $result
-     */
-    protected function boolFilterWithoutProductAttributes(&$result)
-    {
-        $result['whereClause'][] = [
-            'id' => array_column($this->getProductWithoutProductAttributes(), 'id')
-        ];
-    }
-
-    /**
-     * Get product without Attribute
-     *
-     * @return array
-     */
-    protected function getProductWithoutProductAttributes(): array
-    {
-        return $this->fetchAll($this->getGeneralStatisticService()->getQueryProductWithoutAttribute());
-    }
-
-    /**
      * Products without Image filter
      *
      * @param $result
@@ -230,46 +194,6 @@ class Product extends AbstractSelectManager
     }
 
     /**
-     * NotConfigurabledProducts filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotConfigurabledProducts(&$result)
-    {
-        // prepare data
-        $productId = (string)$this->getSelectCondition('notConfigurabledProducts');
-
-        if (!empty($productId)) {
-            $variants = $this->getProductVariants($productId);
-            foreach ($variants as $id) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$id
-                ];
-            }
-        }
-    }
-
-    /**
-     * NotBundledProducts filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotBundledProducts(&$result)
-    {
-        //prepare data
-        $productId = (string)$this->getSelectCondition('notBundledProducts');
-
-        if (!empty($productId)) {
-            $variants = $this->getBundleItems($productId);
-            foreach ($variants as $id) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$id
-                ];
-            }
-        }
-    }
-
-    /**
      * Get assiciated products
      *
      * @param string $associationId
@@ -290,103 +214,6 @@ class Product extends AbstractSelectManager
           main_product_id =' . $pdo->quote($productId) . '
           AND association_id = ' . $pdo->quote($associationId) . '
           AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Get product variants
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    protected function getProductVariants($productId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT
-          product_id
-        FROM
-          product_type_configurable
-        WHERE
-          configurable_product_id =' . $pdo->quote($productId) . '
-          AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        return (!empty($result)) ? array_column($result, 'product_id') : [];
-    }
-
-    /**
-     * Get bundle items
-     *
-     * @param string $productId
-     *
-     * @return array
-     */
-    protected function getBundleItems($productId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT
-          product_id
-        FROM
-          product_type_bundle
-        WHERE
-          bundle_product_id =' . $pdo->quote($productId) . '
-          AND deleted = 0';
-
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-        return (!empty($result)) ? array_column($result, 'product_id') : [];
-    }
-
-    /**
-     * NotLinkedWithOrder filter
-     *
-     * @param array $result
-     */
-    protected function boolFilterNotLinkedWithOrder(&$result)
-    {
-        $orderId = (string)$this->getSelectCondition('notLinkedWithOrder');
-
-        if (!empty($orderId)) {
-            $orderProducts = $this->getOrderProducts($orderId);
-            foreach ($orderProducts as $row) {
-                $result['whereClause'][] = [
-                    'id!=' => (string)$row['product_id']
-                ];
-            }
-        }
-    }
-
-    /**
-     * Get order products
-     *
-     * @param string $orderId
-     *
-     * @return array
-     */
-    protected function getOrderProducts($orderId)
-    {
-        $pdo = $this->getEntityManager()->getPDO();
-
-        $sql
-            = 'SELECT product_id
-                FROM order_product
-                WHERE order_id = ' . $pdo->quote($orderId);
 
         $sth = $pdo->prepare($sql);
         $sth->execute();
@@ -587,18 +414,208 @@ class Product extends AbstractSelectManager
      */
     protected function boolFilterLinkedWithCategory(array &$result)
     {
-        // prepare category
-        $category = $this
-            ->getEntityManager()
-            ->getEntity('Category', (string)$this->getSelectCondition('linkedWithCategory'));
+        // prepare category id
+        $id = (string)$this->getSelectCondition('linkedWithCategory');
 
-        if (!empty($category)) {
-            // get category tree products
-            $products = $category->getTreeProducts();
+        // get categories
+        $categories = $this->fetchAll("SELECT id FROM category WHERE (id='$id' OR category_route LIKE '%|$id|%') AND deleted=0");
 
-            $result['whereClause'][] = [
-                'id' => count($products > 0) ? array_column($products->toArray(), 'id') : []
+        // prepare categories ids
+        $ids = implode("','", array_column($categories, 'id'));
+
+        // prepare custom where
+        if (!isset($result['customWhere'])) {
+            $result['customWhere'] = '';
+        }
+
+        // set custom where
+        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND category_id IN ('$ids'))";
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    protected function getProductAttributeFilter(array &$params): array
+    {
+        // prepare result
+        $result = [];
+
+        if (!empty($params['where']) && is_array($params['where'])) {
+            $where = [];
+            foreach ($params['where'] as $row) {
+                if (empty($row['isAttribute'])) {
+                    $where[] = $row;
+                } else {
+                    $result[] = $row;
+                }
+            }
+            $params['where'] = $where;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $selectParams
+     * @param array $attributes
+     */
+    protected function addProductAttributesFilter(array &$selectParams, array $attributes): void
+    {
+        foreach ($attributes as $row) {
+            // find prepare method
+            $method = 'prepareType' . ucfirst($row['type']);
+            if (!method_exists($this, $method)) {
+                $method = 'prepareTypeDefault';
+            }
+
+            // prepare where
+            $where = $this->{$method}($row);
+
+            // create select params
+            $sp = $this
+                ->createSelectManager('ProductAttributeValue')
+                ->getSelectParams(['where' => [$where]], true, true);
+            $sp['select'] = ['productId'];
+
+            // create sql
+            $sql = $this
+                ->getEntityManager()
+                ->getQuery()
+                ->createSelectQuery('ProductAttributeValue', $sp);
+
+            // prepare custom where
+            if (!isset($selectParams['customWhere'])) {
+                $selectParams['customWhere'] = '';
+            }
+
+            $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
+        }
+    }
+
+    /**
+     * @param string $attributeId
+     *
+     * @return array
+     */
+    protected function getValues(string $attributeId): array
+    {
+        // prepare result
+        $result = ['value'];
+
+        if ($this->getConfig()->get('isMultilangActive', false) && !empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
+            // is attribute multi-languages ?
+            $isMultiLang = $this
+                ->getEntityManager()
+                ->getRepository('Attribute')
+                ->select(['isMultilang'])
+                ->where(['id' => $attributeId])
+                ->findOne()
+                ->get('isMultilang');
+
+            if ($isMultiLang) {
+                foreach ($locales as $locale) {
+                    $result[] = 'value' . ucfirst(Util::toCamelCase(strtolower($locale)));
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeIsTrue(array $row): array
+    {
+        $where = ['type' => 'or', 'value' => []];
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][] = [
+                'type'  => 'and',
+                'value' => [
+                    [
+                        'type'      => 'equals',
+                        'attribute' => 'attributeId',
+                        'value'     => $row['attribute']
+                    ],
+                    [
+                        'type'      => 'equals',
+                        'attribute' => $v,
+                        'value'     => '1'
+                    ]
+                ]
             ];
         }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeIsFalse(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => []
+                ],
+            ]
+        ];
+
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][1]['value'][] = [
+                'type'      => 'isNull',
+                'attribute' => $v
+            ];
+            $where['value'][1]['value'][] = [
+                'type'      => 'notEquals',
+                'attribute' => $v,
+                'value'     => '1'
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeDefault(array $row): array
+    {
+        $where = ['type' => 'or', 'value' => []];
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][] = [
+                'type'  => 'and',
+                'value' => [
+                    [
+                        'type'      => 'equals',
+                        'attribute' => 'attributeId',
+                        'value'     => $row['attribute']
+                    ],
+                    [
+                        'type'      => $row['type'],
+                        'attribute' => $v,
+                        'value'     => $row['value']
+                    ]
+                ]
+            ];
+        }
+
+        return $where;
     }
 }

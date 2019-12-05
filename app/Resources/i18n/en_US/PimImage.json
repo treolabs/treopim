@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "category": "Category",
+    "product": "Product",
+    "type": "Type",
+    "image": "Image",
+    "images": "Images",
+    "link": "Link",
+    "sortOrder": "Sorting",
+    "scope": "Scope",
+    "channels": "Channels"
+  },
+  "links": {
+    "category": "Category",
+    "product": "Product",
+    "channels": "Channels"
+  },
+  "labels": {
+    "Create PimImage": "Create Image"
+  },
+  "options": {
+    "type": {
+      "File": "File",
+      "Files": "Files",
+      "Link": "Link"
+    },
+    "scope": {
+      "Global": "Global",
+      "Channel": "Channel"
+    }
+  }
+}

@@ -25,8 +25,6 @@ namespace Pim\Services;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
-use Slim\Http\Request;
-use \PDO;
 
 /**
  * Service of Product
@@ -35,21 +33,6 @@ use \PDO;
  */
 class Product extends AbstractService
 {
-    /**
-     * @var array
-     */
-    protected $linkSelectParams
-        = [
-            'productImages' => [
-                'order' => 'ASC',
-                'orderBy' => 'product_image_product.sort_order',
-                'additionalColumns' => [
-                    'sortOrder' => 'sortOrder',
-                    'scope' => 'scope'
-                ]
-            ]
-        ];
-
     /**
      * @param \stdClass $data
      *
@@ -72,8 +55,8 @@ class Product extends AbstractService
         // find exists entities
         $entities = $repository->where(
             [
-                'associationId' => $data->associationId,
-                'mainProductId' => $data->ids,
+                'associationId'    => $data->associationId,
+                'mainProductId'    => $data->ids,
                 'relatedProductId' => $data->foreignIds
             ]
         )->find();
@@ -134,8 +117,8 @@ class Product extends AbstractService
             ->getRepository('AssociatedProduct')
             ->where(
                 [
-                    'associationId' => $data->associationId,
-                    'mainProductId' => $data->ids,
+                    'associationId'    => $data->associationId,
+                    'mainProductId'    => $data->ids,
                     'relatedProductId' => $data->foreignIds
                 ]
             )
@@ -164,76 +147,6 @@ class Product extends AbstractService
         }
 
         return true;
-    }
-
-    /**
-     * Get item in products data
-     *
-     * @param string $productId
-     * @param Request $request
-     *
-     * @return array
-     */
-    public function getItemInProducts(string $productId, Request $request): array
-    {
-        // prepare result
-        $result = [
-            'total' => 0,
-            'list' => []
-        ];
-
-        // get total
-        $total = $this->getDbCountItemInProducts($productId);
-
-        if (!empty($total)) {
-            // prepare result
-            $result = [
-                'total' => $total,
-                'list' => $this->getDbItemInProducts($productId, $request)
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get product main image
-     *
-     * @param array $productIds
-     *
-     * @return array
-     */
-    public function getDBAssociatedProductsMainImage(array $productIds): array
-    {
-        $result = [];
-        $productIds = "'" . implode("','", $productIds) . "'";
-        if (!empty($productIds)) {
-            $sql
-                = "SELECT
-                       pip.product_id AS productId,
-                       pi.type AS imageType,
-                       pi.image_id AS imageId,
-                       pi.image_link AS imageLink
-                    FROM product_image pi
-                      JOIN product_image_product pip
-                        ON pip.product_image_id = pi.id AND pip.deleted = 0 AND pip.id = (
-                          SELECT id
-                          FROM product_image_product
-                          WHERE product_id = pip.product_id
-                          ORDER BY sort_order, id
-                          LIMIT 1
-                        )
-                    WHERE pip.product_id IN ({$productIds}) AND pi.deleted = 0";
-
-            $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-            $sth->execute();
-
-            $result = $sth->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
-
-            return is_array($result) ? $result : [];
-        }
-
-        return $result;
     }
 
     /**
@@ -290,43 +203,6 @@ class Product extends AbstractService
         }
     }
 
-
-    /**
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateProductImages(Entity $product, Entity $duplicatingProduct)
-    {
-        // copy images
-        $sql
-            = "DELETE FROM product_image_product WHERE product_id = '" . $product->get('id') . "';
-               INSERT INTO product_image_product (product_id, product_image_id, sort_order, scope, deleted)
-               SELECT
-                 '" . $product->get('id') . "',
-                  product_image_id,
-                  sort_order,
-                  scope,
-                  deleted
-               FROM product_image_product
-               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
-
-        // copy channel images
-        $sql
-            = "DELETE FROM product_image_channel WHERE product_id = '" . $product->get('id') . "';
-               INSERT INTO product_image_channel (product_id, product_image_id, channel_id, deleted)
-               SELECT
-                 '" . $product->get('id') . "',
-                  product_image_id,
-                  channel_id,
-                  deleted
-               FROM product_image_channel
-               WHERE product_id = '" . $duplicatingProduct->get('id') . "'";
-        $sth = $this->getEntityManager()->getPDO()->prepare($sql);
-        $sth->execute();
-    }
-
     /**
      * @param Entity $product
      * @param Entity $duplicatingProduct
@@ -380,159 +256,10 @@ class Product extends AbstractService
     }
 
     /**
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateProductTypeBundles(Entity $product, Entity $duplicatingProduct)
-    {
-        if ($duplicatingProduct->get('type') === 'bundleProduct') {
-            // create service
-            $service = $this->getServiceFactory()->create('ProductTypeBundle');
-
-            // create new bundles
-            foreach ($service->getBundleProducts($duplicatingProduct->get('id')) as $bundle) {
-                $service->create($product->get('id'), $bundle['productId'], $bundle['amount']);
-            }
-        }
-    }
-
-    /**
-     * @param Entity $product
-     * @param Entity $duplicatingProduct
-     */
-    protected function duplicateProductTypePackages(Entity $product, Entity $duplicatingProduct)
-    {
-        if ($duplicatingProduct->get('type') === 'packageProduct') {
-            // create service
-            $service = $this->getServiceFactory()->create('ProductTypePackage');
-
-            // find ProductPackage
-            $productPackage = $service->getPackageProduct($duplicatingProduct->get('id'));
-
-            // create new productPackage
-            if (!is_null($productPackage['id'])) {
-                $service->update($product->get('id'), $productPackage);
-            }
-        }
-    }
-
-    /**
-     * Get DB count of item in products data
-     *
-     * @param string $productId
-     *
-     * @return int
-     */
-    protected function getDbCountItemInProducts(string $productId): int
-    {
-        // prepare data
-        $pdo = $this->getEntityManager()->getPDO();
-        $where = $this->getAclWhereSql('Product', 'p');
-
-        // prepare SQL
-        $sql
-            = "SELECT
-                  COUNT(p.id) as count
-                FROM
-                  product AS p
-                WHERE
-                 p.deleted = 0
-                AND p.id IN (SELECT bundle_product_id FROM product_type_bundle
-                                                    WHERE product_id = " . $pdo->quote($productId) . " $where)";
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        // get DB data
-        $data = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-        return (isset($data[0]['count'])) ? (int)$data[0]['count'] : 0;
-    }
-
-    /**
-     * Get DB count of item in products data
-     *
-     * @param string $productId
-     * @param Request $request
-     *
-     * @return array
-     */
-    protected function getDbItemInProducts(string $productId, Request $request): array
-    {
-        // prepare data
-        $limit = (int)$request->get('maxSize');
-        $offset = (int)$request->get('offset');
-        $sortOrder = ($request->get('asc') == 'true') ? 'ASC' : 'DESC';
-        $sortColumn = (in_array($request->get('sortBy'), ['name', 'type'])) ? $request->get('sortBy') : 'name';
-        $where = $this->getAclWhereSql('Product', 'p');
-
-        // prepare PDO
-        $pdo = $this->getEntityManager()->getPDO();
-
-        // prepare SQL
-        $sql
-            = "SELECT
-                  p.id   AS id,
-                  p.name AS name,
-                  p.type AS type
-                FROM
-                  product AS p
-                WHERE
-                 p.deleted = 0
-                AND p.id IN (SELECT bundle_product_id FROM product_type_bundle
-                                                    WHERE product_id = " . $pdo->quote($productId) . " $where)
-                ORDER BY p." . $sortColumn . " " . $sortOrder . "
-                LIMIT " . $limit . " OFFSET " . $offset;
-        $sth = $pdo->prepare($sql);
-        $sth->execute();
-
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * After delete action
-     *
-     * @param Entity $entity
-     *
-     * @return void
-     */
-    protected function afterDelete(Entity $entity): void
-    {
-        $this->deleteProductTypes([$entity->get('id')]);
-    }
-
-    /**
-     * After mass delete action
-     *
-     * @param array $idList
-     *
-     * @return void
-     */
-    protected function afterMassRemove(array $idList): void
-    {
-        $this->deleteProductTypes($idList);
-    }
-
-    /**
-     * Delete product types
-     *
-     * @param array $idList
-     *
-     * @return void
-     */
-    protected function deleteProductTypes(array $idList): void
-    {
-        // delete type bundle
-        $this->getServiceFactory()->create('ProductTypeBundle')->deleteByProductId($idList);
-
-        // delete type package
-        $this->getServiceFactory()->create('ProductTypePackage')->deleteByProductId($idList);
-    }
-
-    /**
      * Find linked AssociationMainProduct
      *
      * @param string $id
-     * @param array $params
+     * @param array  $params
      *
      * @return array
      * @throws Forbidden
@@ -545,10 +272,9 @@ class Product extends AbstractService
         }
 
         return [
-            'list' => $this->getDBAssociationMainProducts($id, '', $params),
+            'list'  => $this->getDBAssociationMainProducts($id, '', $params),
             'total' => $this->getDBTotalAssociationMainProducts($id, '')
         ];
-
     }
 
     /**
@@ -556,7 +282,7 @@ class Product extends AbstractService
      *
      * @param string $productId
      * @param string $wherePart
-     * @param array $params
+     * @param array  $params
      *
      * @return array
      */
@@ -580,29 +306,21 @@ class Product extends AbstractService
         $sql
             = "SELECT
                   ap.id,
-                  ap.association_id   AS associationId,
-                  association.name    AS associationName,
-                  p_main.id           AS mainProductId,
-                  p_main.name         AS mainProductName,
-                  relatedProduct.id   AS relatedProductId,
-                  relatedProduct.name AS relatedProductName,
-                  pi.image_id         AS relatedProductImageId,
-                  pi.image_link       AS relatedProductImageLink
+                  ap.association_id         AS associationId,
+                  association.name          AS associationName,
+                  p_main.id                 AS mainProductId,
+                  p_main.name               AS mainProductName,
+                  p_main.image_id           AS mainProductImageId,
+                  (SELECT name FROM attachment WHERE id = p_main.image_id) AS mainProductImageName,
+                  relatedProduct.id         AS relatedProductId,
+                  relatedProduct.name       AS relatedProductName,
+                  relatedProduct.image_id   AS relatedProductImageId,
+                  (SELECT name FROM attachment WHERE id = relatedProduct.image_id) AS relatedProductImageName
                 FROM associated_product AS ap
                   JOIN product AS relatedProduct 
                     ON relatedProduct.id = ap.related_product_id AND relatedProduct.deleted = 0
-                  LEFT JOIN product_image_product as pip
-                    ON pip.product_id = relatedProduct.id AND pip.deleted = 0 AND pip.id = (
-                      SELECT id
-                      FROM product_image_product
-                      WHERE product_id = pip.product_id
-                      ORDER BY sort_order, id
-                      LIMIT 1
-                    )
-                  LEFT JOIN product_image as pi
-                    ON pi.id = pip.product_image_id AND pi.deleted = 0
                   JOIN product AS p_main 
-                    ON p_main.id = ap.related_product_id AND p_main.deleted = 0
+                    ON p_main.id = ap.main_product_id AND p_main.deleted = 0
                   JOIN association 
                     ON association.id = ap.association_id AND association.deleted = 0
                 WHERE ap.deleted = 0 

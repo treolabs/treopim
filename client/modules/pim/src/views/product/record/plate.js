@@ -127,7 +127,7 @@ Espo.define('pim:views/product/record/plate', 'pim:views/product/record/list',
         },
 
         getSelectAttributeList(callback) {
-            callback(['name', 'productStatus', 'type']);
+            callback(this.modifyAttributeList(['name', 'productStatus', 'type', 'imageId', 'imageName']));
         },
 
         getRowContainerHtml(id) {
@@ -191,17 +191,6 @@ Espo.define('pim:views/product/record/plate', 'pim:views/product/record/list',
 
         initItemsInRow() {
             const $window = $(window);
-
-            this.once('remove', function () {
-                $window.off('resize.plate');
-            });
-
-            $window.off('resize.plate');
-            $window.on('resize.plate', function() {
-                const count = this.getItemsInRowToWindowWidth($window.width());
-                this.setItemsInRow(count)
-            }.bind(this));
-
             this.itemsInRow = this.getStorage().get('itemsInRow', `plate-${this.scope}`) || this.getItemsInRowToWindowWidth($window.width());
             this.itemsInRowOptions = [1, 2, 3, 4, 5, 6];
         },

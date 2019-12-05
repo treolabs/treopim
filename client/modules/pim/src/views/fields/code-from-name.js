@@ -20,7 +20,7 @@
 Espo.define('pim:views/fields/code-from-name', 'pim:views/fields/varchar-with-pattern',
     Dep => Dep.extend({
 
-        validationPattern: '^[a-z_0-9]+$',
+        validationPattern: '^[a-z_0-9{}]+$',
 
         getPatternValidationMessage() {
             return this.translate('fieldHasPattern', 'messages').replace('{field}', this.translate(this.name, 'fields', this.model.name));

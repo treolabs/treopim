@@ -17,9 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Pim\Services;
+
+use Espo\Core\Exceptions\BadRequest;
+use Treo\Core\Utils\Util;
 
 /**
  * Service of Channel
@@ -88,6 +92,36 @@ class Channel extends AbstractService
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $channelId
+     * @param \StdClass $data
+     * @param bool $useDeleted
+     * @return bool
+     * @throws BadRequest
+     */
+    public function setIsActiveEntity(string $channelId, \StdClass $data, bool $useDeleted = false): bool
+    {
+        $linkToChannel= $this->getMetadata()->get(['entityDefs', $data->entityName, 'links', 'channels']);
+        if (empty($linkToChannel['additionalColumns']['isActive'])) {
+            throw new BadRequest();
+        }
+
+        $nameTable = Util::fromCamelCase($linkToChannel['relationName']);
+        $fieldForeign = $data->entityName . '_id';
+        $deleted = (int)$useDeleted;
+        $sql = "UPDATE {$nameTable} linker 
+                        SET is_active = :isActive
+                        WHERE {$fieldForeign} = :entityId AND channel_id = :channelId AND deleted = {$deleted}";
+        $this
+            ->getEntityManager()
+            ->nativeQuery($sql, [
+                'isActive' => (int)$data->value,
+                'entityId' => (string)$data->entityId,
+                'channelId' => (string)$channelId]);
+
+        return true;
     }
 
     /**

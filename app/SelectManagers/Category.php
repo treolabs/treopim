@@ -31,6 +31,21 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
  */
 class Category extends AbstractSelectManager
 {
+    /**
+     * @inheritDoc
+     */
+    public function applyAdditional(array &$result, array $params)
+    {
+        // prepare additional select columns
+        $additionalSelectColumns = [
+            'childrenCount' => '(SELECT COUNT(c1.id) FROM category AS c1 WHERE c1.category_parent_id=category.id AND c1.deleted=0)'
+        ];
+
+        // add additional select columns
+        foreach ($additionalSelectColumns as $alias => $sql) {
+            $result['additionalSelectColumns'][$sql] = $alias;
+        }
+    }
 
     /**
      * @param array $result
@@ -46,15 +61,25 @@ class Category extends AbstractSelectManager
 
     /**
      * @param array $result
+     *
+     * @return mixed
      */
     protected function boolFilterOnlyCatalogCategories(array &$result)
     {
-        // get catalog
-        $catalog = $this
-            ->getEntityManager()
-            ->getEntity('Catalog', (string)$this->getSelectCondition('onlyCatalogCategories'));
+        // get id
+        $id = (string)$this->getSelectCondition('onlyCatalogCategories');
 
-        if (!empty($catalog) && !empty($catalogTrees = $catalog->get('categories')->toArray())) {
+        // get catalog
+        if (empty($id)) {
+            return null;
+        }
+
+        // get catalog trees
+        if (!empty($catalog = $this->getEntityManager()->getEntity('Catalog', $id))) {
+            $catalogTrees = $catalog->get('categories')->toArray();
+        }
+
+        if (!empty($catalogTrees)) {
             // prepare where
             $where[] = ['id' => array_column($catalogTrees, 'id')];
             foreach ($catalogTrees as $catalogTree) {
@@ -92,37 +117,17 @@ class Category extends AbstractSelectManager
             ->getEntityManager()
             ->getRepository('ProductCategory')
             ->select(['categoryId'])
-            ->where([
-                'productId' => $data['productId'],
-                'scope' => $data['scope']
-            ])
+            ->where(
+                [
+                    'productId' => $data['productId'],
+                    'scope'     => $data['scope']
+                ]
+            )
             ->find()
             ->toArray();
 
         if (!empty($productCategories)) {
             $result['whereClause'][] = ['id!=' => array_column($productCategories, 'categoryId')];
-        }
-    }
-
-    /**
-     * @param $result
-     */
-    protected function boolFilterHasNoChildCategory(&$result)
-    {
-        // prepare parent categories ids
-        $parentCategories = $this
-            ->getEntityManager()
-            ->getRepository('Category')
-            ->distinct()
-            ->select(['id'])
-            ->join('categories')
-            ->find()
-            ->toArray();
-
-        if (!empty($parentCategories)) {
-            $result['whereClause'][] = [
-                'id!=' => array_column($parentCategories, 'id')
-            ];
         }
     }
 }

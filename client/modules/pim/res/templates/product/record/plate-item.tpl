@@ -1,6 +1,6 @@
 <div class="plate-item">
 	<div class="plate-item-header">
-		<div class="field-type">{{translateOption model.attributes.type scope=model.name field='type'}}</div>
+		<div class="field-type" title="{{translateOption model.attributes.type scope=model.name field='type'}}">{{translateOption model.attributes.type scope=model.name field='type'}}</div>
 		<div class="field-status" data-name="productStatus">
 			{{{productStatusField}}}
 		</div>
@@ -35,12 +35,20 @@
 		border: 1px solid #e8eced;
 		border-radius: 10px;
 		padding: 1px 5px;
+		max-width: 40%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.plate-item .field-status {
 		display: inline-block;
 		position: absolute;
 		top: 10px;
 		right: 27px;
+		max-width: 35%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.plate-item .field-name {
 		display: block;

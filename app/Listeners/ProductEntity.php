@@ -25,6 +25,7 @@ namespace Pim\Listeners;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
 use Treo\Core\EventManager\Event;
+use Pim\Entities\Channel;
 
 /**
  * Class ProductEntity
@@ -53,6 +54,13 @@ class ProductEntity extends AbstractEntityListener
             // is product categories in selected catalog
             $this->isProductCategoriesInSelectedCatalog($entity);
         }
+
+        if (!$entity->isNew() && $entity->isAttributeChanged('type')) {
+            throw new BadRequest($this->exception('You can\'t change field of Type'));
+        }
+        if ($entity->isAttributeChanged('productFamilyId') && !$entity->isNew()) {
+            throw new BadRequest($this->exception('You can\'t change Product Family in Product'));
+        }
     }
 
     /**
@@ -70,7 +78,41 @@ class ProductEntity extends AbstractEntityListener
                         && empty($options['skipProductFamilyHook']);
 
         if ($skipUpdate && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
-            $this->updateProductAttributesByProductFamily($entity);
+            $this->updateProductAttributesByProductFamily($entity, $options);
+        }
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @throws \Espo\Core\Exceptions\Error
+     */
+    public function afterRelate(Event $event)
+    {
+        if ($event->getArgument('relationName') == 'productImages') {
+            $this
+                ->createService('ProductImage')
+                ->sortingImage($event->getArgument('entity')->get('id'));
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function afterUnrelate(Event $event)
+    {
+        //set default value in isActive for channel after deleted link
+        if($event->getArgument('relationName') == 'channels' && $event->getArgument('foreign') instanceof Channel) {
+            $dataEntity = new \StdClass();
+            $dataEntity->entityName = 'Product';
+            $dataEntity->entityId = $event->getArgument('entity')->get('id');
+            $dataEntity->value = (int)!empty($event
+                ->getArgument('entity')
+                ->getRelations()['channels']['additionalColumns']['isActive']['default']);
+
+            $this
+                ->getService('Channel')
+                ->setIsActiveEntity($event->getArgument('foreign')->get('id'), $dataEntity, true);
         }
     }
 
@@ -170,10 +212,13 @@ class ProductEntity extends AbstractEntityListener
 
     /**
      * @param Entity $entity
+     * @param array $options
      *
      * @return bool
+     *
+     * @throws \Espo\Core\Exceptions\Error
      */
-    protected function updateProductAttributesByProductFamily(Entity $entity): bool
+    protected function updateProductAttributesByProductFamily(Entity $entity, array $options): bool
     {
         // get product family
         $productFamily = $entity->get('productFamily');

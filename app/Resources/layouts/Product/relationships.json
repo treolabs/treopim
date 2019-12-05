@@ -15,12 +15,6 @@
     "name": "associatedMainProducts"
   },
   {
-    "name": "productImages"
-  },
-  {
-    "name": "productTypePackages"
-  },
-  {
-    "name": "productTypeBundles"
+    "name": "pimImages"
   }
 ]

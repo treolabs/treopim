@@ -29,9 +29,6 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
             },
             onlyCatalogCategories() {
                 return this.model.get('catalogId');
-            },
-            hasNoChildCategory() {
-                return true;
             }
         },
 
@@ -157,9 +154,11 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                     }, this);
                 }
 
-                this.listenTo(this.model, 'overview-filters-changed', () => {
-                    this.applyOverviewFilters();
-                });
+                if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
+                    this.listenTo(this.model, 'overview-filters-changed', () => {
+                        this.applyOverviewFilters();
+                    });
+                }
 
                 var viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
@@ -180,9 +179,11 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                             }
                             collection.fetch();
                         }.bind(this));
-                        view.listenTo(view, 'after:render', () => {
-                            this.applyOverviewFilters();
-                        });
+                        if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
+                            view.listenTo(view, 'after:render', () => {
+                                this.applyOverviewFilters();
+                            });
+                        }
                     });
                 }, this);
 

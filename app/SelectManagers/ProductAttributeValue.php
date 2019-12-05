@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
+use Treo\Core\Utils\Util;
 
 /**
  * ProductAttributeValue select manager
@@ -49,15 +50,62 @@ class ProductAttributeValue extends AbstractSelectManager
                 }
             }
         }
+        // get select params
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
 
-        // filtering by product types
-        $params['where'][] = [
-            'type'      => 'in',
-            'attribute' => 'productId',
-            'value'     => $this->getEntityManager()->getRepository('Product')->getAllowedProductIds()
+        // prepare product types
+        $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
+        $attributesTypes = implode("','", $this->getMetadata()->get('entityDefs.Attribute.fields.type.options', []));
+
+        // prepare custom where
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+
+        // add filtering by product types
+        $selectParams['customWhere'] .= " 
+            AND product_attribute_value.product_id IN (SELECT id 
+                                                        FROM product 
+                                                        WHERE type IN ('$types') AND deleted=0)";
+        $selectParams['customWhere'] .= " 
+            AND product_attribute_value.attribute_id IN (SELECT id 
+                                                            FROM attribute 
+                                                            WHERE type IN ('{$attributesTypes}') AND deleted=0)";
+
+        return $selectParams;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function applyAdditional(array &$result, array $params)
+    {
+        if ($this->isSubQuery) {
+            return false;
+        }
+
+        // prepare additional select columns
+        $additionalSelectColumns = [
+            'typeValue' => 'attribute.type_value',
+            'attributeGroupId' => 'ag1.id',
+            'attributeGroupName' => 'ag1.name'
         ];
 
-        return parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        // prepare for multiLang fields
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
+                $field = Util::toCamelCase('typeValue_' . strtolower($locale));
+                $dbField = 'attribute.type_value_' . strtolower($locale);
+
+                $additionalSelectColumns[$field] = $dbField;
+            }
+        }
+
+        $result['customJoin'] .= " LEFT JOIN attribute_group AS ag1 ON ag1.id=attribute.attribute_group_id AND ag1.deleted=0";
+
+        foreach ($additionalSelectColumns as $alias => $sql) {
+            $result['additionalSelectColumns'][$sql] = $alias;
+        }
     }
 
     /**
@@ -138,11 +186,13 @@ class ProductAttributeValue extends AbstractSelectManager
                 ->select(['id'])
                 ->distinct()
                 ->join('attribute')
-                ->where([
-                    'productId' => $data['productId'],
-                    'attribute.attributeGroupId'
-                        => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
-                ])
+                ->where(
+                    [
+                        'productId' => $data['productId'],
+                        'attribute.attributeGroupId'
+                                    => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
+                    ]
+                )
                 ->find()
                 ->toArray();
 

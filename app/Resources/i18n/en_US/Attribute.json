@@ -10,7 +10,8 @@
     "products": "Products",
     "productAttributeValues": "Product Attribute Values",
     "isRequired": "Required",
-    "productFamilyAttributes": "Product Family Attributes"
+    "productFamilyAttributes": "Product Family Attributes",
+    "isMultilang": "Multi-Language"
   },
   "options": {
     "type": {
@@ -26,13 +27,8 @@
       "unit": "Unit",
       "url": "Url",
       "varchar": "Varchar",
-      "varcharMultiLang": "Varchar Multi Lang",
-      "textMultiLang": "Text Multi Lang",
-      "enumMultiLang": "Enum Multi Lang",
-      "multiEnumMultiLang": "Multi-Enum Multi Lang",
-      "arrayMultiLang": "Array Multi Lang",
       "wysiwyg": "Wysiwyg",
-      "wysiwygMultiLang": "Wysiwyg Multi Lang"
+      "image": "Image"
     }
   },
   "links": {
@@ -59,6 +55,7 @@
     "You can not unlink product family attribute": "You can not unlink product family attribute",
     "Attribute with such CODE already exist": "Attribute with such CODE already exist",
     "Attribute is used in product families. Please, update product families first": "Attribute is used in product families. Please, update product families first",
-    "Attribute is used in products. Please, update products first": "Attribute is used in products. Please, update products first"
+    "Attribute is used in products. Please, update products first": "Attribute is used in products. Please, update products first",
+    "You can't change field of Type in Attribute": "You can't change field of Type in Attribute"
   }
 }

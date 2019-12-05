@@ -18,8 +18,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace Pim\Repositories;
 
-class AssociatedProduct extends \Espo\Core\Templates\Repositories\Base
+use Espo\Core\Templates\Repositories\Base;
+use Espo\ORM\Entity;
+
+/**
+ * Class AssociatedProduct
+ *
+ * @author r.ratsun@treolabs.com
+ */
+class AssociatedProduct extends Base
 {
+    /**
+     * @inheritDoc
+     */
+    public function beforeSave(Entity $entity, array $options = [])
+    {
+        parent::beforeSave($entity, $options);
+
+        if (empty($entity->get('name'))) {
+            $entity->set('name', $entity->get('associationName'));
+        }
+    }
 }

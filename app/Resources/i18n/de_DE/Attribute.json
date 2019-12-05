@@ -10,20 +10,13 @@
     "isSystem": "Ist das System",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
-    "nameDeDe": "Name DeDe",
-    "nameEnUs": "Name EnUs",
-    "nameEsEs": "Name EsEs",
-    "nameFrFr": "Name FrFr",
     "productAttributes": "Produktattribute",
     "productAttributeValues": "Werte des Produktattributes",
     "products": "Produkte",
     "typeValue": "Werttyp",
-    "typeValueDeDe": "Werttyp DeDe",
-    "typeValueEnUs": "Werttyp EnUs",
-    "typeValueEsEs": "Werttyp EsEs",
-    "typeValueFrFr": "Werttyp FrFr",
     "type": "Typ",
-    "productFamilyAttributes": "Produktfamilie Attribute"
+    "productFamilyAttributes": "Produktfamilie Attribute",
+    "isMultilang": "Mehrsprachig"
   },
   "options": {
     "type": {
@@ -39,13 +32,8 @@
       "unit": "Maßeinheit",
       "url": "URL",
       "varchar": "Varchar",
-      "varcharMultiLang": "Varchar Multi Lang",
-      "textMultiLang": "Text Multi Lang",
-      "enumMultiLang": "Enum Multi Lang",
-      "multiEnumMultiLang": "Multi-Enum Multi Lang",
-      "arrayMultiLang": "Array Multi Lang",
       "wysiwyg": "Wysiwyg",
-      "wysiwygMultiLang": "Wysiwyg Multi Lang"
+      "image": "Bild"
     }
   },
   "links": {
@@ -74,6 +62,7 @@
     "You can not unlink product family attribute": "Sie können das Produktfamilienattribut nicht aufheben",
     "Attribute with such CODE already exist": "Das Attribut mit einem solchen CODE existiert bereits",
     "Attribute is used in product families. Please, update product families first": "Das Attribut wird in den Produktfamilien verwendet. Bitte aktualisieren Sie zuerst die Produktfamilien",
-    "Attribute is used in products. Please, update products first": "Das Attribut wird in den Produkten verwendet. Bitte aktualisieren Sie zuerst die Produkte"
+    "Attribute is used in products. Please, update products first": "Das Attribut wird in den Produkten verwendet. Bitte aktualisieren Sie zuerst die Produkte",
+    "You can't change field of Type in Attribute": "Sie können das Feld Typ im Attribut nicht ändern"
   }
 }
