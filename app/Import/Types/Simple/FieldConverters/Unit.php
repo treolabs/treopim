@@ -58,4 +58,16 @@ class Unit extends DefaultUnit
             unset($restore->{$item['name'].'Unit'});
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getMeasure(string $entityType, array $config): string
+    {
+        if (!isset($config['attributeId'])) {
+            return parent::getMeasure($entityType, $config);
+        } else {
+            return $config['attribute']->get('typeValue')[0];
+        }
+    }
 }
