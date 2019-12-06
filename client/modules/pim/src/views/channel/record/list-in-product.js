@@ -22,6 +22,10 @@ Espo.define('pim:views/channel/record/list-in-product', 'views/record/list',
         afterRender: function () {
             Dep.prototype.afterRender.call(this);
 
+            this.setEditModeIsActiveEntityField();
+        },
+
+        setEditModeIsActiveEntityField() {
             (this.rowList || []).forEach(id => {
                 const rowView = this.getView(id);
                 if (rowView) {
@@ -32,6 +36,6 @@ Espo.define('pim:views/channel/record/list-in-product', 'views/record/list',
                     }
                 }
             });
-        },
+        }
     })
 );
