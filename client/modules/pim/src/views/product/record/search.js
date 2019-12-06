@@ -28,8 +28,6 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
 
         selectedAttributesWithOneFilter: [],
 
-        multiLangFieldTypes: ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang', 'wysiwygMultiLang'],
-
         events: _.extend({}, Dep.prototype.events, {
             'click a[data-action="addAttributeFilter"]': function (e) {
                 var $target = $(e.currentTarget);

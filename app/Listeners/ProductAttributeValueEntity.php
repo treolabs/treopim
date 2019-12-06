@@ -216,7 +216,7 @@ class ProductAttributeValueEntity extends AbstractListener
         $result = [];
 
         // prepare array types
-        $arrayTypes = ['array', 'arrayMultiLang', 'multiEnum', 'multiEnumMultiLang'];
+        $arrayTypes = ['array', 'multiEnum'];
 
         // for value
         if ($entity->isAttributeChanged('value')
