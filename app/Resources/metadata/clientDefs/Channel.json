@@ -1,10 +1,6 @@
 {
   "controller": "controllers/record",
   "iconClass": "fas fa-share-square",
-  "quickCreate": true,
-  "quickCreateOptions": {
-    "fullFormDisabled": true
-  },
   "boolFilterList": [
     "onlyMy",
     "notLinkedWithProduct",

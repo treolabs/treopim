@@ -45,6 +45,16 @@
             }
           ]
         }
+      },
+      "attribute": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        }
       }
     }
   }

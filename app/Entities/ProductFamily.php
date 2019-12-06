@@ -33,5 +33,21 @@ class ProductFamily extends Base
     /**
      * @var string
      */
-    protected $entityType = "ProductFamily";
+    protected $entityType = 'ProductFamily';
+
+    /**
+     * @return array
+     */
+    public function _getProductsIds(): array
+    {
+        $data = $this
+            ->getEntityManager()
+            ->getRepository('Product')
+            ->select(['id'])
+            ->where(['productFamilyId' => $this->get('id')])
+            ->find()
+            ->toArray();
+
+        return array_column($data, 'id');
+    }
 }

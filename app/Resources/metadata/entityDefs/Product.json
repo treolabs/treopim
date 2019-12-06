@@ -22,7 +22,7 @@
       "type": "link",
       "layoutFiltersDisabled": false,
       "layoutMassUpdateDisabled": true,
-      "required": true,
+      "required": false,
       "view": "pim:views/product/fields/product-family"
     },
     "brand": {
@@ -58,35 +58,14 @@
       "view": "pim:views/product/fields/type",
       "layoutMassUpdateDisabled": true,
       "options": [
-        "simpleProduct",
-        "bundleProduct",
-        "packageProduct"
-      ]
+        "simpleProduct"
+      ],
+      "importDisabled": true
     },
     "amount": {
       "type": "float",
       "min": 0,
       "default": 0
-    },
-    "productTypeBundles": {
-      "type": "linkMultiple",
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "layoutDetailDisabled": true,
-      "exportDisabled": true,
-      "emHidden": true
-    },
-    "productTypePackages": {
-      "type": "link",
-      "layoutFiltersDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true,
-      "readOnly": true,
-      "noSave": true,
-      "view": "views/fields/link-one",
-      "exportDisabled": true,
-      "emHidden": true
     },
     "associatedRelatedProduct": {
       "type": "linkMultiple",
@@ -124,7 +103,8 @@
       "type": "image",
       "previewSize": "medium",
       "readOnly": true,
-      "view": "pim:views/product/fields/image"
+      "view": "pim:views/product/fields/image",
+      "importDisabled": true
     },
     "productStatus": {
       "type": "enum",
@@ -228,14 +208,26 @@
       "layoutFiltersDisabled": true,
       "noLoad": true,
       "importMultipleField": true,
-      "exportMultipleField": true,
-      "view": "pim:views/product/fields/product-categories"
+      "exportMultipleField": true
     },
     "pimImages": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "noLoad": true
+      "noLoad": true,
+      "importDisabled": true
+    },
+    "measuringUnit": {
+      "type": "link",
+      "required": false
+    },
+    "basePriceAmount": {
+      "type": "float",
+      "default": 0
+    },
+    "packedAmount": {
+      "type": "float",
+      "default": 0
     },
     "createdAt": {
       "type": "datetime",
@@ -302,16 +294,6 @@
         "entity": "Product"
       }
     },
-    "productTypeBundles": {
-      "type": "hasMany",
-      "foreign": "product",
-      "entity": "ProductTypeBundle"
-    },
-    "productTypePackages": {
-      "type": "hasOne",
-      "foreign": "packageProduct",
-      "entity": "ProductTypePackage"
-    },
     "associatedRelatedProduct": {
       "type": "hasMany",
       "foreign": "relatedProduct",
@@ -349,7 +331,17 @@
       "type": "hasMany",
       "relationName": "productChannel",
       "foreign": "products",
-      "entity": "Channel"
+      "entity": "Channel",
+      "additionalColumns": {
+        "isActive": {
+          "type": "bool",
+          "default": false,
+          "notNull": true,
+          "audited": false,
+          "readOnly": false,
+          "tooltip": false
+        }
+      }
     },
     "productCategories": {
       "type": "hasMany",
@@ -361,6 +353,10 @@
       "foreign": "product",
       "entity": "PimImage",
       "disableMassRelation": true
+    },
+    "measuringUnit": {
+      "type": "belongsTo",
+      "entity": "MeasuringUnit"
     },
     "createdBy": {
       "type": "belongsTo",

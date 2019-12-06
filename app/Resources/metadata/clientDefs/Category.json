@@ -41,12 +41,25 @@
       "selectBoolFilterList": [
         "pimImageRelation"
       ],
-      "recordsPerPage": 200
+      "recordsPerPage": 200,
+      "dragDrop": {
+        "isActive": true,
+        "sortField": "sortOrder"
+      },
+      "sortBy": "sortOrder",
+      "asc": true
     },
     "productCategories": {
       "layout": "listForProductCategoriesInCategory",
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "select": false
+      "select": false,
+      "recordsPerPage": 200,
+      "dragDrop": {
+        "isActive": true,
+        "sortField": "sorting"
+      },
+      "sortBy": "sorting",
+      "asc": true
     },
     "catalogs": {
       "selectAction": "selectRelatedEntity",

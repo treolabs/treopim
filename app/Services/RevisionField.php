@@ -61,7 +61,7 @@ class RevisionField extends MultilangRevisionField
             if (empty($max)) {
                 $max = $this->maxSize;
             }
-
+            $isImageAttr = $this->checkIsAttributeImage($params['field']);
             foreach ($notes as $note) {
                 if (!empty($note->get('attributeId')) && $note->get('attributeId') == $params['field']) {
                     // prepare data
@@ -76,7 +76,6 @@ class RevisionField extends MultilangRevisionField
                                     $locale = $loc;
                                 }
                             }
-
                             // prepare field name
                             $fieldName = 'value';
                             $fieldName = empty($locale) ? $fieldName : $fieldName . '_' . strtolower($locale);
@@ -84,7 +83,10 @@ class RevisionField extends MultilangRevisionField
 
                             // prepare data
                             $was = $became = [];
-
+                            if($isImageAttr) {
+                                $was[$fieldName . 'Id'] = $data['attributes']['was'][$field];
+                                $became[$fieldName . 'Id'] = $data['attributes']['became'][$field];
+                            }
                             $was[$fieldName] = $data['attributes']['was'][$field];
                             $became[$fieldName] = $data['attributes']['became'][$field];
 
@@ -118,5 +120,19 @@ class RevisionField extends MultilangRevisionField
         }
 
         return $result;
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws Error
+     */
+    private function checkIsAttributeImage($id): bool
+    {
+        $attrValue = $this
+            ->getEntityManager()
+            ->getEntity('ProductAttributeValue', $id);
+
+        return !empty($attrValue) && $attrValue->get('attribute')->get('type') === 'image';
     }
 }

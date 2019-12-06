@@ -56,27 +56,4 @@ class Attribute extends AbstractController
 
         throw new Exceptions\Error();
     }
-
-    /**
-     * Update sort order for attributes in attribute group
-     *
-     * @param array $params
-     * @param \stdClass $data
-     * @param Request $request
-     *
-     * @return bool
-     * @throws Exceptions\Forbidden
-     */
-    public function actionUpdateSortOrder(array $params, \stdClass $data, Request $request): bool
-    {
-        if (!$request->isPut()) {
-            throw new Exceptions\BadRequest();
-        }
-
-        if (!$this->getAcl()->check($this->name, 'edit')) {
-            throw new Exceptions\Forbidden();
-        }
-
-        return $this->getRecordService()->updateSortOrder($params['attributeGroupId'], $data->ids);
-    }
 }

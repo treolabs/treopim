@@ -37,6 +37,9 @@ class V3Dot10Dot0 extends AbstractMigration
      */
     public function up(): void
     {
+        // auth
+        $this->auth();
+
         // delete old
         $this->execute('DELETE FROM pim_image WHERE 1;DELETE FROM pim_image_channel WHERE 1');
 
@@ -153,6 +156,9 @@ class V3Dot10Dot0 extends AbstractMigration
      */
     public function down(): void
     {
+        // auth
+        $this->auth();
+
         // delete old
         $this->execute('DELETE FROM product_image WHERE 1;DELETE FROM product_image_product WHERE 1;DELETE FROM product_image_channel WHERE 1');
         $this->execute('DELETE FROM category_image WHERE 1;DELETE FROM category_image_category WHERE 1;DELETE FROM category_image_channel WHERE 1');
@@ -279,5 +285,14 @@ class V3Dot10Dot0 extends AbstractMigration
         return $this
             ->execute($sql)
             ->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Auth
+     */
+    private function auth(): void
+    {
+        $auth = new \Treo\Core\Utils\Auth($this->getContainer());
+        $auth->useNoAuth();
     }
 }

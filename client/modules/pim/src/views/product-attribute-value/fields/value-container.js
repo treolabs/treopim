@@ -39,6 +39,14 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             });
         },
 
+        afterRender() {
+            Dep.prototype.afterRender.call(this);
+
+            if (this.mode === 'edit' && ['multiEnum'].includes(this.model.get('attributeType'))) {
+                this.$el.addClass('over-visible');
+            }
+        },
+
         getConfiguratedValueModel(model) {
             model = this.model.clone();
             model.id = this.model.id;
@@ -63,6 +71,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
 
         updateModelDefs() {
             let type = this.model.get('attributeType');
+            let isMultiLang = this.model.get('isMultilang');
             let typeValue = this.model.get('typeValue');
             if (type) {
                 let fieldDefs = {
@@ -71,7 +80,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
                     view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
                     required: !!this.model.get('isRequired')
                 };
-                if (['varcharMultiLang', 'textMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'arrayMultiLang', 'wysiwygMultiLang'].includes(type)) {
+                if (isMultiLang) {
                     fieldDefs.isMultilang = true;
                     this.getFieldManager().getActualAttributeList(type, 'typeValue').splice(1).forEach(item => {
                         fieldDefs[`options${item.replace('typeValue', '')}`] = this.model.get(item);

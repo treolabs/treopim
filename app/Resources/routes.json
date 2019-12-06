@@ -1,13 +1,5 @@
 [
   {
-    "route": "/Product/:product_id/itemInProducts",
-    "method": "get",
-    "params": {
-      "controller": "Product",
-      "action": "GetItemInProducts"
-    }
-  },
-  {
     "route": "/Markets/Attribute/filtersData",
     "method": "get",
     "params": {
@@ -52,11 +44,12 @@
     }
   },
   {
-    "route": "Attribute/:attributeGroupId/sortOrder",
-    "method": "put",
+    "route": "Dashlet/:dashletName",
+    "method": "get",
     "params": {
-      "controller": "Attribute",
-      "action": "updateSortOrder"
+      "controller": "Dashlet",
+      "action": "GetDashlet",
+      "dashletName": ":dashletName"
     }
   },
   {
@@ -81,6 +74,14 @@
     "params": {
       "controller": "ProductFamily",
       "action": "productsCount"
+    }
+  },
+  {
+    "route": "/Channel/:channelId/setIsActiveEntity",
+    "method": "put",
+    "params": {
+      "controller": "Channel",
+      "action": "setIsActiveEntity"
     }
   }
 ]

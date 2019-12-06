@@ -1,10 +1,10 @@
 [
   {
-    "name": "name",
-    "link": true
+    "name": "image"
   },
   {
-    "name": "image"
+    "name": "name",
+    "link": true
   },
   {
     "name": "scope"

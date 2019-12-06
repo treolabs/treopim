@@ -20,9 +20,11 @@
 Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
     Dep => Dep.extend({
 
-        categoryTrees: [],
-
         template: 'pim:product/record/catalog-tree-panel/category-tree',
+
+        loadedCategories: [],
+
+        expandableCategory: null,
 
         events: {
             'show.bs.collapse div.panel-collapse.collapse[class^="catalog-"]': function (e) {
@@ -36,14 +38,22 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             },
             'show.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
                 e.stopPropagation();
+            },
+            'shown.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
+                e.stopPropagation();
                 this.unfold($(e.currentTarget).data('id'));
             },
             'hide.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
                 e.stopPropagation();
+            },
+            'hidden.bs.collapse div.panel-collapse.collapse[class^="category-"]': function (e) {
+                e.stopPropagation();
                 this.fold($(e.currentTarget).data('id'));
             },
             'click button.category.child-category': function (e) {
-                this.selectCategory($(e.currentTarget).data('id'));
+                const id = $(e.currentTarget).data('id');
+                this.setCategoryActive(id);
+                this.selectCategory(id);
             }
         },
         
@@ -58,33 +68,27 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
         setup() {
             this.categories = this.options.categories || [];
             this.catalog = this.options.catalog;
-
-            this.rootCategories = this.categories.filter(category => (this.catalog.categoriesIds || []).includes(category.id));
-        },
-
-        selectCategory(id) {
-            let category = this.categoryTrees.find(item => item.id === id) || this.rootCategories.find(item => item.id === id);
-            category.catalogId = this.catalog.id;
-            this.trigger('category-tree-select', category);
+            this.loadedCategories = [];
         },
 
         getRootCategoriesList() {
-            let arr = [];
-            this.rootCategories.forEach(category => {
-                let hasChildren = this.categories.some(item => item.categoryParentId === category.id);
-                arr.push({
-                    id: category.id,
-                    html: hasChildren ? this.getParentHtml(category, this.isRendered()) : this.getChildHtml(category)
+            return this.categories
+                .filter(category => this.catalog.categoriesIds.includes(category.id))
+                .map(category => {
+                    return {
+                        id: category.id,
+                        html: category.childrenCount ? this.getParentHtml(category, this.isRendered()) : this.getChildHtml(category)
+                    };
                 });
-            });
-            return arr;
         },
 
         getParentHtml(category, fullLoad) {
             let hash = this.getRandomHash();
             let html = '';
             if (fullLoad) {
-                (category.childs || []).forEach(child => html += child.childs.length ? this.getParentHtml(child, true) : this.getChildHtml(child));
+                (category.childs || []).forEach(child => {
+                    html += child.childrenCount ? this.getParentHtml(child, (child.childs || []).length) : this.getChildHtml(child);
+                });
             }
             return `
                 <li data-id="${category.id}" class="list-group-item child">
@@ -116,6 +120,83 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
                 .substring(1);
         },
 
+        fold(id) {
+            let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
+            button.find('span.fa-chevron-right').removeClass('hidden');
+            button.find('span.fa-chevron-down').addClass('hidden');
+        },
+
+        unfold(id) {
+            this.setupCategoryTree(id, () => {
+                let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
+                button.find('span.fa-chevron-right').addClass('hidden');
+                button.find('span.fa-chevron-down').removeClass('hidden');
+                this.expandCategoriesFromRoute(id);
+            });
+        },
+
+        setupCategoryTree(id, callback) {
+            let promise;
+            let category = this.loadedCategories.find(item => item.id === id);
+            if (!category) {
+                promise = new Promise(resolve => {
+                    this.getTreeCategories(id, categories => {
+                        category = this.categories.find(item => item.id === id);
+                        this.categories = this.categories.concat(categories);
+                        this.setCategoryChilds(category, categories);
+                        resolve();
+                    });
+                });
+            } else {
+                promise = new Promise(resolve => resolve());
+            }
+            promise.then(() => {
+                this.buildCategoryHtml(category);
+                callback();
+            });
+        },
+
+        getTreeCategories(id, callback) {
+            this.getFullEntity('Category', {
+                select: 'name,categoryParentId,categoryRoute,childrenCount',
+                where: [
+                    {
+                        type: 'equals',
+                        attribute: 'categoryParentId',
+                        value: id
+                    }
+                ]
+            }, categories => {
+                callback(categories);
+            });
+        },
+
+        setCategoryChilds(category, categories) {
+            categories.sort((a, b) => {
+                if (a.childrenCount && !b.childrenCount) {
+                    return -1;
+                } else if (!a.childrenCount && b.childrenCount) {
+                    return 1;
+                } else {
+                    return a.name.localeCompare(b.name);
+                }
+            });
+            category.childs = categories;
+            this.loadedCategories.push(category);
+        },
+
+        buildCategoryHtml(category) {
+            let button = this.$el.find(`button.category-icons[data-id="${category.id}"]`);
+            let listEl = button.parent().find(`.panel-collapse[data-id="${category.id}"] .list-group-tree`);
+            if (!listEl.find('li').size()) {
+                let html = '';
+                category.childs.forEach(item => {
+                    html += item.childrenCount ? this.getParentHtml(item) : this.getChildHtml(item);
+                });
+                listEl.append(html);
+            }
+        },
+
         getFullEntity(url, params, callback, container) {
             if (url) {
                 container = container || [];
@@ -136,87 +217,76 @@ Espo.define('pim:views/product/record/catalog-tree-panel/category-tree', 'view',
             }
         },
 
-        fold(id) {
-            let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
-            button.find('span.fa-chevron-right').removeClass('hidden');
-            button.find('span.fa-chevron-down').addClass('hidden');
+        expandCategoryHandler(category) {
+            if (typeof category === 'string') {
+                category = this.categories.find(item => item.id === category);
+            }
+            if (category) {
+                if (this.$el.size()) {
+                    this.expandCategory(category);
+                } else {
+                    this.listenTo(this, 'after:render', () => this.expandCategory(category));
+                }
+            }
         },
 
-        unfold(id) {
-            this.setupCategoryTree(id, () => {
-                let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
-                button.find('span.fa-chevron-right').addClass('hidden');
-                button.find('span.fa-chevron-down').removeClass('hidden');
-            });
-        },
-
-        setupCategoryTree(id, callback) {
-            let category = this.categoryTrees.find(item => item.id === id);
-            if (!category) {
-                this.getTreeCategories(id, categories => {
-                    category = this.buildCategoryTree(id, categories);
-                    this.buildCategoryHtml(id, category);
-                    callback();
+        expandCategory(category) {
+            this.expandableCategory = category;
+            let catalogCollapse = this.$el.find('.collapse[class^="catalog-"]');
+            catalogCollapse.collapse("show");
+            let routes = (category.categoryRoute || '').split('|').filter(element => element);
+            if (routes.length) {
+                routes.some(routeId => {
+                    const nextCollapse = catalogCollapse.find(`.collapse[data-id="${routeId}"]`);
+                    if (nextCollapse.hasClass('in')) {
+                        this.expandCategoriesFromRoute(routeId);
+                        return false;
+                    } else {
+                        nextCollapse.collapse('show');
+                        return true;
+                    }
                 });
             } else {
-                this.buildCategoryHtml(id, category);
-                callback();
+                this.setCategoryActive(this.expandableCategory.id);
             }
         },
 
-        getTreeCategories(id, callback) {
-            this.getFullEntity('Category', {
-                select: 'name,categoryParentId,categoryRoute',
-                where: [
-                    {
-                        type: 'contains',
-                        attribute: 'categoryRoute',
-                        value: id
-                    }
-                ]
-            }, categories => {
-                callback(categories);
-            });
-        },
-
-        buildCategoryTree(id, categories) {
-            let root = this.rootCategories.find(item => item.id === id);
-
-            let setChilds = (category, categories) => {
-                let childs = categories.filter(item => item.categoryParentId === category.id);
-                if (childs.length) {
-                    childs.forEach(child => setChilds(child, categories));
-                }
-                childs.sort((a, b) => {
-                    if (a.childs.length && !b.childs.length) {
-                        return -1;
-                    } else if (!a.childs.length && b.childs.length) {
-                        return 1;
-                    } else {
-                        return a.name.localeCompare(b.name);
+        expandCategoriesFromRoute(categoryId) {
+            if (this.expandableCategory) {
+                let routes = (this.expandableCategory.categoryRoute || '').split('|').filter(element => element);
+                let atLeastOne = routes.some(routeCategoryId => {
+                    let nextCollapse = this.$el.find(`.collapse[data-id="${routeCategoryId}"]:not(.in)`);
+                    if (categoryId !== routeCategoryId && nextCollapse.size()) {
+                        nextCollapse.collapse('show');
+                        return true;
                     }
                 });
-                category.childs = childs;
-                if (!this.categoryTrees.some(item => item.id === category.id)) {
-                    this.categoryTrees.push(category);
+                if (!atLeastOne && this.expandableCategory) {
+                    let expandableCategory = this.$el.find(`.category[data-id="${this.expandableCategory.id}"]`);
+                    if (expandableCategory.size()) {
+                        this.setCategoryActive(this.expandableCategory.id);
+                        this.expandableCategory = null;
+                    }
                 }
-            };
-            setChilds(root, categories);
-
-            return root;
-        },
-
-        buildCategoryHtml(id, category) {
-            let button = this.$el.find(`button.category-icons[data-id="${id}"]`);
-            let listEl = button.parent().find(`.panel-collapse[data-id="${id}"] .list-group-tree`);
-            if (category.childs.length && !listEl.find('li').size()) {
-                let html = '';
-                category.childs.forEach(category => {
-                    html += category.childs.length ? this.getParentHtml(category) : this.getChildHtml(category);
-                });
-                listEl.append(html);
             }
         },
+
+        selectCategory(category) {
+            if (typeof category === 'string') {
+                category = this.categories.find(item => item.id === category);
+                category.catalogId = this.catalog.id;
+            }
+            this.trigger('category-tree-select', category);
+        },
+
+        setCategoryActive(id) {
+            if (id) {
+                let panel = this.$el.parents('.category-panel');
+                panel.find('.category-buttons > button').removeClass('active');
+                panel.find('li.child.active').removeClass('active');
+                this.$el.find(`li.child[data-id="${id}"]`).addClass('active');
+            }
+        }
 
     })
 );

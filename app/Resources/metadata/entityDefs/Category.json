@@ -56,6 +56,16 @@
       "type": "linkMultiple",
       "view": "views/fields/teams"
     },
+    "childrenCount": {
+      "type": "int",
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
     "categoryParent": {
       "type": "link",
       "view": "pim:views/category/fields/category-parent",
@@ -89,7 +99,8 @@
       "type": "image",
       "previewSize": "medium",
       "readOnly": true,
-      "view": "pim:views/product/fields/image"
+      "view": "pim:views/product/fields/image",
+      "importDisabled": true
     },
     "hasChildren": {
       "type": "bool",
@@ -121,7 +132,8 @@
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
-      "noLoad": true
+      "noLoad": true,
+      "importDisabled": true
     }
   },
   "links": {

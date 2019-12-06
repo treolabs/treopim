@@ -32,18 +32,19 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
 class ProductCategory extends AbstractSelectManager
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    public function applyAdditional(array &$result, array $params)
     {
-        // filtering by product types
-        $params['where'][] = [
-            'type'      => 'notIn',
-            'attribute' => 'productId',
-            'value'     => $this->getEntityManager()->getRepository('Product')->getNotAllowedProductIds()
-        ];
+        // prepare product types
+        $types = implode("','", array_keys($this->getMetadata()->get('pim.productType', [])));
 
-        // call parent
-        return parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        // prepare custom where
+        if (!isset($result['customWhere'])) {
+            $result['customWhere'] = '';
+        }
+
+        // add filtering by product types
+        $result['customWhere'] .= " AND product_category.product_id IN (SELECT id FROM product WHERE type IN ('$types') AND deleted=0)";
     }
 }

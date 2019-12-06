@@ -59,6 +59,16 @@
       "type": "varchar",
       "notStorable": true
     },
+    "attributeIsMultilang": {
+      "type": "bool",
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
@@ -90,6 +100,27 @@
     "teams": {
       "type": "linkMultiple",
       "view": "views/fields/teams"
+    },
+    "typeValue": {
+      "type": "array",
+      "isMultilang": true,
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
+    "attributeGroup": {
+      "type": "link",
+      "notStorable": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
     }
   },
   "links": {
@@ -154,5 +185,9 @@
         "deleted"
       ]
     }
+  },
+  "collection": {
+    "sortBy": "attribute.sortOrder",
+    "asc": true
   }
 }

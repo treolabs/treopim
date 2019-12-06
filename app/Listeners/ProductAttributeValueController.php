@@ -87,7 +87,9 @@ class ProductAttributeValueController extends AbstractListener
         }
 
         // set data
-        $event->setArgument('result', $data['result']);
+        if (isset($data['result'])) {
+            $event->setArgument('result', $data['result']);
+        }
     }
 
     /**
