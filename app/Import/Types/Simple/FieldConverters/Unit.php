@@ -52,9 +52,9 @@ class Unit extends DefaultUnit
     {
         parent::prepareValue($restore, $entity, $item);
 
-        if (isset($config['attributeId'])) {
+        if (isset($item['attributeId'])) {
             // prepare restore row for attribute
-            $restore->data = (object)['unit' => $restore->{$item['name'].'Unit'}];
+            $restore->data = $entity->get('data');
             unset($restore->{$item['name'].'Unit'});
         }
     }
