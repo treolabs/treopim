@@ -23,5 +23,8 @@
   "advancedFilters": true,
   "importTypeSimple": {
     "handler": "Pim\\Import\\Types\\Simple\\Handlers\\ProductHandler"
+  },
+  "completeness": {
+    "service": "Completeness\\Services\\ProductCompleteness"
   }
 }
