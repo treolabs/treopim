@@ -298,6 +298,7 @@ Espo.define('pim:views/product/modals/mass-update-attributes', 'views/modals/mas
         getWhereUpdate(attributeId) {
             let whereUpdate = this.where ? Espo.Utils.cloneDeep(this.where) : [];
             whereUpdate.push({attribute: 'attributeId', type: "equals", value: attributeId});
+            whereUpdate.push({attribute: 'product.type', type: "notEquals", value: 'productVariant'},);
             if (this.ids) {
                 whereUpdate.push({attribute: 'productId', type: "in", value: this.ids});
             }
