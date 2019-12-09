@@ -93,6 +93,10 @@
       "simpleProduct": "einfaches Produkt"
     }
   },
+  "massActions": {
+    "Mass attribute update": "Aktualisierung der Massenattribute",
+    "No attributes available for Mass Update": "Keine Attribute für Massenaktualisierung verfügbar"
+  },
   "boolFilters": {
     "withoutAnyCategory": "ohne Kategorie",
     "withoutAssociatedProducts": "ohne zugehörige Produkte",

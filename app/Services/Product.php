@@ -150,6 +150,44 @@ class Product extends AbstractService
     }
 
     /**
+     * @param array $where
+     * @return array
+     */
+    public function getAttributesForMassUpdate(array $where): array
+    {
+        $where = json_decode(json_encode($where), true);
+        $where[] = ['attribute' => 'scope', 'type' => 'equals', 'value' => 'Global'];
+
+        $whereParams = $this
+            ->getInjection('selectManagerFactory')
+            ->create('ProductAttributeValue')
+            ->getSelectParams(['where' => $where], true, true);
+
+        $select = ['attributeId',
+                    ['attribute.name', 'name'],
+                    ['attribute.type', 'attributeType'],
+                    ['attribute.isMultilang', 'attributeIsMultilang'],
+                    ['attribute.typeValue', 'typeValue']
+                ];
+
+        $attributes = $this->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->select($select)
+            ->leftJoin(['attribute'])
+            ->groupBy(['product_attribute_value.attributeId'])
+            ->find($whereParams)
+            ->toArray();
+
+        $result = [];
+
+        foreach ($attributes as $attribute) {
+            $result[$attribute['attributeId']] = $attribute;
+        }
+
+        return $result;
+    }
+
+    /**
      * @param Entity $product
      * @param Entity $duplicatingProduct
      */

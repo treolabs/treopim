@@ -89,6 +89,10 @@
       "your tag2": "your tag2"
     }
   },
+  "massActions": {
+    "Mass attribute update": "Mass attribute update",
+    "No attributes available for Mass Update": "No attributes available for Mass Update"
+  },
   "boolFilters": {
     "withoutAssociatedProducts": "Without Associated Products",
     "withoutAnyCategory": "Without Any Category",

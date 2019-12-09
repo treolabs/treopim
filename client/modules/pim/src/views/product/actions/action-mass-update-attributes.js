@@ -17,11 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/actions/actionMassUpdateAttribute', 'view',
+Espo.define('pim:views/product/actions/action-mass-update-attributes', 'view',
     Dep => Dep.extend({
 
-        actionMassUpdateAttribute: function () {
-            if (!this.getAcl().check(this.options.scope, 'edit')) {
+        actionMassUpdateAttributes: function () {
+            if (!this.getAcl().check(this.options.scope, 'edit') && this.getAcl().check('Attribute', 'edit')) {
                 this.notify('Access denied', 'error');
                 return false;
             }
@@ -32,7 +32,7 @@ Espo.define('pim:views/product/actions/actionMassUpdateAttribute', 'view',
                 checkedIds = this.options.checkedList;
             }
 
-            this.createView('massUpdateAttribute', 'pim:views/product/modals/massUpdateAttribute', {
+            this.createView('mass-update-attributes', 'pim:views/product/modals/mass-update-attributes', {
                 scope: this.options.scope,
                 ids: checkedIds,
                 where: this.options.collection.getWhere(),
@@ -43,27 +43,18 @@ Espo.define('pim:views/product/actions/actionMassUpdateAttribute', 'view',
                 view.notify(false);
                 view.once('after:update', function (count, byQueueManager) {
                     view.close();
-                    this.listenToOnce(this.options.collection, 'sync', function () {
-                        if (count) {
-                            var msg = 'massUpdateResult';
-                            if (count == 1) {
-                                msg = 'massUpdateResultSingle'
-                            }
-                            Espo.Ui.success(this.translate(msg, 'messages').replace('{count}', count));
-                        } else if (byQueueManager) {
-                            Espo.Ui.success(this.translate('byQueueManager', 'messages', 'QueueItem'));
-                            Backbone.trigger('showQueuePanel');
-                        } else {
-                            Espo.Ui.warning(this.translate('noRecordsUpdated', 'messages'));
+                    if (count) {
+                        let msg = 'massUpdateResult';
+                        if (count == 1) {
+                            msg = 'massUpdateResultSingle'
                         }
-                        if (this.options.allResultIsChecked) {
-                            this.selectAllResult();
-                        } else {
-                            checkedIds.forEach(function (id) {
-                                this.checkRecord(id);
-                            }, this);
-                        }
-                    }.bind(this));
+                        Espo.Ui.success(this.translate(msg, 'messages').replace('{count}', count));
+                    } else if (byQueueManager) {
+                        Espo.Ui.success(this.translate('byQueueManager', 'messages', 'QueueItem'));
+                        Backbone.trigger('showQueuePanel');
+                    } else {
+                        Espo.Ui.warning(this.translate('noRecordsUpdated', 'messages'));
+                    }
                 }, this);
             }.bind(this));
         },

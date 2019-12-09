@@ -162,17 +162,18 @@
     }
   },
   "additionalMassActions": {
-    "actionMassUpdateAttribute": {
-      "name": "Mass Update Attribute",
-      "label": "Mass Update Attribute",
-      "actionViewPath": "pim:views/product/actions/actionMassUpdateAttribute",
-      "action": "actionMassUpdateAttribute",
+    "actionMassUpdateAttributes": {
+      "name": "Mass attribute update",
+      "label": "Mass attribute update",
+      "actionViewPath": "pim:views/product/actions/action-mass-update-attributes",
+      "action": "actionMassUpdateAttributes",
       "optionsToPass": [
         "checkedList",
         "allResultIsChecked",
         "collection",
         "scope"
-      ]
+      ],
+      "pushToCheckAllResultMassActionList": true
     }
   },
   "dynamicLogic": {

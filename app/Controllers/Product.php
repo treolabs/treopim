@@ -96,7 +96,7 @@ class Product extends AbstractController
      */
     public function actionGetAttributesForMassUpdate($params, $data, Request $request)
     {
-        if (empty($data->ids) && empty($data->where)) {
+        if (!isset($data->where) && !is_array($data->where)) {
             throw new Exceptions\BadRequest();
         }
 
@@ -104,19 +104,6 @@ class Product extends AbstractController
             throw new Exceptions\Forbidden();
         }
 
-        $attributes = $this->getEntityManager()
-            ->getRepository('ProductAttributeValue')
-            ->select(['attributeId', ['attribute.name', 'name'], ['attribute.type','attributeType'], ['attribute.typeValue','typeValue']])
-            ->leftJoin(['attribute'])
-            ->where(['scope' => 'Global', 'productId=' => $data->ids])
-            ->groupBy(['product_attribute_value.attributeId'])
-            ->find()->toArray();
-        $result = [];
-
-        foreach ($attributes as $attribute) {
-            $result[$attribute['attributeId']] = $attribute;
-        }
-
-        return $result;
+        return $this->getService('Product')->getAttributesForMassUpdate($data->where);
     }
 }
