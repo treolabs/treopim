@@ -227,7 +227,7 @@ class ProductHandler extends AbstractHandler
             if ($item->get('attributeId') == $conf['attributeId'] && $item->get('scope') == $conf['scope']) {
                 if ($conf['scope'] == 'Global') {
                     $inputRow->id = $item->get('id');
-                    $restoreRow->{$conf['name']} = $item->get($conf['name']);
+                    $this->prepareValue($restoreRow, $item, $conf);
                 } elseif ($conf['scope'] == 'Channel') {
                     $channels = array_column($item->get('channels')->toArray(), 'id');
 
