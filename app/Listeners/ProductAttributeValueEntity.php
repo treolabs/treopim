@@ -219,7 +219,7 @@ class ProductAttributeValueEntity extends AbstractListener
         $arrayTypes = ['array', 'multiEnum'];
 
         // for value
-        if ($entity->isAttributeChanged('value')
+        if (self::$beforeSaveData['value'] != $entity->get('value')
             || ($entity->isAttributeChanged('data')
                 && self::$beforeSaveData['data']->unit != $entity->get('data')->unit)) {
             $result['fields'][] = $fieldName;
