@@ -651,6 +651,154 @@ class Product extends AbstractSelectManager
      *
      * @return array
      */
+    protected function prepareTypeArrayAnyOf(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => []
+                ],
+            ]
+        ];
+
+        // prepare values
+        $values = (empty($row['value'])) ? [md5('no-such-value-' . time())] : $row['value'];
+
+        foreach ($values as $value) {
+            $where['value'][1]['value'][] = [
+                'type'      => 'like',
+                'attribute' => 'value',
+                'value'     => "%\"$value\"%"
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeArrayNoneOf(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => []
+                ],
+            ]
+        ];
+
+        // prepare values
+        $values = (empty($row['value'])) ? [md5('no-such-value-' . time())] : $row['value'];
+
+        foreach ($values as $value) {
+            $where['value'][1]['value'][] = [
+                'type'      => 'notLike',
+                'attribute' => 'value',
+                'value'     => "%\"$value\"%"
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeArrayIsEmpty(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => [
+                        [
+                            'type'      => 'isNull',
+                            'attribute' => 'value'
+                        ],
+                        [
+                            'type'      => 'equals',
+                            'attribute' => 'value',
+                            'value'     => ''
+                        ],
+                        [
+                            'type'      => 'equals',
+                            'attribute' => 'value',
+                            'value'     => '[]'
+                        ]
+                    ]
+                ],
+            ]
+        ];
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeArrayIsNotEmpty(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'      => 'isNotNull',
+                    'attribute' => 'value'
+                ],
+                [
+                    'type'      => 'notEquals',
+                    'attribute' => 'value',
+                    'value'     => ''
+                ],
+                [
+                    'type'      => 'notEquals',
+                    'attribute' => 'value',
+                    'value'     => '[]'
+                ]
+            ]
+        ];
+
+        return $where;
+    }
+
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
     protected function prepareTypeDefault(array $row): array
     {
         $where = ['type' => 'or', 'value' => []];
