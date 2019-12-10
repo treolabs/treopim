@@ -22,6 +22,7 @@ namespace Pim\Controllers;
 
 use Espo\Core\Exceptions;
 use Slim\Http\Request;
+use Treo\Core\Utils\Util;
 
 /**
  * Channel controller
@@ -181,5 +182,25 @@ class Channel extends AbstractController
         }
 
         throw new Exceptions\Forbidden();
+    }
+
+    /**
+     * Set IsActiveEntity for link Channel to Product
+     *
+     * @return array
+     * @throws Exceptions\Forbidden
+     * @throws Exceptions\BadRequest
+     */
+    public function actionSetIsActiveEntity($params, $data, Request $request): bool
+    {
+        if (!$request->isPut() && !empty($data->entityName) && !empty($data->value) && !empty($data->entityId)) {
+            throw new Exceptions\BadRequest();
+        }
+        $channelId = $params['channelId'];
+        if (!$this->isReadEntity($this->name, $channelId) && !$this->getAcl()->check('Product', 'edit')) {
+            throw new Exceptions\Forbidden();
+        }
+
+        return $this->getRecordService()->setIsActiveEntity($channelId, $data);
     }
 }

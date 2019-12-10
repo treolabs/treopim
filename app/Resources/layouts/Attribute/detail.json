@@ -13,16 +13,9 @@
             ],
             [
                 {
-                    "name": "name"
-                },
-                {
-                    "name": "typeValue"
-                }
-            ],
-            [
-                {
                     "name": "attributeGroup"
-                }
+                },
+                false
             ]
         ]
     }

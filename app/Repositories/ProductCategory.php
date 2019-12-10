@@ -51,6 +51,19 @@ class ProductCategory extends Base
     }
 
     /**
+     * @inheritDoc
+     */
+    public function max($field)
+    {
+        $data = $this
+            ->getEntityManager()
+            ->nativeQuery("SELECT MAX(sorting) AS max FROM product_category WHERE deleted=0")
+            ->fetch(\PDO::FETCH_ASSOC);
+
+        return $data['max'];
+    }
+
+    /**
      * @param Entity $entity
      */
     protected function updateSortOrder(Entity $entity): void
@@ -86,11 +99,7 @@ class ProductCategory extends Base
             }
 
             // execute sql
-            $sth = $this
-                ->getEntityManager()
-                ->getPDO()
-                ->prepare($sql);
-            $sth->execute();
+            $this->getEntityManager()->nativeQuery($sql);
         }
     }
 }

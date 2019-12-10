@@ -2,9 +2,10 @@
   "fields": {
     "name": {
       "type": "varchar",
-      "required": true,
+      "required": false,
       "trim": true,
-      "isMultilang": true
+      "isMultilang": true,
+      "layoutDetailDisabled": true
     },
     "createdAt": {
       "type": "datetime",
@@ -70,13 +71,7 @@
         "unit",
         "url",
         "varchar",
-        "varcharMultiLang",
-        "textMultiLang",
-        "enumMultiLang",
-        "multiEnumMultiLang",
-        "arrayMultiLang",
         "wysiwyg",
-        "wysiwygMultiLang",
         "image"
       ],
       "default": "text",
@@ -87,6 +82,11 @@
       "tooltip": false,
       "view": "pim:views/attribute/fields/type"
     },
+    "isMultilang": {
+      "type": "bool",
+      "hideMultilang": true,
+      "layoutDetailDisabled": true
+    },
     "typeValue": {
       "type": "array",
       "layoutMassUpdateDisabled": true,
@@ -96,6 +96,7 @@
       "readOnly": false,
       "tooltip": false,
       "isMultilang": true,
+      "layoutDetailDisabled": true,
       "view": "pim:views/attribute/fields/type-value"
     },
     "isSystem": {

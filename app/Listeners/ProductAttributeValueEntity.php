@@ -71,7 +71,12 @@ class ProductAttributeValueEntity extends AbstractListener
         }
 
         if (!$this->isUnique($entity)) {
-            throw new BadRequest($this->exception('Such record already exists'));
+            throw new BadRequest(
+                sprintf(
+                    $this->exception('Such product attribute \'%s\' already exists'),
+                    $entity->get('attribute')->get('name')
+                )
+            );
         }
 
         // clearing channels ids
@@ -211,7 +216,7 @@ class ProductAttributeValueEntity extends AbstractListener
         $result = [];
 
         // prepare array types
-        $arrayTypes = ['array', 'arrayMultiLang', 'multiEnum', 'multiEnumMultiLang'];
+        $arrayTypes = ['array', 'multiEnum'];
 
         // for value
         if ($entity->isAttributeChanged('value')

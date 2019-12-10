@@ -2,7 +2,7 @@
 
 The user interface (UI) includes all visible elements users see and interact with while using TreoPIM. This chapter describes all the main elements of user interface, which are the same for all entities in the system, as well as gives details on how to perform common tasks or operations in the system.
 
-Please, make sure to contact your administrator in order to have access to a whole set of options described in this user guide. 
+> Please, make sure to contact your administrator in order to have access to a whole set of options described in this user guide. 
 
 The following elements make up the TreoPIM user interface:
 
@@ -25,13 +25,13 @@ Within the TreoPIM system your information may be presented in various ways:
 
 The navigation menu in the default TreoPIM theme is the menu placed on the left side of your user interface. It allows you to open list views for all entities in the system.
 
-The navigation menu can be configured by your administrator according to your needs.
+> The navigation menu can be configured by your administrator according to your needs.
 
 Each user can customize his/her own navigation menu in the `User Interface` section of the user ["Preferences"](#user-preferences) page:
 
 ![Navigation Menu Cfg](../../_assets/user-interface/navigation-user-cfg.jpg)
 
-Here select the `Custom Tab List` option and add the desired tabs using the `Add` button.
+Here select the `Custom Tab List` option and add the desired tabs using the `Add` button.  You can also define the tabs order via their drag-and-drop in the tab list.
 
 ## Taskbar
 
@@ -39,13 +39,19 @@ Taskbar is a top panel of the TreoPIM user interface:
 
 ![Taskbar](../../_assets/user-interface/taskbar.jpg)
 
-A taskbar consists of a global search field and some functional icons that help you work and collaborate within the TreoPIM system.
+A taskbar consists of a [global search](#global-search) field and some functional icons that help you work and collaborate within the TreoPIM system, namely:
+- [Desktop notifications](#desktop-notifications); 
+- [Queue Manager](#queue-manager);
+- [Quick create](#quick-create);
+- [User menu](#user-menu).
 
 ### Global Search
 
-You can search all the records existing in the TreoPIM system using the global search functionality. Use the search form on the taskbar for it:
+You can [search](./search-and-filtering.md) all the records existing in the TreoPIM system using the global search functionality. Use the search form on the taskbar for it:
 
 ![Global Search](../../_assets/user-interface/global-search.jpg) 
+
+> The list of entities available for search is configured by the administrator.
 
 ### Desktop Notifications
 
@@ -65,7 +71,9 @@ Queue Manager is opened in the pop-up window for each operation executed display
 
 ![Queue Manager](../../_assets/user-interface/queue-manager.jpg)
 
-In the Queue Manager you will see the most recent TreoPIM operations, which were executed in the background mode or run automatically via scheduled jobs, i.e  latest imports and exports. To view the details of the performed operations, click `View List` in the upper right corner of the Queue Manager.
+In the Queue Manager, you will see the most recent TreoPIM operations, which were executed in the background mode. Additionally, the information on the data export and import performed with the help of export / import feeds correspondingly is shown in the Queue Manager pop-up. To learn more about the ["Export Feeds"](https://treopim.com/store/export-feeds) and ["Import Feeds"](https://treopim.com/store/import-feeds) modules, please, visit our store.
+
+To view the details of the performed operations, click `View List` in the upper right corner of the Queue Manager. 
 
 ### Quick Create
 
@@ -75,10 +83,7 @@ To create new records from anywhere, click the quick create button located in th
 
 The [quick create view](./views-and-panels.md#quick-create-view) page will be opened.
 
-## Breadcrumb Navigation
-
-TreoPIM comes with breadcrumb navigation on each page in the system. Breadcrumb navigation is a form of a path-style clickable navigation, which links the user back to the prior website page in the overall online route. It reveals the path the user took to arrive to the given page. The `>` symbol separates out the hierarchical search order from beginning to end and may look something like:
-`Home Page > Section Page > Subsection Page`
+> If there is no quick create button on your taskbar, please, contact your administrator.
 
 ## User Menu
 
@@ -88,42 +93,66 @@ Click the hamburger icon in the upper right corner of the user interface to open
 
 ### User Account
 
-There are many configuration options available to users once logged into the system. Click your username to open your user account.
-
-By default, your **user profile** is opened:
-
-![User Account](../../_assets/user-interface/user-account.jpg)
+There are many configuration options available to users once logged into the system. They can be viewed and managed on the [user profile](#user-profile) and [preferences](#user-preferences) pages.
 
 #### User Profile
 
-Click the `Access` button to view your current permissions within the TreoPIM system on the scope and field levels in the pop-up window that appears:
+Click your username to open your user **user profile** page:
+
+![User profile](../../_assets/user-interface/user-profile.jpg)
+
+The current user personal data is given on the `OVERVIEW` panel, while teams and roles details are displayed on the `TEAMS AND ACCESS CONTROL` panel.
+
+Click the `Edit` button to make changes on these two panels in the editing page that opens:
+
+![User profile editing](../../_assets/user-interface/user-profile-editing.jpg) 
+
+Click the `Save` button to apply the changes or `Cancel` to abort them.
+<!-- modified! needs to be changed in the CORE guide as well-->
+> If there is no `Edit` button on your user profile page, please, contact the administrator.
+<!-- -->
+On the user profile page, click the `Access` button to view your current permissions within the TreoPIM system on the scope and field levels in the pop-up window that appears:
 
 ![User Access Window](../../_assets/user-interface/user-access-window.jpg)
 
-*Access rights are modified by the administrator only.*
+> Access rights are modified by the administrator only.
 
-Click the actions button to see the list of actions available for the currently open entity:
+Click the actions button to see the list of actions available for the currently open user profile:
 
 ![User Actions Menu](../../_assets/user-interface/user-actions-menu.jpg)
 
-To change your user password, select the corresponding option in the actions drop-down menu and complete the operation on the "Change Password" page:
+<!-- modified! needs to be changed in the CORE guide as well-->
+> If there are less options in your actions menu, please, contact the administrator.
+
+To remove the current user, click the `Remove` option and confirm your decision in the pop-up that appears. Use the `Duplicate` option from the same menu to go to the user creation page and get all the values of your current user record copied in the empty fields of the new user record to be created. 
+<!-- -->
+To change your user password, select the corresponding option in the actions menu and complete the operation on the "Change Password" page:
 
 ![User Password Change](../../_assets/user-interface/user-change-paswd.jpg)
 
 If you forget your password, it can be recovered using the `Forgot Password?` link on the TreoPIM login page.
 
 You can also manage your team and access control, if you have the corresponding permissions.
-
+<!-- modified! needs to be changed in the CORE guide as well + make stream as a cross-reference to the Core guide `stream` article?....<!-- -->
 At the bottom of the screen you will see your personal activity stream:
 
-![UA stream](../../_assets/user-interface/user-account-stream.jpg)
-
+![User profile stream](../../_assets/user-interface/user-profile-stream.jpg)
+<!-- -->
 You can manage the types of activity to be displayed here in the corresponding actions menu:
 
-![UA stream menu](../../_assets/user-interface/user-account-stream-menu.jpg)
+![User profile stream menu](../../_assets/user-interface/user-profile-stream-menu.jpg)
 
-Recent updates and comments about certain entity records are displayed on the activity stream panel, making it an excellent way of keeping track of the changes in TreoPIM. You can also create a post in the corresponding message box right on the `STREAM` panel.
+Recent updates and comments about certain entity records, as well as current user related activity entries are displayed on the `STREAM` panel, making it an excellent way to keep track of the changes in TreoPIM. 
+You can also create posts self-addressed or for other system users in the corresponding message box right on the `STREAM` panel:
 
+![Stream post](../../_assets/user-interface/stream-post.jpg)
+
+Self-posted messages can be edited and removed via the corresponding options of the common [single-record actions](./views-and-panels.md#single-record-actions) menu:
+
+![Stream post menu](../../_assets/user-interface/stream-post-menu.jpg)
+
+To learn more about the stream and its features, please, refer to the **"Stream"** article within the TreoCore user guide.
+<!-- -->  <!--+ make this interactive, when the Core guide is uploaded -->
 #### User Preferences
 
 If you want to edit your user preferences, select the `Preferences` option from the user drop-down menu or use the `Preferences` button on the user profile page and make the desired changes on the "LOCALE", "MISC", "USER INTERFACE", "SMTP" panels of the current user page.
@@ -131,30 +160,6 @@ If you want to edit your user preferences, select the `Preferences` option from 
 To reset preferences to default, please click the `Reset to default` button.
 
  ![User Interface Settings](../../_assets/user-interface/user-preferences.jpg)
-
-#### Email Accounts
-
-TreoPIM works with IMAP mail accounts, with or without SSL protection. TreoPIM is able to send emails via SMTP Server, also with or without SSL protection, which can be enabled or not.
-
-To open your personal email accounts, click the `Email Accounts` button on the user profile page; the list of the existing accounts, if any, will be displayed on the "Personal Email Accounts" page:
-
-![Email Accounts](../../_assets/user-interface/email-accounts.jpg) 
-
-Each user can have one or more private email accounts that can be viewed, edited or removed right from the "Personal Email Accounts" list view page:
-
-![Email Actions](../../_assets/user-interface/email-actions.jpg)
-
-##### Creating
-
-Click the `Create Email Account` button; the following creation page will open: 
-
-![Create Personal Email Accounts](../../_assets/user-interface/personal-email-accounts-create.jpg)
-
-Here and fill in the required fields (marked with an asterisk) and configure the IMAP, SMTP options available in accordance with your email account server.
-
-#### External Accounts
-
-Currently not available.
 
 #### User Interface Settings
 
@@ -182,15 +187,42 @@ To rearrange your dashboard view, drag-and-drop the dashlets right on the `USER 
 
 Alternatively, you can customize your [dashboard](./dashboards-and-dashlets.md#dashboards) view in the same way on the TreoPIM starting page.
 
+#### Email Accounts
+
+TreoPIM works with IMAP mail accounts, with or without SSL protection. TreoPIM is able to send emails via SMTP Server, also with or without SSL protection, which can be enabled or not.
+
+To open your personal email accounts, click the `Email Accounts` button on the user profile page; the list of the existing accounts, if any, will be displayed on the "Personal Email Accounts" page:
+
+![Email Accounts](../../_assets/user-interface/email-accounts.jpg) 
+
+Each user can have one or more private email accounts that can be viewed, edited or removed right from the "Personal Email Accounts" list view page:
+
+![Email Actions](../../_assets/user-interface/email-actions.jpg)
+
+##### Creating
+
+Click the `Create Email Account` button; the following creation page will open: 
+
+![Create Personal Email Accounts](../../_assets/user-interface/personal-email-accounts-create.jpg)
+
+Here and fill in the required fields (marked with an asterisk) and configure the IMAP, SMTP options available in accordance with your email account server.
+
 ### Last Viewed
 
-Select the `Last Viewed` option from the main drop-down menu to see the history of your visited pages within the TreoPIM system:
+Select the `Last Viewed` option from the user drop-down menu to see the history of your visited pages within the TreoPIM system:
 
 ![Last viewed](../../_assets/user-interface/last-viewed.jpg)
 
 ### Clear Local Cache
 
-TreoPIM is a single page application (SPA). To improve the page loading time, it actively uses cache for content as well for the user interface.
+TreoPIM is a single page application (SPA). To improve the page loading time, it actively uses cache for content as well as for the user interface.
 
-If you want to be sure in getting the latest information and application functions, please use the `Clear Local Cache` option from the main drop-down menu.
+If you want to be sure in getting the latest information and application functions, please use the `Clear Local Cache` option from the user drop-down menu:
+<!-- added this screenshot --> 
+![Clear local cache option](../../_assets/user-interface/clear-local-cache-option.jpg)
+
+## Breadcrumb Navigation
+
+TreoPIM comes with breadcrumb navigation on each page in the system. Breadcrumb navigation is a form of a path-style clickable navigation, which links the user back to the prior website page in the overall online route. It reveals the path the user took to arrive to the given page. The `>` symbol separates out the hierarchical search order from beginning to end and may look something like:
+`Home Page > Section Page > Subsection Page`.
 

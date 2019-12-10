@@ -21,6 +21,12 @@ By default, search is performed through all the records, which attributes start 
 -->
 The fields available for searching can be configured by developers in the metadata of the appropriate entity.
 
+On the [products](./products.md) detail view page, there is also the ability to filter the record data display by fields, locales, and scopes in the corresponding drop-down menus:
+
+![Product filters](../../_assets/search-and-filtering/product-filters.jpg)
+
+Keep in mind that the locales filter appears when the "Multi-Languages" module is installed and input language options are configured by your administrator. Go to our [store](https://treopim.com/store/multi-languages) to learn more about the "Multi-Languages" module and its features.
+
 You can have one or more filters based on a certain field for all field types. The exception is field types that can be used as a filter only once (because there is no need for it), which are:
   - Boolean;
   - Array;
