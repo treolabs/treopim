@@ -50,7 +50,7 @@ class Unit extends DefaultUnit
 
             // prepare input row for attribute
             $inputRow->{$config['name']} = $value;
-            $inputRow->data = (object)['unit' => $inputRow->{$config['name'] . 'Unit'}];
+            $inputRow->data = (object)['unit' => $unit];
         } else {
             parent::convert($inputRow, $entityType, $config, $row, $delimiter);
         }
