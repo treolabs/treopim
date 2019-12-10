@@ -290,7 +290,7 @@
       "foreign": "mainProduct",
       "layoutRelationshipsDisabled": true,
       "entity": "AssociatedProduct",
-      "customDefs": {
+      "addRelationCustomDefs": {
         "link": "products",
         "entity": "Product"
       }
@@ -338,7 +338,7 @@
       "type": "hasMany",
       "foreign": "product",
       "entity": "ProductCategory",
-      "customDefs": {
+      "addRelationCustomDefs": {
         "link": "categories",
         "entity": "Category"
       }
