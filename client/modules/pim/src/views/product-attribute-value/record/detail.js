@@ -39,24 +39,22 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
         },
 
         updateModelDefs() {
-            // prepare self
-            let self = this;
-
             // readOnly
-            self.changeFieldsReadOnlyStatus(['attribute', 'channels', 'product', 'scope'], !self.model.get('isCustom'));
+            this.changeFieldsReadOnlyStatus(['attribute', 'channels', 'product', 'scope'], !this.model.get('isCustom'));
 
-            if (self.model.get('attributeId')) {
+            if (this.model.get('attributeId')) {
                 // prepare data
-                let type = self.model.get('attributeType');
-                let typeValue = self.model.get('typeValue');
+                let type = this.model.get('attributeType');
+                let isMultiLang = this.model.get('attributeIsMultilang');
+                let typeValue = this.model.get('typeValue');
 
                 if (type) {
                     // prepare field defs
                     let fieldDefs = {
                         type: type,
                         options: typeValue,
-                        view: type !== 'bool' ? self.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
-                        required: !!self.model.get('isRequired')
+                        view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
+                        required: !!this.model.get('isRequired')
                     };
 
                     // for unit
@@ -64,15 +62,19 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                         fieldDefs.measure = (typeValue || ['Length'])[0];
                     }
 
-                    // set field defs
-                    self.model.defs.fields.value = fieldDefs;
-
                     // for multi-language
-                    $.each(self.model.defs.fields, function (field, row) {
-                        if (row.multilangField === 'value') {
-                            self.model.defs.fields[field] = fieldDefs;
+                    if (isMultiLang) {
+                        if (this.getConfig().get('isMultilangActive')) {
+                            (this.getConfig().get('inputLanguageList') || []).forEach(lang => {
+                                let field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
+                                this.model.defs.fields[field] = Espo.Utils.cloneDeep(fieldDefs);
+                            });
                         }
-                    });
+                        fieldDefs.isMultilang = true;
+                    }
+
+                    // set field defs
+                    this.model.defs.fields.value = fieldDefs;
                 }
             }
         },

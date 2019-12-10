@@ -33,7 +33,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             'isRequired',
             'productFamilyAttributeId',
             'scope',
-            'value'
+            'value',
+            'attributeIsMultilang'
         ],
 
         groupKey: 'attributeGroupId',
