@@ -22,6 +22,7 @@ Espo.define('pim:views/product/modals/mass-update-attributes', 'views/modals/mas
         template: 'pim:product/modals/mass-update-attributes',
 
         notEditType: ['enum', 'multiEnum'],
+        customWhere: '',
 
         data: function () {
             return {
@@ -269,7 +270,8 @@ Espo.define('pim:views/product/modals/mass-update-attributes', 'views/modals/mas
                         data: JSON.stringify({
                             attributes: attributes,
                             where: whereUpdate,
-                            selectData: ['attributeId', 'attributeName', 'productId', 'productName'],
+                            select: ['attributeId', 'attributeName', 'productId', 'productName'],
+                            customWhere: this.customWhere,
                             byWhere: true
                         }),
                         success: function (result) {
@@ -280,7 +282,6 @@ Espo.define('pim:views/product/modals/mass-update-attributes', 'views/modals/mas
                             }
                             if (i >= this.renderedAtrributes.length) {
                                 this.trigger('after:update', count, byQueueManager);
-                                this.notify(false);
                             }
                         }.bind(this),
                         error: function () {
@@ -299,9 +300,7 @@ Espo.define('pim:views/product/modals/mass-update-attributes', 'views/modals/mas
             let whereUpdate = this.where ? Espo.Utils.cloneDeep(this.where) : [];
             whereUpdate.push({attribute: 'attributeId', type: "equals", value: attributeId});
             whereUpdate.push({attribute: 'product.type', type: "notEquals", value: 'productVariant'},);
-            if (this.ids) {
-                whereUpdate.push({attribute: 'productId', type: "in", value: this.ids});
-            }
+
 
             return whereUpdate;
         },
@@ -370,14 +369,17 @@ Espo.define('pim:views/product/modals/mass-update-attributes', 'views/modals/mas
             this.wait(true);
 
             this.getModelFactory().create('ProductAttributeValue', function (model) {
-                let where = this.where ? Espo.Utils.cloneDeep(this.where) : [];
+                let whereProduct = this.where ? Espo.Utils.cloneDeep(this.where) : [];
+
                 if (this.ids) {
-                    where.push({attribute: 'productId', type: "in", value: this.ids});
+                    whereProduct.push({attribute: 'id', type: "in", value: this.ids});
+                    whereProduct.push({attribute: 'type', type: "notEquals", value: 'productVariant'},);
                 }
                 this.ajaxPostRequest('Product/massUpdateAttribute/getAttributes', {
-                    where: where,
+                    where: whereProduct,
                 }).then(response => {
-                    this.attributes = response;
+                    this.attributes = response.attributes || [];
+                    this.customWhere = response.customWhere || '';
                     this.wait(false);
                 });
 

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Services;
 
+use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
@@ -155,20 +156,23 @@ class Product extends AbstractService
      */
     public function getAttributesForMassUpdate(array $where): array
     {
-        $where = json_decode(json_encode($where), true);
-        $where[] = ['attribute' => 'scope', 'type' => 'equals', 'value' => 'Global'];
-
+        $selectNeededAttrValues = $this->getSqlSelectNeededAttrValues(json_decode(json_encode($where), true));
+        //attributes only with scope Global
+        $whereAttrValue[] = ['attribute' => 'scope', 'type' => 'equals', 'value' => 'Global'];
+        //prepare select params
         $whereParams = $this
             ->getInjection('selectManagerFactory')
             ->create('ProductAttributeValue')
-            ->getSelectParams(['where' => $where], true, true);
+            ->getSelectParams(['where' => $whereAttrValue], true, true);
+        //for filtering by products
+        $whereParams['customWhere'] = " AND product_attribute_value.id IN ({$selectNeededAttrValues}) ";
 
         $select = ['attributeId',
-                    ['attribute.name', 'name'],
-                    ['attribute.type', 'attributeType'],
-                    ['attribute.isMultilang', 'attributeIsMultilang'],
-                    ['attribute.typeValue', 'typeValue']
-                ];
+            ['attribute.name', 'name'],
+            ['attribute.type', 'attributeType'],
+            ['attribute.isMultilang', 'attributeIsMultilang'],
+            ['attribute.typeValue', 'typeValue']
+        ];
 
         $attributes = $this->getEntityManager()
             ->getRepository('ProductAttributeValue')
@@ -179,12 +183,33 @@ class Product extends AbstractService
             ->toArray();
 
         $result = [];
-
+        //prepare result
         foreach ($attributes as $attribute) {
             $result[$attribute['attributeId']] = $attribute;
         }
 
-        return $result;
+        return ['attributes' => $result, 'customWhere' => $whereParams['customWhere']];
+    }
+
+    /**
+     * @param $where
+     * @return string
+     */
+    protected function getSqlSelectNeededAttrValues($where): string
+    {
+        $selectParamsProduct = $this
+            ->getInjection('selectManagerFactory')
+            ->create('Product')
+            ->getSelectParams(['where' => $where], true, true);
+
+        $selectParamsProduct['customJoin'] = "RIGHT JOIN product_attribute_value AS pav ON pav.product_id = product.id";
+        $selectParamsProduct['select'] = ['pav.id'];
+
+        return $this
+            ->getEntityManager()
+            ->getQuery()
+            ->createSelectQuery('Product', $selectParamsProduct);
+
     }
 
     /**

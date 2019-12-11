@@ -48,12 +48,12 @@ Espo.define('pim:views/product/actions/action-mass-update-attributes', 'view',
                         if (count == 1) {
                             msg = 'massUpdateResultSingle'
                         }
-                        Espo.Ui.success(this.translate(msg, 'messages').replace('{count}', count));
+                        this.notify(this.translate(msg, 'messages').replace('{count}', count), 'success');
                     } else if (byQueueManager) {
-                        Espo.Ui.success(this.translate('byQueueManager', 'messages', 'QueueItem'));
+                        this.notify(this.translate('byQueueManager', 'messages', 'QueueItem'), 'success');
                         Backbone.trigger('showQueuePanel');
                     } else {
-                        Espo.Ui.warning(this.translate('noRecordsUpdated', 'messages'));
+                        this.notify(this.translate('noRecordsUpdated', 'messages'), 'warning');
                     }
                 }, this);
             }.bind(this));
