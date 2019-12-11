@@ -57,6 +57,10 @@
     "channelsFilter": {
       "": "All Scopes",
       "onlyGlobalScope": "Only Global Scope"
+    },
+    "scope": {
+      "Global": "Global",
+      "Channel": "Channel"
     }
   },
   "fields": {
