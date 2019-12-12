@@ -17,7 +17,6 @@
             "type": "linkMultiple",
             "importDisabled": true,
             "noLoad": false,
-            "view": "pim:views/product-attribute-value/fields/channels",
             "required": false,
             "readOnly": false,
             "tooltip": false

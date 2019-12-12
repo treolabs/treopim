@@ -94,6 +94,47 @@ class LayoutController extends AbstractListener
     }
 
     /**
+     * @param Event $event
+     */
+    protected function modifyProductRelationships(Event $event)
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+        if (!empty($this->getMetadata()->get('entityDefs.Product.links.assets'))) {
+            $result[] = 'asset_relations';
+        }
+        $event->setArgument('result', Json::encode($result));
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyCategoryRelationships(Event $event)
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+        if (!empty($this->getMetadata()->get('entityDefs.Category.links.assets'))) {
+            $result[] = 'asset_relations';
+        }
+        $event->setArgument('result', Json::encode($result));
+    }
+
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyCategoryList(Event $event)
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+        if (!empty($this->getMetadata()->get('entityDefs.Category.fields.image'))) {
+            $first = array_shift($result);
+            array_unshift($result, $first, ['name' => 'image']);
+        }
+        $event->setArgument('result', Json::encode($result));
+    }
+
+    /**
      * @return array
      */
     protected function getInputLanguageList(): array

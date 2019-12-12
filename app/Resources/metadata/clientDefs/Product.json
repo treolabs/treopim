@@ -20,7 +20,6 @@
     "withoutAssociatedProducts",
     "withoutAnyCategory",
     "withoutProductAttributes",
-    "withoutImageAssets",
     "notLinkedWithProductSerie",
     "onlyCatalogProducts",
     "linkedWithCategory"
@@ -102,81 +101,6 @@
         "Association"
       ]
     }
-  },
-  "menu": {
-    "list": {
-      "buttons": [
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/list",
-          "style": "primary",
-          "title": "List",
-          "iconHtml": "<span class=\"fa fa-list\"></span>"
-        },
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/plate",
-          "style": "default",
-          "title": "Plate",
-          "iconHtml": "<span class=\"fa fa-th\"></span>"
-        }
-      ]
-    },
-    "plate": {
-      "buttons": [
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/list",
-          "style": "default",
-          "title": "List",
-          "iconHtml": "<span class=\"fa fa-list\"></span>"
-        },
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/plate",
-          "style": "primary",
-          "title": "Plate",
-          "iconHtml": "<span class=\"fa fa-th\"></span>"
-        }
-      ]
-    }
-  },
-  "bottomPanels": {
-    "detail": [
-      {
-        "name": "asset_relations",
-        "label": "Asset Relations",
-        "view": "pim:views/product/record/panels/asset-relation-bottom-panel",
-        "entityName": "Product"
-      }
-    ]
-  },
-  "sidePanels" : {
-    "edit" : [
-      {
-        "name" : "image",
-        "label": "",
-        "view" : "pim:views/product/fields/image"
-      }
-    ],
-    "detail" : [
-      {
-        "name" : "image",
-        "label": "",
-        "view" : "pim:views/product/fields/image"
-      }
-    ],
-    "detailSmall" : [
-      {
-        "name" : "image",
-        "label": "",
-        "view" : "pim:views/product/fields/image"
-      }
-    ]
   },
   "dynamicLogic": {
     "fields": {

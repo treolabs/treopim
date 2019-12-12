@@ -68,13 +68,10 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
                 'id'     => 'productWithoutCategory',
                 'name'   => 'productWithoutCategory',
                 'amount' => $this->getAmountProductWithoutCategory()
-            ],
-            [
-                'id'     => 'productWithoutImage',
-                'name'   => 'productWithoutImage',
-                'amount' => $this->getAmountProductWithoutImage()
             ]
         ];
+
+        $this->addProductWithoutImage( $result['list']);
 
         $result['total'] = count($result['list']);
 
@@ -189,4 +186,19 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
 
         return (int)$sth->fetchColumn();
     }
+
+    /**
+     * @param $list
+     */
+    protected function addProductWithoutImage(&$list)
+    {
+        if (!empty( $this->getInjection('metadata')->get('entityDefs.Product.fields.image'))) {
+            $list[] =  [
+                'id'     => 'productWithoutImage',
+                'name'   => 'productWithoutImage',
+                'amount' => $this->getAmountProductWithoutImage()
+            ];
+        }
+    }
+
 }
