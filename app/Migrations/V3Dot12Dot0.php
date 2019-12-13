@@ -55,6 +55,14 @@ class V3Dot12Dot0 extends AbstractMigration
      */
     public function up(): void
     {
+        $this->installDam();
+    }
+
+    /**
+     * Install module Dam
+     */
+    protected function installDam(): void
+    {
 
     }
 
