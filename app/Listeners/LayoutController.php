@@ -135,6 +135,73 @@ class LayoutController extends AbstractListener
     }
 
     /**
+     * @param Event $event
+     */
+    protected function modifyAssociatedProductListSmall(Event $event)
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+        if (!empty($this->getMetadata()->get('entityDefs.AssociatedProduct.fields.relatedProductImage'))) {
+            $first = array_shift($result);
+            array_unshift($result, $first, ['name' => 'relatedProductImage']);
+        }
+        $event->setArgument('result', Json::encode($result));
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyAssociatedProductList(Event $event)
+    {
+        // for DAM and Images
+        if (!empty($this->getMetadata()->get('entityDefs.AssociatedProduct.fields.mainProductImage'))) {
+            $columns = Json::decode($event->getArgument('result'), true);
+            $images = [
+                'mainProduct' => ['name' => 'mainProductImage', 'notSortable' => true],
+                'relatedProduct' => ['name' => 'relatedProductImage', 'notSortable' => true]
+            ];
+            for ($k = 0; $k < count($columns); $k++) {
+                if (!empty($images[$columns[$k]['name']])) {
+                    //put new row
+                    array_splice($columns, $k, 0, [$images[$columns[$k]['name']]]);
+                    //skip next row
+                    $k++;
+                }
+            }
+            $event->setArgument('result', Json::encode($columns));
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function modifyAssociatedProductDetail(Event $event)
+    {
+        // for DAM and Images
+        if (!empty($this->getMetadata()->get('entityDefs.AssociatedProduct.fields.mainProductImage'))) {
+            $result = Json::decode($event->getArgument('result'), true);
+            $result[0]['rows'][] = [
+                [
+                    "name" => "mainProductImage"
+                ],
+                [
+                    "name" => "relatedProductImage"
+                ]
+            ];
+            $event->setArgument('result', Json::encode($result));
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function modifyAssociatedProductDetailSmall(Event $event)
+    {
+        // for DAM and Images
+       $this->modifyAssociatedProductDetail($event);
+    }
+
+    /**
      * @return array
      */
     protected function getInputLanguageList(): array
