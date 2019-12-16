@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Migrations;
 
+use Composer\Composer;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\Core\Utils\File\Manager;
@@ -55,7 +56,11 @@ class V3Dot12Dot0 extends AbstractMigration
      */
     public function up(): void
     {
-        $this->installDam();
+        (new Auth($this->getContainer()))->useNoAuth();
+
+        if (!$this->getContainer()->get('metadata')->isModuleInstalled('Dam')) {
+            $this->installDam();
+        }
     }
 
     /**
@@ -63,7 +68,16 @@ class V3Dot12Dot0 extends AbstractMigration
      */
     protected function installDam(): void
     {
+        /** @var \Treo\Services\Composer $composer */
+        $composer = $this->getContainer()->get('serviceFactory')->create('Composer');
 
+        $data = $composer::getComposerJson();
+        //put dam
+        $data['require']['treolabs/dam'] = '*';
+
+        $composer::setComposerJson($data);
+        //install Dam
+        $composer->runUpdate();
     }
 
     /**
