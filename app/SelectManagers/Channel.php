@@ -32,6 +32,31 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
 class Channel extends AbstractSelectManager
 {
     /**
+     * NotLinkedWithPriceProfile filter
+     *
+     * @param array $result
+     */
+    protected function boolFilterNotLinkedWithPriceProfile(&$result)
+    {
+        if (!empty($priceProfileId = (string)$this->getSelectCondition('notLinkedWithPriceProfile'))) {
+            // get channel related with product
+            $channel = $this->getEntityManager()
+                ->getRepository('Channel')
+                ->distinct()
+                ->join('priceProfiles')
+                ->where(['priceProfiles.id' => $priceProfileId])
+                ->find();
+
+            // set filter
+            foreach ($channel as $row) {
+                $result['whereClause'][] = [
+                    'id!=' => $row->get('id')
+                ];
+            }
+        }
+    }
+
+    /**
      * @param array $result
      */
     protected function boolFilterNotLinkedWithAttributesInProduct(array &$result)
