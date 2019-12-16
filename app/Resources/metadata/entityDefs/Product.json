@@ -275,7 +275,7 @@
       "foreign": "mainProduct",
       "layoutRelationshipsDisabled": true,
       "entity": "AssociatedProduct",
-      "customDefs": {
+      "addRelationCustomDefs": {
         "link": "products",
         "entity": "Product"
       }
@@ -327,7 +327,11 @@
     "productCategories": {
       "type": "hasMany",
       "foreign": "product",
-      "entity": "ProductCategory"
+      "entity": "ProductCategory",
+      "addRelationCustomDefs": {
+        "link": "productCategories",
+        "entity": "Category"
+      }
     },
     "measuringUnit": {
       "type": "belongsTo",

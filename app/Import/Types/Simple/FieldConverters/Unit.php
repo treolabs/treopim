@@ -33,11 +33,26 @@ class Unit extends DefaultUnit
      */
     public function convert(\stdClass $inputRow, string $entityType, array $config, array $row, string $delimiter)
     {
-        parent::convert($inputRow, $entityType, $config, $row, $delimiter);
         if (isset($config['attributeId'])) {
+            // prepare values
+            $value = (!empty($config['column']) && $row[$config['column']] != '') ? $row[$config['column']] : $config['default'];
+            $unit = (!empty($config['columnUnit']) && $row[$config['columnUnit']] != '') ? $row[$config['columnUnit']] : $config['defaultUnit'];
+
+            // validate unit float value
+            if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
+                throw new \Exception("Incorrect value for attribute '{$config['attribute']->get('name')}'");
+            }
+
+            // validate measuring unit
+            if (!$this->validateUnit($unit, $entityType, $config)) {
+                throw new \Exception("Incorrect measuring unit for attribute '{$config['attribute']->get('name')}'");
+            }
+
             // prepare input row for attribute
-            $inputRow->data = (object)['unit' => $inputRow->{$config['name'] . 'Unit'}];
-            unset($inputRow->{$config['name'] . 'Unit'});
+            $inputRow->{$config['name']} = $value;
+            $inputRow->data = (object)['unit' => $unit];
+        } else {
+            parent::convert($inputRow, $entityType, $config, $row, $delimiter);
         }
     }
     /**

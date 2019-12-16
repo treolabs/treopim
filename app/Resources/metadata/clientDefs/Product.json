@@ -41,6 +41,12 @@
   "disabledMassActions": [
     "merge"
   ],
+  "addRelationPipelines": {
+    "productCategories": [
+      "__APPEND__",
+      "pim:views/product-category/pipe/action-update-filters"
+    ]
+  },
   "views": {
     "list": "pim:views/product/list",
     "detail": "pim:views/product/detail",
