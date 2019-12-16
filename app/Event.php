@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim;
 
+use DamCommon\Services\PimLayout;
 use Treo\Core\ModuleManager\AbstractEvent;
 
 /**
@@ -73,6 +74,9 @@ class Event extends AbstractEvent
 
         // add menu items
         $this->addMenuItems();
+
+        //for Dam && PIM
+        (new PimLayout($this->getContainer()))->modify();
     }
 
     /**
