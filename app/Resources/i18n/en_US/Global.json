@@ -57,6 +57,10 @@
     "channelsFilter": {
       "": "All Scopes",
       "onlyGlobalScope": "Only Global Scope"
+    },
+    "scope": {
+      "Global": "Global",
+      "Channel": "Channel"
     }
   },
   "fields": {
@@ -73,7 +77,6 @@
     "amount": "Amount",
     "mpn": "MPN",
     "productSerie": "Product Serie",
-    "channels": "Channels",
     "scope": "Scope"
   },
   "labels": {

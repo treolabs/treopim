@@ -32,6 +32,26 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
 class ProductFamilyAttribute extends AbstractSelectManager
 {
     /**
+     * @inheritdoc
+     */
+    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    {
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        $types = implode("','", $this->getMetadata()->get('entityDefs.Attribute.fields.type.options', []));
+
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+
+        // add filtering by attributes types
+        $selectParams['customWhere'] .= " 
+            AND product_family_attribute.attribute_id IN (SELECT id 
+                                                            FROM attribute 
+                                                            WHERE type IN ('{$types}') AND deleted=0)";
+
+        return $selectParams;
+    }
+    /**
      * @param array $result
      */
     protected function boolFilterLinkedWithAttributeGroup(array &$result)
@@ -39,22 +59,12 @@ class ProductFamilyAttribute extends AbstractSelectManager
         $data = (array)$this->getSelectCondition('linkedWithAttributeGroup');
 
         if (isset($data['productFamilyId'])) {
-            $attributes = $this
-                ->getEntityManager()
-                ->getRepository('ProductFamilyAttribute')
-                ->select(['id'])
-                ->distinct()
-                ->join('attribute')
-                ->where([
-                    'productFamilyId' => $data['productFamilyId'],
-                    'attribute.attributeGroupId'
-                        => ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null
-                ])
-                ->find()
-                ->toArray();
+            // prepare data
+            $ids = [$data['productFamilyId']];
+            $attributeGroupId = ($data['attributeGroupId'] != '') ? $data['attributeGroupId'] : null;
 
             $result['whereClause'][] = [
-                'id' => array_column($attributes, 'id')
+                'id' => $this->getEntityManager()->getRepository('ProductFamily')->getLinkedWithAttributeGroup($ids, $attributeGroupId)
             ];
         }
     }

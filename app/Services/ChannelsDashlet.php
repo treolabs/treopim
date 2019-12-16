@@ -28,7 +28,6 @@ namespace Pim\Services;
  */
 class ChannelsDashlet extends AbstractDashletService
 {
-
     /**
      * Get general statistic
      *
@@ -42,39 +41,26 @@ class ChannelsDashlet extends AbstractDashletService
             'list'  => []
         ];
 
+        // prepare sql
+        $sql = "SELECT
+                       c.id,
+                       c.name,
+                       (SELECT COUNT(p.id) AS total FROM product p JOIN product_channel pc ON p.id=pc.product_id WHERE pc.channel_id=c.id AND p.deleted=0 AND p.is_active=1) AS totalActive,
+                       (SELECT COUNT(p.id) AS total FROM product p JOIN product_channel pc ON p.id=pc.product_id WHERE pc.channel_id=c.id AND p.deleted=0 AND p.is_active=0) AS totalInactive
+                FROM channel AS c
+                WHERE c.deleted=0";
+
         // get data
-        $data = $this
-            ->getEntityManager()
-            ->getRepository('Channel')
-            ->find();
+        $data = $this->getEntityManager()->nativeQuery($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
-        if (count($data) > 0) {
-            $channels = [];
+        if (!empty($data)) {
             foreach ($data as $row) {
-                $channels[$row->get('id')]['channelId'] = $row->get('id');
-                $channels[$row->get('id')]['channelName'] = $row->get('name');
-                $channels[$row->get('id')]['products'] = array_column($row->get('products')->toArray(), 'isActive');
-            }
-
-            foreach ($channels as $row) {
-                // prepare counts
-                $count = count($row['products']);
-                $active = 0;
-                if ($count > 0) {
-                    foreach ($row['products'] as $v) {
-                        if ($v) {
-                            $active++;
-                        }
-                    }
-                }
-                $inActive = $count - $active;
-
                 $result['list'][] = [
-                    'id'          => $row['channelId'],
-                    'name'        => $row['channelName'],
-                    'products'    => $count,
-                    'active'      => $active,
-                    'notActive'   => $inActive
+                    'id'        => $row['id'],
+                    'name'      => $row['name'],
+                    'products'  => (int)$row['totalActive'] + (int)$row['totalInactive'],
+                    'active'    => (int)$row['totalActive'],
+                    'notActive' => (int)$row['totalInactive']
                 ];
             }
 

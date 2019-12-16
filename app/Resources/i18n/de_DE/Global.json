@@ -47,7 +47,6 @@
   "fields": {
     "productFamily": "Artikel-Familien",
     "productSerie": "Product Serie",
-    "channels": "Kanale",
     "scope": "Umfang"
   },
   "options": {
@@ -71,6 +70,10 @@
     "channelsFilter": {
       "": "Alle Scopes",
       "onlyGlobalScope": "Nur globaler Scope"
+    },
+    "scope": {
+      "Global": "Global",
+      "Channel": "Kanal"
     }
   },
   "labels": {

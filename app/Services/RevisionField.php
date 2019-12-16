@@ -22,9 +22,8 @@ declare(strict_types=1);
 
 namespace Pim\Services;
 
-use Espo\Core\Utils\Database\Schema\Utils;
 use Espo\Core\Utils\Util;
-use Multilang\Services\RevisionField as MultilangRevisionField;
+use Revisions\Services\RevisionField as MultilangRevisionField;
 use Espo\ORM\EntityCollection;
 use Espo\Core\Utils\Json;
 use Slim\Http\Request;
@@ -36,7 +35,6 @@ use Slim\Http\Request;
  */
 class RevisionField extends MultilangRevisionField
 {
-
     /**
      * Prepare data
      *
@@ -61,7 +59,7 @@ class RevisionField extends MultilangRevisionField
             if (empty($max)) {
                 $max = $this->maxSize;
             }
-
+            $isImageAttr = $this->checkIsAttributeImage($params['field']);
             foreach ($notes as $note) {
                 if (!empty($note->get('attributeId')) && $note->get('attributeId') == $params['field']) {
                     // prepare data
@@ -69,32 +67,22 @@ class RevisionField extends MultilangRevisionField
 
                     foreach ($data['fields'] as $field) {
                         if ($max > count($result['list']) && $result['total'] >= $offset) {
-                            // prepare locale
-                            $locale = '';
-                            foreach ($this->getConfig()->get('inputLanguageList') as $loc) {
-                                if (strpos($field, " ($loc)") !== false) {
-                                    $locale = $loc;
-                                }
-                            }
                             // prepare field name
                             $fieldName = 'value';
-                            $fieldName = empty($locale) ? $fieldName : $fieldName . '_' . strtolower($locale);
-                            $fieldName = Util::toCamelCase($fieldName);
 
                             // prepare data
                             $was = $became = [];
-                            if(isset($data['attributes']['was']['Attribute Image'])
-                                && isset($data['attributes']['became']['Attribute Image'])) {
+                            if ($isImageAttr) {
                                 $was[$fieldName . 'Id'] = $data['attributes']['was'][$field];
                                 $became[$fieldName . 'Id'] = $data['attributes']['became'][$field];
                             }
-                                $was[$fieldName] = $data['attributes']['was'][$field];
-                                $became[$fieldName] = $data['attributes']['became'][$field];
+                            $was[$fieldName] = $data['attributes']['was'][$field];
+                            $became[$fieldName] = $data['attributes']['became'][$field];
 
                             if (isset($data['attributes']['was'][$field . 'Unit'])
                                 && isset($data['attributes']['became'][$field . 'Unit'])) {
                                 $was[$fieldName . 'Unit'] = $data['attributes']['was'][$field . 'Unit'];
-                                $became[$fieldName . 'Unit'] =  $data['attributes']['became'][$field . 'Unit'];
+                                $became[$fieldName . 'Unit'] = $data['attributes']['became'][$field . 'Unit'];
                             }
 
                             if (is_bool($became)) {
@@ -102,11 +90,10 @@ class RevisionField extends MultilangRevisionField
                             }
 
                             $result['list'][] = [
-                                "id"       => $note->get('id') . $locale,
+                                "id"       => $note->get('id'),
                                 "date"     => $note->get('createdAt'),
                                 "userId"   => $note->get('createdById'),
                                 "userName" => $note->get('createdBy')->get('name'),
-                                "locale"   => $locale,
                                 "was"      => $was,
                                 "became"   => $became,
                                 "field"    => $fieldName
@@ -121,5 +108,20 @@ class RevisionField extends MultilangRevisionField
         }
 
         return $result;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return bool
+     * @throws Error
+     */
+    private function checkIsAttributeImage($id): bool
+    {
+        $attrValue = $this
+            ->getEntityManager()
+            ->getEntity('ProductAttributeValue', $id);
+
+        return !empty($attrValue) && $attrValue->get('attribute')->get('type') === 'image';
     }
 }

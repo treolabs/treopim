@@ -42,6 +42,12 @@
   "disabledMassActions": [
     "merge"
   ],
+  "addRelationPipelines": {
+    "productCategories": [
+      "__APPEND__",
+      "pim:views/product-category/pipe/action-update-filters"
+    ]
+  },
   "views": {
     "list": "pim:views/product/list",
     "detail": "pim:views/product/detail",
@@ -87,8 +93,11 @@
       "layout": "listForProductCategoriesInProduct"
     },
     "channels": {
+      "view": "pim:views/product/record/panels/product-channels",
+      "recordListView": "pim:views/channel/record/list-in-product",
       "createAction": "createRelatedConfigured",
-      "selectAction": "selectRelatedEntity"
+      "selectAction": "selectRelatedEntity",
+      "layout": "listForChannelsInProduct"
     },
     "pimImages": {
       "view": "pim:views/record/panels/pim-images",
@@ -185,6 +194,19 @@
           "conditionGroup": [
             {
               "type": "isNotEmpty",
+              "attribute": "id"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "notEquals",
+              "attribute": "type",
+              "value": "productVariant"
+            },
+            {
+              "type": "isEmpty",
               "attribute": "id"
             }
           ]

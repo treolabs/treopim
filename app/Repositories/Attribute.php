@@ -22,9 +22,11 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Espo\Core\Exceptions\Error;
+use Treo\Core\Utils\Util;
 
 /**
  * Class Attribute
@@ -45,6 +47,8 @@ class Attribute extends Base
 
     /**
      * @inheritDoc
+     *
+     * @throws BadRequest
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
@@ -54,6 +58,10 @@ class Attribute extends Base
         // set sort order
         if (is_null($entity->get('sortOrder'))) {
             $entity->set('sortOrder', (int)$this->max('sortOrder') + 1);
+        }
+
+        if (!$this->isTypeValueValid($entity)) {
+            throw new BadRequest("The number of 'Values' items should be identical for all locales");
         }
 
         if (!$entity->isNew() && $entity->isAttributeChanged('sortOrder')) {
@@ -66,13 +74,10 @@ class Attribute extends Base
      */
     public function max($field)
     {
-        $sth = $this
+        $data = $this
             ->getEntityManager()
-            ->getPDO()
-            ->prepare("SELECT MAX(sort_order) AS max FROM attribute WHERE deleted=0");
-        $sth->execute();
-
-        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+            ->nativeQuery("SELECT MAX(sort_order) AS max FROM attribute WHERE deleted=0")
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $data['max'];
     }
@@ -157,11 +162,27 @@ class Attribute extends Base
             }
 
             // execute sql
-            $sth = $this
-                ->getEntityManager()
-                ->getPDO()
-                ->prepare($sql);
-            $sth->execute();
+            $this->getEntityManager()->nativeQuery($sql);
         }
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    protected function isTypeValueValid(Entity $entity): bool
+    {
+        if (!empty($entity->get('isMultilang')) && $this->getConfig()->get('isMultilangActive', false) && in_array($entity->get('type'), ['enum', 'multiEnum'])) {
+            $count = count($entity->get('typeValue'));
+            foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
+                $field = 'typeValue' . ucfirst(Util::toCamelCase(strtolower($locale)));
+                if (count($entity->get($field)) != $count) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

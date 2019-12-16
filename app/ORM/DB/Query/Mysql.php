@@ -56,9 +56,6 @@ class Mysql extends EspoMysql
         if (get_class($entity) == Entity::class) {
             // prepare numeric
             $result = $this->prepareNumeric($result);
-
-            // prepare bool
-            $result = $this->prepareBool($result);
         }
 
         return $result;
@@ -81,31 +78,6 @@ class Mysql extends EspoMysql
 
         if (preg_match_all($pattern, $str, $matches) && isset($matches[3][0]) && is_numeric($matches[3][0])) {
             $result = str_replace("'", "", $result);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Prepare for bool
-     *
-     * @param string $result
-     *
-     * @return string
-     */
-    protected function prepareBool(string $result): string
-    {
-        // prepare pattern
-        $pattern = '/^product_attribute_value\.value=\'TreoBoolIs(.*)\'$/';
-
-        // prepare str
-        $str = preg_replace('/\s+/', '', $result);
-
-        if (preg_match_all($pattern, $str, $matches) && isset($matches[1][0])) {
-            // prepare val
-            $val = ($matches[1][0] == 'True') ? '1' : '0';
-
-            $result = "product_attribute_value.value = '{$val}'";
         }
 
         return $result;

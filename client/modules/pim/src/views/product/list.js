@@ -35,30 +35,27 @@ Espo.define('pim:views/product/list', ['pim:views/list', 'search-manager'],
                 el: '#main > .catalog-tree-panel',
                 scope: this.scope
             }, view => {
-                view.render();
-                view.listenTo(view, 'select-category', data => {
-                    this.updateCollectionWithCatalogTree(data);
-                    this.collection.fetch();
-                });
+                view.listenTo(view, 'select-category', data => this.sortCollectionWithCatalogTree(data));
             });
         },
 
+        sortCollectionWithCatalogTree(data) {
+            this.notify('Please wait...');
+            this.updateCollectionWithCatalogTree(data);
+            this.collection.fetch().then(() => this.notify(false));
+        },
+
         updateCollectionWithCatalogTree(data) {
-            let defaultFilters = this.searchManager.get();
-            let advanced = _.extend(Espo.Utils.cloneDeep(defaultFilters.advanced), data.advanced);
-            let bool = _.extend(Espo.Utils.cloneDeep(defaultFilters.bool), data.bool);
-            this.searchManager.set(_.extend(Espo.Utils.cloneDeep(defaultFilters), {advanced: advanced, bool: bool}));
+            data = data || {};
+            const defaultFilters = Espo.Utils.cloneDeep(this.searchManager.get());
+            const extendedFilters = Espo.Utils.cloneDeep(defaultFilters);
+
+            $.each(data, (key, value) => {
+                extendedFilters[key] = _.extend({}, extendedFilters[key], value);
+            });
+
+            this.searchManager.set(extendedFilters);
             this.collection.where = this.searchManager.getWhere();
-            let boolPart = this.collection.where.find(item => item.type === 'bool');
-            if (boolPart) {
-                let boolPartData = {};
-                boolPart.value.forEach(elem => {
-                    if (elem in data.boolData) {
-                        boolPartData[elem] = data.boolData[elem];
-                    }
-                });
-                boolPart.data = boolPartData;
-            }
             this.searchManager.set(defaultFilters);
         },
 

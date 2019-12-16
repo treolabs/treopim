@@ -55,13 +55,10 @@ class ProductCategory extends Base
      */
     public function max($field)
     {
-        $sth = $this
+        $data = $this
             ->getEntityManager()
-            ->getPDO()
-            ->prepare("SELECT MAX(sorting) AS max FROM product_category WHERE deleted=0");
-        $sth->execute();
-
-        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+            ->nativeQuery("SELECT MAX(sorting) AS max FROM product_category WHERE deleted=0")
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $data['max'];
     }
@@ -102,11 +99,7 @@ class ProductCategory extends Base
             }
 
             // execute sql
-            $sth = $this
-                ->getEntityManager()
-                ->getPDO()
-                ->prepare($sql);
-            $sth->execute();
+            $this->getEntityManager()->nativeQuery($sql);
         }
     }
 }

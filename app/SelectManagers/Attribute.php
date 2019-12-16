@@ -29,6 +29,22 @@ use Pim\Core\SelectManagers\AbstractSelectManager;
  */
 class Attribute extends AbstractSelectManager
 {
+    /**
+     * @inheritdoc
+     */
+    public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
+    {
+        $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
+        $types = implode("','", $this->getMetadata()->get('entityDefs.Attribute.fields.type.options', []));
+
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+        // add filtering by attributes types
+        $selectParams['customWhere'] .= " AND attribute.type IN ('{$types}')";
+
+        return $selectParams;
+    }
 
     /**
      * NotLinkedWithProduct filter
@@ -82,21 +98,9 @@ class Attribute extends AbstractSelectManager
         // prepare data
         $data = (array)$this->getSelectCondition('notLinkedProductFamilyAttributes');
 
-        if (isset($data['productFamilyId']) && isset($data['scope'])) {
-            // get linked to product attributes
-            $attributes = $this
-                ->getEntityManager()
-                ->getRepository('ProductFamilyAttribute')
-                ->select(['attributeId'])
-                ->where([
-                    'productFamilyId' => $data['productFamilyId'],
-                    'scope' => $data['scope']
-                ])
-                ->find()
-                ->toArray();
-
+        if (isset($data['productFamilyId'])) {
             $result['whereClause'][] = [
-                'id!=' => array_column($attributes, 'attributeId')
+                'id!=' => $this->getEntityManager()->getRepository('ProductFamily')->getLinkedAttributesIds($data['productFamilyId'])
             ];
         }
     }

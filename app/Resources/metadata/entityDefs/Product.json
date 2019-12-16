@@ -22,7 +22,7 @@
       "type": "link",
       "layoutFiltersDisabled": false,
       "layoutMassUpdateDisabled": true,
-      "required": true,
+      "required": false,
       "view": "pim:views/product/fields/product-family"
     },
     "brand": {
@@ -208,8 +208,7 @@
       "layoutFiltersDisabled": true,
       "noLoad": true,
       "importMultipleField": true,
-      "exportMultipleField": true,
-      "view": "pim:views/product/fields/product-categories"
+      "exportMultipleField": true
     },
     "assets": {
       "type": "linkMultiple",
@@ -304,7 +303,7 @@
       "foreign": "mainProduct",
       "layoutRelationshipsDisabled": true,
       "entity": "AssociatedProduct",
-      "customDefs": {
+      "addRelationCustomDefs": {
         "link": "products",
         "entity": "Product"
       }
@@ -346,12 +345,26 @@
       "type": "hasMany",
       "relationName": "productChannel",
       "foreign": "products",
-      "entity": "Channel"
+      "entity": "Channel",
+      "additionalColumns": {
+        "isActive": {
+          "type": "bool",
+          "default": false,
+          "notNull": true,
+          "audited": false,
+          "readOnly": false,
+          "tooltip": false
+        }
+      }
     },
     "productCategories": {
       "type": "hasMany",
       "foreign": "product",
-      "entity": "ProductCategory"
+      "entity": "ProductCategory",
+      "addRelationCustomDefs": {
+        "link": "productCategories",
+        "entity": "Category"
+      }
     },
     "pimImages": {
       "type": "hasMany",

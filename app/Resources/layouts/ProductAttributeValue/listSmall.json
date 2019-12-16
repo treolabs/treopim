@@ -1,22 +1,23 @@
 [
   {
     "name": "attribute",
-    "notSortable": true
+    "notSortable": true,
+    "width": "25",
+    "view": "pim:views/product-attribute-value/fields/attribute-with-required-sign"
   },
   {
     "name": "value",
-    "notSortable": true
-  },
-  {
-    "name": "isRequired",
-    "notSortable": true
+    "notSortable": true,
+    "width": "44"
   },
   {
     "name": "scope",
-    "notSortable": true
+    "notSortable": true,
+    "width": "14"
   },
   {
     "name": "channels",
-    "notSortable": true
+    "notSortable": true,
+    "width": "17"
   }
 ]

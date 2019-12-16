@@ -28,8 +28,6 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
 
         selectedAttributesWithOneFilter: [],
 
-        multiLangFieldTypes: ['arrayMultiLang', 'enumMultiLang', 'multiEnumMultiLang', 'textMultiLang', 'varcharMultiLang', 'wysiwygMultiLang'],
-
         events: _.extend({}, Dep.prototype.events, {
             'click a[data-action="addAttributeFilter"]': function (e) {
                 var $target = $(e.currentTarget);
@@ -383,5 +381,24 @@ Espo.define('pim:views/product/record/search', 'views/record/search',
             this.reRender();
             this.updateCollection();
         },
+
+        updateCollection() {
+            const defaultFilters = Espo.Utils.cloneDeep(this.searchManager.get());
+
+            const list = this.getParentView();
+            const catalogTreePanel = list.getView('catalogTreePanel');
+            if (catalogTreePanel && catalogTreePanel.catalogTreeData) {
+                const extendedFilters = Espo.Utils.cloneDeep(defaultFilters);
+                $.each(catalogTreePanel.catalogTreeData, (key, value) => {
+                    extendedFilters[key] = _.extend({}, extendedFilters[key], value);
+                });
+                this.searchManager.set(extendedFilters);
+            }
+
+            Dep.prototype.updateCollection.call(this);
+
+            this.searchManager.set(defaultFilters);
+        }
+
     })
 );
