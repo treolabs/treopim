@@ -316,7 +316,7 @@ class PimImage extends Base
             $sql = '';
             foreach ($data as $row) {
                 // increase max
-                $max++;
+                $max = $max + 10;
 
                 // prepare id
                 $id = $row['id'];

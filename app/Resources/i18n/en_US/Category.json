@@ -10,7 +10,7 @@
     "image": "Main Image",
     "categoryRouteName": "Сategory Tree",
     "scope": "Scope",
-    "productCategories": "Product Categories",
+    "productCategories": "Category Products",
     "catalogs": "Catalogs",
     "pimImages": "Images"
   },
@@ -19,7 +19,7 @@
     "categories": "Categories",
     "channels": "Channels",
     "catalogs": "Catalogs",
-    "productCategories": "Product Categories",
+    "productCategories": "Category Products",
     "pimImages": "Images"
   },
   "labels": {

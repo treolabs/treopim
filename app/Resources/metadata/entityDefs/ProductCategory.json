@@ -15,7 +15,7 @@
     },
     "sorting": {
       "type": "int",
-      "default": null
+      "default": 0
     },
     "scope": {
       "type": "enum",
