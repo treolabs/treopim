@@ -56,10 +56,13 @@ class V3Dot12Dot0 extends AbstractMigration
     {
         (new Auth($this->getContainer()))->useNoAuth();
 
+        $config = $this->getContainer()->get('config');
+        //set flag about installed Pim and Image
+        $config->set('pimAndDamInstalled', false);
+
         if (!$this->getContainer()->get('metadata')->isModuleInstalled('Dam')) {
             $this->sendNotification();
-        } else {
-            $config = $this->getContainer()->get('config');
+        } elseif(!empty($this->getContainer()->get('metadata')->get('entityDefs.Product.links.assets'))) {
             //migration pimImage
             $migrationPimImage = new MigrationPimImage();
             $migrationPimImage->setContainer($this->getContainer());
@@ -67,8 +70,8 @@ class V3Dot12Dot0 extends AbstractMigration
 
             //set flag about installed Pim and Image
             $config->set('pimAndDamInstalled', true);
-            $config->save();
         }
+        $config->save();
     }
 
     /**
@@ -191,8 +194,9 @@ class V3Dot12Dot0 extends AbstractMigration
                 ->nativeQuery($sql);
 
             //set flag about installed Pim and Image
-            $this->getContainer()->get('config')->set('pimAndDamInstalled', false);
-            $$this->getContainer()->get('config')->save();
+
+            $this->getContainer()->get('config')->remove('pimAndDamInstalled');
+            $this->getContainer()->get('config')->save();
         }
     }
 
@@ -367,7 +371,4 @@ class V3Dot12Dot0 extends AbstractMigration
     {
         return $this->getContainer()->get('fileManager');
     }
-
-
-
 }
