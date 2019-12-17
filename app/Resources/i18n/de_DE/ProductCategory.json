@@ -3,8 +3,8 @@
     "product": "Produkt",
     "category": "Kategorie",
     "sorting": "Sortierung",
-    "scope": "Umfang",
-    "channels": "Kanale"
+    "scope": "Kategorie Umfang",
+    "channels": "Kategorie Kanale"
   },
   "links": {
     "product": "Produkte",

@@ -40,11 +40,6 @@ class ProductCategory extends Base
         // call parent action
         parent::beforeSave($entity, $options);
 
-        // set sort order
-        if (is_null($entity->get('sorting'))) {
-            $entity->set('sorting', (int)$this->max('sorting') + 1);
-        }
-
         if (!$entity->isNew() && $entity->isAttributeChanged('sorting')) {
             $this->updateSortOrder($entity);
         }
@@ -89,7 +84,7 @@ class ProductCategory extends Base
             $sql = '';
             foreach ($data as $row) {
                 // increase max
-                $max++;
+                $max  = $max + 10;
 
                 // prepare id
                 $id = $row['id'];
