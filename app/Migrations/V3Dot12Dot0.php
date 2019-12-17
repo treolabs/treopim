@@ -22,13 +22,10 @@ declare(strict_types=1);
 
 namespace Pim\Migrations;
 
-use Composer\Composer;
+use DamCommon\Services\MigrationPimImage;
 use Espo\Core\Exceptions\Error;
-use Espo\Core\Exceptions\Forbidden;
 use Espo\Core\Utils\File\Manager;
-use Espo\Services\Record;
 use PDO;
-use stdClass;
 use Treo\Core\FilePathBuilder;
 use Treo\Core\FileStorage\Storages\UploadDir;
 use Treo\Core\Migration\AbstractMigration;
@@ -53,31 +50,49 @@ class V3Dot12Dot0 extends AbstractMigration
 
     /**
      * @inheritdoc
+     * @throws Error
      */
     public function up(): void
     {
         (new Auth($this->getContainer()))->useNoAuth();
 
         if (!$this->getContainer()->get('metadata')->isModuleInstalled('Dam')) {
-            $this->installDam();
+            $this->sendNotification();
+        } else {
+            $config = $this->getContainer()->get('config');
+            //migration pimImage
+            $migrationPimImage = new MigrationPimImage();
+            $migrationPimImage->setContainer($this->getContainer());
+            $migrationPimImage->run();
+
+            //set flag about installed Pim and Image
+            $config->set('pimAndDamInstalled', true);
+            $config->save();
         }
     }
 
     /**
      * Install module Dam
      */
-    protected function installDam(): void
+    protected function sendNotification(): void
     {
-        /** @var \Treo\Services\Composer $composer */
-        $composer = $this->getContainer()->get('serviceFactory')->create('Composer');
-
-        $data = $composer::getComposerJson();
-        //put dam
-        $data['require']['treolabs/dam'] = '*';
-
-        $composer::setComposerJson($data);
-        //install Dam
-        $composer->runUpdate();
+        $em = $this
+            ->getContainer()
+            ->get('entityManager');
+        $users = $em->getRepository('User')->getAdminUsers();
+        if (!empty($users)) {
+            foreach ($users as $user) {
+                $message = 'In the new <a href="https://treopim.com">TreoPIM </a> version, the PimImage entity is replaced with the <a href="https://treodam.com/">TreoDAM module</a>. 
+                So to continue work with the images, please, installed the latest version of the <a href="https://treodam.com/">TreoDAM module</a>.';
+                // create notification
+                $notification = $em->getEntity('Notification');
+                $notification->set('type', 'Message');
+                $notification->set('message', $message);
+                $notification->set('userId', $user['id']);
+                // save notification
+                $em->saveEntity($notification);
+            }
+        }
     }
 
     /**
@@ -174,6 +189,11 @@ class V3Dot12Dot0 extends AbstractMigration
             $this
                 ->getEntityManager()
                 ->nativeQuery($sql);
+
+            $config = $this->getContainer()->get('config');
+            //set flag about installed Pim and Image
+            $config->set('pimAndDamInstalled', false);
+            $config->save();
         }
     }
 
