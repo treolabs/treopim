@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Pim;
 
-use DamCommon\Services\MigrationPimImage;
-use DamCommon\Services\PimLayout;
 use Treo\Core\ModuleManager\AbstractEvent;
 
 /**

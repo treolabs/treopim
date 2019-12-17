@@ -190,10 +190,9 @@ class V3Dot12Dot0 extends AbstractMigration
                 ->getEntityManager()
                 ->nativeQuery($sql);
 
-            $config = $this->getContainer()->get('config');
             //set flag about installed Pim and Image
-            $config->set('pimAndDamInstalled', false);
-            $config->save();
+            $this->getContainer()->get('config')->set('pimAndDamInstalled', false);
+            $$this->getContainer()->get('config')->save();
         }
     }
 
