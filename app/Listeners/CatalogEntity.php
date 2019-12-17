@@ -64,22 +64,6 @@ class CatalogEntity extends AbstractEntityListener
     }
 
     /**
-     * @param Event $event
-     */
-    public function afterRemove(Event $event)
-    {
-        // get products
-        $products = $event->getArgument('entity')->get('products');
-
-        // delete products
-        if (count($products) > 0) {
-            foreach ($products as $product) {
-                $this->getEntityManager()->removeEntity($product);
-            }
-        }
-    }
-
-    /**
      * @param string $key
      *
      * @return string
