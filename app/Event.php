@@ -75,17 +75,6 @@ class Event extends AbstractEvent
 
         // add menu items
         $this->addMenuItems();
-
-
-        if (empty($this->getContainer()->get('config')->get('pimAndDamInstalled'))
-                && $this->getContainer()->get('metadata')->isModuleInstalled('Dam')) {
-            //set Layout for Dam && PIM
-            (new PimLayout($this->getContainer()))->modify();
-
-            //set flag about installed Pim and Image
-            $this->getContainer()->get('config')->set('pimAndDamInstalled', true);
-            $this->getContainer()->get('config')->save();
-        }
     }
 
     /**

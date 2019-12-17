@@ -4,5 +4,8 @@
   },
   {
     "name": "productCategories"
+  },
+  {
+    "name": "asset_relations"
   }
 ]
