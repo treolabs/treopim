@@ -17,25 +17,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/channel/record/list-in-product', 'views/record/list',
+Espo.define('pim:views/product-category/pipe/action-update-filters', 'treo-core:pipe',
     Dep => Dep.extend({
-        afterRender: function () {
-            Dep.prototype.afterRender.call(this);
 
-            this.setEditModeIsActiveEntityField();
+        runPipe(data) {
+            data = data || {};
+            const boolFilterData = data.boolFilterData;
+
+            const catalogsIds = this.options.checkedList.map(id => {
+                const model = this.options.mainCollection.get(id);
+                return model.get('catalogId');
+            });
+
+            _.extend(boolFilterData, {
+                onlyCatalogCategories: catalogsIds
+            });
+
+            //required
+            data.callback();
         },
 
-        setEditModeIsActiveEntityField() {
-            (this.rowList || []).forEach(id => {
-                const rowView = this.getView(id);
-                if (rowView) {
-                    const fieldView = rowView.getView('isActiveEntityField');
-                    if (fieldView) {
-                        fieldView.setMode('edit');
-                        fieldView.reRender();
-                    }
-                }
-            });
-        }
     })
 );

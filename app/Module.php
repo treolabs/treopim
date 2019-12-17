@@ -68,6 +68,8 @@ class Module extends AbstractModule
         // prepare attribute scope
         $result = $this->attributeScope($result);
 
+        $result = $this->expansionImage($result);
+
         // set data
         $data = Json::decode(Json::encode($result));
     }
@@ -197,6 +199,30 @@ class Module extends AbstractModule
         }
 
         return $result;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    protected function expansionImage($data): array
+    {
+        if (!empty($data['entityDefs']['Product']['fields']['image'])) {
+            //expansion GeneralStatistics
+            $data['dashlets']['GeneralStatistics']['options']['defaults']['urlMap']['productWithoutImage'] =
+                [
+                    "url" => "#Product",
+                    "options" => [
+                        "boolFilterList" => [
+                            "withoutImageAssets"
+                        ]
+                    ]
+                ];
+            $data['clientDefs']['Product']['boolFilterList'][] = 'withoutImageAssets';
+            $data['clientDefs']['Product']['boolFilterList'][] = 'withoutImageAssets';
+        }
+
+        return $data;
     }
 
     /**

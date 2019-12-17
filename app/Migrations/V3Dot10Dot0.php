@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Pim\Migrations;
 
+use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Exceptions\Error;
 use Treo\Core\Migration\AbstractMigration;
 use Treo\Core\Utils\Util;
 
@@ -78,7 +80,13 @@ class V3Dot10Dot0 extends AbstractMigration
                     'sortOrder' => $productImage['sortOrder'],
                 ]
             );
-            $this->getEntityManager()->saveEntity($entity);
+            try {
+                $this->getEntityManager()->saveEntity($entity);
+            } catch (BadRequest $badRequest) {
+                $this->setLog('Product', $productImage['id'], $badRequest);
+            } catch (Error $error) {
+                $this->setLog('Product', $productImage['id'], $error);
+            }
 
             // get channels
             if ($productImage['scope'] == 'Channel') {
@@ -130,7 +138,13 @@ class V3Dot10Dot0 extends AbstractMigration
                     'sortOrder'  => $categoryImage['sortOrder'],
                 ]
             );
-            $this->getEntityManager()->saveEntity($entity);
+            try {
+                $this->getEntityManager()->saveEntity($entity);
+            } catch (BadRequest $badRequest) {
+                $this->setLog('Category', $categoryImage['id'], $badRequest);
+            } catch (Error $error) {
+                $this->setLog('Category', $categoryImage['id'], $error);
+            }
 
             // get channels
             if ($categoryImage['scope'] == 'Channel') {
@@ -285,6 +299,14 @@ class V3Dot10Dot0 extends AbstractMigration
         return $this
             ->execute($sql)
             ->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param $entityName
+     * @param $imageId
+     */
+    private function setLog($entityName, $imageId, \Exception $e) {
+        $GLOBALS['log']->error('ErrorMigration in ' . $entityName . 'ImageId:' . $imageId . '; Error: ' . $e->getMessage() . '.');
     }
 
     /**

@@ -99,13 +99,6 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true
     },
-    "image": {
-      "type": "image",
-      "previewSize": "medium",
-      "readOnly": true,
-      "view": "pim:views/product/fields/image",
-      "importDisabled": true
-    },
     "productStatus": {
       "type": "enum",
       "required": true,
@@ -210,13 +203,6 @@
       "importMultipleField": true,
       "exportMultipleField": true
     },
-    "assets": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
-      "noLoad": true
-    },
     "measuringUnit": {
       "type": "link",
       "required": false
@@ -269,13 +255,6 @@
       "entity": "ProductAttributeValue",
       "disableMassRelation": true
     },
-    "assets": {
-      "type": "hasMany",
-      "relationName": "productAsset",
-      "foreign": "products",
-      "entity": "Asset",
-      "audited": false
-    },
     "productFamily": {
       "type": "belongsTo",
       "foreign": "products",
@@ -296,7 +275,7 @@
       "foreign": "mainProduct",
       "layoutRelationshipsDisabled": true,
       "entity": "AssociatedProduct",
-      "customDefs": {
+      "addRelationCustomDefs": {
         "link": "products",
         "entity": "Product"
       }
@@ -315,11 +294,6 @@
     "packaging": {
       "type": "belongsTo",
       "entity": "Packaging"
-    },
-    "image": {
-      "type": "belongsTo",
-      "entity": "Attachment",
-      "skipOrmDefs": true
     },
     "calls": {
       "type": "hasChildren",
@@ -353,7 +327,11 @@
     "productCategories": {
       "type": "hasMany",
       "foreign": "product",
-      "entity": "ProductCategory"
+      "entity": "ProductCategory",
+      "addRelationCustomDefs": {
+        "link": "productCategories",
+        "entity": "Category"
+      }
     },
     "measuringUnit": {
       "type": "belongsTo",

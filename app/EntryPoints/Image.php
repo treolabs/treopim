@@ -20,38 +20,38 @@
 
 declare(strict_types=1);
 
-namespace Pim\SelectManagers;
+namespace Pim\EntryPoints;
 
-use Pim\Core\SelectManagers\AbstractSelectManager;
+use Espo\Core\Exceptions\NotFound;
+use Treo\Entities\Attachment;
+use Treo\EntryPoints\Image as Base;
 
 /**
- * Class of Pricing
+ * Class Image
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class Pricing extends AbstractSelectManager
+class Image extends Base
 {
-
     /**
-     * NotLinkedWithChannel filter
-     *
-     * @param array $result
+     * @inheritDoc
+     * @throws NotFound
      */
-    protected function boolFilterNotLinkedWithChannel(&$result)
+    protected function checkAttachment(Attachment $attachment): bool
     {
-        $channelId = (string)$this->getSelectCondition('notLinkedWithChannel');
-        if (!empty($channelId)) {
-            $channel = $this->getEntityManager()
-                ->getRepository('Pricing')
-                ->distinct()
-                ->join('channels')
-                ->where(['channels.id' => $channelId])
-                ->find();
-            foreach ($channel as $row) {
-                $result['whereClause'][] = [
-                    'id!=' => $row->get('id')
-                ];
+        if (in_array($attachment->get('relatedType'), ['Asset'])) {
+            $entity = $this
+                ->getEntityManager()
+                ->getRepository('Asset')
+                ->where(['fileId' => $attachment->get('id')])
+                ->findOne();
+            if (empty($entity)) {
+                throw new NotFound();
             }
+        } else {
+            $entity = $attachment;
         }
+
+        return $this->getAcl()->checkEntity($entity);
     }
 }

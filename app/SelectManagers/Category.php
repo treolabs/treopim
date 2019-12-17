@@ -67,23 +67,35 @@ class Category extends AbstractSelectManager
     protected function boolFilterOnlyCatalogCategories(array &$result)
     {
         // get id
-        $id = (string)$this->getSelectCondition('onlyCatalogCategories');
+        $value = $this->getSelectCondition('onlyCatalogCategories');
 
         // get catalog
-        if (empty($id)) {
+        if (empty($value)) {
             return null;
         }
 
         // get catalog trees
-        if (!empty($catalog = $this->getEntityManager()->getEntity('Catalog', $id))) {
-            $catalogTrees = $catalog->get('categories')->toArray();
+        $catalogs = $this
+            ->getEntityManager()
+            ->getRepository('Catalog')
+            ->where([
+                'id' => $value
+            ])
+            ->find();
+
+        $catalogsTrees = [];
+
+        if (count($catalogs) > 0) {
+            foreach ($catalogs as $catalog) {
+                $catalogsTrees = array_merge($catalogsTrees, array_column($catalog->get('categories')->toArray(), 'id'));
+            }
         }
 
-        if (!empty($catalogTrees)) {
+        if (!empty($catalogsTrees)) {
             // prepare where
-            $where[] = ['id' => array_column($catalogTrees, 'id')];
-            foreach ($catalogTrees as $catalogTree) {
-                $where[] = ['categoryRoute*' => "%|" . $catalogTree['id'] . "|%"];
+            $where[] = ['id' => $catalogsTrees];
+            foreach ($catalogsTrees as $catalogTree) {
+                $where[] = ['categoryRoute*' => "%|" . $catalogTree . "|%"];
             }
 
             $result['whereClause'][] = ['OR' => $where];

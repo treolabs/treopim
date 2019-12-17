@@ -11,5 +11,6 @@
     "disabled": false,
     "type": "Base",
     "module": "Pim",
-    "object": true
+    "object": true,
+    "relationDisabled": true
 }
