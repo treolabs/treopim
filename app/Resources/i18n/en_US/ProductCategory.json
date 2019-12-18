@@ -3,8 +3,8 @@
     "product": "Product",
     "category": "Category",
     "sorting": "Sorting",
-    "scope": "Scope",
-    "channels": "Channels"
+    "scope": "Category Scope",
+    "channels": "Category Channels"
   },
   "links": {
     "product": "Product",
