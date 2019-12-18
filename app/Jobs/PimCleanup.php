@@ -39,6 +39,8 @@ class PimCleanup extends Base
     public function run()
     {
         // association
+        $ids = $this->fetchIds("SELECT id FROM association WHERE deleted=1");
+        $this->execute("UPDATE associated_product SET deleted=1 WHERE association_id IN ('$ids')");
         $this->execute("DELETE FROM association WHERE deleted=1");
 
         // attribute
@@ -77,6 +79,8 @@ class PimCleanup extends Base
         $ids = $this->fetchIds("SELECT id FROM product WHERE deleted=1");
         $this->execute("UPDATE product_attribute_value SET deleted=1 WHERE product_id IN ('$ids')");
         $this->execute("UPDATE product_category SET deleted=1 WHERE product_id IN ('$ids')");
+        $this->execute("UPDATE associated_product SET deleted=1 WHERE main_product_id IN ('$ids')");
+        $this->execute("UPDATE associated_product SET deleted=1 WHERE related_product_id IN ('$ids')");
         $this->execute("DELETE FROM product WHERE deleted=1");
 
         // product_attribute_value
@@ -110,10 +114,6 @@ class PimCleanup extends Base
 
         // associated_product
         $this->execute("DELETE FROM associated_product WHERE deleted=1");
-        $ids = $this->fetchIds(
-            "SELECT ap.id FROM associated_product ap LEFT JOIN product p1 ON p1.id=ap.main_product_id LEFT JOIN product p2 ON p2.id=ap.related_product_id LEFT JOIN association a ON a.id=ap.association_id WHERE a.id IS NULL OR p1.id IS NULL OR p2.id IS NULL"
-        );
-        $this->execute("DELETE FROM associated_product WHERE id IN ('$ids')");
 
         // product_serie
         $this->execute("DELETE FROM product_serie WHERE deleted=1");
