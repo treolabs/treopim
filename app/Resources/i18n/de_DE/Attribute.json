@@ -7,7 +7,6 @@
     "isRequired": "Ist Erforderlich",
     "createdAt": "erstellt am",
     "createdBy": "erstellt von",
-    "isSystem": "Ist das System",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
     "productAttributes": "Produktattribute",
