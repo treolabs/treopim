@@ -23,7 +23,8 @@
     "markupType": "Typ",
     "markupValue": "Wert",
     "scope": "Umfang",
-    "catalogs": "Kataloge"
+    "catalogs": "Kataloge",
+    "productCategories": "Kategorie Produkte"
   },
   "links": {
     "categories": "Kategorien",
@@ -34,7 +35,8 @@
     "modifiedBy": "geändert von",
     "rootCategories": "Stammkategorien",
     "teams": "Teams",
-    "catalogs": "Kataloge"
+    "catalogs": "Kataloge",
+    "productCategories": "Kategorie Produkte"
   },
   "labels": {
     "Create Category": "Kategorie erstellen"
