@@ -43,6 +43,7 @@ class PimCleanup extends Base
 
         // attribute
         $ids = $this->fetchIds("SELECT id FROM attribute WHERE deleted=1");
+        $this->execute("UPDATE product_family_attribute SET deleted=1 WHERE attribute_id IN ('$ids')");
         $this->execute("UPDATE product_attribute_value SET deleted=1 WHERE attribute_id IN ('$ids')");
         $this->execute("DELETE FROM attribute WHERE deleted=1");
 
@@ -56,6 +57,8 @@ class PimCleanup extends Base
         $this->execute("DELETE FROM catalog WHERE deleted=1");
 
         // category
+        $ids = $this->fetchIds("SELECT id FROM category WHERE deleted=1");
+        $this->execute("UPDATE product_category SET deleted=1 WHERE category_id IN ('$ids')");
         $this->execute("DELETE FROM category WHERE deleted=1");
 
         // channel
@@ -73,6 +76,7 @@ class PimCleanup extends Base
         // product
         $ids = $this->fetchIds("SELECT id FROM product WHERE deleted=1");
         $this->execute("UPDATE product_attribute_value SET deleted=1 WHERE product_id IN ('$ids')");
+        $this->execute("UPDATE product_category SET deleted=1 WHERE product_id IN ('$ids')");
         $this->execute("DELETE FROM product WHERE deleted=1");
 
         // product_attribute_value
@@ -84,35 +88,25 @@ class PimCleanup extends Base
         $this->execute("DELETE FROM product_attribute_value_channel WHERE deleted=1");
 
         // product_category
+        $ids = $this->fetchIds("SELECT id FROM product_category WHERE deleted=1 AND scope='Channel'");
+        $this->execute("UPDATE product_category_channel SET deleted=1 WHERE product_category_id IN ('$ids')");
         $this->execute("DELETE FROM product_category WHERE deleted=1");
-        $ids = $this->fetchIds(
-            "SELECT pc.id FROM product_category pc LEFT JOIN product p ON p.id=pc.product_id LEFT JOIN category ca ON ca.id=pc.category_id WHERE p.id IS NULL OR ca.id IS NULL"
-        );
-        $this->execute("DELETE FROM product_category WHERE id IN ('$ids')");
 
         // product_category_channel
         $this->execute("DELETE FROM product_category_channel WHERE deleted=1");
-        $ids = $this->fetchIds(
-            "SELECT pcc.id FROM product_category_channel pcc LEFT JOIN product_category pc ON pc.id=pcc.product_category_id LEFT JOIN channel ch ON ch.id=pcc.channel_id WHERE pc.id IS NULL OR ch.id IS NULL"
-        );
-        $this->execute("DELETE FROM product_category_channel WHERE id IN ('$ids')");
 
         // product_family
+        $ids = $this->fetchIds("SELECT id FROM product_family WHERE deleted=1");
+        $this->execute("UPDATE product_family_attribute SET deleted=1 WHERE product_family_id IN ('$ids')");
         $this->execute("DELETE FROM product_family WHERE deleted=1");
 
         // product_family_attribute
+        $ids = $this->fetchIds("SELECT id FROM product_family_attribute WHERE deleted=1 AND scope='Channel'");
+        $this->execute("UPDATE product_family_attribute_channel SET deleted=1 WHERE product_family_attribute_id IN ('$ids')");
         $this->execute("DELETE FROM product_family_attribute WHERE deleted=1");
-        $ids = $this->fetchIds(
-            "SELECT pfa.id FROM product_family_attribute pfa LEFT JOIN product_family pf ON pf.id=pfa.product_family_id LEFT JOIN attribute a ON a.id=pfa.attribute_id WHERE a.id IS NULL OR pf.id IS NULL"
-        );
-        $this->execute("DELETE FROM product_family_attribute WHERE id IN ('$ids')");
 
         // product_family_attribute_channel
         $this->execute("DELETE FROM product_family_attribute_channel WHERE deleted=1");
-        $ids = $this->fetchIds(
-            "SELECT pfac.id FROM product_family_attribute_channel pfac LEFT JOIN channel ch ON ch.id=pfac.channel_id LEFT JOIN product_family_attribute pfa ON pfa.id=pfac.product_family_attribute_id WHERE pfa.id IS NULL OR ch.id IS NULL"
-        );
-        $this->execute("DELETE FROM product_family_attribute_channel WHERE id IN ('$ids')");
 
         // associated_product
         $this->execute("DELETE FROM associated_product WHERE deleted=1");
