@@ -64,6 +64,10 @@ class PimCleanup extends Base
         $this->execute("DELETE FROM category WHERE deleted=1");
 
         // channel
+        $ids = $this->fetchIds("SELECT id FROM channel WHERE deleted=1");
+        $this->execute("UPDATE product_attribute_value_channel SET deleted=1 WHERE channel_id IN ('$ids')");
+        $this->execute("UPDATE product_category_channel SET deleted=1 WHERE channel_id IN ('$ids')");
+        $this->execute("UPDATE product_family_attribute_channel SET deleted=1 WHERE channel_id IN ('$ids')");
         $this->execute("DELETE FROM channel WHERE deleted=1");
 
         // country
