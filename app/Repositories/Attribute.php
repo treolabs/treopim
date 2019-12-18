@@ -72,6 +72,26 @@ class Attribute extends Base
     /**
      * @inheritDoc
      */
+    public function afterSave(Entity $entity, array $options = [])
+    {
+        if ($entity->isNew() && $entity->get('isMultilang')) {
+            // create multilang attributes
+        }
+
+        if (!$entity->isNew() && $entity->isAttributeChanged('isMultilang')) {
+            if ($entity->get('isMultilang')) {
+                // create multilang attributes
+            } else {
+                // delete multilang attributes
+            }
+        }
+
+        parent::afterSave($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function max($field)
     {
         $data = $this
