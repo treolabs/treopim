@@ -42,6 +42,8 @@ class PimCleanup extends Base
         $this->execute("DELETE FROM association WHERE deleted=1");
 
         // attribute
+        $ids = $this->fetchIds("SELECT id FROM attribute WHERE deleted=1");
+        $this->execute("UPDATE product_attribute_value SET deleted=1 WHERE attribute_id IN ('$ids')");
         $this->execute("DELETE FROM attribute WHERE deleted=1");
 
         // attribute_group
@@ -69,21 +71,17 @@ class PimCleanup extends Base
         $this->execute("DELETE FROM packaging WHERE deleted=1");
 
         // product
+        $ids = $this->fetchIds("SELECT id FROM product WHERE deleted=1");
+        $this->execute("UPDATE product_attribute_value SET deleted=1 WHERE product_id IN ('$ids')");
         $this->execute("DELETE FROM product WHERE deleted=1");
 
         // product_attribute_value
+        $ids = $this->fetchIds("SELECT id FROM product_attribute_value WHERE deleted=1 AND scope='Channel'");
+        $this->execute("UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id IN ('$ids')");
         $this->execute("DELETE FROM product_attribute_value WHERE deleted=1");
-        $ids = $this->fetchIds(
-            "SELECT pav.id FROM product_attribute_value pav LEFT JOIN product p ON p.id=pav.product_id LEFT JOIN attribute a ON a.id=pav.attribute_id WHERE a.id IS NULL OR p.id IS NULL"
-        );
-        $this->execute("DELETE FROM product_attribute_value WHERE id IN ('$ids')");
 
         // product_attribute_value_channel
         $this->execute("DELETE FROM product_attribute_value_channel WHERE deleted=1");
-        $ids = $this->fetchIds(
-            "SELECT pavc.id FROM product_attribute_value_channel pavc LEFT JOIN product_attribute_value pav ON pav.id=pavc.product_attribute_value_id LEFT JOIN channel ch ON ch.id=pavc.channel_id WHERE pav.id IS NULL OR ch.id IS NULL"
-        );
-        $this->execute("DELETE FROM product_attribute_value_channel WHERE id IN ('$ids')");
 
         // product_category
         $this->execute("DELETE FROM product_category WHERE deleted=1");
@@ -134,10 +132,18 @@ class PimCleanup extends Base
 
     /**
      * @param string $sql
+     *
+     * @return \PDOStatement|null
      */
-    protected function execute(string $sql): void
+    protected function execute(string $sql): ?\PDOStatement
     {
-        $this->getEntityManager()->nativeQuery($sql);
+        try {
+            $statement = $this->getEntityManager()->nativeQuery($sql);
+        } catch (\PDOException $e) {
+            $GLOBALS['log']->error('PimCleanup: ' . $e->getMessage());
+        }
+
+        return (isset($statement)) ? $statement : null;
     }
 
     /**
@@ -147,6 +153,9 @@ class PimCleanup extends Base
      */
     protected function fetchIds(string $sql): string
     {
-        return implode("','", array_column($this->getEntityManager()->nativeQuery($sql)->fetchAll(\PDO::FETCH_ASSOC), 'id'));
+        // execute
+        $statement = $this->execute($sql);
+
+        return (!is_null($statement)) ? implode("','", array_column($statement->fetchAll(\PDO::FETCH_ASSOC), 'id')) : 'no-such-id';
     }
 }
