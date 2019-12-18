@@ -59,7 +59,11 @@ class V3Dot10Dot0 extends AbstractMigration
                    pi.image_link  AS link, 
                    pip.product_id AS productId,  
                    pip.scope      AS scope,
-                   pip.sort_order AS sortOrder
+                   pip.sort_order AS sortOrder,
+                    CASE
+                        WHEN p.image_id = pi.image_id THEN 1
+                        ELSE 0
+                    END AS isMain
                 FROM product_image_product AS pip 
                 JOIN product_image AS pi ON pi.id=pip.product_image_id AND pi.deleted=0
                 JOIN product AS p ON pip.product_id=p.id AND p.deleted=0  
@@ -67,7 +71,12 @@ class V3Dot10Dot0 extends AbstractMigration
                 ORDER BY pip.product_id ASC'
             );
 
-        foreach ($productImages as $productImage) {
+        foreach ($productImages as $k => $productImage) {
+            $sortOrder = $productImage['sortOrder'];
+            if (is_null($sortOrder) && $productImage['isMain'] == '1') {
+                //main image become first in list
+                $sortOrder = 0 - $k;
+            }
             $entity = $repository->get();
             $entity->set(
                 [
@@ -77,7 +86,7 @@ class V3Dot10Dot0 extends AbstractMigration
                     'link'      => $productImage['link'],
                     'scope'     => $productImage['scope'],
                     'imageId'   => $productImage['imageId'],
-                    'sortOrder' => $productImage['sortOrder'],
+                    'sortOrder' => $sortOrder,
                 ]
             );
             try {
@@ -96,7 +105,8 @@ class V3Dot10Dot0 extends AbstractMigration
                             channel_id AS channelId
                          FROM product_image_channel
                          WHERE deleted=0
-                         AND product_image_id=\'' . $productImage['id'] . '\''
+                         AND product_image_id=\'' . $productImage['id'] . '\'
+                         AND product_id=\'' . $productImage['productId'] . '\''
                     );
 
                 foreach ($channels as $row) {
@@ -117,7 +127,11 @@ class V3Dot10Dot0 extends AbstractMigration
                    ci.image_link   AS link, 
                    cic.category_id AS categoryId,  
                    cic.scope       AS scope,
-                   cic.sort_order  AS sortOrder
+                   cic.sort_order  AS sortOrder,
+                   CASE
+                        WHEN c.image_id = ci.image_id THEN 1
+                        ELSE 0
+                    END AS isMain
                 FROM category_image_category AS cic 
                 JOIN category_image AS ci ON ci.id=cic.category_image_id AND ci.deleted=0
                 JOIN category AS c ON cic.category_id=c.id AND c.deleted=0  
@@ -125,8 +139,14 @@ class V3Dot10Dot0 extends AbstractMigration
                 ORDER BY cic.category_id ASC'
             );
 
-        foreach ($categoryImages as $categoryImage) {
+        foreach ($categoryImages as $k => $categoryImage) {
             $entity = $repository->get();
+
+            $sortOrder = $categoryImage['sortOrder'];
+            if (is_null($sortOrder) && $categoryImage['isMain'] == '1') {
+                //main image become first in list
+                $sortOrder = 0 - $k;
+            }
             $entity->set(
                 [
                     'categoryId' => $categoryImage['categoryId'],
@@ -135,7 +155,7 @@ class V3Dot10Dot0 extends AbstractMigration
                     'link'       => $categoryImage['link'],
                     'scope'      => $categoryImage['scope'],
                     'imageId'    => $categoryImage['imageId'],
-                    'sortOrder'  => $categoryImage['sortOrder'],
+                    'sortOrder'  => $sortOrder,
                 ]
             );
             try {
@@ -154,7 +174,8 @@ class V3Dot10Dot0 extends AbstractMigration
                             channel_id AS channelId
                          FROM category_image_channel
                          WHERE deleted=0
-                         AND category_image_id=\'' . $categoryImage['id'] . '\''
+                         AND category_image_id=\'' . $categoryImage['id'] . '\'
+                         AND category_id= \'' . $categoryImage['categoryId'] .'\''
                     );
 
                 foreach ($channels as $row) {
