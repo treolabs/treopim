@@ -55,6 +55,14 @@
               "attribute": "attributeId"
             }
           ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "isTrue",
+              "attribute": "isRequired"
+            }
+          ]
         }
       },
       "scope": {

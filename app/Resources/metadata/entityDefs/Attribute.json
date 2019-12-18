@@ -2,9 +2,8 @@
   "fields": {
     "name": {
       "type": "varchar",
-      "required": false,
+      "required": true,
       "trim": true,
-      "isMultilang": true,
       "layoutDetailDisabled": true
     },
     "createdAt": {
@@ -95,7 +94,6 @@
       "audited": false,
       "readOnly": false,
       "tooltip": false,
-      "isMultilang": true,
       "layoutDetailDisabled": true,
       "view": "pim:views/attribute/fields/type-value"
     },

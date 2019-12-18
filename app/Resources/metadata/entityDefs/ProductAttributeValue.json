@@ -24,7 +24,6 @@
       "type": "text",
       "rows": 4,
       "lengthOfCut": 400,
-      "isMultilang": true,
       "view": "pim:views/product-attribute-value/fields/value-container",
       "hasCompleteValidation": true
     },
@@ -103,7 +102,6 @@
     },
     "typeValue": {
       "type": "array",
-      "isMultilang": true,
       "notStorable": true,
       "layoutListDisabled": true,
       "layoutListSmallDisabled": true,

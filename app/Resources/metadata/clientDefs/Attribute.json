@@ -39,6 +39,51 @@
             }
           ]
         }
+      },
+      "typeValue": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "enum",
+                "multiEnum",
+                "unit"
+              ]
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "enum",
+                "multiEnum"
+              ]
+            }
+          ]
+        }
+      },
+      "isMultilang": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "bool",
+                "enum",
+                "multiEnum",
+                "varchar",
+                "text",
+                "wysiwyg"
+              ]
+            }
+          ]
+        }
       }
     }
   }
