@@ -38,8 +38,6 @@ class PimCleanup extends Base
      */
     public function run()
     {
-        file_put_contents('data/pim_test.txt', '1');
-
         return true;
     }
 }
