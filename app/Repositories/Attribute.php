@@ -26,8 +26,8 @@ use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Espo\Core\Exceptions\Error;
-use Treo\Core\Utils\Util;
 use Pim\Entities\Attribute as AttributeEntity;
+use Treo\Core\Utils\Util;
 
 /**
  * Class Attribute
@@ -110,9 +110,13 @@ class Attribute extends Base
             $localeAttribute->set('locale', $locale);
             $localeAttribute->set('parentId', $attribute->get('id'));
             $localeAttribute->set('name', $attribute->get('name') . ' › ' . $locale);
-            $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale) . '_' . Util::generateId());
+            $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale));
 
-            $this->getEntityManager()->saveEntity($localeAttribute);
+            try {
+                $this->getEntityManager()->saveEntity($localeAttribute);
+            } catch (BadRequest $e) {
+                $GLOBALS['log']->error('Locale attribute validation failed: ' . $e->getMessage());
+            }
         }
     }
 
