@@ -92,9 +92,9 @@ class V3Dot10Dot0 extends AbstractMigration
             try {
                 $this->getEntityManager()->saveEntity($entity);
             } catch (BadRequest $badRequest) {
-                $this->setLog('Product', $productImage['id'], $badRequest);
+                $this->setLog('Product', $productImage['productId'], $productImage['id'], $badRequest);
             } catch (Error $error) {
-                $this->setLog('Product', $productImage['id'], $error);
+                $this->setLog('Product', $productImage['productId'], $productImage['id'], $error);
             }
 
             // get channels
@@ -161,9 +161,9 @@ class V3Dot10Dot0 extends AbstractMigration
             try {
                 $this->getEntityManager()->saveEntity($entity);
             } catch (BadRequest $badRequest) {
-                $this->setLog('Category', $categoryImage['id'], $badRequest);
+                $this->setLog('Category', $categoryImage['categoryId'], $categoryImage['id'], $badRequest);
             } catch (Error $error) {
-                $this->setLog('Category', $categoryImage['id'], $error);
+                $this->setLog('Category', $categoryImage['categoryId'], $categoryImage['id'], $error);
             }
 
             // get channels
@@ -223,14 +223,20 @@ class V3Dot10Dot0 extends AbstractMigration
                 $newImage = $this->getEntityManager()->getEntity('CategoryImage');
                 $newImage->set(
                     [
-                        'name'      => $image['name'],
+                        'name'      => $image['name'] . '_' . Util::generateId(),
                         'alt'       => $image['name'],
                         'imageId'   => $image['imageId'],
                         'type'      => (!empty($image['link'])) ? 'Link' : 'File',
                         'imageLink' => $image['link']
                     ]
                 );
-                $this->getEntityManager()->saveEntity($newImage);
+                try {
+                    $this->getEntityManager()->saveEntity($newImage);
+                } catch (BadRequest $badRequest) {
+                    $this->setLog('Category', $image['categoryId'], $image['imageId'], $badRequest);
+                } catch (Error $error) {
+                    $this->setLog('Category', $image['categoryId'], $image['imageId'], $error);
+                }
 
                 // relate category
                 $this->execute(
@@ -259,15 +265,20 @@ class V3Dot10Dot0 extends AbstractMigration
                 $newImage = $this->getEntityManager()->getEntity('ProductImage');
                 $newImage->set(
                     [
-                        'name'      => $image['name'],
+                        'name'      => $image['name'] . '_' . Util::generateId(),
                         'alt'       => $image['name'],
                         'imageId'   => $image['imageId'],
                         'type'      => (!empty($image['link'])) ? 'Link' : 'File',
                         'imageLink' => $image['link']
                     ]
                 );
-                $this->getEntityManager()->saveEntity($newImage);
-
+                try {
+                    $this->getEntityManager()->saveEntity($newImage);
+                } catch (BadRequest $badRequest) {
+                    $this->setLog('Product', $image['productId'], $image['imageId'], $badRequest);
+                } catch (Error $error) {
+                    $this->setLog('Product', $image['productId'], $image['imageId'], $error);
+                }
                 // relate category
                 $this->execute(
                     "INSERT INTO product_image_product (product_id,product_image_id,sort_order,scope) VALUES ('" . $image['productId']
@@ -326,8 +337,8 @@ class V3Dot10Dot0 extends AbstractMigration
      * @param $entityName
      * @param $imageId
      */
-    private function setLog($entityName, $imageId, \Exception $e) {
-        $GLOBALS['log']->error('ErrorMigration in ' . $entityName . 'ImageId:' . $imageId . '; Error: ' . $e->getMessage() . '.');
+    private function setLog($entityName, $entityId, $imageId, \Exception $e) {
+        $GLOBALS['log']->error('ErrorMigration in ' . $entityName . '-' . $entityId . 'ImageId:' . $imageId . '; Error: ' . $e->getMessage() . '.');
     }
 
     /**
