@@ -61,10 +61,6 @@ class Attribute extends Base
             $entity->set('sortOrder', (int)$this->max('sortOrder') + 1);
         }
 
-        if (!$this->isTypeValueValid($entity)) {
-            throw new BadRequest("The number of 'Values' items should be identical for all locales");
-        }
-
         if (!$entity->isNew() && $entity->isAttributeChanged('sortOrder')) {
             $this->updateSortOrder($entity);
         }
@@ -79,6 +75,20 @@ class Attribute extends Base
         $this->updateLocalesAttributes($entity);
 
         parent::afterSave($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterRemove(Entity $entity, array $options = [])
+    {
+        /** @var string $id */
+        $id = $entity->get('id');
+
+        // delete all locales attributes
+        $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id' AND locale IS NOT NULL");
+
+        parent::afterRemove($entity, $options);
     }
 
     /**
@@ -238,25 +248,5 @@ class Attribute extends Base
             // execute sql
             $this->getEntityManager()->nativeQuery($sql);
         }
-    }
-
-    /**
-     * @param Entity $entity
-     *
-     * @return bool
-     */
-    protected function isTypeValueValid(Entity $entity): bool
-    {
-        if (!empty($entity->get('isMultilang')) && $this->getConfig()->get('isMultilangActive', false) && in_array($entity->get('type'), ['enum', 'multiEnum'])) {
-            $count = count($entity->get('typeValue'));
-            foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
-                $field = 'typeValue' . ucfirst(Util::toCamelCase(strtolower($locale)));
-                if (count($entity->get($field)) != $count) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 }
