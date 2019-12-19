@@ -53,6 +53,10 @@ class Attribute extends Base
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
+        if (!$this->isTypeValueValid($entity)) {
+            throw new BadRequest("The number of 'Values' items should be identical for all locales");
+        }
+
         // set sort order
         if (is_null($entity->get('sortOrder'))) {
             $entity->set('sortOrder', (int)$this->max('sortOrder') + 1);
@@ -183,12 +187,19 @@ class Attribute extends Base
         if (!$attribute->isNew() && $attribute->isAttributeChanged('isMultilang')) {
             if ($attribute->get('isMultilang')) {
                 $this->createLocaleAttribute($attribute, $locales);
-            } elseif (!empty($attributes = $attribute->get('attributes'))) {
-                foreach ($attributes as $item) {
+            } else {
+                foreach ($attribute->get('attributes') as $item) {
                     if (!empty($item->get('locale'))) {
                         $this->getEntityManager()->removeEntity($item);
                     }
                 }
+            }
+        }
+
+        if (!$attribute->isNew() && in_array($attribute->get('type'), ['enum', 'multiEnum']) && $attribute->isAttributeChanged('typeValue')) {
+            foreach ($attribute->get('attributes') as $item) {
+                $item->set('typeValue', $attribute->get('typeValue'));
+                $this->getEntityManager()->saveEntity($item);
             }
         }
 
@@ -261,5 +272,22 @@ class Attribute extends Base
             // execute sql
             $this->getEntityManager()->nativeQuery($sql);
         }
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return bool
+     */
+    protected function isTypeValueValid(Entity $entity): bool
+    {
+        if (!empty($entity->get('locale'))
+            && in_array($entity->get('type'), ['enum', 'multiEnum'])
+            && count($entity->get('typeValue')) != count($entity->get('parent')->get('typeValue'))
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }
