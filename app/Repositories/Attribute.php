@@ -27,6 +27,7 @@ use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Espo\Core\Exceptions\Error;
 use Treo\Core\Utils\Util;
+use Pim\Entities\Attribute as AttributeEntity;
 
 /**
  * Class Attribute
@@ -74,17 +75,8 @@ class Attribute extends Base
      */
     public function afterSave(Entity $entity, array $options = [])
     {
-        if ($entity->isNew() && $entity->get('isMultilang')) {
-            // create multilang attributes
-        }
-
-        if (!$entity->isNew() && $entity->isAttributeChanged('isMultilang')) {
-            if ($entity->get('isMultilang')) {
-                // create multilang attributes
-            } else {
-                // delete multilang attributes
-            }
-        }
+        // create or delete locale attributes if it needs
+        $this->updateLocalesAttributes($entity);
 
         parent::afterSave($entity, $options);
     }
@@ -103,6 +95,28 @@ class Attribute extends Base
     }
 
     /**
+     * @param AttributeEntity $attribute
+     * @param array           $locales
+     *
+     * @return void
+     */
+    public function createLocaleAttribute(AttributeEntity $attribute, array $locales): void
+    {
+        foreach ($locales as $locale) {
+            $localeAttribute = $this->getEntityManager()->getEntity('Attribute');
+            $localeAttribute->set($attribute->toArray());
+            $localeAttribute->id = Util::generateId();
+            $localeAttribute->set('isMultilang', false);
+            $localeAttribute->set('locale', $locale);
+            $localeAttribute->set('parentId', $attribute->get('id'));
+            $localeAttribute->set('name', $attribute->get('name') . ' › ' . $locale);
+            $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale) . '_' . Util::generateId());
+
+            $this->getEntityManager()->saveEntity($localeAttribute);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     protected function beforeUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
@@ -116,6 +130,39 @@ class Attribute extends Base
                 throw new Error($this->exception("You can not unlink product family attribute"));
             }
         }
+    }
+
+    /**
+     * @param AttributeEntity $attribute
+     *
+     * @return bool
+     */
+    protected function updateLocalesAttributes(AttributeEntity $attribute): bool
+    {
+        // exit
+        if (!$this->getConfig()->get('isMultilangActive', false)
+            || empty($locales = $this->getConfig()->get('inputLanguageList', []))
+            || !empty($attribute->get('parent'))) {
+            return false;
+        }
+
+        if ($attribute->isNew() && $attribute->get('isMultilang')) {
+            $this->createLocaleAttribute($attribute, $locales);
+        }
+
+        if (!$attribute->isNew() && $attribute->isAttributeChanged('isMultilang')) {
+            if ($attribute->get('isMultilang')) {
+                $this->createLocaleAttribute($attribute, $locales);
+            } elseif (!empty($attributes = $attribute->get('attributes'))) {
+                foreach ($attributes as $item) {
+                    if (!empty($item->get('locale'))) {
+                        $this->getEntityManager()->removeEntity($item);
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
