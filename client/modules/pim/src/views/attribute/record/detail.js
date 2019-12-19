@@ -20,6 +20,14 @@
 Espo.define('pim:views/attribute/record/detail', 'views/record/detail',
     Dep => Dep.extend({
 
+        setup() {
+            Dep.prototype.setup.call(this);
+
+            if (this.model.get('locale') !== null) {
+                this.removeButton('delete');
+            }
+        },
+
         delete: function () {
             Espo.TreoUi.confirmWithBody('', {
                 confirmText: this.translate('Remove'),
