@@ -20,6 +20,8 @@
 Espo.define('pim:views/attribute/record/list', 'pim:views/record/list',
     Dep => Dep.extend({
 
+        rowActionsView: 'pim:views/attribute/record/row-actions/default',
+
         massActionRemove: function () {
             if (!this.getAcl().check(this.entityType, 'delete')) {
                 this.notify('Access denied', 'error');

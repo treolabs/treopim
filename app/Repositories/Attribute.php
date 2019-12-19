@@ -53,9 +53,6 @@ class Attribute extends Base
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
-        // call parent action
-        parent::beforeSave($entity, $options);
-
         // set sort order
         if (is_null($entity->get('sortOrder'))) {
             $entity->set('sortOrder', (int)$this->max('sortOrder') + 1);
@@ -64,6 +61,8 @@ class Attribute extends Base
         if (!$entity->isNew() && $entity->isAttributeChanged('sortOrder')) {
             $this->updateSortOrder($entity);
         }
+
+        parent::beforeSave($entity, $options);
     }
 
     /**
@@ -75,6 +74,20 @@ class Attribute extends Base
         $this->updateLocalesAttributes($entity);
 
         parent::afterSave($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeRemove(Entity $entity, array $options = [])
+    {
+        if (!empty($entity->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be deleted");
+        }
+
+        parent::beforeRemove($entity, $options);
     }
 
     /**
