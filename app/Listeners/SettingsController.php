@@ -39,18 +39,12 @@ class SettingsController extends AbstractListener
      */
     public function beforeActionUpdate(Event $event): void
     {
-        // get stored data
-        $storedData = $this->getConfig()->get('inputLanguageList', []);
-
-        // prepare request data
-        $requestData = $event->getArgument('data')->inputLanguageList ?? $storedData;
-
         // open session
         session_start();
 
         // set to session
-        $_SESSION['addedLocales'] = array_diff($requestData, $storedData);
-        $_SESSION['deletedLocales'] = array_diff($storedData, $requestData);
+        $_SESSION['isMultilangActive'] = $this->getConfig()->get('isMultilangActive', false);
+        $_SESSION['inputLanguageList'] = $this->getConfig()->get('inputLanguageList', []);
     }
 
     /**
@@ -62,33 +56,40 @@ class SettingsController extends AbstractListener
             // delete all
             $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE locale IS NOT NULL");
         } else {
-            // create
-            if (!empty($_SESSION['addedLocales'])) {
-                /** @var AttributeRepository $repository */
-                $repository = $this->getEntityManager()->getRepository('Attribute');
+            /** @var AttributeRepository $repository */
+            $repository = $this->getEntityManager()->getRepository('Attribute');
 
-                /** @var AttributeEntity[] $attributes */
-                $attributes = $repository
-                    ->where(['isMultilang' => true])
-                    ->find();
+            /** @var AttributeEntity[] $attributes */
+            $attributes = $repository
+                ->where(['isMultilang' => true])
+                ->find();
 
-                if (count($attributes) > 0) {
+            if (count($attributes) > 0) {
+                /** @var array $allLocales */
+                $allLocales = $this->getConfig()->get('inputLanguageList', []);
+
+                /** @var array $addedLocales */
+                $addedLocales = !$_SESSION['isMultilangActive'] ? $allLocales : array_diff($allLocales, $_SESSION['inputLanguageList']);
+
+                // create
+                if (!empty($addedLocales)) {
                     foreach ($attributes as $attribute) {
-                        $repository->createLocaleAttribute($attribute, $_SESSION['addedLocales']);
+                        $repository->createLocaleAttribute($attribute, $addedLocales);
                     }
                 }
 
-                // cleanup
-                $_SESSION['addedLocales'] = [];
-            }
+                /** @var array $deletedLocales */
+                $deletedLocales = !$_SESSION['isMultilangActive'] ? [] : array_diff($_SESSION['inputLanguageList'], $allLocales);
 
-            // delete
-            if (!empty($_SESSION['deletedLocales'])) {
-                $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE locale IN ('" . implode("','", $_SESSION['deletedLocales']) . "')");
-
-                // cleanup
-                $_SESSION['deletedLocales'] = [];
+                // delete
+                if (!empty($deletedLocales)) {
+                    $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE locale IN ('" . implode("','", $deletedLocales) . "')");
+                }
             }
         }
+
+        // cleanup
+        unset($_SESSION['isMultilangActive']);
+        unset($_SESSION['inputLanguageList']);
     }
 }
