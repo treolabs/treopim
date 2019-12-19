@@ -139,10 +139,13 @@ class Attribute extends Base
      */
     protected function updateLocalesAttributes(AttributeEntity $attribute): bool
     {
-        // exit
-        if (!$this->getConfig()->get('isMultilangActive', false)
-            || empty($locales = $this->getConfig()->get('inputLanguageList', []))
-            || !empty($attribute->get('parent'))) {
+        // exit if has locale
+        if (!empty($attribute->get('locale'))) {
+            return false;
+        }
+
+        // exit if no locales
+        if (!$this->getConfig()->get('isMultilangActive', false) || empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
             return false;
         }
 
