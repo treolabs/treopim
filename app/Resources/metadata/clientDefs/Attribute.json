@@ -81,6 +81,20 @@
                 "text",
                 "wysiwyg"
               ]
+            },
+            {
+              "type": "isEmpty",
+              "attribute": "locale"
+            }
+          ]
+        }
+      },
+      "attributeGroup": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "locale"
             }
           ]
         }
