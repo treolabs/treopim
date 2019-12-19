@@ -167,10 +167,11 @@ class Module extends AbstractModule
                 [
                     'type'      => 'in',
                     'attribute' => 'type',
-                    'value'     => [
-                        'enum',
-                        'multiEnum'
-                    ]
+                    'value'     => ['enum', 'multiEnum']
+                ],
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'isMultilang'
                 ]
             ];
 
