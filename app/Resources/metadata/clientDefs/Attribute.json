@@ -12,7 +12,8 @@
     "notLinkedWithProduct",
     "notLinkedProductAttributeValues",
     "notLinkedProductFamilyAttributes",
-    "unitTypeDisabled"
+    "unitTypeDisabled",
+    "notLocalesAttributes"
   ],
   "disabledMassActions": [
     "merge"

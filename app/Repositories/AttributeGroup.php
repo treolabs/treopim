@@ -46,4 +46,37 @@ class AttributeGroup extends Base
 
         parent::beforeUnrelate($entity, $relationName, $foreign, $options);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('isMultilang'))) {
+            /** @var string $id */
+            $id = $entity->get('id');
+
+            /** @var string $parentId */
+            $parentId = $foreign->get('id');
+
+            $this->getEntityManager()->nativeQuery("UPDATE attribute SET attribute_group_id='$id' WHERE parent_id='$parentId' AND locale IS NOT NULL");
+        }
+
+        parent::afterRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('isMultilang'))) {
+            /** @var string $parentId */
+            $parentId = $foreign->get('id');
+
+            $this->getEntityManager()->nativeQuery("UPDATE attribute SET attribute_group_id=null WHERE parent_id='$parentId' AND locale IS NOT NULL");
+        }
+
+        parent::afterUnrelate($entity, $relationName, $foreign, $options);
+    }
 }

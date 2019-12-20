@@ -23,6 +23,9 @@
     "attributes": {
       "view": "pim:views/attribute-group/record/panels/attributes",
       "layout": "listAttributesInAttrGroup",
+      "selectBoolFilterList": [
+        "notLocalesAttributes"
+      ],
       "dragDrop": {
         "isActive": true,
         "sortField": "sortOrder"
