@@ -18,8 +18,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace Pim\Repositories;
 
-class AttributeGroup extends \Espo\Core\Templates\Repositories\Base
+use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Templates\Repositories\Base;
+use Espo\ORM\Entity;
+
+/**
+ * Class AttributeGroup
+ *
+ * @author r.ratsun@treolabs.com
+ */
+class AttributeGroup extends Base
 {
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be unlinked");
+        }
+
+        parent::beforeUnrelate($entity, $relationName, $foreign, $options);
+    }
 }
