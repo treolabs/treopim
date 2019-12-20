@@ -38,6 +38,20 @@ class AttributeGroup extends Base
      *
      * @throws BadRequest
      */
+    public function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be linked");
+        }
+
+        parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
     public function beforeUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
     {
         if ($relationName == 'attributes' && !empty($foreign->get('locale'))) {
