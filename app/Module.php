@@ -193,6 +193,10 @@ class Module extends AbstractModule
                 [
                     'type'      => 'isTrue',
                     'attribute' => 'isRequired'
+                ],
+                [
+                    'type'      => 'isTrue',
+                    'attribute' => 'attributeIsMultilang'
                 ]
             ];
         }
