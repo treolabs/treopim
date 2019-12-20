@@ -166,8 +166,12 @@
     "productCategories": {
       "type": "hasMany",
       "foreign": "category",
-      "entity": "ProductCategory"
-    }
+      "entity": "ProductCategory",
+      "addRelationCustomDefs": {
+        "link": "productCategories",
+        "entity": "Product"
+      }
+  }
   },
   "collection": {
     "sortBy": "createdAt",
