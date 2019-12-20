@@ -180,6 +180,9 @@ class Attribute extends Base
             return false;
         }
 
+        /** @var string $id */
+        $id = $attribute->get('id');
+
         if ($attribute->isNew() && $attribute->get('isMultilang')) {
             $this->createLocaleAttribute($attribute, $locales);
         }
@@ -188,11 +191,7 @@ class Attribute extends Base
             if ($attribute->get('isMultilang')) {
                 $this->createLocaleAttribute($attribute, $locales);
             } else {
-                foreach ($attribute->get('attributes') as $item) {
-                    if (!empty($item->get('locale'))) {
-                        $this->getEntityManager()->removeEntity($item);
-                    }
-                }
+                $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id' AND locale IS NOT NULL");
             }
         }
 
