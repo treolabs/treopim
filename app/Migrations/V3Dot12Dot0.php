@@ -57,7 +57,7 @@ class V3Dot12Dot0 extends AbstractMigration
         (new Auth($this->getContainer()))->useNoAuth();
 
         $config = $this->getContainer()->get('config');
-        if ($config->get('pimAndDamInstalled') === true) {
+        if ($config->get('pimAndDamInstalled') !== true) {
             //set flag about installed Pim and Image
             $config->set('pimAndDamInstalled', false);
         }
