@@ -174,24 +174,8 @@ class V3Dot12Dot0 extends AbstractMigration
                 ->getEntityManager()
                 ->nativeQuery("DELETE FROM asset_relation WHERE asset_id IN ({$assetIds})");
 
-            if (!empty($this->getEntityManager()->nativeQuery("SHOW TABLES LIKE 'rendition'")->fetchColumn(0))) {
-                $renditions = $this
-                    ->getEntityManager()
-                    ->nativeQuery("SELECT id FROM rendition WHERE asset_id IN ({$assetIds})")
-                    ->fetchAll(PDO::FETCH_COLUMN);
-
-                $renditions = "'" . implode("','", $renditions) . "'";
-
-                $this
-                    ->getEntityManager()
-                    ->nativeQuery("DELETE FROM rendition WHERE asset_id IN ({$assetIds})");
-            }
             if (!empty($this->getEntityManager()->nativeQuery("SHOW TABLES LIKE 'asset_meta_data'")->fetchColumn(0))) {
-
                 $sql = "DELETE FROM asset_meta_data WHERE asset_id IN ({$assetIds})";
-                if (!empty($renditions)) {
-                    $sql .= " OR rendition_id IN ({$renditions})";
-                }
                 $this
                     ->getEntityManager()
                     ->nativeQuery($sql);
