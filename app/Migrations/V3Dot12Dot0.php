@@ -86,7 +86,7 @@ class V3Dot12Dot0 extends AbstractMigration
         if (!empty($users)) {
             foreach ($users as $user) {
                 $message = 'In the new <a href="https://treopim.com">TreoPIM </a> version, the PimImage entity is replaced with the <a href="https://treodam.com/">TreoDAM module</a>. 
-                So to continue work with the images, please, installed the latest version of the <a href="https://treodam.com/">TreoDAM module</a>.';
+                So to continue work with the images, please, install the latest version of the <a href="https://treodam.com/">TreoDAM module</a>.';
                 // create notification
                 $notification = $em->getEntity('Notification');
                 $notification->set('type', 'Message');
