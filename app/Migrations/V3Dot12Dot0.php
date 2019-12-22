@@ -39,16 +39,6 @@ use Treo\Core\Utils\Auth;
 class V3Dot12Dot0 extends AbstractMigration
 {
     /**
-     * Max execute queries at a time
-     */
-    const MAX_QUERY = 3000;
-
-    /**
-     * @var array
-     */
-    protected $sqlUpdate = [];
-
-    /**
      * @inheritdoc
      * @throws Error
      */
@@ -146,7 +136,6 @@ class V3Dot12Dot0 extends AbstractMigration
                 unset($attachments[$k]);
             }
         }
-        $this->executeUpdate($this->sqlUpdate);
         if (!empty($assetIds)) {
             $assetIds = "'" . implode("','", $assetIds) . "'";
             //insert pimImages
@@ -312,34 +301,19 @@ class V3Dot12Dot0 extends AbstractMigration
 
     /**
      * @param string $table
-     * @param array  $values
+     * @param array $values
      * @param string $id
      */
     protected function updateById(string $table, array $values, string $id): void
     {
         $setValues = [];
+        $params = [];
         foreach ($values as $field => $value) {
-            $setValues[] = "{$field} = '{$value}'";
+            $setValues[] = "{$field} = :{$field}";
+            $params[$field] = $value;
         }
-        if (!empty($setValues) && !empty($id)) {
-            $this->sqlUpdate[] = 'UPDATE ' . $table . ' SET ' . implode(',', $setValues) . " WHERE id = '{$id}'";
-        }
-        if (count($this->sqlUpdate) >= self::MAX_QUERY) {
-            $this->executeUpdate($this->sqlUpdate);
-        }
-    }
-
-    /**
-     * Execute Sql-Update for Attachments
-     *
-     * @param array $queries
-     */
-    protected function executeUpdate(array $queries): void
-    {
-        if (!empty($queries)) {
-            $this->getEntityManager()->nativeQuery(implode(';', $queries));
-        }
-        $this->sqlUpdate = [];
+        $sql = 'UPDATE ' . $table . ' SET ' . implode(',', $setValues) . " WHERE id = '{$id}'";
+        $this->getEntityManager()->nativeQuery($sql, $params);
     }
 
     /**
