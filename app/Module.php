@@ -335,18 +335,18 @@ class Module extends AbstractModule
                             [
                                 "acl" => "read",
                                 "label" => "",
-                                "link" => "#Product/plate",
-                                "style" => "default",
-                                "title" => "Plate",
-                                "iconHtml" => "<span class=\"fa fa-th\"></span>"
-                            ],
-                            [
-                                "acl" => "read",
-                                "label" => "",
                                 "link" => "#Product/list",
                                 "style" => "primary",
                                 "title" => "List",
                                 "iconHtml" => "<span class=\"fa fa-list\"></span>"
+                            ],
+                            [
+                                "acl" => "read",
+                                "label" => "",
+                                "link" => "#Product/plate",
+                                "style" => "default",
+                                "title" => "Plate",
+                                "iconHtml" => "<span class=\"fa fa-th\"></span>"
                             ]
                         ]
                     ],
