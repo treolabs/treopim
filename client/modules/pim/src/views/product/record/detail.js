@@ -157,11 +157,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 let viewsFields = this.getFieldViews();
                 Object.keys(viewsFields).forEach(item => {
                     if (viewsFields[item].mode === "edit" ) {
-                        if (viewsFields[item].model.name === 'productAttributesGrid') {
-                            viewsFields[item].getParentView().inlineEditSave(viewsFields[item]);
-                        } else {
-                            viewsFields[item].inlineEditSave();
-                        }
+                        viewsFields[item].inlineEditSave();                        
                     }
                 });
             }
