@@ -96,6 +96,10 @@ class V3Dot12Dot0 extends AbstractMigration
      */
     public function down(): void
     {
+        if($this->getContainer()->get('config')->get('pimAndDamInstalled') !== true) {
+            return;
+        }
+
         (new Auth($this->getContainer()))->useNoAuth();
 
         $attachments = $this
