@@ -60,11 +60,13 @@ class LayoutController extends AbstractListener
         /** @var array $result */
         $result = Json::decode($event->getArgument('result'), true);
 
-        $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
         $result[0]['rows'][] = [['name' => 'name'], ['name' => 'typeValue']];
 
-        foreach ($this->getInputLanguageList() as $locale => $key) {
-            $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
+        if ($this->getConfig()->get('isMultilangActive', false)) {
+            $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
+            foreach ($this->getInputLanguageList() as $locale => $key) {
+                $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
+            }
         }
 
         $event->setArgument('result', Json::encode($result));
