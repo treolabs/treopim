@@ -17,6 +17,7 @@
   },
   "extra": {
     "treoId": "Pim",
+    "version": "3.11.x",
     "name": {
       "default": "PIM"
     },

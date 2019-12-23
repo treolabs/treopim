@@ -84,6 +84,13 @@ class Module extends AbstractModule
         /**
          * Attribute
          */
+        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['isMultilang']['visible']['conditionGroup'] = [
+            [
+                'type'      => 'in',
+                'attribute' => 'type',
+                'value'     => self::$multiLangTypes
+            ]
+        ];
         $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name']['required']['conditionGroup'] = [
             [
                 'type'      => 'notIn',
@@ -128,13 +135,6 @@ class Module extends AbstractModule
             /**
              * Attribute
              */
-            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['isMultilang']['visible']['conditionGroup'] = [
-                [
-                    'type'      => 'in',
-                    'attribute' => 'type',
-                    'value'     => self::$multiLangTypes
-                ]
-            ];
             $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['required']['conditionGroup'] = [
                 [
                     'type'      => 'isTrue',
