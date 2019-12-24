@@ -19,7 +19,8 @@
     "productFamilyAttributes": {
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
-        "notLinkedProductFamilyAttributes"
+        "notLinkedProductFamilyAttributes",
+        "notLocalesAttributes"
       ],
       "view": "pim:views/product-family/record/panels/product-family-attributes",
       "aclScopesList": [

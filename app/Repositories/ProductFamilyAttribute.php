@@ -45,8 +45,6 @@ class ProductFamilyAttribute extends Base
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
-        parent::beforeSave($entity, $options);
-
         // exit
         if (!empty($options['skipValidation'])) {
             return true;
@@ -59,6 +57,8 @@ class ProductFamilyAttribute extends Base
         if ($entity->get('scope') == 'Global') {
             $entity->set('channelsIds', []);
         }
+
+        parent::beforeSave($entity, $options);
     }
 
     /**
@@ -66,8 +66,11 @@ class ProductFamilyAttribute extends Base
      */
     public function afterSave(Entity $entity, array $options = [])
     {
-        // update product attribute values
-        $this->updateProductAttributeValues($entity);
+        // create locales attributes
+        $this->createLocalesAttributes($entity, $options);
+
+//        // update product attribute values
+//        $this->updateProductAttributeValues($entity);
 
         parent::afterSave($entity, $options);
     }
@@ -77,10 +80,13 @@ class ProductFamilyAttribute extends Base
      */
     public function afterRemove(Entity $entity, array $options = [])
     {
-        $this
-            ->getEntityManager()
-            ->getRepository('ProductAttributeValue')
-            ->removeCollectionByProductFamilyAttribute($entity->get('id'));
+
+
+
+//        $this
+//            ->getEntityManager()
+//            ->getRepository('ProductAttributeValue')
+//            ->removeCollectionByProductFamilyAttribute($entity->get('id'));
 
         parent::afterRemove($entity, $options);
     }
@@ -272,6 +278,26 @@ class ProductFamilyAttribute extends Base
         $this->executeSqlItems();
 
         return true;
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     */
+    protected function createLocalesAttributes(Entity $entity, array $options)
+    {
+        if (empty($options['skipLocaleAttributeCreating'])) {
+            $attributes = $entity->get('attribute')->get('attributes');
+            if (count($attributes) > 0) {
+                foreach ($attributes as $attribute) {
+                    $newEntity = $this->getNewEntity();
+                    $newEntity->set($entity->toArray());
+                    $newEntity->id = Util::generateId();
+                    $newEntity->set('attributeId', $attribute->get('id'));
+                    $this->getEntityManager()->saveEntity($newEntity, ['skipLocaleAttributeCreating' => true]);
+                }
+            }
+        }
     }
 
     /**

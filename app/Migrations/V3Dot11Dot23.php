@@ -36,12 +36,12 @@ class V3Dot11Dot23 extends Base
      */
     public function up(): void
     {
-        echo PHP_EOL . "Update db schema...";
+        $this->renderLine('Update db schema...', false);
         $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("ALTER TABLE attribute DROP is_system");
         $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
-        echo " Done!" . PHP_EOL;
+        echo ' Done!' . PHP_EOL;
     }
 
     /**
