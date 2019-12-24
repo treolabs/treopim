@@ -22,22 +22,35 @@ declare(strict_types=1);
 
 namespace Pim\Migrations;
 
-use Treo\Core\Migration\AbstractMigration;
+use Treo\Core\Migration\Base;
 
 /**
  * Migration class for version 3.11.23
  *
  * @author r.ratsun@treolabs.com
  */
-class V3Dot11Dot23 extends AbstractMigration
+class V3Dot11Dot23 extends Base
 {
     /**
      * @inheritdoc
      */
     public function up(): void
     {
+        echo PHP_EOL . "Update db schema...";
+        $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+        $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+        $this->exec("ALTER TABLE attribute DROP is_system");
+        $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
+        echo " Done!" . PHP_EOL;
+    }
+
+    /**
+     * @param string $sql
+     */
+    protected function exec(string $sql): void
+    {
         try {
-            $this->getEntityManager()->nativeQuery("ALTER TABLE attribute DROP is_system");
+            $this->getPDO()->exec($sql);
         } catch (\PDOException $e) {
         }
     }
