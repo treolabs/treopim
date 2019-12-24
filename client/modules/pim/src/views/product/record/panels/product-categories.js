@@ -72,8 +72,8 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                 this.filter = this.getStoredFilter();
             }
 
-            if (this.defs.create) {
-                if (this.getAcl().check(this.scope, 'create') && !~['User', 'Team'].indexOf()) {
+            if (this.defs.create && this.getAcl().check('Category', 'create')) {
+                if (this.getAcl().check(this.scope, 'create')) {
                     this.buttonList.push({
                         title: 'Create',
                         action: this.defs.createAction || 'createRelated',
@@ -89,7 +89,7 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                 }
             }
 
-            if (this.defs.select) {
+            if (this.defs.select && this.getAcl().check('Category', 'read')) {
                 var data = {link: this.link};
                 if (this.defs.selectPrimaryFilterName) {
                     data.primaryFilterName = this.defs.selectPrimaryFilterName;
