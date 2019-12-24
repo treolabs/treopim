@@ -69,10 +69,24 @@ class ProductFamilyAttribute extends Base
         // create locales attributes
         $this->createLocalesAttributes($entity, $options);
 
-//        // update product attribute values
-//        $this->updateProductAttributeValues($entity);
+        // update product attribute values
+        $this->updateProductAttributeValues($entity);
 
         parent::afterSave($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeRemove(Entity $entity, array $options = [])
+    {
+        if (empty($options['skipLocaleAttributeDeleting']) && !empty($entity->get('attribute')->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be deleted");
+        }
+
+        parent::beforeRemove($entity, $options);
     }
 
     /**
@@ -80,13 +94,21 @@ class ProductFamilyAttribute extends Base
      */
     public function afterRemove(Entity $entity, array $options = [])
     {
+        if (empty($options['skipLocaleAttributeDeleting'])) {
+            // get locales attributes
+            $locales = $entity->get('attribute')->get('attributes');
+            if (count($locales) > 0) {
+                $this
+                    ->where(['attributeId' => array_column($locales->toArray(), 'id')])
+                    ->removeCollection(['skipLocaleAttributeDeleting' => true]);
+            }
+        }
 
-
-
-//        $this
-//            ->getEntityManager()
-//            ->getRepository('ProductAttributeValue')
-//            ->removeCollectionByProductFamilyAttribute($entity->get('id'));
+        // delete product attribute values
+        $this
+            ->getEntityManager()
+            ->getRepository('ProductAttributeValue')
+            ->removeCollectionByProductFamilyAttribute($entity->get('id'));
 
         parent::afterRemove($entity, $options);
     }
