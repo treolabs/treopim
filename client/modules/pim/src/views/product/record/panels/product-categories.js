@@ -57,7 +57,7 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                 }
             }
 
-            if (!this.getAcl().check('Category', 'create') || !this.getAcl().check('productCategory', 'create')) {
+            if (!this.getAcl().check('Category', 'create') || !this.getAcl().check('ProductCategory', 'create')) {
                 this.readOnly = true;
             }
 
