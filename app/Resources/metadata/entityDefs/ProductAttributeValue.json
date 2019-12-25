@@ -1,6 +1,6 @@
 {
   "fields": {
-    "name": {
+    "attributeType": {
       "type": "varchar",
       "readonly": true
     },
@@ -52,10 +52,6 @@
     "isCustom": {
       "type": "bool",
       "default": true,
-      "notStorable": true
-    },
-    "attributeType": {
-      "type": "varchar",
       "notStorable": true
     },
     "attributeIsMultilang": {
@@ -165,9 +161,9 @@
     }
   },
   "indexes": {
-    "name": {
+    "attributeType": {
       "columns": [
-        "name",
+        "attributeType",
         "deleted"
       ]
     },
@@ -180,6 +176,24 @@
     "assignedUser": {
       "columns": [
         "assignedUserId",
+        "deleted"
+      ]
+    },
+    "product": {
+      "columns": [
+        "productId",
+        "deleted"
+      ]
+    },
+    "attribute": {
+      "columns": [
+        "attributeId",
+        "deleted"
+      ]
+    },
+    "scope": {
+      "columns": [
+        "scope",
         "deleted"
       ]
     }

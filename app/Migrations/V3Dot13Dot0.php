@@ -25,23 +25,28 @@ namespace Pim\Migrations;
 use Treo\Core\Migration\Base;
 
 /**
- * Migration class for version 3.11.23
+ * Migration class for version 3.13.0
  *
  * @author r.ratsun@treolabs.com
  */
-class V3Dot11Dot23 extends Base
+class V3Dot13Dot0 extends Base
 {
     /**
      * @inheritdoc
      */
     public function up(): void
     {
-        $this->renderLine('Update db schema...', false);
         $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("ALTER TABLE attribute DROP is_system");
         $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
-        echo ' Done!' . PHP_EOL;
+        $this->exec("ALTER TABLE `product_attribute_value` DROP name");
+        $this->exec("DROP INDEX IDX_NAME ON `product_attribute_value`");
+        $this->exec("ALTER TABLE `product_attribute_value` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+        $this->exec("CREATE INDEX IDX_ATTRIBUTE_TYPE ON `product_attribute_value` (attribute_type, deleted)");
+        $this->exec("CREATE INDEX IDX_PRODUCT ON `product_attribute_value` (product_id, deleted)");
+        $this->exec("CREATE INDEX IDX_ATTRIBUTE ON `product_attribute_value` (attribute_id, deleted)");
+        $this->exec("CREATE INDEX IDX_SCOPE ON `product_attribute_value` (scope, deleted)");
     }
 
     /**
@@ -49,9 +54,11 @@ class V3Dot11Dot23 extends Base
      */
     protected function exec(string $sql): void
     {
+        echo $sql . PHP_EOL;
         try {
             $this->getPDO()->exec($sql);
         } catch (\PDOException $e) {
+            echo $e->getMessage() . PHP_EOL;
         }
     }
 }
