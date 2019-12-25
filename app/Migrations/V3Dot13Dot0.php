@@ -47,8 +47,9 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_PRODUCT ON `product_attribute_value` (product_id, deleted)");
         $this->exec("CREATE INDEX IDX_ATTRIBUTE ON `product_attribute_value` (attribute_id, deleted)");
         $this->exec("CREATE INDEX IDX_SCOPE ON `product_attribute_value` (scope, deleted)");
+        $this->exec("ALTER TABLE `product_attribute_value` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
 
-        $attributes = $this->fetchAll("SELECT id, type FROM attribute WHERE deleted=0");
+        $attributes = $this->fetchAll("SELECT id, type, locale FROM attribute WHERE deleted=0");
         foreach ($attributes as $attribute) {
             /** @var string $id */
             $id = $attribute['id'];
@@ -56,7 +57,10 @@ class V3Dot13Dot0 extends Base
             /** @var string $type */
             $type = $attribute['type'];
 
-            $this->exec("UPDATE product_attribute_value SET attribute_type='$type' WHERE attribute_id='$id' AND deleted=0");
+            /** @var string $locale */
+            $locale = (empty($attribute['locale'])) ? 'NULL' : "'" . $attribute['locale'] . "'";
+
+            $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=$locale WHERE attribute_id='$id' AND deleted=0");
         }
         $this->exec("UPDATE product_attribute_value SET deleted=1 WHERE attribute_type IS NULL");
     }
