@@ -306,7 +306,10 @@ class ProductFamilyAttribute extends Base
                 // generate id
                 $id = Util::generateId();
 
+                /** @var string $type */
                 $type = $entity->get('name');
+
+                /** @var string $locale */
                 $locale = $entity->get('locale');
 
                 $this->exec(
