@@ -69,7 +69,7 @@ class ProductFamilyAttribute extends Base
         parent::afterSave($entity, $options);
 
         // create locales attributes recursively
-        if (empty($options['skipLocaleAttributeCreating'])) {
+        if ($entity->isNew() && empty($entity->get('locale'))) {
             $attributes = $entity->get('attribute')->get('attributes');
             if (count($attributes) > 0) {
                 foreach ($attributes as $attribute) {
@@ -80,7 +80,7 @@ class ProductFamilyAttribute extends Base
                     $newEntity->set('parentId', $entity->get('id'));
                     $newEntity->set('name', $attribute->get('type'));
                     $newEntity->set('locale', $attribute->get('locale'));
-                    $this->getEntityManager()->saveEntity($newEntity, ['skipLocaleAttributeCreating' => true, 'skipValidation' => true]);
+                    $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
                 }
             }
         }
