@@ -9,9 +9,10 @@
       "required": true,
       "view": "pim:views/product-attribute-value/fields/attribute"
     },
-    "attributeType": {
+    "name": {
       "type": "varchar",
-      "readonly": true
+      "readonly": true,
+      "realName": "attributeType"
     },
     "isRequired": {
       "type": "bool",
@@ -170,9 +171,9 @@
     }
   },
   "indexes": {
-    "attributeType": {
+    "name": {
       "columns": [
-        "attributeType",
+        "name",
         "deleted"
       ]
     },

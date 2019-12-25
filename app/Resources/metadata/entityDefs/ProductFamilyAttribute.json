@@ -1,9 +1,5 @@
 {
   "fields": {
-    "name": {
-      "type": "varchar",
-      "trim": true
-    },
     "productFamily": {
       "type": "link",
       "required": true
@@ -12,9 +8,23 @@
       "type": "link",
       "required": true
     },
+    "name": {
+      "type": "varchar",
+      "trim": true,
+      "realName": "attributeType"
+    },
     "isRequired": {
       "type": "bool",
       "default": false
+    },
+    "locale": {
+      "type": "varchar",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
     },
     "scope": {
       "type": "enum",
@@ -69,6 +79,26 @@
     "teams": {
       "type": "linkMultiple",
       "view": "views/fields/teams"
+    },
+    "parent": {
+      "type": "link",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
+    "productFamilyAttributes": {
+      "type": "linkMultiple",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
     }
   },
   "links": {
@@ -111,6 +141,19 @@
       "entity": "Team",
       "relationName": "EntityTeam",
       "layoutRelationshipsDisabled": true
+    },
+    "parent": {
+      "type": "belongsTo",
+      "foreign": "attributes",
+      "entity": "ProductFamilyAttribute",
+      "audited": false
+    },
+    "productFamilyAttributes": {
+      "type": "hasMany",
+      "foreign": "parent",
+      "entity": "ProductFamilyAttribute",
+      "audited": false,
+      "layoutRelationshipsDisabled": true
     }
   },
   "collection": {
@@ -125,6 +168,30 @@
     "name": {
       "columns": [
         "name",
+        "deleted"
+      ]
+    },
+    "productFamily": {
+      "columns": [
+        "productFamilyId",
+        "deleted"
+      ]
+    },
+    "attribute": {
+      "columns": [
+        "attributeId",
+        "deleted"
+      ]
+    },
+    "isRequired": {
+      "columns": [
+        "isRequired",
+        "deleted"
+      ]
+    },
+    "scope": {
+      "columns": [
+        "scope",
         "deleted"
       ]
     },

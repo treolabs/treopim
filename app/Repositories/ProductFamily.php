@@ -39,14 +39,43 @@ class ProductFamily extends Base
     public function unrelate(Entity $entity, $relationName, $foreign, array $options = [])
     {
         if ($relationName == 'productFamilyAttributes') {
+            echo '<pre>';
+            print_r('123');
+            die();
             // prepare id
             if ($foreign instanceof Entity) {
+                /** @var string $id */
                 $id = $foreign->get('id');
             } elseif (is_string($foreign)) {
+                /** @var string $id */
                 $id = $foreign;
+
+                /** @var Entity $foreign */
+                $foreign = $this->getEntityManager()->getEntity('ProductFamilyAttribute', $foreign);
             } else {
                 throw new BadRequest("'Remove all relations' action is blocked for such relation");
             }
+
+            if (!empty($foreign->get('attribute')->get('locale'))) {
+                throw new BadRequest("Locale attribute can't be unlinked");
+            }
+
+            $attributes = $foreign->get('attribute')->get('attributes')->toArray();
+
+            $ids = $this
+                ->getEntityManager()
+                ->getRepository('ProductFamilyAttribute')
+                ->where(
+                    [
+                        'attribut'
+
+                    ]
+                )
+                ->find();
+
+            echo '<pre>';
+            print_r($ids->toArray());
+            die();
 
             // make product attribute as custom
             $sql = "UPDATE product_attribute_value SET product_family_attribute_id=NULL,is_required=0 WHERE product_family_attribute_id='$id';";

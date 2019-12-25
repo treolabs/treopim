@@ -94,21 +94,25 @@ class ProductFamilyAttribute extends Base
      */
     public function afterRemove(Entity $entity, array $options = [])
     {
-        if (empty($options['skipLocaleAttributeDeleting'])) {
-            // get locales attributes
-            $locales = $entity->get('attribute')->get('attributes');
-            if (count($locales) > 0) {
-                $this
-                    ->where(['attributeId' => array_column($locales->toArray(), 'id')])
-                    ->removeCollection(['skipLocaleAttributeDeleting' => true]);
-            }
-        }
+        echo '<pre>';
+        print_r('123');
+        die();
+        /** @var string $id */
+        $id = $entity->get('id');
+
+        /** @var array $ids */
+        $ids = array_column($entity->get('productFamilyAttributes')->toArray(), 'id');
+
+        // delete locales attributes
+        $this
+            ->getEntityManager()
+            ->nativeQuery("UPDATE product_family_attribute SET deleted=1 WHERE parent_id='$id'");
 
         // delete product attribute values
         $this
             ->getEntityManager()
             ->getRepository('ProductAttributeValue')
-            ->removeCollectionByProductFamilyAttribute($entity->get('id'));
+            ->removeCollectionByProductFamilyAttribute(array_merge([$id], $ids));
 
         parent::afterRemove($entity, $options);
     }
@@ -316,6 +320,7 @@ class ProductFamilyAttribute extends Base
                     $newEntity->set($entity->toArray());
                     $newEntity->id = Util::generateId();
                     $newEntity->set('attributeId', $attribute->get('id'));
+                    $newEntity->set('parentId', $entity->get('id'));
                     $this->getEntityManager()->saveEntity($newEntity, ['skipLocaleAttributeCreating' => true]);
                 }
             }
