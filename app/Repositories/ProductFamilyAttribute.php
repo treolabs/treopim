@@ -45,13 +45,15 @@ class ProductFamilyAttribute extends Base
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
-        // exit
-        if (!empty($options['skipValidation'])) {
-            return true;
+        // is valid
+        if (empty($options['skipValidation'])) {
+            $this->isValid($entity);
         }
 
-        // is valid
-        $this->isValid($entity);
+        if ($entity->isNew()) {
+            // set type
+            $entity->set('name', $entity->get('attribute')->get('type'));
+        }
 
         // clearing channels ids
         if ($entity->get('scope') == 'Global') {
@@ -70,7 +72,7 @@ class ProductFamilyAttribute extends Base
         $this->createLocalesAttributes($entity, $options);
 
         // update product attribute values
-        $this->updateProductAttributeValues($entity);
+//        $this->updateProductAttributeValues($entity);
 
         parent::afterSave($entity, $options);
     }
@@ -82,7 +84,7 @@ class ProductFamilyAttribute extends Base
      */
     public function beforeRemove(Entity $entity, array $options = [])
     {
-        if (empty($options['skipLocaleAttributeDeleting']) && !empty($entity->get('attribute')->get('locale'))) {
+        if (empty($options['skipLocaleAttributeDeleting']) && !empty($entity->get('locale'))) {
             throw new BadRequest("Locale attribute can't be deleted");
         }
 
@@ -94,25 +96,37 @@ class ProductFamilyAttribute extends Base
      */
     public function afterRemove(Entity $entity, array $options = [])
     {
-        echo '<pre>';
-        print_r('123');
-        die();
-        /** @var string $id */
-        $id = $entity->get('id');
-
-        /** @var array $ids */
-        $ids = array_column($entity->get('productFamilyAttributes')->toArray(), 'id');
-
-        // delete locales attributes
-        $this
-            ->getEntityManager()
-            ->nativeQuery("UPDATE product_family_attribute SET deleted=1 WHERE parent_id='$id'");
+        // remove locales attribute recursively
+        if (empty($options['skipLocaleAttributeDeleting'])) {
+            $attributes = $entity->get('productFamilyAttributes');
+            if (count($attributes) > 0) {
+                foreach ($attributes as $attribute) {
+                    $this
+                        ->getEntityManager()
+                        ->removeEntity(
+                            $attribute, [
+                                'skipLocaleAttributeDeleting' => true,
+                                'skipAttributeValueDeleting'  => !empty($options['skipAttributeValueDeleting'])
+                            ]
+                        );
+                }
+            }
+        }
 
         // delete product attribute values
-        $this
-            ->getEntityManager()
-            ->getRepository('ProductAttributeValue')
-            ->removeCollectionByProductFamilyAttribute(array_merge([$id], $ids));
+        if (empty($options['skipAttributeValueDeleting'])) {
+            $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->removeCollectionByProductFamilyAttribute($entity->get('id'));
+        } else {
+            /** @var string $id */
+            $id = $entity->get('id');
+
+            $this
+                ->getEntityManager()
+                ->nativeQuery("UPDATE product_attribute_value SET product_family_attribute_id=NULL,is_required=0 WHERE product_family_attribute_id='$id'");
+        }
 
         parent::afterRemove($entity, $options);
     }
@@ -321,6 +335,8 @@ class ProductFamilyAttribute extends Base
                     $newEntity->id = Util::generateId();
                     $newEntity->set('attributeId', $attribute->get('id'));
                     $newEntity->set('parentId', $entity->get('id'));
+                    $newEntity->set('name', $attribute->get('type'));
+                    $newEntity->set('locale', $attribute->get('locale'));
                     $this->getEntityManager()->saveEntity($newEntity, ['skipLocaleAttributeCreating' => true]);
                 }
             }

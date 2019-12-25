@@ -64,8 +64,10 @@ class V3Dot13Dot0 extends Base
             $locale = (empty($attribute['locale'])) ? 'NULL' : "'" . $attribute['locale'] . "'";
 
             $this->exec("UPDATE product_attribute_value SET name='$type', locale=$locale WHERE attribute_id='$id' AND deleted=0");
+            $this->exec("UPDATE product_family_attribute SET name='$type', locale=$locale WHERE attribute_id='$id' AND deleted=0");
         }
         $this->exec("UPDATE product_attribute_value SET deleted=1 WHERE name IS NULL");
+        $this->exec("UPDATE product_family_attribute SET deleted=1 WHERE name IS NULL");
     }
 
     /**

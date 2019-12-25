@@ -33,12 +33,12 @@ use Espo\ORM\Entity;
 class ProductAttributeValue extends Base
 {
     /**
-     * @param string|array $productFamilyAttributeId
+     * @param string $id
      */
-    public function removeCollectionByProductFamilyAttribute($productFamilyAttributeId)
+    public function removeCollectionByProductFamilyAttribute(string $id)
     {
         $this
-            ->where(['productFamilyAttributeId' => $productFamilyAttributeId])
+            ->where(['productFamilyAttributeId' => $id])
             ->removeCollection(['skipProductAttributeValueHook' => true]);
     }
 
