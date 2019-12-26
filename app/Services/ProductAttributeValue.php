@@ -36,7 +36,7 @@ class ProductAttributeValue extends AbstractService
     /**
      * @var array
      */
-    protected $mandatorySelectAttributeList = ['locale', 'type'];
+    protected $mandatorySelectAttributeList = ['locale', 'attributeType'];
 
     /**
      * @inheritdoc
