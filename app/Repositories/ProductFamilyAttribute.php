@@ -322,10 +322,10 @@ class ProductFamilyAttribute extends Base
                 $type = $entity->get('attributeType');
 
                 /** @var string $locale */
-                $locale = $entity->get('locale');
+                $locale = (empty($entity->get('locale'))) ? 'NULL' : "'" . $entity->get('locale') . "'";
 
                 $sqls[]
-                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type','$locale')";
+                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired)";
                 if (!empty($teamsIds)) {
                     foreach ($teamsIds as $teamId) {
                         $sqls[] = "INSERT INTO entity_team (entity_id, team_id, entity_type) VALUES ('$id','$teamId','ProductAttributeValue')";
