@@ -44,7 +44,7 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
 
             if (this.model.get('attributeId')) {
                 // prepare data
-                let type = this.model.get('name');
+                let type = this.model.get('attributeType');
                 let typeValue = this.model.get('typeValue');
 
                 if (type) {

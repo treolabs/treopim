@@ -8,7 +8,7 @@
       "type": "link",
       "required": true
     },
-    "name": {
+    "attributeType": {
       "type": "varchar",
       "readonly": true
     },
@@ -164,9 +164,9 @@
     "fullTextSearch": false
   },
   "indexes": {
-    "name": {
+    "attributeType": {
       "columns": [
-        "name",
+        "attributeType",
         "deleted"
       ]
     },

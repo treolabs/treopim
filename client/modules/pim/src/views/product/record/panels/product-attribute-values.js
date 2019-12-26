@@ -747,7 +747,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 const modelData = {
                     value: model.get('value')
                 };
-                const actualFields = this.getFieldManager().getActualAttributeList(model.get('name'), 'value');
+                const actualFields = this.getFieldManager().getActualAttributeList(model.get('attributeType'), 'value');
                 actualFields.forEach(field => {
                     if (model.has(field)) {
                         _.extend(modelData, {[field]: model.get(field)});

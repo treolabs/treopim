@@ -42,7 +42,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
-            if (this.mode === 'edit' && ['multiEnum'].includes(this.model.get('name'))) {
+            if (this.mode === 'edit' && ['multiEnum'].includes(this.model.get('attributeType'))) {
                 this.$el.addClass('over-visible');
             }
         },
@@ -57,7 +57,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         createValueFieldView() {
             this.clearView('valueField');
 
-            let type = this.model.get('name') || 'base';
+            let type = this.model.get('attributeType') || 'base';
             this.createView('valueField', this.getValueFieldView(type), {
                 el: `${this.options.el} > .field[data-name="valueField"]`,
                 model: this.model,
@@ -71,7 +71,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
 
         updateModelDefs() {
             // prepare data
-            let type = this.model.get('name');
+            let type = this.model.get('attributeType');
             let typeValue = this.model.get('typeValue');
 
             if (type) {
@@ -96,7 +96,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             let data = this.model.get('data') || {};
             Object.keys(data).forEach(param => this.model.set({[`${this.name}${Espo.Utils.upperCaseFirst(param)}`]: data[param]}));
 
-            if (this.model.get('name') === 'image') {
+            if (this.model.get('attributeType') === 'image') {
                 this.model.set({[`${this.name}Id`]: this.model.get(this.name)});
             }
         },

@@ -70,33 +70,29 @@ class ProductAttributeValue extends AbstractService
      */
     protected function convertValue(Entity $entity)
     {
-        $type = $entity->get('name');
-
-        if (!empty($type)) {
-            switch ($type) {
-                case 'array':
-                    $entity->set('value', Json::decode($entity->get('value'), true));
-                    break;
-                case 'bool':
-                    $entity->set('value', (bool)$entity->get('value'));
-                    foreach ($this->getInputLanguageList() as $multiLangField) {
-                        $entity->set($multiLangField, (bool)$entity->get($multiLangField));
-                    }
-                    break;
-                case 'int':
-                    $entity->set('value', (int)$entity->get('value'));
-                    break;
-                case 'unit':
-                case 'float':
-                    $entity->set('value', (float)$entity->get('value'));
-                    break;
-                case 'multiEnum':
-                    $entity->set('value', Json::decode($entity->get('value'), true));
-                    foreach ($this->getInputLanguageList() as $multiLangField) {
-                        $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
-                    }
-                    break;
-            }
+        switch ($entity->get('attributeType')) {
+            case 'array':
+                $entity->set('value', Json::decode($entity->get('value'), true));
+                break;
+            case 'bool':
+                $entity->set('value', (bool)$entity->get('value'));
+                foreach ($this->getInputLanguageList() as $multiLangField) {
+                    $entity->set($multiLangField, (bool)$entity->get($multiLangField));
+                }
+                break;
+            case 'int':
+                $entity->set('value', (int)$entity->get('value'));
+                break;
+            case 'unit':
+            case 'float':
+                $entity->set('value', (float)$entity->get('value'));
+                break;
+            case 'multiEnum':
+                $entity->set('value', Json::decode($entity->get('value'), true));
+                foreach ($this->getInputLanguageList() as $multiLangField) {
+                    $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
+                }
+                break;
         }
     }
 

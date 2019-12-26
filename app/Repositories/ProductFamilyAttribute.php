@@ -47,7 +47,7 @@ class ProductFamilyAttribute extends Base
 
         if ($entity->isNew()) {
             // set type
-            $entity->set('name', $entity->get('attribute')->get('type'));
+            $entity->set('attributeType', $entity->get('attribute')->get('type'));
         }
 
         // clearing channels ids
@@ -78,7 +78,7 @@ class ProductFamilyAttribute extends Base
                     $newEntity->id = Util::generateId();
                     $newEntity->set('attributeId', $attribute->get('id'));
                     $newEntity->set('parentId', $entity->get('id'));
-                    $newEntity->set('name', $attribute->get('type'));
+                    $newEntity->set('attributeType', $attribute->get('type'));
                     $newEntity->set('locale', $attribute->get('locale'));
                     $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
                 }
@@ -310,13 +310,13 @@ class ProductFamilyAttribute extends Base
                 $id = Util::generateId();
 
                 /** @var string $type */
-                $type = $entity->get('name');
+                $type = $entity->get('attributeType');
 
                 /** @var string $locale */
                 $locale = $entity->get('locale');
 
                 $sqls[]
-                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,name,locale) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type','$locale')";
+                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type','$locale')";
                 if (!empty($teamsIds)) {
                     foreach ($teamsIds as $teamId) {
                         $sqls[] = "INSERT INTO entity_team (entity_id, team_id, entity_type) VALUES ('$id','$teamId','ProductAttributeValue')";
