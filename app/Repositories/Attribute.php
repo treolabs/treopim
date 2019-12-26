@@ -191,7 +191,9 @@ class Attribute extends Base
             if ($attribute->get('isMultilang')) {
                 $this->createLocaleAttribute($attribute, $locales);
             } else {
-                $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id' AND locale IS NOT NULL");
+                $this
+                    ->getEntityManager()
+                    ->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id'");
             }
         }
 
@@ -200,6 +202,14 @@ class Attribute extends Base
                 $item->set('typeValue', $attribute->get('typeValue'));
                 $this->getEntityManager()->saveEntity($item);
             }
+        }
+
+        if (!$attribute->isNew() && $attribute->isAttributeChanged('attributeGroupId')) {
+            /** @var string $attributeGroupId */
+            $attributeGroupId = (empty($attribute->get('attributeGroupId'))) ? 'NULL' : "'" . $attribute->get('attributeGroupId') . "'";
+            $this
+                ->getEntityManager()
+                ->nativeQuery("UPDATE attribute SET attribute_group_id=$attributeGroupId WHERE parent_id='$id'");
         }
 
         return true;
