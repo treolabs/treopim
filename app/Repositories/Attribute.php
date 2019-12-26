@@ -129,6 +129,12 @@ class Attribute extends Base
      */
     public function createLocaleAttribute(AttributeEntity $attribute, array $locales): void
     {
+        /** @var \Pim\Entities\ProductFamilyAttribute[] $pfas */
+        $pfas = $attribute->get('productFamilyAttributes');
+
+        /** @var int $count */
+        $count = count($pfas);
+
         foreach ($locales as $locale) {
             $localeAttribute = $this->getEntityManager()->getEntity('Attribute');
             $localeAttribute->set($attribute->toArray());
@@ -139,10 +145,25 @@ class Attribute extends Base
             $localeAttribute->set('name', $attribute->get('name') . ' › ' . $locale);
             $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale));
 
+            $isCreated = false;
             try {
                 $this->getEntityManager()->saveEntity($localeAttribute);
+                $isCreated = true;
             } catch (BadRequest $e) {
                 $GLOBALS['log']->error('Locale attribute validation failed: ' . $e->getMessage());
+            }
+
+            if ($isCreated && $count > 0) {
+                foreach ($pfas as $pfa) {
+                    $localePfa = $this->getEntityManager()->getEntity('ProductFamilyAttribute');
+                    $localePfa->set($pfa->toArray());
+                    $localePfa->id = Util::generateId();
+                    $localePfa->set('attributeId', $localeAttribute->get('id'));
+                    $localePfa->set('parentId', $pfa->get('id'));
+                    $localePfa->set('attributeType', $localeAttribute->get('type'));
+                    $localePfa->set('locale', $localeAttribute->get('locale'));
+                    $this->getEntityManager()->saveEntity($localePfa, ['skipValidation' => true]);
+                }
             }
         }
     }

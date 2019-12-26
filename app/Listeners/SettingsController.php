@@ -54,7 +54,9 @@ class SettingsController extends AbstractListener
     {
         if (!$this->getConfig()->get('isMultilangActive', false)) {
             // delete all
-            $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE locale IS NOT NULL");
+            $this->getEntityManager()->nativeQuery(
+                "UPDATE attribute SET deleted=1 WHERE locale IS NOT NULL;UPDATE product_family_attribute SET deleted=1 WHERE locale IS NOT NULL;UPDATE product_attribute_value SET deleted=1 WHERE locale IS NOT NULL"
+            );
         } else {
             /** @var AttributeRepository $repository */
             $repository = $this->getEntityManager()->getRepository('Attribute');
@@ -83,7 +85,10 @@ class SettingsController extends AbstractListener
 
                 // delete
                 if (!empty($deletedLocales)) {
-                    $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE locale IN ('" . implode("','", $deletedLocales) . "')");
+                    $localesStr = implode("','", $deletedLocales);
+                    $this->getEntityManager()->nativeQuery(
+                        "UPDATE attribute SET deleted=1 WHERE locale IN ('$localesStr');UPDATE product_family_attribute SET deleted=1 WHERE locale IN ('$localesStr');UPDATE product_attribute_value SET deleted=1 WHERE locale IN ('$localesStr')"
+                    );
                 }
             }
         }

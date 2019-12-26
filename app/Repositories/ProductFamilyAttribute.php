@@ -213,8 +213,17 @@ class ProductFamilyAttribute extends Base
      */
     protected function updateProductAttributeValues(Entity $entity): bool
     {
+        /** @var \Pim\Entities\ProductFamily $productFamily */
+        if (empty($productFamily = $entity->get('productFamily'))) {
+            $productFamily = $this->getEntityManager()->getEntity('ProductFamily', $entity->get('productFamilyId'));
+        }
+
+        if (empty($productFamily)) {
+            return false;
+        }
+
         // get products ids
-        if (empty($productsIds = $entity->get('productFamily')->get('productsIds'))) {
+        if (empty($productsIds = $productFamily->get('productsIds'))) {
             return false;
         }
 
