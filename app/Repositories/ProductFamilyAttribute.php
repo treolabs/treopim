@@ -218,8 +218,8 @@ class ProductFamilyAttribute extends Base
             return false;
         }
 
-        /** @var array $data */
-        $data = [];
+        /** @var array $sqls */
+        $sqls = [];
 
         // get channels ids
         $channelsIds = (array)$entity->get('channelsIds');
@@ -251,10 +251,10 @@ class ProductFamilyAttribute extends Base
             if (empty($item['productFamilyAttributeId']) && $item['scope'] == $scope && $item['channels'] == $channels) {
                 if ($entity->isNew()) {
                     $skipToCreate[] = $item['productId'];
-                    $data[] = "UPDATE product_attribute_value SET product_family_attribute_id='$pfaId',is_required=$isRequired WHERE id='$id'";
+                    $sqls[] = "UPDATE product_attribute_value SET product_family_attribute_id='$pfaId',is_required=$isRequired WHERE id='$id'";
                 } else {
-                    $data[] = "UPDATE product_attribute_value SET deleted=1 WHERE id='$id'";
-                    $data[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id'";
+                    $sqls[] = "UPDATE product_attribute_value SET deleted=1 WHERE id='$id'";
+                    $sqls[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id'";
                 }
             }
         }
@@ -268,7 +268,7 @@ class ProductFamilyAttribute extends Base
                 if (empty($item['productFamilyAttributeId']) && $item['scope'] == 'Channel' && !empty($item['channels']) && $item['channels'] != $channels) {
                     foreach (explode(',', (string)$item['channels']) as $itemChannel) {
                         if (in_array($itemChannel, $channelsIds)) {
-                            $data[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id' AND channel_id='$itemChannel'";
+                            $sqls[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id' AND channel_id='$itemChannel'";
                         }
                     }
                 }
@@ -284,11 +284,11 @@ class ProductFamilyAttribute extends Base
                     $ids[] = $item['id'];
                 }
             }
-            $data[] = "UPDATE product_attribute_value SET is_required=$isRequired,scope='$scope' WHERE product_family_attribute_id='$pfaId' AND deleted=0";
-            $data[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id IN ('" . implode("','", $ids) . "')";
+            $sqls[] = "UPDATE product_attribute_value SET is_required=$isRequired,scope='$scope' WHERE product_family_attribute_id='$pfaId' AND deleted=0";
+            $sqls[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id IN ('" . implode("','", $ids) . "')";
             foreach ($ids as $id) {
                 foreach ($channelsIds as $channelId) {
-                    $data[] = "INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','$id')";
+                    $sqls[] = "INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','$id')";
                 }
             }
         }
@@ -315,39 +315,35 @@ class ProductFamilyAttribute extends Base
                 /** @var string $locale */
                 $locale = $entity->get('locale');
 
-                $data[]
+                $sqls[]
                     = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,name,locale) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type','$locale')";
                 if (!empty($teamsIds)) {
                     foreach ($teamsIds as $teamId) {
-                        $data[] = "INSERT INTO entity_team (entity_id, team_id, entity_type) VALUES ('$id','$teamId','ProductAttributeValue')";
+                        $sqls[] = "INSERT INTO entity_team (entity_id, team_id, entity_type) VALUES ('$id','$teamId','ProductAttributeValue')";
                     }
                 }
                 if ($scope == 'Channel') {
                     foreach ($channelsIds as $channelId) {
-                        $data[] = "INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','$id')";
+                        $sqls[] = "INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','$id')";
                     }
                 }
             }
         }
 
-        if (empty($data)) {
+        if (empty($sqls)) {
             return false;
         }
 
-        $sql = '';
-        $count = 0;
-        foreach ($data as $v) {
-            $sql .= $v . ';';
-            $count++;
-            if ($count > 2000) {
-                $this->getEntityManager()->nativeQuery($sql);
-                $sql = '';
-                $count = 0;
+        $subSqls = [];
+        foreach ($sqls as $sql) {
+            $subSqls[] = $sql;
+            if (count($subSqls) > 200) {
+                $this->getEntityManager()->nativeQuery(implode(";", $subSqls));
+                $subSqls = [];
             }
         }
-
-        if (!empty($sql)) {
-            $this->getEntityManager()->nativeQuery($sql);
+        if (!empty($subSqls)) {
+            $this->getEntityManager()->nativeQuery(implode(";", $subSqls));
         }
 
         return true;
