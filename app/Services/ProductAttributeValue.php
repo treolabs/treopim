@@ -34,6 +34,11 @@ use Treo\Core\Utils\Util;
 class ProductAttributeValue extends AbstractService
 {
     /**
+     * @var array
+     */
+    protected $mandatorySelectAttributeList = ['locale', 'type'];
+
+    /**
      * @inheritdoc
      */
     public function prepareEntityForOutput(Entity $entity)

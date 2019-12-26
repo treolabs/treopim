@@ -23,6 +23,7 @@
         "notLocalesAttributes"
       ],
       "view": "pim:views/product-family/record/panels/product-family-attributes",
+      "rowActionsView": "pim:views/product-family/record/row-actions/product-family-attributes",
       "aclScopesList": [
         "Attribute",
         "AttributeGroup",
