@@ -195,6 +195,12 @@
         "scope",
         "deleted"
       ]
+    },
+    "locale": {
+      "columns": [
+        "locale",
+        "deleted"
+      ]
     }
   },
   "collection": {

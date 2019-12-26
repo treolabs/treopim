@@ -194,6 +194,12 @@
         "deleted"
       ]
     },
+    "locale": {
+      "columns": [
+        "locale",
+        "deleted"
+      ]
+    },
     "assignedUser": {
       "columns": [
         "assignedUserId",
