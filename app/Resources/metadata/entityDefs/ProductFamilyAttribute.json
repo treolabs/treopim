@@ -10,8 +10,7 @@
     },
     "name": {
       "type": "varchar",
-      "trim": true,
-      "realName": "attributeType"
+      "readonly": true
     },
     "isRequired": {
       "type": "bool",

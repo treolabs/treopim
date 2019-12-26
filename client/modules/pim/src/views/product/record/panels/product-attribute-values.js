@@ -33,8 +33,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             'isRequired',
             'productFamilyAttributeId',
             'scope',
-            'value',
-            'attributeIsMultilang'
+            'value'
         ],
 
         groupKey: 'attributeGroupId',
@@ -576,7 +575,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             // get filter
             let filter = (this.model.advancedEntityView || {}).localesFilter;
 
-            return filter !== null && filter !== '' && !fieldView.model.get('attributeIsMultilang');
+            return filter !== null && filter !== '';
         },
 
         getValueFields() {
@@ -748,7 +747,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 const modelData = {
                     value: model.get('value')
                 };
-                const actualFields = this.getFieldManager().getActualAttributeList(model.get('attributeType'), 'value');
+                const actualFields = this.getFieldManager().getActualAttributeList(model.get('name'), 'value');
                 actualFields.forEach(field => {
                     if (model.has(field)) {
                         _.extend(modelData, {[field]: model.get(field)});

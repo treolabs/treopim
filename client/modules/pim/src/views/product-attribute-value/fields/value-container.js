@@ -42,7 +42,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         afterRender() {
             Dep.prototype.afterRender.call(this);
 
-            if (this.mode === 'edit' && ['multiEnum'].includes(this.model.get('attributeType'))) {
+            if (this.mode === 'edit' && ['multiEnum'].includes(this.model.get('name'))) {
                 this.$el.addClass('over-visible');
             }
         },
@@ -57,7 +57,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         createValueFieldView() {
             this.clearView('valueField');
 
-            let type = this.model.get('attributeType') || 'base';
+            let type = this.model.get('name') || 'base';
             this.createView('valueField', this.getValueFieldView(type), {
                 el: `${this.options.el} > .field[data-name="valueField"]`,
                 model: this.model,
@@ -71,8 +71,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
 
         updateModelDefs() {
             // prepare data
-            let type = this.model.get('attributeType');
-            let isMultiLang = this.model.get('attributeIsMultilang');
+            let type = this.model.get('name');
             let typeValue = this.model.get('typeValue');
 
             if (type) {
@@ -88,17 +87,6 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
                     fieldDefs.measure = (typeValue || ['Length'])[0];
                 }
 
-                // for multi-language
-                if (isMultiLang) {
-                    if (this.getConfig().get('isMultilangActive')) {
-                        (this.getConfig().get('inputLanguageList') || []).forEach(lang => {
-                            let field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
-                            this.model.defs.fields[field] = Espo.Utils.cloneDeep(fieldDefs);
-                        });
-                    }
-                    fieldDefs.isMultilang = true;
-                }
-
                 // set field defs
                 this.model.defs.fields.value = fieldDefs;
             }
@@ -108,7 +96,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
             let data = this.model.get('data') || {};
             Object.keys(data).forEach(param => this.model.set({[`${this.name}${Espo.Utils.upperCaseFirst(param)}`]: data[param]}));
 
-            if (this.model.get('attributeType') === 'image') {
+            if (this.model.get('name') === 'image') {
                 this.model.set({[`${this.name}Id`]: this.model.get(this.name)});
             }
         },

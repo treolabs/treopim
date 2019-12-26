@@ -84,28 +84,11 @@ class ProductAttributeValue extends AbstractSelectManager
             return false;
         }
 
-        // prepare additional select columns
-        $additionalSelectColumns = [
-            'typeValue' => 'attribute.type_value',
-            'attributeGroupId' => 'ag1.id',
-            'attributeGroupName' => 'ag1.name'
-        ];
-
-        // prepare for multiLang fields
-        if ($this->getConfig()->get('isMultilangActive')) {
-            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                $field = Util::toCamelCase('typeValue_' . strtolower($locale));
-                $dbField = 'attribute.type_value_' . strtolower($locale);
-
-                $additionalSelectColumns[$field] = $dbField;
-            }
-        }
-
         $result['customJoin'] .= " LEFT JOIN attribute_group AS ag1 ON ag1.id=attribute.attribute_group_id AND ag1.deleted=0";
 
-        foreach ($additionalSelectColumns as $alias => $sql) {
-            $result['additionalSelectColumns'][$sql] = $alias;
-        }
+        $result['additionalSelectColumns']['attribute.type_value'] = 'typeValue';
+        $result['additionalSelectColumns']['ag1.id'] = 'attributeGroupId';
+        $result['additionalSelectColumns']['ag1.name'] = 'attributeGroupName';
     }
 
     /**
