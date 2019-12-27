@@ -129,12 +129,6 @@ class Attribute extends Base
      */
     public function createLocaleAttribute(AttributeEntity $attribute, array $locales): void
     {
-        /** @var \Pim\Entities\ProductFamilyAttribute[] $pfas */
-        $pfas = $attribute->get('productFamilyAttributes');
-
-        /** @var int $count */
-        $count = count($pfas);
-
         foreach ($locales as $locale) {
             $localeAttribute = $this->getEntityManager()->getEntity('Attribute');
             $localeAttribute->set($attribute->toArray());
@@ -145,26 +139,7 @@ class Attribute extends Base
             $localeAttribute->set('name', $attribute->get('name') . ' › ' . $locale);
             $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale));
 
-            $isCreated = false;
-            try {
-                $this->getEntityManager()->saveEntity($localeAttribute);
-                $isCreated = true;
-            } catch (BadRequest $e) {
-                $GLOBALS['log']->error('Locale attribute validation failed: ' . $e->getMessage());
-            }
-
-            if ($isCreated && $count > 0) {
-                foreach ($pfas as $pfa) {
-                    $localePfa = $this->getEntityManager()->getEntity('ProductFamilyAttribute');
-                    $localePfa->set($pfa->toArray());
-                    $localePfa->id = Util::generateId();
-                    $localePfa->set('attributeId', $localeAttribute->get('id'));
-                    $localePfa->set('parentId', $pfa->get('id'));
-                    $localePfa->set('attributeType', $localeAttribute->get('type'));
-                    $localePfa->set('locale', $localeAttribute->get('locale'));
-                    $this->getEntityManager()->saveEntity($localePfa, ['skipValidation' => true]);
-                }
-            }
+            $this->getEntityManager()->saveEntity($localeAttribute);
         }
     }
 
@@ -204,33 +179,39 @@ class Attribute extends Base
         /** @var string $id */
         $id = $attribute->get('id');
 
-        if ($attribute->isNew() && $attribute->get('isMultilang')) {
-            $this->createLocaleAttribute($attribute, $locales);
-        }
-
-        if (!$attribute->isNew() && $attribute->isAttributeChanged('isMultilang')) {
+        if ($attribute->isNew()) {
             if ($attribute->get('isMultilang')) {
                 $this->createLocaleAttribute($attribute, $locales);
-            } else {
+            }
+
+            if (!empty($attribute->get('locale'))) {
+                // @todo create product family attributes
+
+                // @todo create product attribute values
+            }
+        } else {
+            if ($attribute->isAttributeChanged('isMultilang')) {
+                if ($attribute->get('isMultilang')) {
+                    $this->createLocaleAttribute($attribute, $locales);
+                } else {
+                    $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id'");
+                }
+            }
+
+            if (in_array($attribute->get('type'), ['enum', 'multiEnum']) && $attribute->isAttributeChanged('typeValue')) {
+                foreach ($attribute->get('attributes') as $item) {
+                    $item->set('typeValue', $attribute->get('typeValue'));
+                    $this->getEntityManager()->saveEntity($item);
+                }
+            }
+
+            if ($attribute->isAttributeChanged('attributeGroupId')) {
+                /** @var string $attributeGroupId */
+                $attributeGroupId = (empty($attribute->get('attributeGroupId'))) ? 'NULL' : "'" . $attribute->get('attributeGroupId') . "'";
                 $this
                     ->getEntityManager()
-                    ->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id'");
+                    ->nativeQuery("UPDATE attribute SET attribute_group_id=$attributeGroupId WHERE parent_id='$id'");
             }
-        }
-
-        if (!$attribute->isNew() && in_array($attribute->get('type'), ['enum', 'multiEnum']) && $attribute->isAttributeChanged('typeValue')) {
-            foreach ($attribute->get('attributes') as $item) {
-                $item->set('typeValue', $attribute->get('typeValue'));
-                $this->getEntityManager()->saveEntity($item);
-            }
-        }
-
-        if (!$attribute->isNew() && $attribute->isAttributeChanged('attributeGroupId')) {
-            /** @var string $attributeGroupId */
-            $attributeGroupId = (empty($attribute->get('attributeGroupId'))) ? 'NULL' : "'" . $attribute->get('attributeGroupId') . "'";
-            $this
-                ->getEntityManager()
-                ->nativeQuery("UPDATE attribute SET attribute_group_id=$attributeGroupId WHERE parent_id='$id'");
         }
 
         return true;
