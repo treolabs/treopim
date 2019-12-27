@@ -136,7 +136,7 @@ class Attribute extends Base
             $localeAttribute->set('isMultilang', false);
             $localeAttribute->set('locale', $locale);
             $localeAttribute->set('parentId', $attribute->get('id'));
-            $localeAttribute->set('name', $attribute->get('name') . ' &#8250; ' . $locale);
+            $localeAttribute->set('name', $attribute->get('name') . ' › ' . $locale);
             $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale));
 
             try {
