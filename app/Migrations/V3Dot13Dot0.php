@@ -42,15 +42,15 @@ class V3Dot13Dot0 extends Base
      */
     public function up(): void
     {
-        echo 'Migrate Attribute DB schema... ';
+        echo ' Migrate Attribute DB schema... ';
         $this->exec("ALTER TABLE attribute DROP is_system");
         $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_LOCALE ON `attribute` (locale, deleted)");
         $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
-        echo 'Done!' . PHP_EOL;
+        echo ' Done!' . PHP_EOL;
 
-        echo 'Migrate ProductFamilyAttribute DB schema... ';
+        echo ' Migrate ProductFamilyAttribute DB schema... ';
         $this->exec("DROP INDEX IDX_NAME ON `product_family_attribute`");
         $this->exec("ALTER TABLE `product_family_attribute` DROP name");
         $this->exec("ALTER TABLE `product_family_attribute` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
@@ -61,9 +61,9 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_SCOPE ON `product_family_attribute` (scope, deleted)");
         $this->exec("ALTER TABLE `product_family_attribute` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_LOCALE ON `product_family_attribute` (locale, deleted)");
-        echo 'Done!' . PHP_EOL;
+        echo ' Done!' . PHP_EOL;
 
-        echo 'Migrate ProductAttributeValue DB schema... ';
+        echo ' Migrate ProductAttributeValue DB schema... ';
         $this->exec("DROP INDEX IDX_NAME ON `product_attribute_value`");
         $this->exec("ALTER TABLE `product_attribute_value` DROP name");
         $this->exec("ALTER TABLE `product_attribute_value` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
@@ -73,9 +73,9 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_SCOPE ON `product_attribute_value` (scope, deleted)");
         $this->exec("ALTER TABLE `product_attribute_value` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_LOCALE ON `product_attribute_value` (locale, deleted)");
-        echo 'Done!' . PHP_EOL;
+        echo ' Done!' . PHP_EOL;
 
-        echo 'Migrate DATA: ' . PHP_EOL;;
+        echo ' Migrate DATA: ' . PHP_EOL;;
         $attributes = $this->fetchAll("SELECT * FROM attribute WHERE deleted=0");
         foreach ($attributes as $attribute) {
             /** @var string $attributeId */
@@ -182,9 +182,9 @@ class V3Dot13Dot0 extends Base
         }
         $this->exec("UPDATE product_attribute_value SET deleted=1 WHERE attribute_type IS NULL");
         $this->exec("UPDATE product_family_attribute SET deleted=1 WHERE attribute_type IS NULL");
-        echo 'Done!' . PHP_EOL;
+        echo ' Done!' . PHP_EOL;
 
-        echo 'Drop multi-lang columns... ';
+        echo ' Drop multi-lang columns... ';
         if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
             foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
                 $key = Util::toUnderScore(strtolower($locale));
@@ -192,10 +192,10 @@ class V3Dot13Dot0 extends Base
                 $this->exec("ALTER TABLE `product_attribute_value` DROP value_$key");
             }
         }
-        echo 'Done!' . PHP_EOL;
+        echo ' Done!' . PHP_EOL;
 
         if (!empty($this->errors)) {
-            echo $this->errors . ' requests failed. Please, refer to the log file for details.' . PHP_EOL;
+            echo ' ' . $this->errors . ' requests failed. Please, refer to the log file for details.' . PHP_EOL;
         }
     }
 
