@@ -77,35 +77,60 @@ class V3Dot13Dot0 extends Base
          * Migrate DATA
          */
         $attributes = $this->fetchAll("SELECT * FROM attribute WHERE deleted=0");
-        $this->exec("DELETE FROM attribute WHERE locale IS NOT NULL");
         foreach ($attributes as $attribute) {
-            /** @var string $id */
-            $id = $attribute['id'];
+            /** @var string $attributeId */
+            $attributeId = $attribute['id'];
 
             /** @var string $type */
             $type = $attribute['type'];
 
             if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
                 foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
-                    /** @var string $id */
-                    $id = Util::generateId();
+                    /** @var string $newAttributeId */
+                    $newAttributeId = Util::generateId();
 
-                    // prepare locale attribute
                     $row = $attribute;
-                    $row['id'] = $id;
+                    $row['id'] = $newAttributeId;
                     $row['name'] = $attribute['name_' . Util::toUnderScore(strtolower($locale))];
                     $row['code'] = $attribute['code'] . '_' . strtolower($locale);
-                    $row['parent_id'] = $attribute['id'];
+                    $row['parent_id'] = $attributeId;
                     $row['locale'] = $locale;
                     $row['type_value'] = $attribute['type_value_' . Util::toUnderScore(strtolower($locale))];
                     $row['is_multilang'] = '0';
 
-                    $this->exec(sprintf("INSERT INTO attribute (%s) VALUES ('%s')", implode(",", array_keys($attribute)), implode("','", array_values($row))));
+                    $this->exec(sprintf("INSERT INTO attribute (%s) VALUES ('%s')", implode(",", array_keys($row)), implode("','", array_values($row))));
+
+                    $pfas = $this->fetchAll("SELECT * FROM product_family_attribute WHERE deleted=0 AND attribute_id='$attributeId'");
+                    foreach ($pfas as $pfa) {
+                        $newPfaId = Util::generateId();
+                        $pfaId = $pfa['id'];
+
+                        $newPfa = $pfa;
+                        $newPfa['id'] = $newPfaId;
+                        $newPfa['attribute_id'] = $newAttributeId;
+                        $newPfa['locale'] = $locale;
+
+                        $this->exec(sprintf("INSERT INTO product_family_attribute (%s) VALUES ('%s')", implode(",", array_keys($newPfa)), implode("','", array_values($newPfa))));
+
+                        $pavs = $this->fetchAll("SELECT * FROM product_attribute_value WHERE deleted=0 AND product_family_attribute_id='$pfaId'");
+                        foreach ($pavs as $pav) {
+                            $newPav = $pav;
+                            $newPav['id'] = Util::generateId();
+                            $newPav['attribute_id'] = $newAttributeId;
+                            $newPav['locale'] = $locale;
+                            $newPav['product_family_attribute_id'] = $newPfaId;
+                            $newPav['value'] = $pav['value_' . Util::toUnderScore(strtolower($locale))];
+
+                            $this->exec(
+                                sprintf("INSERT INTO product_attribute_value (%s) VALUES ('%s')", implode(",", array_keys($newPav)), implode("','", array_values($newPav)))
+                            );
+                        }
+                    }
                 }
             }
 
-            $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=NULL WHERE attribute_id='$id' AND deleted=0");
-            $this->exec("UPDATE product_family_attribute SET attribute_type='$type', locale=NULL WHERE attribute_id='$id' AND deleted=0");
+            $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
+            $this->exec("UPDATE product_family_attribute SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
         }
         $this->exec("UPDATE product_attribute_value SET deleted=1 WHERE attribute_type IS NULL");
         $this->exec("UPDATE product_family_attribute SET deleted=1 WHERE attribute_type IS NULL");
