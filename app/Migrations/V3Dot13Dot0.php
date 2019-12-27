@@ -100,20 +100,33 @@ class V3Dot13Dot0 extends Base
 
                     $this->exec(sprintf("INSERT INTO attribute (%s) VALUES ('%s')", implode(",", array_keys($row)), implode("','", array_values($row))));
 
-                    $pfas = $this->fetchAll("SELECT * FROM product_family_attribute WHERE deleted=0 AND attribute_id='$attributeId'");
+                    $pfas = $this->fetchAll(
+                        "SELECT *, (SELECT GROUP_CONCAT(channel_id ORDER BY channel_id ASC) FROM product_family_attribute_channel WHERE product_family_attribute.id=product_family_attribute_channel.product_family_attribute_id) AS channels FROM product_family_attribute WHERE deleted=0 AND attribute_id='$attributeId'"
+                    );
                     foreach ($pfas as $pfa) {
                         $newPfaId = Util::generateId();
+                        $channels = $pfa['channels'];
                         $pfaId = $pfa['id'];
 
+                        unset($pfa['channels']);
                         $newPfa = $pfa;
                         $newPfa['id'] = $newPfaId;
                         $newPfa['attribute_id'] = $newAttributeId;
                         $newPfa['locale'] = $locale;
-
                         $this->exec(sprintf("INSERT INTO product_family_attribute (%s) VALUES ('%s')", implode(",", array_keys($newPfa)), implode("','", array_values($newPfa))));
+                        if (!empty($channels)) {
+                            foreach (explode(",", $channels) as $channelId) {
+                                $this->exec("INSERT INTO product_family_attribute_channel (channel_id, product_family_attribute_id) VALUES ('$channelId','$newPfaId')");
+                            }
+                        }
 
-                        $pavs = $this->fetchAll("SELECT * FROM product_attribute_value WHERE deleted=0 AND product_family_attribute_id='$pfaId'");
+                        $pavs = $this->fetchAll(
+                            "SELECT *, (SELECT GROUP_CONCAT(channel_id ORDER BY channel_id ASC) FROM product_attribute_value_channel WHERE product_attribute_value.id=product_attribute_value_channel.product_attribute_value_id) AS channels FROM product_attribute_value WHERE deleted=0 AND product_family_attribute_id='$pfaId'"
+                        );
                         foreach ($pavs as $pav) {
+                            $channels = $pav['channels'];
+                            unset($pav['channels']);
+
                             $newPav = $pav;
                             $newPav['id'] = Util::generateId();
                             $newPav['attribute_id'] = $newAttributeId;
@@ -124,6 +137,38 @@ class V3Dot13Dot0 extends Base
                             $this->exec(
                                 sprintf("INSERT INTO product_attribute_value (%s) VALUES ('%s')", implode(",", array_keys($newPav)), implode("','", array_values($newPav)))
                             );
+                            if (!empty($channels)) {
+                                foreach (explode(",", $channels) as $channelId) {
+                                    $this->exec(
+                                        "INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','" . $newPav['id'] . "')"
+                                    );
+                                }
+                            }
+                        }
+                    }
+
+                    $pavs = $this->fetchAll(
+                        "SELECT *, (SELECT GROUP_CONCAT(channel_id ORDER BY channel_id ASC) FROM product_attribute_value_channel WHERE product_attribute_value.id=product_attribute_value_channel.product_attribute_value_id) AS channels FROM product_attribute_value WHERE deleted=0 AND product_family_attribute_id IS NULL AND attribute_id='$attributeId'"
+                    );
+                    foreach ($pavs as $pav) {
+                        $channels = $pav['channels'];
+                        unset($pav['channels']);
+
+                        $newPav = $pav;
+                        $newPav['id'] = Util::generateId();
+                        $newPav['attribute_id'] = $newAttributeId;
+                        $newPav['locale'] = $locale;
+                        $newPav['value'] = $pav['value_' . Util::toUnderScore(strtolower($locale))];
+
+                        $this->exec(
+                            sprintf("INSERT INTO product_attribute_value (%s) VALUES ('%s')", implode(",", array_keys($newPav)), implode("','", array_values($newPav)))
+                        );
+                        if (!empty($channels)) {
+                            foreach (explode(",", $channels) as $channelId) {
+                                $this->exec(
+                                    "INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','" . $newPav['id'] . "')"
+                                );
+                            }
                         }
                     }
                 }
