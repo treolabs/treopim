@@ -229,13 +229,15 @@ class ProductFamilyAttribute extends Base
             // prepare id
             $id = $item['id'];
 
-            if (empty($item['productFamilyAttributeId']) && $item['scope'] == $scope && $item['channels'] == $channels) {
-                if ($entity->isNew()) {
-                    $skipToCreate[] = $item['productId'];
-                    $sqls[] = "UPDATE product_attribute_value SET product_family_attribute_id='$pfaId',is_required=$isRequired WHERE id='$id'";
-                } else {
-                    $sqls[] = "UPDATE product_attribute_value SET deleted=1 WHERE id='$id'";
-                    $sqls[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id'";
+            if (empty($item['productFamilyAttributeId'])) {
+                if (($item['scope'] == $scope && $item['channels'] == $channels) || (!empty($entity->get('locale')) && $entity->get('locale') == $item['locale'])) {
+                    if ($entity->isNew()) {
+                        $skipToCreate[] = $item['productId'];
+                        $sqls[] = "UPDATE product_attribute_value SET product_family_attribute_id='$pfaId',is_required=$isRequired,scope='$scope' WHERE id='$id'";
+                    } else {
+                        $sqls[] = "UPDATE product_attribute_value SET deleted=1 WHERE id='$id'";
+                        $sqls[] = "DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id='$id'";
+                    }
                 }
             }
         }
@@ -249,7 +251,7 @@ class ProductFamilyAttribute extends Base
                 if (empty($item['productFamilyAttributeId']) && $item['scope'] == 'Channel' && !empty($item['channels']) && $item['channels'] != $channels) {
                     foreach (explode(',', (string)$item['channels']) as $itemChannel) {
                         if (in_array($itemChannel, $channelsIds)) {
-                            $sqls[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id' AND channel_id='$itemChannel'";
+                            $sqls[] = "DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id='$id' AND channel_id='$itemChannel'";
                         }
                     }
                 }
@@ -266,7 +268,7 @@ class ProductFamilyAttribute extends Base
                 }
             }
             $sqls[] = "UPDATE product_attribute_value SET is_required=$isRequired,scope='$scope' WHERE product_family_attribute_id='$pfaId' AND deleted=0";
-            $sqls[] = "UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id IN ('" . implode("','", $ids) . "')";
+            $sqls[] = "DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id IN ('" . implode("','", $ids) . "')";
             foreach ($ids as $id) {
                 foreach ($channelsIds as $channelId) {
                     $sqls[] = "INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','$id')";
@@ -411,7 +413,8 @@ class ProductFamilyAttribute extends Base
                        scope,
                        product_id AS productId,
                        (SELECT GROUP_CONCAT(channel_id ORDER BY channel_id ASC) FROM product_attribute_value_channel WHERE product_attribute_value_id=product_attribute_value.id) AS channels,
-                       product_family_attribute_id AS productFamilyAttributeId
+                       product_family_attribute_id AS productFamilyAttributeId,
+                       locale
                 FROM product_attribute_value
                 WHERE product_id IN ('" . implode("','", $productsIds) . "')
                   AND deleted=0
