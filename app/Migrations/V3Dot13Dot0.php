@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Migrations;
 
 use Treo\Core\Migration\Base;
+use Treo\Core\Utils\Util;
 
 /**
  * Migration class for version 3.13.0
@@ -75,7 +76,8 @@ class V3Dot13Dot0 extends Base
         /**
          * Migrate DATA
          */
-        $attributes = $this->fetchAll("SELECT id, type, locale FROM attribute WHERE deleted=0");
+        $attributes = $this->fetchAll("SELECT * FROM attribute WHERE deleted=0");
+        $this->exec("DELETE FROM attribute WHERE locale IS NOT NULL");
         foreach ($attributes as $attribute) {
             /** @var string $id */
             $id = $attribute['id'];
@@ -83,14 +85,36 @@ class V3Dot13Dot0 extends Base
             /** @var string $type */
             $type = $attribute['type'];
 
-            /** @var string $locale */
-            $locale = (empty($attribute['locale'])) ? 'NULL' : "'" . $attribute['locale'] . "'";
+            if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
+                foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
+                    /** @var string $id */
+                    $id = Util::generateId();
 
-            $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=$locale WHERE attribute_id='$id' AND deleted=0");
-            $this->exec("UPDATE product_family_attribute SET attribute_type='$type', locale=$locale WHERE attribute_id='$id' AND deleted=0");
+                    // prepare locale attribute
+                    $row = $attribute;
+                    $row['id'] = $id;
+                    $row['name'] = $attribute['name_' . Util::toUnderScore(strtolower($locale))];
+                    $row['code'] = $attribute['code'] . '_' . strtolower($locale);
+                    $row['parent_id'] = $attribute['id'];
+                    $row['locale'] = $locale;
+                    $row['type_value'] = $attribute['type_value_' . Util::toUnderScore(strtolower($locale))];
+                    $row['is_multilang'] = '0';
+
+                    $this->exec(sprintf("INSERT INTO attribute (%s) VALUES ('%s')", implode(",", array_keys($attribute)), implode("','", array_values($row))));
+                }
+            }
+
+            $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=NULL WHERE attribute_id='$id' AND deleted=0");
+            $this->exec("UPDATE product_family_attribute SET attribute_type='$type', locale=NULL WHERE attribute_id='$id' AND deleted=0");
         }
         $this->exec("UPDATE product_attribute_value SET deleted=1 WHERE attribute_type IS NULL");
         $this->exec("UPDATE product_family_attribute SET deleted=1 WHERE attribute_type IS NULL");
+
+        /**
+         * Drop multi-lang columns
+         */
+//        ALTER TABLE `attribute` DROP name_de_de, DROP type_value_de_de;
+//        ALTER TABLE `product_attribute_value` DROP value_de_de;
     }
 
     /**
