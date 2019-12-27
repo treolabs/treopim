@@ -84,7 +84,7 @@ class V3Dot13Dot0 extends Base
             /** @var string $type */
             $type = $attribute['type'];
 
-            echo "  Migrate attribute $attributeId... ";
+            echo "  Migrate attribute " . $attribute['name'] . " ($attributeId)... ";
 
             if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
                 foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
