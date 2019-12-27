@@ -56,8 +56,6 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_ATTRIBUTE ON `product_family_attribute` (attribute_id, deleted)");
         $this->exec("CREATE INDEX IDX_IS_REQUIRED ON `product_family_attribute` (is_required, deleted)");
         $this->exec("CREATE INDEX IDX_SCOPE ON `product_family_attribute` (scope, deleted)");
-        $this->exec("ALTER TABLE `product_family_attribute` ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_PARENT_ID ON `product_family_attribute` (parent_id)");
         $this->exec("ALTER TABLE `product_family_attribute` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_LOCALE ON `product_family_attribute` (locale, deleted)");
 

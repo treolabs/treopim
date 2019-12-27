@@ -69,21 +69,7 @@ class ProductFamilyAttribute extends Base
         parent::afterSave($entity, $options);
 
         // create locales attributes recursively
-        if ($entity->isNew() && empty($entity->get('locale'))) {
-            $attributes = $entity->get('attribute')->get('attributes');
-            if (count($attributes) > 0) {
-                foreach ($attributes as $attribute) {
-                    $newEntity = $this->get();
-                    $newEntity->set($entity->toArray());
-                    $newEntity->id = Util::generateId();
-                    $newEntity->set('attributeId', $attribute->get('id'));
-                    $newEntity->set('parentId', $entity->get('id'));
-                    $newEntity->set('attributeType', $attribute->get('type'));
-                    $newEntity->set('locale', $attribute->get('locale'));
-                    $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
-                }
-            }
-        }
+        $this->createLocaleAttributes($entity);
     }
 
     /**
@@ -106,21 +92,7 @@ class ProductFamilyAttribute extends Base
     public function afterRemove(Entity $entity, array $options = [])
     {
         // remove locales attribute recursively
-        if (empty($options['skipLocaleAttributeDeleting'])) {
-            $attributes = $entity->get('productFamilyAttributes');
-            if (count($attributes) > 0) {
-                foreach ($attributes as $attribute) {
-                    $this
-                        ->getEntityManager()
-                        ->removeEntity(
-                            $attribute, [
-                                'skipLocaleAttributeDeleting' => true,
-                                'skipAttributeValueDeleting'  => !empty($options['skipAttributeValueDeleting'])
-                            ]
-                        );
-                }
-            }
-        }
+        $this->deleteLocaleAttributes($entity, $options);
 
         // delete product attribute values
         if (empty($options['skipAttributeValueDeleting'])) {
@@ -374,6 +346,55 @@ class ProductFamilyAttribute extends Base
     protected function exception(string $key): string
     {
         return $this->getInjection('language')->translate($key, 'exceptions', 'ProductFamilyAttribute');
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function createLocaleAttributes(Entity $entity): void
+    {
+        if ($entity->isNew() && empty($entity->get('locale'))) {
+            $attributes = $entity->get('attribute')->get('attributes');
+            if (count($attributes) > 0) {
+                foreach ($attributes as $attribute) {
+                    $newEntity = $this->get();
+                    $newEntity->set($entity->toArray());
+                    $newEntity->id = Util::generateId();
+                    $newEntity->set('attributeId', $attribute->get('id'));
+                    $newEntity->set('attributeType', $attribute->get('type'));
+                    $newEntity->set('locale', $attribute->get('locale'));
+                    $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array  $options
+     */
+    protected function deleteLocaleAttributes(Entity $entity, array $options): void
+    {
+        if (empty($options['skipLocaleAttributeDeleting'])) {
+            /** @var array $attributesIds */
+            $attributesIds = array_column($entity->get('attribute')->get('attributes')->toArray(), 'id');
+
+            // find product family attributes
+            $pfas = $this->where(['attributeId' => $attributesIds])->find();
+
+            if (count($pfas) > 0) {
+                foreach ($pfas as $pfa) {
+                    $this
+                        ->getEntityManager()
+                        ->removeEntity(
+                            $pfa, [
+                                'skipLocaleAttributeDeleting' => true,
+                                'skipAttributeValueDeleting'  => !empty($options['skipAttributeValueDeleting'])
+                            ]
+                        );
+                }
+            }
+        }
     }
 
     /**

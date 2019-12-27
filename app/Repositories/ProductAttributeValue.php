@@ -78,7 +78,7 @@ class ProductAttributeValue extends Base
      */
     public function beforeRemove(Entity $entity, array $options = [])
     {
-        if (!empty($entity->get('locale'))) {
+        if (empty($options['skipProductAttributeValueHook']) && !empty($entity->get('locale'))) {
             throw new BadRequest("Locale attribute can't be deleted");
         }
 
