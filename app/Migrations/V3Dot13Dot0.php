@@ -183,8 +183,13 @@ class V3Dot13Dot0 extends Base
         /**
          * Drop multi-lang columns
          */
-//        ALTER TABLE `attribute` DROP name_de_de, DROP type_value_de_de;
-//        ALTER TABLE `product_attribute_value` DROP value_de_de;
+        if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
+            foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
+                $key = Util::toUnderScore(strtolower($locale));
+                $this->exec("ALTER TABLE `attribute` DROP name_$key, DROP type_value_$key");
+                $this->exec("ALTER TABLE `product_attribute_value` DROP value_$key");
+            }
+        }
     }
 
     /**
