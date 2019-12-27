@@ -23,7 +23,6 @@ namespace Pim\Repositories;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
-use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
 use Treo\Core\Utils\Util;
 
@@ -46,9 +45,17 @@ class ProductAttributeValue extends Base
 
     /**
      * @inheritDoc
+     *
+     * @throws BadRequest
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
+        if (empty($options['skipValidation'])) {
+            if (!empty($entity->get('attribute')->get('locale'))) {
+                throw new BadRequest("Locale attribute can't be linked");
+            }
+        }
+
         $entity->set('attributeType', $entity->get('attribute')->get('type'));
 
         parent::beforeSave($entity, $options);
@@ -59,19 +66,7 @@ class ProductAttributeValue extends Base
      */
     public function afterSave(Entity $entity, array $options = [])
     {
-        if (empty($entity->get('productFamilyAttributeId')) && empty($entity->get('locale'))) {
-            $localeAttributes = $entity->get('attribute')->get('attributes');
-            if (count($localeAttributes) > 0) {
-                foreach ($localeAttributes as $localeAttribute) {
-                    $newEntity = $this->get();
-                    $newEntity->set($entity->toArray());
-                    $newEntity->id = Util::generateId();
-                    $newEntity->set('attributeId', $localeAttribute->get('id'));
-                    $newEntity->set('locale', $localeAttribute->get('locale'));
-                    $this->getEntityManager()->saveEntity($newEntity);
-                }
-            }
-        }
+        $this->createLocaleAttributes($entity);
 
         parent::afterSave($entity, $options);
     }
@@ -95,6 +90,36 @@ class ProductAttributeValue extends Base
      */
     public function afterRemove(Entity $entity, array $options = [])
     {
+        $this->deleteLocaleAttributes($entity);
+
+        parent::afterRemove($entity, $options);
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function createLocaleAttributes(Entity $entity): void
+    {
+        if (empty($entity->get('productFamilyAttributeId')) && empty($entity->get('locale'))) {
+            $localeAttributes = $entity->get('attribute')->get('attributes');
+            if (count($localeAttributes) > 0) {
+                foreach ($localeAttributes as $localeAttribute) {
+                    $newEntity = $this->get();
+                    $newEntity->set($entity->toArray());
+                    $newEntity->id = Util::generateId();
+                    $newEntity->set('attributeId', $localeAttribute->get('id'));
+                    $newEntity->set('locale', $localeAttribute->get('locale'));
+                    $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function deleteLocaleAttributes(Entity $entity): void
+    {
         /** @var string $productId */
         $productId = $entity->get('productId');
 
@@ -105,7 +130,5 @@ class ProductAttributeValue extends Base
         $this->getEntityManager()->nativeQuery(
             "UPDATE product_attribute_value SET deleted=1 WHERE attribute_id IN (SELECT id FROM attribute WHERE parent_id='$attributeId' AND deleted=0) AND deleted=0 AND product_id='$productId' AND locale IS NOT NULL"
         );
-
-        parent::afterRemove($entity, $options);
     }
 }
