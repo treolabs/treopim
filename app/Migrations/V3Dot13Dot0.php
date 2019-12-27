@@ -33,22 +33,24 @@ use Treo\Core\Utils\Util;
 class V3Dot13Dot0 extends Base
 {
     /**
+     * @var int
+     */
+    private $errors = 0;
+
+    /**
      * @inheritdoc
      */
     public function up(): void
     {
-        /**
-         * Migrate Attribute DB schema
-         */
+        echo 'Migrate Attribute DB schema... ';
         $this->exec("ALTER TABLE attribute DROP is_system");
         $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_LOCALE ON `attribute` (locale, deleted)");
         $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
+        echo 'Done!' . PHP_EOL;
 
-        /**
-         * Migrate ProductFamilyAttribute DB schema
-         */
+        echo 'Migrate ProductFamilyAttribute DB schema... ';
         $this->exec("DROP INDEX IDX_NAME ON `product_family_attribute`");
         $this->exec("ALTER TABLE `product_family_attribute` DROP name");
         $this->exec("ALTER TABLE `product_family_attribute` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
@@ -59,10 +61,9 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_SCOPE ON `product_family_attribute` (scope, deleted)");
         $this->exec("ALTER TABLE `product_family_attribute` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_LOCALE ON `product_family_attribute` (locale, deleted)");
+        echo 'Done!' . PHP_EOL;
 
-        /**
-         * Migrate ProductAttributeValue DB schema
-         */
+        echo 'Migrate ProductAttributeValue DB schema... ';
         $this->exec("DROP INDEX IDX_NAME ON `product_attribute_value`");
         $this->exec("ALTER TABLE `product_attribute_value` DROP name");
         $this->exec("ALTER TABLE `product_attribute_value` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
@@ -72,10 +73,10 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_SCOPE ON `product_attribute_value` (scope, deleted)");
         $this->exec("ALTER TABLE `product_attribute_value` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_LOCALE ON `product_attribute_value` (locale, deleted)");
+        echo 'Done!' . PHP_EOL;
 
-        /**
-         * Migrate DATA
-         */
+        echo 'Migrate DATA: ' . PHP_EOL;;
+        $data = [];
         $attributes = $this->fetchAll("SELECT * FROM attribute WHERE deleted=0");
         foreach ($attributes as $attribute) {
             /** @var string $attributeId */
@@ -83,6 +84,8 @@ class V3Dot13Dot0 extends Base
 
             /** @var string $type */
             $type = $attribute['type'];
+
+            echo "  Migrate attribute $attributeId... ";
 
             if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
                 foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
@@ -176,19 +179,24 @@ class V3Dot13Dot0 extends Base
 
             $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
             $this->exec("UPDATE product_family_attribute SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
+            echo '  Done!' . PHP_EOL;
         }
         $this->exec("UPDATE product_attribute_value SET deleted=1 WHERE attribute_type IS NULL");
         $this->exec("UPDATE product_family_attribute SET deleted=1 WHERE attribute_type IS NULL");
+        echo 'Done!' . PHP_EOL;
 
-        /**
-         * Drop multi-lang columns
-         */
+        echo 'Drop multi-lang columns... ';
         if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
             foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
                 $key = Util::toUnderScore(strtolower($locale));
                 $this->exec("ALTER TABLE `attribute` DROP name_$key, DROP type_value_$key");
                 $this->exec("ALTER TABLE `product_attribute_value` DROP value_$key");
             }
+        }
+        echo 'Done!' . PHP_EOL;
+
+        if (!empty($this->errors)) {
+            echo $this->errors . ' requests failed. Please, refer to the log file for details.' . PHP_EOL;
         }
     }
 
@@ -197,11 +205,11 @@ class V3Dot13Dot0 extends Base
      */
     protected function exec(string $sql): void
     {
-        echo $sql . PHP_EOL;
         try {
             $this->getPDO()->exec($sql);
         } catch (\PDOException $e) {
-            echo $e->getMessage() . PHP_EOL;
+            $GLOBALS['log']->error('Migration of PIM (3.13.0): ' . $sql . ' ' . $e->getMessage());
+            $this->errors++;
         }
     }
 
