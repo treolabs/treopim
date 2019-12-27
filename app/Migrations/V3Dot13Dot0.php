@@ -76,7 +76,6 @@ class V3Dot13Dot0 extends Base
         echo 'Done!' . PHP_EOL;
 
         echo 'Migrate DATA: ' . PHP_EOL;;
-        $data = [];
         $attributes = $this->fetchAll("SELECT * FROM attribute WHERE deleted=0");
         foreach ($attributes as $attribute) {
             /** @var string $attributeId */
