@@ -139,7 +139,11 @@ class Attribute extends Base
             $localeAttribute->set('name', $attribute->get('name') . ' &#8250; ' . $locale);
             $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale));
 
-            $this->getEntityManager()->saveEntity($localeAttribute);
+            try {
+                $this->getEntityManager()->saveEntity($localeAttribute);
+            } catch (BadRequest $e) {
+                $GLOBALS['log']->error('BadRequest: ' . $e->getMessage());
+            }
         }
     }
 
