@@ -50,7 +50,7 @@ class ProductAttributeValue extends Base
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
-        if (empty($options['skipValidation'])) {
+        if (empty($options['skipValidation']) && $entity->isNew()) {
             if (!empty($entity->get('attribute')->get('locale'))) {
                 throw new BadRequest("Locale attribute can't be linked");
             }
@@ -100,7 +100,7 @@ class ProductAttributeValue extends Base
      */
     protected function createLocaleAttributes(Entity $entity): void
     {
-        if (empty($entity->get('productFamilyAttributeId')) && empty($entity->get('locale'))) {
+        if ($entity->isNew() && empty($entity->get('productFamilyAttributeId')) && empty($entity->get('locale'))) {
             $localeAttributes = $entity->get('attribute')->get('attributes');
             if (count($localeAttributes) > 0) {
                 foreach ($localeAttributes as $localeAttribute) {

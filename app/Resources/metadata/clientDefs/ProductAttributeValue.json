@@ -80,7 +80,17 @@
           "conditionGroup": [
             {
               "type": "isNotEmpty",
-              "attribute": "productFamilyAttributeId"
+              "attribute": "id"
+            }
+          ]
+        }
+      },
+      "attribute": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "id"
             }
           ]
         }
