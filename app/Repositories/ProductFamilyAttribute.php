@@ -386,7 +386,7 @@ class ProductFamilyAttribute extends Base
      */
     protected function deleteLocaleAttributes(Entity $entity, array $options): void
     {
-        if (empty($options['skipLocaleAttributeDeleting'])) {
+        if (empty($options['skipLocaleAttributeDeleting']) && !empty($entity->get('attribute'))) {
             /** @var array $attributesIds */
             $attributesIds = array_column($entity->get('attribute')->get('attributes')->toArray(), 'id');
 

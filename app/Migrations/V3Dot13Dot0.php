@@ -86,6 +86,9 @@ class V3Dot13Dot0 extends Base
 
             echo "  Migrate attribute '{$attribute['name']}' ({$attribute['id']})... ";
 
+            $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
+            $this->exec("UPDATE product_family_attribute SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
+
             if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
                 foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
                     /** @var string $newAttributeId */
@@ -175,9 +178,6 @@ class V3Dot13Dot0 extends Base
                     }
                 }
             }
-
-            $this->exec("UPDATE product_attribute_value SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
-            $this->exec("UPDATE product_family_attribute SET attribute_type='$type', locale=NULL WHERE attribute_id='$attributeId' AND deleted=0");
             echo '  Done!' . PHP_EOL;
         }
         $this->exec("UPDATE product_attribute_value SET deleted=1 WHERE attribute_type IS NULL");

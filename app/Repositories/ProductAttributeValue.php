@@ -66,7 +66,13 @@ class ProductAttributeValue extends Base
      */
     public function afterSave(Entity $entity, array $options = [])
     {
+        // create locales attributes
         $this->createLocaleAttributes($entity);
+
+        // update locales enum and multiEnum fields
+        if (in_array($entity->get('attributeType'), ['enum', 'multiEnum']) && $entity->isAttributeChanged('value') && $entity->get('attribute')->get('isMultilang')) {
+            // @todo finish it
+        }
 
         parent::afterSave($entity, $options);
     }

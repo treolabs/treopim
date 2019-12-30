@@ -63,6 +63,22 @@
               "attribute": "isRequired"
             }
           ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "AttributeType",
+              "value": [
+                "enum",
+                "multiEnum"
+              ]
+            },
+            {
+              "type": "isNotEmpty",
+              "attribute": "locale"
+            }
+          ]
         }
       },
       "scope": {
