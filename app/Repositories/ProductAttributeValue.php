@@ -50,9 +50,15 @@ class ProductAttributeValue extends Base
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
-        if (empty($options['skipValidation']) && $entity->isNew()) {
-            if (!empty($entity->get('attribute')->get('locale'))) {
+        if (empty($options['skipValidation'])) {
+            if ($entity->isNew() && !empty($entity->get('attribute')->get('locale'))) {
                 throw new BadRequest("Locale attribute can't be linked");
+            }
+            if ($entity->get('attributeType') == 'enum' && !empty($entity->get('locale'))) {
+                throw new BadRequest("Locale enum attribute can't be changed");
+            }
+            if ($entity->get('attributeType') == 'multiEnum' && !empty($entity->get('locale'))) {
+                throw new BadRequest("Locale multiEnum attribute can't be changed");
             }
         }
 
@@ -69,9 +75,16 @@ class ProductAttributeValue extends Base
         // create locales attributes
         $this->createLocaleAttributes($entity);
 
-        // update locales enum and multiEnum fields
-        if (in_array($entity->get('attributeType'), ['enum', 'multiEnum']) && $entity->isAttributeChanged('value') && $entity->get('attribute')->get('isMultilang')) {
-            // @todo finish it
+        if ($entity->isAttributeChanged('value') && $entity->get('attribute')->get('isMultilang')) {
+            // update locales enum fields
+            if ($entity->get('attributeType') == 'enum') {
+                $this->updateLocalesEnum($entity);
+            }
+
+            // update locales multiEnum fields
+            if ($entity->get('attributeType') == 'multiEnum') {
+                $this->updateLocalesMultiEnum($entity);
+            }
         }
 
         parent::afterSave($entity, $options);
@@ -145,5 +158,38 @@ class ProductAttributeValue extends Base
         $this->getEntityManager()->nativeQuery(
             "UPDATE product_attribute_value SET deleted=1 WHERE attribute_id IN (SELECT id FROM attribute WHERE parent_id='$attributeId' AND deleted=0) AND deleted=0 AND product_id='$productId' AND locale IS NOT NULL"
         );
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateLocalesEnum(Entity $entity): void
+    {
+        if (!empty($attribute = $entity->get('attribute')) && !empty($localeAttributes = $attribute->get('attributes')->toArray())) {
+            /** @var int $key */
+            $key = array_search($entity->get('value'), $attribute->get('typeValue'));
+
+            if (is_int($key)) {
+                /** @var string $productId */
+                $productId = $entity->get('productId');
+
+                foreach ($localeAttributes as $localeAttribute) {
+                    if (isset($localeAttribute['typeValue'][$key])) {
+                        $value = $localeAttribute['typeValue'][$key];
+                        $this->getEntityManager()->nativeQuery(
+                            "UPDATE product_attribute_value SET value='$value' WHERE attribute_id='{$localeAttribute['id']}' AND product_id='$productId' AND deleted=0"
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateLocalesMultiEnum(Entity $entity): void
+    {
+        // @todo finish it soon
     }
 }
