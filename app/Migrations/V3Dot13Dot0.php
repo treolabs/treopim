@@ -75,7 +75,7 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_LOCALE ON `product_attribute_value` (locale, deleted)");
         echo ' Done!' . PHP_EOL;
 
-        echo ' Migrate DATA: ' . PHP_EOL;;
+        echo ' Migrate DATA: ' . PHP_EOL;
         $attributes = $this->fetchAll("SELECT * FROM attribute WHERE deleted=0");
         foreach ($attributes as $attribute) {
             /** @var string $attributeId */
@@ -84,7 +84,7 @@ class V3Dot13Dot0 extends Base
             /** @var string $type */
             $type = $attribute['type'];
 
-            echo "  Migrate attribute " . $attribute['name'] . " ($attributeId)... ";
+            echo "  Migrate attribute '{$attribute['name']}' ({$attribute['id']})... ";
 
             if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
                 foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
@@ -192,6 +192,88 @@ class V3Dot13Dot0 extends Base
                 $this->exec("ALTER TABLE `product_attribute_value` DROP value_$key");
             }
         }
+        echo ' Done!' . PHP_EOL;
+
+        if (!empty($this->errors)) {
+            echo ' ' . $this->errors . ' requests failed. Please, refer to the log file for details.' . PHP_EOL;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function down(): void
+    {
+        echo ' Add multi-lang columns... ';
+        if ($this->getConfig()->get('isMultilangActive')) {
+            foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
+                $key = Util::toUnderScore(strtolower($locale));
+                $this->exec("ALTER TABLE `attribute` ADD name_$key VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+                $this->exec("ALTER TABLE `attribute` ADD type_value_$key MEDIUMTEXT DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+                $this->exec("ALTER TABLE `product_attribute_value` ADD value_$key MEDIUMTEXT DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+            }
+        }
+        echo ' Done!' . PHP_EOL;
+
+        echo ' Migrate DATA: ' . PHP_EOL;
+        $attributes = $this->fetchAll("SELECT id,name,parent_id,type_value,locale FROM attribute WHERE deleted=0 AND locale IS NOT NULL");
+        foreach ($attributes as $attribute) {
+            echo "  Migrate attribute '{$attribute['name']}' ({$attribute['id']})... ";
+
+            /** @var string $key */
+            $key = Util::toUnderScore(strtolower($attribute['locale']));
+
+            $this->exec("UPDATE attribute SET name_$key='{$attribute['name']}', type_value_$key='{$attribute['type_value']}' WHERE id='{$attribute['parent_id']}'");
+
+            // cleanup
+            $this->exec("DELETE FROM attribute WHERE id='{$attribute['id']}'");
+            $this->exec(
+                "DELETE FROM product_family_attribute_channel WHERE product_family_attribute_id IN (SELECT id FROM product_family_attribute WHERE attribute_id='{$attribute['id']}')"
+            );
+            $this->exec("DELETE FROM product_family_attribute WHERE attribute_id='{$attribute['id']}'");
+
+            // get product attribute values
+            $pavs = $this->fetchAll("SELECT id, product_id, locale, value FROM product_attribute_value WHERE attribute_id='{$attribute['id']}'");
+            foreach ($pavs as $pav) {
+                $pavKey = Util::toUnderScore(strtolower($pav['locale']));
+                $this->exec(
+                    "UPDATE product_attribute_value SET value_$pavKey='{$pav['value']}' WHERE attribute_id='{$attribute['parent_id']}' AND product_id='{$pav['product_id']}'"
+                );
+
+                // cleanup
+                $this->exec("DELETE FROM product_attribute_value WHERE id='{$pav['id']}'");
+                $this->exec("DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id='{$pav['id']}'");
+            }
+            echo '  Done!' . PHP_EOL;
+        }
+
+        echo ' Done!' . PHP_EOL;
+
+        echo ' Migrate Attribute DB schema... ';
+        $this->exec("DROP INDEX IDX_LOCALE ON `attribute`");
+        $this->exec("DROP INDEX IDX_PARENT_ID ON `attribute`");
+        $this->exec("ALTER TABLE `attribute` DROP locale, DROP parent_id, ADD is_system TINYINT(1) DEFAULT '0' NOT NULL COLLATE utf8mb4_unicode_ci");
+        echo ' Done!' . PHP_EOL;
+
+        echo ' Migrate ProductAttributeValue DB schema... ';
+        $this->exec("DROP INDEX IDX_ATTRIBUTE_TYPE ON `product_attribute_value`");
+        $this->exec("DROP INDEX IDX_PRODUCT ON `product_attribute_value`");
+        $this->exec("DROP INDEX IDX_ATTRIBUTE ON `product_attribute_value`");
+        $this->exec("DROP INDEX IDX_SCOPE ON `product_attribute_value`");
+        $this->exec("DROP INDEX IDX_LOCALE ON `product_attribute_value`");
+        $this->exec("ALTER TABLE `product_attribute_value` DROP attribute_type, DROP locale, ADD name VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+        $this->exec("CREATE INDEX IDX_NAME ON `product_attribute_value` (name, deleted)");
+        echo ' Done!' . PHP_EOL;
+
+        echo ' Migrate ProductFamilyAttribute DB schema... ';
+        $this->exec("DROP INDEX IDX_ATTRIBUTE_TYPE ON `product_family_attribute`");
+        $this->exec("DROP INDEX IDX_PRODUCT_FAMILY ON `product_family_attribute`");
+        $this->exec("DROP INDEX IDX_ATTRIBUTE ON `product_family_attribute`");
+        $this->exec("DROP INDEX IDX_IS_REQUIRED ON `product_family_attribute`");
+        $this->exec("DROP INDEX IDX_SCOPE ON `product_family_attribute`");
+        $this->exec("DROP INDEX IDX_LOCALE ON `product_family_attribute`");
+        $this->exec("ALTER TABLE `product_family_attribute` DROP attribute_type, DROP locale, ADD name VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+        $this->exec("CREATE INDEX IDX_NAME ON `product_family_attribute` (name, deleted)");
         echo ' Done!' . PHP_EOL;
 
         if (!empty($this->errors)) {
