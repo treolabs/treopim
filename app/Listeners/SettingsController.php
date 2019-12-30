@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
+use Espo\Core\Exceptions\BadRequest;
 use Pim\Entities\Attribute as AttributeEntity;
 use Pim\Repositories\Attribute as AttributeRepository;
 use Treo\Listeners\AbstractListener;
@@ -76,7 +77,11 @@ class SettingsController extends AbstractListener
                 // create
                 if (!empty($addedLocales)) {
                     foreach ($attributes as $attribute) {
-                        $repository->createLocaleAttribute($attribute, $addedLocales);
+                        try {
+                            $repository->createLocaleAttribute($attribute, $addedLocales);
+                        } catch (BadRequest $e) {
+                            $GLOBALS['log']->error('BadRequest: ' . $e->getMessage());
+                        }
                     }
                 }
 

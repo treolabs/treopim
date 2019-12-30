@@ -57,6 +57,9 @@
   "filterLabels": {
     "All": "Alle"
   },
+  "queueManager": {
+    "Adding a locale '%s' for an attribute '%s'": "Hinzufügen des Gebietsschemas '%s' für das Attribut '%s'"
+  },
   "exceptions": {
     "You can not unlink product family attribute": "Sie können das Produktfamilienattribut nicht aufheben",
     "Attribute with such CODE already exist": "Das Attribut mit einem solchen CODE existiert bereits",

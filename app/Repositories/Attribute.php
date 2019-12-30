@@ -44,6 +44,7 @@ class Attribute extends Base
         parent::init();
 
         $this->addDependency('language');
+        $this->addDependency('queueManager');
     }
 
     /**
@@ -125,9 +126,10 @@ class Attribute extends Base
      * @param AttributeEntity $attribute
      * @param array           $locales
      *
-     * @return void
+     * @return AttributeEntity
+     * @throws Error
      */
-    public function createLocaleAttribute(AttributeEntity $attribute, array $locales): void
+    public function createLocaleAttribute(AttributeEntity $attribute, array $locales): AttributeEntity
     {
         foreach ($locales as $locale) {
             $localeAttribute = $this->getEntityManager()->getEntity('Attribute');
@@ -139,11 +141,19 @@ class Attribute extends Base
             $localeAttribute->set('name', $attribute->get('name') . ' › ' . $locale);
             $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale));
 
-            try {
-                $this->getEntityManager()->saveEntity($localeAttribute);
-            } catch (BadRequest $e) {
-                $GLOBALS['log']->error('BadRequest: ' . $e->getMessage());
-            }
+            $this->getEntityManager()->saveEntity($localeAttribute);
+
+            /** @var string $name */
+            $name = $this
+                ->getInjection('language')
+                ->translate("Adding a locale '%s' for an attribute '%s'", 'queueManager', 'Attribute');
+            $name = sprintf($name, $locale, $attribute->get('name'));
+
+            $this
+                ->getInjection('queueManager')
+                ->push($name, 'QueueManagerCreateLocaleAttribute', ['id' => $localeAttribute->get('id')]);
+
+            return $localeAttribute;
         }
     }
 
@@ -186,12 +196,6 @@ class Attribute extends Base
         if ($attribute->isNew()) {
             if ($attribute->get('isMultilang')) {
                 $this->createLocaleAttribute($attribute, $locales);
-            }
-
-            if (!empty($attribute->get('locale'))) {
-                // @todo create product family attributes
-
-                // @todo create product attribute values
             }
         } else {
             if ($attribute->isAttributeChanged('isMultilang')) {
