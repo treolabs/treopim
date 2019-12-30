@@ -6,5 +6,9 @@
   "views/header": [
     "__APPEND__",
     "pim"
+  ],
+  "views/record/detail": [
+    "__APPEND__",
+    "pim"
   ]
 }

@@ -17,13 +17,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/record/detail', 'views/record/detail',
+Espo.define('pim:views/record/detail', 'class-replace!pim:views/record/detail',
     Dep => Dep.extend({
 
         setup() {
             this.bottomView = this.getMetadata().get(`clientDefs.${this.scope}.bottomView.${this.type}`) || this.bottomView;
 
             Dep.prototype.setup.call(this);
+
+            this.listenTo(this, 'after:save', function () {
+                this.model.fetch();
+                this.setDetailMode();
+                $(window).scrollTop(0);
+            });
+
+            this.listenTo(this, 'cancel:save', function () {
+                this.model.fetch();
+            })
         },
 
         afterRender() {
@@ -34,6 +44,10 @@ Espo.define('pim:views/record/detail', 'views/record/detail',
                 this.actionEdit();
             }
         },
+
+        actionSave: function () {
+            this.save(null, true);
+        }
 
     })
 );
