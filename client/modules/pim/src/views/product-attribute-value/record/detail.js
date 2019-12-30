@@ -61,6 +61,11 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                         fieldDefs.measure = (typeValue || ['Length'])[0];
                     }
 
+                    // enum and multiEnum is readOnly for locales attributes
+                    if ((type === 'enum' || type === 'multiEnum') && this.model.get('locale') !== null) {
+                        fieldDefs.readOnly = true;
+                    }
+
                     // set field defs
                     this.model.defs.fields.value = fieldDefs;
                 }
