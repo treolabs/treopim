@@ -63,7 +63,9 @@ class ProductAttributeValue extends Base
             }
         }
 
-        $entity->set('attributeType', $entity->get('attribute')->get('type'));
+        if ($entity->isNew()) {
+            $entity->set('attributeType', $entity->get('attribute')->get('type'));
+        }
 
         parent::beforeSave($entity, $options);
     }
@@ -171,15 +173,18 @@ class ProductAttributeValue extends Base
             $key = array_search($entity->get('value'), $attribute->get('typeValue'));
 
             if (is_int($key)) {
-                /** @var string $productId */
-                $productId = $entity->get('productId');
-
                 foreach ($localeAttributes as $localeAttribute) {
                     if (isset($localeAttribute['typeValue'][$key])) {
-                        $value = $localeAttribute['typeValue'][$key];
-                        $this->getEntityManager()->nativeQuery(
-                            "UPDATE product_attribute_value SET value='$value' WHERE attribute_id='{$localeAttribute['id']}' AND product_id='$productId' AND deleted=0"
-                        );
+                        $pav = $this
+                            ->getEntityManager()
+                            ->getRepository('ProductAttributeValue')
+                            ->where(['attributeId' => $localeAttribute['id'], 'productId' => $entity->get('productId')])
+                            ->findOne();
+
+                        if (!empty($pav)) {
+                            $pav->set('value', $localeAttribute['typeValue'][$key]);
+                            $this->getEntityManager()->saveEntity($pav, ['skipValidation' => true]);
+                        }
                     }
                 }
             }
@@ -201,9 +206,6 @@ class ProductAttributeValue extends Base
             }
 
             if (!empty($keys)) {
-                /** @var string $productId */
-                $productId = $entity->get('productId');
-
                 foreach ($localeAttributes as $localeAttribute) {
                     $value = [];
                     foreach ($keys as $key) {
@@ -213,10 +215,16 @@ class ProductAttributeValue extends Base
                     }
 
                     if (!empty($value)) {
-                        $value = Json::encode($value);
-                        $this->getEntityManager()->nativeQuery(
-                            "UPDATE product_attribute_value SET value='$value' WHERE attribute_id='{$localeAttribute['id']}' AND product_id='$productId' AND deleted=0"
-                        );
+                        $pav = $this
+                            ->getEntityManager()
+                            ->getRepository('ProductAttributeValue')
+                            ->where(['attributeId' => $localeAttribute['id'], 'productId' => $entity->get('productId')])
+                            ->findOne();
+
+                        if (!empty($pav)) {
+                            $pav->set('value', Json::encode($value));
+                            $this->getEntityManager()->saveEntity($pav, ['skipValidation' => true]);
+                        }
                     }
                 }
             }
