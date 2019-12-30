@@ -366,6 +366,15 @@ class ProductFamilyAttribute extends Base
                     $newEntity->set('attributeType', $attribute->get('type'));
                     $newEntity->set('locale', $attribute->get('locale'));
                     $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
+
+                    if ($entity->get('scope') == 'Channel') {
+                        $channels = $entity->get('channels');
+                        if (count($channels) > 0) {
+                            foreach ($channels as $channel) {
+                                $this->relate($newEntity, 'channels', $channel);
+                            }
+                        }
+                    }
                 }
             }
         }

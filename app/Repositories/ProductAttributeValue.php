@@ -110,6 +110,15 @@ class ProductAttributeValue extends Base
                     $newEntity->set('attributeId', $localeAttribute->get('id'));
                     $newEntity->set('locale', $localeAttribute->get('locale'));
                     $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
+
+                    if ($entity->get('scope') == 'Channel') {
+                        $channels = $entity->get('channels');
+                        if (count($channels) > 0) {
+                            foreach ($channels as $channel) {
+                                $this->relate($newEntity, 'channels', $channel);
+                            }
+                        }
+                    }
                 }
             }
         }
