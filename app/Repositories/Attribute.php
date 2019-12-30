@@ -126,10 +126,10 @@ class Attribute extends Base
      * @param AttributeEntity $attribute
      * @param array           $locales
      *
-     * @return AttributeEntity
+     * @return void
      * @throws Error
      */
-    public function createLocaleAttribute(AttributeEntity $attribute, array $locales): AttributeEntity
+    public function createLocaleAttribute(AttributeEntity $attribute, array $locales): void
     {
         foreach ($locales as $locale) {
             $localeAttribute = $this->getEntityManager()->getEntity('Attribute');
@@ -152,8 +152,6 @@ class Attribute extends Base
             $this
                 ->getInjection('queueManager')
                 ->push($name, 'QueueManagerCreateLocaleAttribute', ['id' => $localeAttribute->get('id')]);
-
-            return $localeAttribute;
         }
     }
 
