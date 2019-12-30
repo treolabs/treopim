@@ -23,6 +23,7 @@ namespace Pim\Repositories;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
+use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
 use Treo\Core\Utils\Util;
 
@@ -190,6 +191,35 @@ class ProductAttributeValue extends Base
      */
     protected function updateLocalesMultiEnum(Entity $entity): void
     {
-        // @todo finish it soon
+        if (!empty($attribute = $entity->get('attribute')) && !empty($localeAttributes = $attribute->get('attributes')->toArray())) {
+            $keys = [];
+            foreach (Json::decode($entity->get('value'), true) as $value) {
+                $key = array_search($value, $attribute->get('typeValue'));
+                if (is_int($key)) {
+                    $keys[] = $key;
+                }
+            }
+
+            if (!empty($keys)) {
+                /** @var string $productId */
+                $productId = $entity->get('productId');
+
+                foreach ($localeAttributes as $localeAttribute) {
+                    $value = [];
+                    foreach ($keys as $key) {
+                        if (isset($localeAttribute['typeValue'][$key])) {
+                            $value[] = $localeAttribute['typeValue'][$key];
+                        }
+                    }
+
+                    if (!empty($value)) {
+                        $value = Json::encode($value);
+                        $this->getEntityManager()->nativeQuery(
+                            "UPDATE product_attribute_value SET value='$value' WHERE attribute_id='{$localeAttribute['id']}' AND product_id='$productId' AND deleted=0"
+                        );
+                    }
+                }
+            }
+        }
     }
 }
