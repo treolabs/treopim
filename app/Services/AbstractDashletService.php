@@ -29,8 +29,15 @@ use Espo\Core\Services\Base;
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-abstract class AbstractDashletService extends Base implements DashletInterface
+abstract class AbstractDashletService extends Base
 {
+    /**
+     * Get dashlet data
+     *
+     * @return array
+     */
+    abstract public function getDashlet(): array;
+
     /**
      * Get PDO
      *

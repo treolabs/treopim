@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace Pim\Controllers;
 
 use Espo\Core\Exceptions;
-use Pim\Services\DashletInterface;
 use Slim\Http\Request;
+use Treo\Services\AbstractService;
 
 /**
  * Class DashletController
@@ -71,16 +71,16 @@ class Dashlet extends AbstractController
      *
      * @param string $dashletName
      *
-     * @return DashletInterface
+     * @return AbstractService
      * @throws Exceptions\Error
      */
-    protected function createDashletService(string $dashletName): DashletInterface
+    protected function createDashletService(string $dashletName): AbstractService
     {
         $serviceName = ucfirst($dashletName) . 'Dashlet';
 
         $dashletService = $this->getServiceFactory()->create($serviceName);
 
-        if (!$dashletService instanceof DashletInterface) {
+        if (!method_exists($dashletService, 'getDashlet')) {
             $message = sprintf($this->translate('notDashletService'), $serviceName);
 
             throw new Exceptions\Error($message);
