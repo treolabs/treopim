@@ -33,7 +33,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             'isRequired',
             'productFamilyAttributeId',
             'scope',
-            'value'
+            'value',
+            'attributeIsMultilang'
         ],
 
         groupKey: 'attributeGroupId',
@@ -546,7 +547,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                 if (!hide){
                     hide = this.updateCheckByChannelFilter(fieldView, attributesWithChannelScope);
                 }
-                if (!hide){
+                if (!hide && fieldView.model.get('attributeIsMultilang')){
                     hide = this.updateCheckByLocaleFilter(fieldView, currentFieldFilter);
                 }
                 this.controlRowVisibility(fieldView, name, hide);

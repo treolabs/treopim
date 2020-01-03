@@ -42,6 +42,12 @@
   "disabledMassActions": [
     "merge"
   ],
+  "addRelationPipelines": {
+    "productCategories": [
+      "__APPEND__",
+      "pim:views/product-category/pipe/action-update-filters"
+    ]
+  },
   "views": {
     "list": "pim:views/product/list",
     "detail": "pim:views/product/detail",
@@ -84,7 +90,10 @@
       ],
       "rowActionsView": "views/record/row-actions/relationship-no-unlink",
       "modalEditView": "pim:views/product-category/modals/edit-in-product",
-      "layout": "listForProductCategoriesInProduct"
+      "layout": "listForProductCategoriesInProduct",
+      "aclScopesList": [
+        "Category"
+      ]
     },
     "channels": {
       "view": "pim:views/product/record/panels/product-channels",

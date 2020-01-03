@@ -23,6 +23,7 @@
     "markupType": "Typ",
     "markupValue": "Wert",
     "scope": "Umfang",
+    "productCategories": "Kategorie Produkte",
     "catalogs": "Kataloge",
     "pimImages": "Bilder"
   },
@@ -36,6 +37,7 @@
     "rootCategories": "Stammkategorien",
     "teams": "Teams",
     "catalogs": "Kataloge",
+    "productCategories": "Kategorie Produkte",
     "pimImages": "Bilder"
   },
   "labels": {

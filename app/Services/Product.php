@@ -150,6 +150,89 @@ class Product extends AbstractService
     }
 
     /**
+     * @param array $ids
+     * @param array $foreignIds
+     *
+     * @return bool
+     */
+    public function massRelateProductCategories(array $ids, array $foreignIds): bool
+    {
+        // prepare productCategory repository
+        $repository = $this->getEntityManager()->getRepository('ProductCategory');
+
+        // get exists productCategories
+        $productCategories = $repository
+            ->select(['productId', 'categoryId'])
+            ->where([
+                'productId' => $ids,
+                'categoryId' => $foreignIds,
+                'scope' => 'Global'
+            ])
+            ->find()
+            ->toArray();
+
+        $exists = [];
+
+        // prepare exists
+        if (!empty($productCategories)) {
+            foreach ($productCategories as $productCategory) {
+                if (isset($exists[$productCategory['productId']])) {
+                    $exists[$productCategory['productId']][] = $productCategory['categoryId'];
+                } else {
+                    $exists[$productCategory['productId']] = [$productCategory['categoryId']];
+                }
+            }
+        }
+
+        // create ProductCategory entity where needed
+        foreach ($ids as $productId) {
+            foreach ($foreignIds as $categoryId) {
+                if (!isset($exists[$productId]) || !in_array($categoryId, $exists[$productId])) {
+                    $category = $repository->get();
+                    $category->set([
+                        'productId' => $productId,
+                        'categoryId' => $categoryId,
+                        'scope' => 'Global'
+                    ]);
+
+                    $this->getEntityManager()->saveEntity($category);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $ids
+     * @param array $foreignIds
+     *
+     * @return bool
+     */
+    public function massUnrelateProductCategories(array $ids, array $foreignIds): bool
+    {
+        // get exists productCategories
+        $productCategories = $this
+            ->getEntityManager()
+            ->getRepository('ProductCategory')
+            ->where([
+                'productId' => $ids,
+                'categoryId' => $foreignIds,
+                'scope' => 'Global'
+            ])
+            ->find();
+
+        // remove related categories
+        if (count($productCategories) > 0) {
+            foreach ($productCategories as $productCategory) {
+                $this->getEntityManager()->removeEntity($productCategory);
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @param Entity $product
      * @param Entity $duplicatingProduct
      */

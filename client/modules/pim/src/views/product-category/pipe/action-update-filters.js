@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -17,31 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-declare(strict_types=1);
 
-namespace Pim\Repositories;
+Espo.define('pim:views/product-category/pipe/action-update-filters', 'treo-core:pipe',
+    Dep => Dep.extend({
 
-use Espo\Core\Templates\Repositories\Base;
-use Espo\ORM\Entity;
+        runPipe(data) {
+            data = data || {};
+            const boolFilterData = data.boolFilterData;
 
-/**
- * Catalog repository
- *
- * @author r.ratsun@treolabs.com
- */
-class Catalog extends Base
-{
-    /**
-     * @inheritDoc
-     */
-    protected function afterRemove(Entity $entity, array $options = [])
-    {
-        parent::afterRemove($entity, $options);
+            const catalogsIds = this.options.checkedList.map(id => {
+                const model = this.options.mainCollection.get(id);
+                return model.get('catalogId');
+            });
 
-        /** @var string $id */
-        $id = $entity->get('id');
+            _.extend(boolFilterData, {
+                onlyCatalogCategories: catalogsIds
+            });
 
-        // remove catalog products
-        $this->getEntityManager()->nativeQuery("UPDATE product SET deleted=1 WHERE catalog_id='$id'");
-    }
-}
+            //required
+            data.callback();
+        },
+
+    })
+);

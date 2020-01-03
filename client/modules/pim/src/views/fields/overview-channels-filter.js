@@ -38,6 +38,12 @@ Espo.define('pim:views/fields/overview-channels-filter', 'treo-core:views/fields
             this.wait(true);
             this.updateChannels(() => this.wait(false));
 
+            this.listenTo(this.model, 'after:relate after:unrelate', link => {
+                if (link === 'channels') {
+                    this.updateChannels(() => this.reRender());
+                }
+            });
+
             Dep.prototype.setup.call(this);
         },
 

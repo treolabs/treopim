@@ -57,6 +57,10 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                 }
             }
 
+            if (!this.getAcl().check('Category', 'create') || !this.getAcl().check('ProductCategory', 'create')) {
+                this.readOnly = true;
+            }
+
             if (!this.readOnly && !this.defs.readOnly) {
                 if (!('create' in this.defs)) {
                     this.defs.create = true;
@@ -73,7 +77,7 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
             }
 
             if (this.defs.create) {
-                if (this.getAcl().check(this.scope, 'create') && !~['User', 'Team'].indexOf()) {
+                if (this.getAcl().check(this.scope, 'create')) {
                     this.buttonList.push({
                         title: 'Create',
                         action: this.defs.createAction || 'createRelated',
@@ -168,7 +172,7 @@ Espo.define('pim:views/product/record/panels/product-categories', ['views/record
                         layoutName: layoutName,
                         listLayout: listLayout,
                         checkboxes: false,
-                        rowActionsView: this.defs.readOnly ? false : (this.defs.rowActionsView || this.rowActionsView),
+                        rowActionsView: this.defs.readOnly || this.readOnly ? false : (this.defs.rowActionsView || this.rowActionsView),
                         buttonsDisabled: true,
                         el: this.options.el + ' .list-container',
                         skipBuildRows: true
