@@ -23,21 +23,15 @@ namespace Pim\Services;
 
 use Espo\Core\Templates\Repositories\Base as BaseRepository;
 use Espo\Core\Services\Base;
+use Treo\Services\DashletInterface;
 
 /**
  * Class AbstractDashletService
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-abstract class AbstractDashletService extends Base
+abstract class AbstractDashletService extends Base implements DashletInterface
 {
-    /**
-     * Get dashlet data
-     *
-     * @return array
-     */
-    abstract public function getDashlet(): array;
-
     /**
      * Get PDO
      *
