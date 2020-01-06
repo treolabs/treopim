@@ -34,9 +34,8 @@ Espo.define('pim:views/category/record/detail', 'views/record/detail',
                 keys.forEach(key => delete this.model.attributes[key]);
             });
 
-            Dep.prototype.save.call(this, callback, skipExit);
-
-        }
+            return Dep.prototype.save.call(this, callback, skipExit);
+        },
 
     })
 );
