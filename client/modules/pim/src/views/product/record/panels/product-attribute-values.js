@@ -800,7 +800,13 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     promises.push(this.ajaxPutRequest(`${this.collection.name}/${id}`, attrs))
                 });
                 this.notify('Saving...');
-                Promise.all(promises).then(response => this.notify('Saved', 'success'), error => this.actionRefresh());
+                Promise.all(promises)
+                    .then(response => {
+                        this.notify('Saved', 'success');
+                        this.model.trigger('after:attributesSave');
+                    }, error => {
+                        this.actionRefresh();
+                    });
             }
         },
 
