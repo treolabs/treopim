@@ -17,40 +17,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
-namespace Pim\Services;
+namespace Pim\Migrations;
 
-use Espo\Core\Templates\Repositories\Base as BaseRepository;
-use Espo\Core\Services\Base;
-use Treo\Services\DashletInterface;
+use Treo\Core\Migration\Base;
 
 /**
- * Class AbstractDashletService
+ * Migration class for version 3.11.23
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-abstract class AbstractDashletService extends Base implements DashletInterface
+class V3Dot11Dot23 extends Base
 {
     /**
-     * Get PDO
-     *
-     * @return \PDO
+     * @inheritDoc
      */
-    protected function getPDO(): \PDO
+    public function up(): void
     {
-        return $this->getEntityManager()->getPDO();
+        $this->exec("ALTER TABLE `channel` ADD locales MEDIUMTEXT DEFAULT NULL COLLATE utf8mb4_unicode_ci");
     }
 
     /**
-     * Get Repository
-     *
-     * @param $entityType
-     *
-     * @return BaseRepository
+     * @inheritDoc
      */
-    protected function getRepository(string $entityType): BaseRepository
+    public function down(): void
     {
-        return $this->getEntityManager()->getRepository($entityType);
+        $this->exec("ALTER TABLE `channel` DROP locales");
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @return void
+     */
+    private function exec(string $sql): void
+    {
+        try {
+            $this->getPDO()->exec($sql);
+        } catch (\PDOException $e) {
+            $GLOBALS['log']->error('Migration of PIM (3.11.23): ' . $sql . ' | ' . $e->getMessage());
+        }
     }
 }
