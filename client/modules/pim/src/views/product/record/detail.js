@@ -124,7 +124,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 if (multilangLocale !== null) {
                     if (locale !== null && locale !== '' && multilangLocale !== locale) {
                         fieldView.hide();
-                    } else {
+                    } else if (!fieldView.$el.hasClass('hidden')) {
                         fieldView.show();
                     }
                 }
@@ -140,7 +140,7 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 const view = this.getFieldView(field);
 
                 if (field !== null && view) {
-                    if (isShow) {
+                    if (isShow && !view.$el.hasClass('hidden')) {
                         view.show();
                     } else {
                         view.hide();

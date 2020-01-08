@@ -196,7 +196,7 @@ class ProductFamilyAttribute extends Base
                     $this->pushSql("UPDATE product_attribute_value SET product_family_attribute_id='$pfaId',is_required=$isRequired WHERE id='$id'");
                 } else {
                     $this->pushSql("UPDATE product_attribute_value SET deleted=1 WHERE id='$id'");
-                    $this->pushSql("UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id'");
+                    $this->pushSql("DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id='$id'");
                 }
             }
         }
@@ -210,7 +210,7 @@ class ProductFamilyAttribute extends Base
                 if (empty($item['productFamilyAttributeId']) && $item['scope'] == 'Channel' && !empty($item['channels']) && $item['channels'] != $channels) {
                     foreach (explode(',', (string)$item['channels']) as $itemChannel) {
                         if (in_array($itemChannel, $channelsIds)) {
-                            $this->pushSql("UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id='$id' AND channel_id='$itemChannel'");
+                            $this->pushSql("DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id='$id' AND channel_id='$itemChannel'");
                         }
                     }
                 }
@@ -227,7 +227,7 @@ class ProductFamilyAttribute extends Base
                 }
             }
             $this->pushSql("UPDATE product_attribute_value SET is_required=$isRequired,scope='$scope' WHERE product_family_attribute_id='$pfaId' AND deleted=0");
-            $this->pushSql("UPDATE product_attribute_value_channel SET deleted=1 WHERE product_attribute_value_id IN ('" . implode("','", $ids) . "')");
+            $this->pushSql("DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id IN ('" . implode("','", $ids) . "')");
             foreach ($ids as $id) {
                 foreach ($channelsIds as $channelId) {
                     $this->pushSql("INSERT INTO product_attribute_value_channel (channel_id, product_attribute_value_id) VALUES ('$channelId','$id')");
