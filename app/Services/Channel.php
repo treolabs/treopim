@@ -71,30 +71,6 @@ class Channel extends AbstractService
     }
 
     /**
-     * Prepare locales
-     *
-     * @param array $locales
-     *
-     * @return array
-     */
-    public function prepareLocales(array $locales): array
-    {
-        // prepare result
-        $result = [];
-
-        // get system locales
-        $systemLocales = $this->getConfig()->get('inputLanguageList');
-
-        foreach ($locales as $locale) {
-            if (in_array($locale, $systemLocales)) {
-                $result[] = $locale;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * @param string $channelId
      * @param \StdClass $data
      * @param bool $useDeleted

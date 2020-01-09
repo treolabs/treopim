@@ -91,16 +91,11 @@ class Product extends AbstractSelectManager
         }
 
         // get attributes ids
-        $attributes = $this
+        $attributesIds = $this
             ->getEntityManager()
-            ->getRepository('Attribute')
-            ->select(['id'])
-            ->where(['type' => ['varchar', 'text', 'wysiwyg']])
-            ->find()
-            ->toArray();
-
-        // prepare attributes where
-        $attributesIds = implode("','", array_column($attributes, 'id'));
+            ->nativeQuery("SELECT id FROM attribute WHERE type IN ('varchar','text','wysiwyg') AND deleted=0")
+            ->fetchAll(\PDO::FETCH_ASSOC);
+        $attributesIds = array_column($attributesIds, 'id');
 
         // prepare attributes values
         $attributesValues = ["value LIKE '%$textFilter%'"];
@@ -111,8 +106,15 @@ class Product extends AbstractSelectManager
         }
         $attributesValues = implode(" OR ", $attributesValues);
 
+        // get products ids
+        $productsIds = $this
+            ->getEntityManager()
+            ->nativeQuery("SELECT product_id FROM product_attribute_value WHERE deleted=0 AND attribute_id IN ('" . implode("','", $attributesIds) . "') AND ($attributesValues)")
+            ->fetchAll(\PDO::FETCH_ASSOC);
+        $productsIds = array_column($productsIds, 'product_id');
+
         // push for attributes
-        $rows[] = "product.id IN (SELECT product_id FROM product_attribute_value WHERE deleted=0 AND attribute_id IN ('$attributesIds') AND ($attributesValues))";
+        $rows[] = "product.id IN ('" . implode("','", $productsIds) . "')";
 
         // prepare custom where
         $result['customWhere'] .= " AND (" . implode(" OR ", $rows) . ")";
