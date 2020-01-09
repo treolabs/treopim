@@ -22,6 +22,7 @@ namespace Pim\SelectManagers;
 
 use Pim\Core\SelectManagers\AbstractSelectManager;
 use Pim\Services\GeneralStatisticsDashlet;
+use Treo\Core\Utils\Util;
 
 /**
  * Product select manager
@@ -48,10 +49,70 @@ class Product extends AbstractSelectManager
         // get select params
         $selectParams = parent::getSelectParams($params, $withAcl, $checkWherePermission);
 
+        // prepare custom where
+        if (!isset($selectParams['customWhere'])) {
+            $selectParams['customWhere'] = '';
+        }
+
         // add product attributes filter
         $this->addProductAttributesFilter($selectParams, $productAttributes);
 
         return $selectParams;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function textFilter($textFilter, &$result)
+    {
+        // call parent
+        parent::textFilter($textFilter, $result);
+
+        if (empty($result['whereClause'])) {
+            return;
+        }
+
+        // get last
+        $last = array_pop($result['whereClause']);
+
+        if (!isset($last['OR'])) {
+            return;
+        }
+
+        // prepare rows
+        $rows = [];
+
+        // push for fields
+        foreach ($last['OR'] as $name => $value) {
+            $rows[] = "product." . Util::toUnderScore(str_replace('*', '', $name)) . " LIKE '$value'";
+        }
+
+        // get attributes ids
+        $attributes = $this
+            ->getEntityManager()
+            ->getRepository('Attribute')
+            ->select(['id'])
+            ->where(['type' => ['varchar', 'text', 'wysiwyg']])
+            ->find()
+            ->toArray();
+
+        // prepare attributes where
+        $attributesIds = implode("','", array_column($attributes, 'id'));
+
+        // prepare attributes values
+        $attributesValues = ["value LIKE '%$textFilter%'"];
+        if ($this->getConfig()->get('isMultilangActive', false) && !empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
+            foreach ($locales as $locale) {
+                $attributesValues[] = "value_" . strtolower($locale) . " LIKE '%$textFilter%'";
+            }
+        }
+        $attributesValues = implode(" OR ", $attributesValues);
+
+        // push for attributes
+        $rows[] = "product.id IN (SELECT product_id FROM product_attribute_value WHERE deleted=0 AND attribute_id IN ('$attributesIds') AND ($attributesValues))";
+
+        // prepare custom where
+        $result['customWhere'] .= " AND (" . implode(" OR ", $rows) . ")";
     }
 
     /**
@@ -428,7 +489,7 @@ class Product extends AbstractSelectManager
         }
 
         // set custom where
-        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND scope='Global' AND category_id IN ('$ids'))";
+        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND category_id IN ('$ids'))";
     }
 
     /**
@@ -463,69 +524,14 @@ class Product extends AbstractSelectManager
     protected function addProductAttributesFilter(array &$selectParams, array $attributes): void
     {
         foreach ($attributes as $row) {
-            // prepare attribute where
-            switch ($row['type']) {
-                case 'isTrue':
-                    $where = [
-                        'type'  => 'and',
-                        'value' => [
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'attributeId',
-                                'value'     => $row['attribute']
-                            ],
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'value',
-                                'value'     => 'TreoBoolIsTrue'
-                            ]
-                        ]
-                    ];
-                    break;
-                case 'isFalse':
-                    $where = [
-                        'type'  => 'and',
-                        'value' => [
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'attributeId',
-                                'value'     => $row['attribute']
-                            ],
-                            [
-                                'type'  => 'or',
-                                'value' => [
-                                    [
-                                        'type'      => 'isNull',
-                                        'attribute' => 'value'
-                                    ],
-                                    [
-                                        'type'      => 'equals',
-                                        'attribute' => 'value',
-                                        'value'     => 'TreoBoolIsFalse'
-                                    ]
-                                ]
-                            ],
-                        ]
-                    ];
-                    break;
-                default:
-                    $where = [
-                        'type'  => 'and',
-                        'value' => [
-                            [
-                                'type'      => 'equals',
-                                'attribute' => 'attributeId',
-                                'value'     => $row['attribute']
-                            ],
-                            [
-                                'type'      => $row['type'],
-                                'attribute' => 'value',
-                                'value'     => $row['value']
-                            ]
-                        ]
-                    ];
-                    break;
+            // find prepare method
+            $method = 'prepareType' . ucfirst($row['type']);
+            if (!method_exists($this, $method)) {
+                $method = 'prepareTypeDefault';
             }
+
+            // prepare where
+            $where = $this->{$method}($row);
 
             // create select params
             $sp = $this
@@ -540,11 +546,280 @@ class Product extends AbstractSelectManager
                 ->createSelectQuery('ProductAttributeValue', $sp);
 
             // prepare custom where
-            if (!isset($selectParams['customWhere'])) {
-                $selectParams['customWhere'] = '';
-            }
-
             $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
         }
+    }
+
+    /**
+     * @param string $attributeId
+     *
+     * @return array
+     */
+    protected function getValues(string $attributeId): array
+    {
+        // prepare result
+        $result = ['value'];
+
+        if ($this->getConfig()->get('isMultilangActive', false) && !empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
+            // is attribute multi-languages ?
+            $isMultiLang = $this
+                ->getEntityManager()
+                ->getRepository('Attribute')
+                ->select(['isMultilang'])
+                ->where(['id' => $attributeId])
+                ->findOne()
+                ->get('isMultilang');
+
+            if ($isMultiLang) {
+                foreach ($locales as $locale) {
+                    $result[] = 'value' . ucfirst(Util::toCamelCase(strtolower($locale)));
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeIsTrue(array $row): array
+    {
+        $where = ['type' => 'or', 'value' => []];
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][] = [
+                'type'  => 'and',
+                'value' => [
+                    [
+                        'type'      => 'equals',
+                        'attribute' => 'attributeId',
+                        'value'     => $row['attribute']
+                    ],
+                    [
+                        'type'      => 'equals',
+                        'attribute' => $v,
+                        'value'     => '1'
+                    ]
+                ]
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeIsFalse(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => []
+                ],
+            ]
+        ];
+
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][1]['value'][] = [
+                'type'      => 'isNull',
+                'attribute' => $v
+            ];
+            $where['value'][1]['value'][] = [
+                'type'      => 'notEquals',
+                'attribute' => $v,
+                'value'     => '1'
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeArrayAnyOf(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => []
+                ],
+            ]
+        ];
+
+        // prepare values
+        $values = (empty($row['value'])) ? [md5('no-such-value-' . time())] : $row['value'];
+
+        foreach ($values as $value) {
+            $where['value'][1]['value'][] = [
+                'type'      => 'like',
+                'attribute' => 'value',
+                'value'     => "%\"$value\"%"
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeArrayNoneOf(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => []
+                ],
+            ]
+        ];
+
+        // prepare values
+        $values = (empty($row['value'])) ? [md5('no-such-value-' . time())] : $row['value'];
+
+        foreach ($values as $value) {
+            $where['value'][1]['value'][] = [
+                'type'      => 'notLike',
+                'attribute' => 'value',
+                'value'     => "%\"$value\"%"
+            ];
+        }
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeArrayIsEmpty(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'  => 'or',
+                    'value' => [
+                        [
+                            'type'      => 'isNull',
+                            'attribute' => 'value'
+                        ],
+                        [
+                            'type'      => 'equals',
+                            'attribute' => 'value',
+                            'value'     => ''
+                        ],
+                        [
+                            'type'      => 'equals',
+                            'attribute' => 'value',
+                            'value'     => '[]'
+                        ]
+                    ]
+                ],
+            ]
+        ];
+
+        return $where;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeArrayIsNotEmpty(array $row): array
+    {
+        $where = [
+            'type'  => 'and',
+            'value' => [
+                [
+                    'type'      => 'equals',
+                    'attribute' => 'attributeId',
+                    'value'     => $row['attribute']
+                ],
+                [
+                    'type'      => 'isNotNull',
+                    'attribute' => 'value'
+                ],
+                [
+                    'type'      => 'notEquals',
+                    'attribute' => 'value',
+                    'value'     => ''
+                ],
+                [
+                    'type'      => 'notEquals',
+                    'attribute' => 'value',
+                    'value'     => '[]'
+                ]
+            ]
+        ];
+
+        return $where;
+    }
+
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function prepareTypeDefault(array $row): array
+    {
+        $where = ['type' => 'or', 'value' => []];
+        foreach ($this->getValues($row['attribute']) as $v) {
+            $where['value'][] = [
+                'type'  => 'and',
+                'value' => [
+                    [
+                        'type'      => 'equals',
+                        'attribute' => 'attributeId',
+                        'value'     => $row['attribute']
+                    ],
+                    [
+                        'type'      => $row['type'],
+                        'attribute' => $v,
+                        'value'     => $row['value']
+                    ]
+                ]
+            ];
+        }
+
+        return $where;
     }
 }

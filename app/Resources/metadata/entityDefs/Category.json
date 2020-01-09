@@ -95,13 +95,6 @@
       "noLoad": true,
       "importDisabled": true
     },
-    "image": {
-      "type": "image",
-      "previewSize": "medium",
-      "readOnly": true,
-      "view": "pim:views/product/fields/image",
-      "importDisabled": true
-    },
     "hasChildren": {
       "type": "bool",
       "notStorable": true,
@@ -127,13 +120,6 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
-    },
-    "assets": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
-      "noLoad": true
     }
   },
   "links": {
@@ -171,11 +157,6 @@
       "entity": "Category",
       "disableMassRelation": true
     },
-    "image": {
-      "type": "belongsTo",
-      "entity": "Attachment",
-      "skipOrmDefs": true
-    },
     "catalogs": {
       "type": "hasMany",
       "relationName": "catalogCategory",
@@ -185,15 +166,12 @@
     "productCategories": {
       "type": "hasMany",
       "foreign": "category",
-      "entity": "ProductCategory"
-    },
-    "assets": {
-      "type": "hasMany",
-      "relationName": "categoryAsset",
-      "foreign": "categories",
-      "entity": "Asset",
-      "audited": false
-    }
+      "entity": "ProductCategory",
+      "addRelationCustomDefs": {
+        "link": "productCategories",
+        "entity": "Product"
+      }
+  }
   },
   "collection": {
     "sortBy": "createdAt",

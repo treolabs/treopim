@@ -4,11 +4,11 @@
   "homepage": "https://treopim.com",
   "license": "GPL-3.0-only",
   "require": {
-    "treolabs/treocore": "~3.24.17",
+    "treolabs/treocore": "~3.25.2",
     "treolabs/colored-fields": "~1.7.13",
     "treolabs/multi-languages": "~1.14.0",
-    "treolabs/import-feeds-common": "~1.3.0",
-    "treolabs/dam": "~1.1.3"
+    "treolabs/import-feeds-common": "~1.4.0",
+    "treolabs/treodam-common": "~1.0.0"
   },
   "autoload": {
     "psr-4": {
@@ -17,6 +17,7 @@
   },
   "extra": {
     "treoId": "Pim",
+    "version": "3.12.x",
     "name": {
       "default": "PIM"
     },

@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -18,23 +17,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types = 1);
+Espo.define('pim:views/channel/record/list-in-product', 'views/record/list',
+    Dep => Dep.extend({
+        afterRender: function () {
+            Dep.prototype.afterRender.call(this);
 
-namespace Pim\Services;
+            this.setEditModeIsActiveEntityField();
+        },
 
-/**
- * Interface DashletInterface
- *
- * @package Pim\Services
- *
- * @author r.ratsun <r.ratsun@treolabs.com>
- */
-interface DashletInterface
-{
-    /**
-     * Get dashlet data
-     *
-     * @return array
-     */
-    public function getDashlet(): array;
-}
+        setEditModeIsActiveEntityField() {
+            (this.rowList || []).forEach(id => {
+                const rowView = this.getView(id);
+                if (rowView) {
+                    const fieldView = rowView.getView('isActiveEntityField');
+                    if (fieldView) {
+                        fieldView.setMode('edit');
+                        fieldView.reRender();
+                    }
+                }
+            });
+        }
+    })
+);

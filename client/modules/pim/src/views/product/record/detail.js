@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'search-manager'],
-    (Dep, SearchManager) => Dep.extend({
+Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
+    Dep => Dep.extend({
 
         template: 'pim:product/record/detail',
 
@@ -50,7 +50,6 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
                 scope: this.scope,
                 model: this.model
             }, view => {
-                view.render();
                 view.listenTo(view, 'select-category', data => this.navigateToList(data));
             });
         },
@@ -59,25 +58,15 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
             this.catalogTreeData = Espo.Utils.cloneDeep(data || {});
             const options = {
                 isReturn: true,
-                callback: this.expandCatalogTreeOnListView.bind(this)
+                callback: this.expandCatalogTree.bind(this)
             };
             this.getRouter().navigate(`#${this.scope}`);
             this.getRouter().dispatch(this.scope, null, options);
         },
 
-        expandCatalogTreeOnListView(list) {
+        expandCatalogTree(list) {
             list.sortCollectionWithCatalogTree(this.catalogTreeData);
-            list.render(() => {
-                const catalogTreePanel = list.getView('catalogTreePanel');
-                if (catalogTreePanel) {
-                    const catalogId = (((this.catalogTreeData || {}).advanced || {}).catalog || {}).value;
-                    const categoryTree = catalogTreePanel.getView(`category-tree-${catalogId}`);
-                    const categoryId = ((this.catalogTreeData || {}).boolData || {}).linkedWithCategory;
-                    if (categoryTree && categoryId) {
-                        categoryTree.expandCategoryHandler(categoryId);
-                    }
-                }
-            });
+            list.render();
         },
 
         data() {
@@ -112,19 +101,16 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
         },
 
         fieldsFilter: function () {
-            // prepare self
-            let self = this;
-
             // get filter param
             let filter = (this.model.advancedEntityView || {}).fieldsFilter;
 
-            $.each(this.getFilterFieldViews(), function (name, fieldView) {
-                let actualFields = self.getFieldManager().getActualAttributeList(fieldView.model.getFieldType(name), name);
+            $.each(this.getFilterFieldViews(), (name, fieldView) => {
+                let actualFields = this.getFieldManager().getActualAttributeList(fieldView.model.getFieldType(name), name);
                 let actualFieldValues = actualFields.map(field => fieldView.model.get(field));
-                actualFieldValues = actualFieldValues.concat(self.getAlternativeValues(fieldView));
+                actualFieldValues = actualFieldValues.concat(this.getAlternativeValues(fieldView));
 
-                let hide = !actualFieldValues.every(value => self.checkFieldValue(filter, value, fieldView.isRequired()));
-                self.controlFieldVisibility(fieldView, hide);
+                let hide = !actualFieldValues.every(value => this.checkFieldValue(filter, value, fieldView.isRequired()));
+                this.controlFieldVisibility(fieldView, hide);
             });
         },
 
@@ -138,7 +124,7 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
                 if (multilangLocale !== null) {
                     if (locale !== null && locale !== '' && multilangLocale !== locale) {
                         fieldView.hide();
-                    } else {
+                    } else if (!fieldView.$el.hasClass('hidden')) {
                         fieldView.show();
                     }
                 }
@@ -146,19 +132,18 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
         },
 
         genericFieldsFilter: function () {
-            // prepare this
-            let self = this;
-
             // prepare is show param
             let isShow = (this.model.advancedEntityView || {}).showGenericFields;
 
-            $.each(this.getFilterFieldViews(), function (name, fieldView) {
+            $.each(this.getFilterFieldViews(), (name, fieldView) => {
                 let field = fieldView.model.getFieldParam(name, 'multilangField');
-                if (field !== null) {
-                    if (isShow) {
-                        self.getFieldView(field).show();
+                const view = this.getFieldView(field);
+
+                if (field !== null && view) {
+                    if (isShow && !view.$el.hasClass('hidden')) {
+                        view.show();
                     } else {
-                        self.getFieldView(field).hide();
+                        view.hide();
                     }
                 }
             });
@@ -172,11 +157,7 @@ Espo.define('pim:views/product/record/detail', ['pim:views/record/detail', 'sear
                 let viewsFields = this.getFieldViews();
                 Object.keys(viewsFields).forEach(item => {
                     if (viewsFields[item].mode === "edit" ) {
-                        if (viewsFields[item].model.name === 'productAttributesGrid') {
-                            viewsFields[item].getParentView().inlineEditSave(viewsFields[item]);
-                        } else {
-                            viewsFields[item].inlineEditSave();
-                        }
+                        viewsFields[item].inlineEditSave();                        
                     }
                 });
             }

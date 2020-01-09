@@ -47,9 +47,14 @@ class LayoutController extends AbstractListener
         $isAdminPage = $event->getArgument('request')->get('isAdminPage') === 'true';
 
         $method = 'modify' . $scope . ucfirst($name);
+        $methodAdmin = $method . 'Admin';
+
         if (!$isAdminPage && method_exists($this, $method)) {
             $this->{$method}($event);
+        } else if ($isAdminPage && method_exists($this, $methodAdmin)) {
+            $this->{$methodAdmin}($event);
         }
+
     }
 
     /**
@@ -60,14 +65,24 @@ class LayoutController extends AbstractListener
         /** @var array $result */
         $result = Json::decode($event->getArgument('result'), true);
 
-        $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
         $result[0]['rows'][] = [['name' => 'name'], ['name' => 'typeValue']];
 
-        foreach ($this->getInputLanguageList() as $locale => $key) {
-            $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
+        if ($this->getConfig()->get('isMultilangActive', false)) {
+            $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
+            foreach ($this->getInputLanguageList() as $locale => $key) {
+                $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
+            }
         }
 
         $event->setArgument('result', Json::encode($result));
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyAttributeDetailSmall(Event $event)
+    {
+        $this->modifyAttributeDetail($event);
     }
 
     /**
@@ -86,6 +101,22 @@ class LayoutController extends AbstractListener
     }
 
     /**
+     * @param Event $event
+     */
+    protected function modifyProductRelationshipsAdmin(Event $event)
+    {
+        $this->hideAssetRelation($event);
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyCategoryRelationshipsAdmin(Event $event)
+    {
+        $this->hideAssetRelation($event);
+    }
+
+    /**
      * @return array
      */
     protected function getInputLanguageList(): array
@@ -98,5 +129,21 @@ class LayoutController extends AbstractListener
         }
 
         return $result;
+    }
+
+    protected function hideAssetRelation(Event $event): void
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+        //hide asset relation if Dam did not install
+        if (!$this->getMetadata()->isModuleInstalled('Dam')) {
+            foreach ($result as $k => $item) {
+                if (isset($item['name']) && $item['name'] === 'asset_relations') {
+                    unset($result[$k]);
+                    break;
+                }
+            }
+        }
+        $event->setArgument('result', Json::encode($result));
     }
 }

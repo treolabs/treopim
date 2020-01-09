@@ -21,7 +21,6 @@
     "Country": "Country",
     "MeasuringUnit": "Measuring Unit",
     "Packaging": "Packaging",
-    "Pricing": "Pricing",
     "Product": "Product",
     "ProductAttributeValue": "Product Attribute Value",
     "ProductFamily": "Product Family",
@@ -43,7 +42,6 @@
     "Country": "Countries",
     "MeasuringUnit": "Measuring Units",
     "Packaging": "Packagings",
-    "Pricing": "Pricings",
     "Product": "Products",
     "ProductAttributeValue": "Product Attribute Value",
     "ProductFamily": "Product Families",
@@ -57,6 +55,10 @@
     "channelsFilter": {
       "": "All Scopes",
       "onlyGlobalScope": "Only Global Scope"
+    },
+    "scope": {
+      "Global": "Global",
+      "Channel": "Channel"
     }
   },
   "fields": {
@@ -92,7 +94,6 @@
   },
   "exceptions": {
     "Only force deleting available": "Only force deleting available",
-    "notDashletService": "Service %s must implement DashletInterface",
     "Code is invalid": "Code is invalid. Code should be unique. Only letters, numbers and char \"_\" expected."
   },
   "messages": {

@@ -24,14 +24,6 @@
                 {
                     "name": "relatedProduct"
                 }
-            ],
-            [
-                {
-                    "name": "mainProductImage"
-                },
-                {
-                    "name": "relatedProductImage"
-                }
             ]
         ]
     }

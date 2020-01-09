@@ -23,6 +23,7 @@ namespace Pim\Services;
 
 use Espo\Core\Templates\Repositories\Base as BaseRepository;
 use Espo\Core\Services\Base;
+use Treo\Services\DashletInterface;
 
 /**
  * Class AbstractDashletService

@@ -50,14 +50,6 @@
                             "withoutProductAttributes"
                         ]
                     }
-                },
-                "productWithoutImage": {
-                    "url": "#Product",
-                    "options": {
-                        "boolFilterList": [
-                            "withoutImageAssets"
-                        ]
-                    }
                 }
             }
         },

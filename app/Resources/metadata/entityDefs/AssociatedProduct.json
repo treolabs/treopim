@@ -48,14 +48,8 @@
     "relatedProduct": {
       "required": true,
       "type": "link",
-      "view": "pim:views/associated-product/fields/related-product"
-    },
-    "mainProductImage": {
-      "type": "image",
-      "previewSize": "small",
-      "readOnly": true,
-      "notStorable": true,
-      "view": "pim:views/fields/full-width-list-image"
+      "view": "pim:views/associated-product/fields/related-product",
+      "noLoad": false
     },
     "bothDirections": {
       "type": "bool",
@@ -65,13 +59,6 @@
       "type": "link",
       "hidden": true,
       "view": "pim:views/associated-product/fields/backward-association"
-    },
-    "relatedProductImage": {
-      "type": "image",
-      "previewSize": "small",
-      "readOnly": true,
-      "notStorable": true,
-      "view": "pim:views/fields/full-width-list-image"
     }
   },
   "links": {

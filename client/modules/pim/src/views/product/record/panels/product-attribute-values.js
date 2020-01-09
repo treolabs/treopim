@@ -33,7 +33,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             'isRequired',
             'productFamilyAttributeId',
             'scope',
-            'value'
+            'value',
+            'attributeIsMultilang'
         ],
 
         groupKey: 'attributeGroupId',
@@ -543,29 +544,35 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             Object.keys(fields).forEach(name => {
                 let fieldView = fields[name];
                 let hide = !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
-                hide = this.updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope);
-                hide = this.updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter);
+                if (!hide){
+                    hide = this.updateCheckByChannelFilter(fieldView, attributesWithChannelScope);
+                }
+                if (!hide && fieldView.model.get('attributeIsMultilang')){
+                    hide = this.updateCheckByLocaleFilter(fieldView, currentFieldFilter);
+                }
                 this.controlRowVisibility(fieldView, name, hide);
             });
             this.hideChannelAttributesWithGlobalScope(fields, attributesWithChannelScope);
         },
 
-        updateCheckByChannelFilter(fieldView, hide, attributesWithChannelScope) {
+        updateCheckByChannelFilter(fieldView, attributesWithChannelScope) {
+            let hide = false;
             let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
             if (currentChannelFilter) {
                 if (currentChannelFilter === 'onlyGlobalScope') {
-                    hide = hide || fieldView.model.get('scope') !== 'Global';
+                    hide = fieldView.model.get('scope') !== 'Global';
                 } else {
-                    hide = hide || (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
+                    hide = (fieldView.model.get('scope') === 'Channel' && !(fieldView.model.get('channelsIds') || []).includes(currentChannelFilter));
                     if ((fieldView.model.get('channelsIds') || []).includes(currentChannelFilter)) {
                         attributesWithChannelScope.push(fieldView.model.get('attributeId'));
                     }
                 }
             }
+
             return hide;
         },
 
-        updateCheckByLocaleFilter(fieldView, hide, currentFieldFilter) {
+        updateCheckByLocaleFilter(fieldView, currentFieldFilter) {
             // get filter
             let filter = (this.model.advancedEntityView || {}).localesFilter;
 
@@ -601,6 +608,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             if (currentFieldFilter === 'emptyAndRequired') {
                 check = (value === null || value === '' || (Array.isArray(value) && !value.length)) && required;
             }
+
             return check;
         },
 
@@ -765,8 +773,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     if (value.mode === 'edit') {
                         const fetchedData = value.fetch();
                         const initialData = this.initialAttributes[id];
+                        value.model.set(fetchedData);
                         if (this.equalityValueCheck(fetchedData, initialData)) {
-                            value.model.set(fetchedData);
                             data = _.extend(data || {}, {[id]: fetchedData});
                         }
                     }
@@ -792,7 +800,13 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     promises.push(this.ajaxPutRequest(`${this.collection.name}/${id}`, attrs))
                 });
                 this.notify('Saving...');
-                Promise.all(promises).then(response => this.notify('Saved', 'success'), error => this.actionRefresh());
+                Promise.all(promises)
+                    .then(response => {
+                        this.notify('Saved', 'success');
+                        this.model.trigger('after:attributesSave');
+                    }, error => {
+                        this.actionRefresh();
+                    });
             }
         },
 

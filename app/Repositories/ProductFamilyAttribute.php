@@ -195,7 +195,7 @@ class ProductFamilyAttribute extends Base
                     $skipToCreate[] = $item['productId'];
                     $this->pushSql("UPDATE product_attribute_value SET product_family_attribute_id='$pfaId',is_required=$isRequired WHERE id='$id'");
                 } else {
-                    $this->pushSql("DELETE FROM product_attribute_value WHERE id='$id'");
+                    $this->pushSql("UPDATE product_attribute_value SET deleted=1 WHERE id='$id'");
                     $this->pushSql("DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id='$id'");
                 }
             }

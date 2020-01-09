@@ -25,7 +25,6 @@ namespace Pim\Listeners;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
 use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Pim\Entities\ProductAttributeValue;
 use Treo\Core\EventManager\Event;
@@ -94,11 +93,16 @@ class ProductAttributeValueEntity extends AbstractListener
 
     /**
      * @param Event $event
+     *
+     * @return bool
+     * @throws Error
      */
     public function afterSave(Event $event)
     {
-        // get data
+        /** @var Entity $entity */
         $entity = $event->getArgument('entity');
+
+        /** @var array $options */
         $options = $event->getArgument('options');
 
         $this->moveImageFromTmp($entity);
@@ -108,7 +112,11 @@ class ProductAttributeValueEntity extends AbstractListener
         }
 
         // create note
-        $this->createNote($entity);
+        if ($entity->isAttributeChanged('value') || $entity->isAttributeChanged('data')) {
+            $this->createNote($entity);
+        }
+
+        return true;
     }
 
     /**
@@ -221,8 +229,7 @@ class ProductAttributeValueEntity extends AbstractListener
         // prepare array types
         $arrayTypes = ['array', 'multiEnum'];
 
-        // for value
-        if ($entity->isAttributeChanged('value')
+        if (self::$beforeSaveData['value'] != $entity->get('value')
             || ($entity->isAttributeChanged('data')
                 && self::$beforeSaveData['data']->unit != $entity->get('data')->unit)) {
             $result['fields'][] = $fieldName;
@@ -237,29 +244,6 @@ class ProductAttributeValueEntity extends AbstractListener
             if ($entity->get('attribute')->get('type') == 'unit') {
                 $result['attributes']['was'][$fieldName . 'Unit'] = self::$beforeSaveData['data']->unit;
                 $result['attributes']['became'][$fieldName . 'Unit'] = $entity->get('data')->unit;
-            }
-        }
-
-        // for multilang value
-        if ($this->getConfig()->get('isMultilangActive')) {
-            foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
-                // prepare field
-                $field = Util::toCamelCase('value_' . strtolower($locale));
-
-                if ($entity->isAttributeChanged($field)) {
-                    // prepare field name
-                    $localeFieldName = $fieldName . " ($locale)";
-                    $result['fields'][] = $localeFieldName;
-                    if (in_array($attribute->get('type'), $arrayTypes)) {
-                        $result['attributes']['was'][$localeFieldName]
-                            = Json::decode(self::$beforeSaveData[$field], true);
-                        $result['attributes']['became'][$localeFieldName]
-                            = Json::decode($entity->get($field), true);
-                    } else {
-                        $result['attributes']['was'][$localeFieldName] = self::$beforeSaveData[$field];
-                        $result['attributes']['became'][$localeFieldName] = $entity->get($field);
-                    }
-                }
             }
         }
 
