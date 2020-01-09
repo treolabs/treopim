@@ -22,15 +22,17 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Exceptions\Error;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
+use Espo\Core\Templates\Repositories\Base;
 
 /**
  * Class Product
  *
  * @author r.ratsun@treolabs.com
  */
-class Product extends AbstractRepository
+class Product extends Base
 {
     /**
      * @return array
@@ -56,6 +58,7 @@ class Product extends AbstractRepository
      * @param Entity $entity
      *
      * @return bool
+     * @throws Error
      */
     protected function saveAttributes(Entity $product): bool
     {

@@ -52,26 +52,6 @@
                         }
                     ]
                 }
-            },
-            "mainProductImage": {
-                "visible": {
-                    "conditionGroup": [
-                        {
-                            "type": "isNotEmpty",
-                            "attribute": "id"
-                        }
-                    ]
-                }
-            },
-            "relatedProductImage": {
-                "visible": {
-                    "conditionGroup": [
-                        {
-                            "type": "isNotEmpty",
-                            "attribute": "id"
-                        }
-                    ]
-                }
             }
         }
     }

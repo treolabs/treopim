@@ -95,13 +95,6 @@
       "noLoad": true,
       "importDisabled": true
     },
-    "image": {
-      "type": "image",
-      "previewSize": "medium",
-      "readOnly": true,
-      "view": "pim:views/product/fields/image",
-      "importDisabled": true
-    },
     "hasChildren": {
       "type": "bool",
       "notStorable": true,
@@ -124,13 +117,6 @@
       "layoutListSmallDisabled": true,
       "layoutDetailDisabled": true,
       "layoutDetailSmallDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "noLoad": true,
-      "importDisabled": true
-    },
-    "pimImages": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
@@ -171,11 +157,6 @@
       "entity": "Category",
       "disableMassRelation": true
     },
-    "image": {
-      "type": "belongsTo",
-      "entity": "Attachment",
-      "skipOrmDefs": true
-    },
     "catalogs": {
       "type": "hasMany",
       "relationName": "catalogCategory",
@@ -190,13 +171,7 @@
         "link": "productCategories",
         "entity": "Product"
       }
-    },
-    "pimImages": {
-      "type": "hasMany",
-      "foreign": "category",
-      "entity": "PimImage",
-      "disableMassRelation": true
-    }
+  }
   },
   "collection": {
     "sortBy": "createdAt",

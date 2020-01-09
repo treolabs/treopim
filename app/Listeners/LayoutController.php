@@ -47,9 +47,14 @@ class LayoutController extends AbstractListener
         $isAdminPage = $event->getArgument('request')->get('isAdminPage') === 'true';
 
         $method = 'modify' . $scope . ucfirst($name);
+        $methodAdmin = $method . 'Admin';
+
         if (!$isAdminPage && method_exists($this, $method)) {
             $this->{$method}($event);
+        } else if ($isAdminPage && method_exists($this, $methodAdmin)) {
+            $this->{$methodAdmin}($event);
         }
+
     }
 
     /**
@@ -96,6 +101,22 @@ class LayoutController extends AbstractListener
     }
 
     /**
+     * @param Event $event
+     */
+    protected function modifyProductRelationshipsAdmin(Event $event)
+    {
+        $this->hideAssetRelation($event);
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function modifyCategoryRelationshipsAdmin(Event $event)
+    {
+        $this->hideAssetRelation($event);
+    }
+
+    /**
      * @return array
      */
     protected function getInputLanguageList(): array
@@ -108,5 +129,21 @@ class LayoutController extends AbstractListener
         }
 
         return $result;
+    }
+
+    protected function hideAssetRelation(Event $event): void
+    {
+        /** @var array $result */
+        $result = Json::decode($event->getArgument('result'), true);
+        //hide asset relation if Dam did not install
+        if (!$this->getMetadata()->isModuleInstalled('Dam')) {
+            foreach ($result as $k => $item) {
+                if (isset($item['name']) && $item['name'] === 'asset_relations') {
+                    unset($result[$k]);
+                    break;
+                }
+            }
+        }
+        $event->setArgument('result', Json::encode($result));
     }
 }

@@ -39,11 +39,11 @@ class Image extends Base
      */
     protected function checkAttachment(Attachment $attachment): bool
     {
-        if (in_array($attachment->get('relatedType'), ['Category', 'Product'])) {
+        if (in_array($attachment->get('relatedType'), ['Asset'])) {
             $entity = $this
                 ->getEntityManager()
-                ->getRepository('PimImage')
-                ->where(['imageId' => $attachment->get('id')])
+                ->getRepository('Asset')
+                ->where(['fileId' => $attachment->get('id')])
                 ->findOne();
             if (empty($entity)) {
                 throw new NotFound();

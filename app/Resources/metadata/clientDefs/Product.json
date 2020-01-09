@@ -20,7 +20,6 @@
     "withoutAssociatedProducts",
     "withoutAnyCategory",
     "withoutProductAttributes",
-    "withoutImageAssets",
     "notLinkedWithProductSerie",
     "onlyCatalogProducts",
     "linkedWithCategory"
@@ -102,22 +101,6 @@
       "selectAction": "selectRelatedEntity",
       "layout": "listForChannelsInProduct"
     },
-    "pimImages": {
-      "view": "pim:views/record/panels/pim-images",
-      "layout": "listSmallForRelate",
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "pimImageRelation"
-      ],
-      "recordsPerPage": 200,
-      "dragDrop": {
-        "isActive": true,
-        "sortField": "sortOrder"
-      },
-      "sortBy": "sortOrder",
-      "asc": true
-    },
     "associatedMainProducts": {
       "view": "pim:views/product/record/panels/associated-main-product",
       "label": "Associated Products",
@@ -125,48 +108,6 @@
       "select": false,
       "aclScopesList": [
         "Association"
-      ]
-    }
-  },
-  "menu": {
-    "list": {
-      "buttons": [
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/list",
-          "style": "primary",
-          "title": "List",
-          "iconHtml": "<span class=\"fa fa-list\"></span>"
-        },
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/plate",
-          "style": "default",
-          "title": "Plate",
-          "iconHtml": "<span class=\"fa fa-th\"></span>"
-        }
-      ]
-    },
-    "plate": {
-      "buttons": [
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/list",
-          "style": "default",
-          "title": "List",
-          "iconHtml": "<span class=\"fa fa-list\"></span>"
-        },
-        {
-          "acl": "read",
-          "label": "",
-          "link": "#Product/plate",
-          "style": "primary",
-          "title": "Plate",
-          "iconHtml": "<span class=\"fa fa-th\"></span>"
-        }
       ]
     }
   },
