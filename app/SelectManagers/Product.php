@@ -79,12 +79,15 @@ class Product extends AbstractSelectManager
             return;
         }
 
+        // prepare text filter
+        $textFilter = \addslashes($textFilter);
+
         // prepare rows
         $rows = [];
 
         // push for fields
         foreach ($last['OR'] as $name => $value) {
-            $rows[] = "product." . Util::toUnderScore(str_replace('*', '', $name)) . " LIKE '$value'";
+            $rows[] = "product." . Util::toUnderScore(str_replace('*', '', $name)) . " LIKE '" . \addslashes($value) . "'";
         }
 
         // get attributes ids
