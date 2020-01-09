@@ -32,7 +32,8 @@ Espo.define('pim:views/product/record/plate-item', 'view',
                 this.getRouter().navigate(url, {trigger: false});
                 this.getRouter().dispatch(this.model.name, 'view', {
                     id: this.model.id,
-                    rootUrl: `${this.model.name}/plate`
+                    rootUrl: `${this.model.name}/plate`,
+                    model: this.model
                 });
             }
         }, Dep.prototype.events),
