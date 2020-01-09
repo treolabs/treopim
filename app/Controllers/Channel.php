@@ -32,69 +32,6 @@ use Treo\Core\Utils\Util;
 class Channel extends AbstractController
 {
     /**
-     * @ApiDescription(description="Get channel")
-     * @ApiMethod(type="GET")
-     * @ApiRoute(name="/Channel/{id}")
-     * @ApiReturn(sample="'object'")
-     *
-     * @param $params
-     * @param $data
-     * @param $request
-     *
-     * @return mixed
-     * @throws Exceptions\NotFound
-     */
-    public function actionRead($params, $data, $request)
-    {
-        // get parent
-        $result = parent::actionRead($params, $data, $request);
-
-        // prepare locales
-        if (!empty($result->locales)) {
-            $result->locales = $this
-                ->getRecordService()
-                ->prepareLocales($result->locales);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @ApiDescription(description="Get list of channels")
-     * @ApiMethod(type="GET")
-     * @ApiRoute(name="/Channel")
-     * @ApiReturn(sample="{
-     * 'list': 'array',
-     * 'total': 'int'
-     * }")
-     *
-     * @param $params
-     * @param $data
-     * @param $request
-     *
-     * @return array
-     * @throws Exceptions\Forbidden
-     */
-    public function actionList($params, $data, $request)
-    {
-        // get parent
-        $result = parent::actionList($params, $data, $request);
-
-        // prepare locales
-        if ($result['total'] > 0) {
-            foreach ($result['list'] as $k => $row) {
-                if (!empty($row->locales)) {
-                    $result['list'][$k]->locales = $this
-                        ->getRecordService()
-                        ->prepareLocales($row->locales);
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Get channel product attributes action
      *
      * @ApiDescription(description="Get channel product attributes")
