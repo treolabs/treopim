@@ -223,7 +223,7 @@ class Event extends AbstractEvent
 
         if (!empty($config->get('isInstalled'))
             && $config->get('pimAndDamInstalled') === false
-            && $this->getMetadata()->isModuleInstalled('Dam')) {
+            && $this->getContainer()->get('metadata')->isModuleInstalled('Dam')) {
             //migration pimImage
             $migrationPimImage = new MigrationPimImage();
             $migrationPimImage->setContainer($this->getContainer());
