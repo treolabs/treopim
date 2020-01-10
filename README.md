@@ -116,7 +116,7 @@ To create your new TreoPIM application, first make sure you're using PHP 7.1 or 
       ```
       >**process-treopim** – a unique ID of the process. You should use a different process ID if you have several TreoPIM projects on one server<br/>
       >**/usr/bin/php** – PHP7.1 or above
-5. Install TreoCore following the installation wizard in web interface. Go to http://YOUR_PROJECT/
+5. Install TreoPIM following the installation wizard in web interface. Go to http://YOUR_PROJECT/
      
 ## License
 
