@@ -253,7 +253,7 @@ class ProductFamilyAttribute extends Base
                 $id = Util::generateId();
 
                 $this->pushSql(
-                    "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId')"
+                    "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,is_required) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId',$isRequired)"
                 );
                 if (!empty($teamsIds)) {
                     foreach ($teamsIds as $teamId) {
