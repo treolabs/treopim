@@ -86,11 +86,37 @@ Please ask, if you want to know more.
 * [Nginx server configuration](https://github.com/treolabs/treocore/blob/master/docs/en/administration/nginx-server-configuration.md)
 
 ### Installation
-1. Install [TreoCore](https://github.com/treolabs/treocore#installation)
-2. Install Pim module by Composer UI or by running:
+
+> Installation guide is based on **Linux Mint OS**. Of course, you can use any unix-based system, but make sure that your OS supports the following commands.<br/>
+
+To create your new TreoPIM application, first make sure you're using PHP 7.1 or above and have [Composer](https://getcomposer.org/) installed.
+
+1. Create your new project by running:
    ```
-   composer require --no-update treolabs/pim:* && composer update --no-dev
+   composer create-project treolabs/skeleton-pim my-treopim-project
    ```
+   > **my-treopim-project** – project name
+   
+2. Change recursively the user and group ownership for project files. It is important for code generation mechanism
+   ```
+   sudo chown -R www-data:www-data my-treopim-project/
+   ```
+3. Make cron handler files executable:
+   ```
+   sudo chmod +x my-treopim-project/bin/cron.sh
+   ```
+4. Configure crontab:
+   1. crontab should be configured for **www-data** user. You can do it by running:
+      ```
+      sudo crontab -u www-data -e
+      ```
+   2. put the following configuration:
+      ```
+      * * * * * /var/www/my-treopim-project/bin/cron.sh process-treopim /usr/bin/php 
+      ```
+      >**process-treopim** – a unique ID of the process. You should use a different process ID if you have several TreoPIM projects on one server<br/>
+      >**/usr/bin/php** – PHP7.1 or above
+5. Install TreoCore following the installation wizard in web interface. Go to http://YOUR_PROJECT/
      
 ## License
 
