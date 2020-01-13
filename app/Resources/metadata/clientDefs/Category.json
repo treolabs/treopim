@@ -35,8 +35,13 @@
   "relationshipPanels": {
     "productCategories": {
       "layout": "listForProductCategoriesInCategory",
-      "rowActionsView": "views/record/row-actions/relationship-no-unlink",
-      "select": false,
+      "view": "pim:views/category/record/panels/category-products",
+      "selectAction": "selectRelatedEntity",
+      "selectBoolFilterList": [
+        "onlyActive",
+        "notLinkedCategoryAndOnlyCatalogsProducts"
+      ],
+      "select": true,
       "recordsPerPage": 200,
       "dragDrop": {
         "isActive": true,
