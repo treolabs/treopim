@@ -535,7 +535,8 @@ class Module extends AbstractModule
                         "noLoad" => false,
                         "required" => false,
                         "readOnly" => false,
-                        "tooltip" => false
+                        "tooltip" => false,
+                        "view" => "pim:views/asset-relation/fields/channels"
                     ],
                     "role" => [
                         "type" => "multiEnum",

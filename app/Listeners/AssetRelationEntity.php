@@ -89,15 +89,25 @@ class AssetRelationEntity extends AbstractListener
      * @param Asset $asset
      * @return bool
      * @throws BadRequest
+     * @throws Error
      */
     protected function validation(AssetRelation $relation, Asset $asset): bool
     {
         $type = (string)$asset->get('type');
         $channelsIds = $this->getChannelsIds($relation);
-        if ($this->isMainRole($relation) && $relation->get('scope') == 'Channel' && !empty($channelsIds)) {
+        if ($this->isMainRole($relation) && $relation->get('scope') === 'Channel' && !empty($channelsIds)) {
             //checking for the existence of channels with a role Main
             $channelsCount = $this->countRelation($relation, $type, 'Main', 'Channel', $channelsIds);
             if (!empty($channelsCount)) {
+                if(empty($relation->get('name')) && empty($relation->get('entityName'))) {
+                    $foreign = $this
+                            ->getEntityManager()
+                            ->getEntity($relation->get('entityName'), $relation->get('entityId'));
+                    $this
+                        ->getEntityManager()
+                        ->getRepository('AssetRelation')
+                        ->deleteLink($asset, $foreign);
+                }
                 throw new BadRequest($this->exception('assetMainRole'));
             }
         }
