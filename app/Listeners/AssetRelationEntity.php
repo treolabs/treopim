@@ -66,7 +66,7 @@ class AssetRelationEntity extends AbstractListener
             if ($isGalleryImage) {
                 $this->updateMainImage($assetRelation, $asset);
             }
-        } elseif ($this->isMainRole($assetRelation) && !$this->hasMainImageEntity($assetRelation, $isGalleryImage)) {
+        } elseif (!$this->hasMainImageEntity($assetRelation, $isGalleryImage)) {
             $this->updateMainImage($assetRelation, null);
         }
     }
