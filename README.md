@@ -91,9 +91,15 @@ Please ask, if you want to know more.
 
 To create your new TreoPIM application, first make sure you're using PHP 7.1 or above and have [Composer](https://getcomposer.org/) installed.
 
-1. Create your new project by running:
+1. Create your new project by running one of the following commands.
+
+   If you don't need demo data, run:
    ```
    composer create-project treolabs/skeleton-pim my-treopim-project
+   ```
+   If you need demo data, run:
+    ```
+   composer create-project treolabs/skeleton-pim-demo my-treopim-project
    ```
    > **my-treopim-project** – project name
    
