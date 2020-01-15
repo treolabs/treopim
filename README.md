@@ -78,7 +78,7 @@ Please ask, if you want to know more.
 ### Requirements
 
 * Unix-based system. Linux Mint recommend
-* PHP 7.1 or above (with pdo_mysql, openssl, json, zip, gd, mbstring, xml, curl,exif extensions)
+* PHP 7.1 or above (with pdo_mysql, openssl, json, zip, gd, mbstring, xml, curl, exif extensions)
 * MySQL 5.5.3 or above
 
 ### Configuration instructions based on your server
