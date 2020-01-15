@@ -100,9 +100,7 @@ To create your new TreoPIM application, first make sure you're using PHP 7.1 or 
    If you need demo data, run:
     ```
    composer create-project treolabs/skeleton-pim-demo my-treopim-project
-   ```
-   > **my-treopim-project** – project name
-   
+   ```   
 2. Change recursively the user and group ownership for project files. It is important for code generation mechanism
    ```
    sudo chown -R www-data:www-data my-treopim-project/
