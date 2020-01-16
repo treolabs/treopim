@@ -126,7 +126,7 @@ To create your new TreoPIM application, first make sure you are using PHP 7.1 or
       ```
       * * * * * /var/www/my-treopim-project/bin/cron.sh process-treopim /usr/bin/php 
       ```
-      >**process-treopim** – a unique process ID. You should use a different process ID if you have several TreoPIM projects on one server.
+      >**process-treopim** – a unique process ID. You should use a different process ID if you have several TreoPIM projects on one server.<br/>      
       >**/usr/bin/php** – PHP7.1 or above
 
 5. Install TreoPIM following the installation wizard in the web interface. Go to http://YOUR_PROJECT/
