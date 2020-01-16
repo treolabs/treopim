@@ -107,9 +107,9 @@ To create your new TreoPIM application, first make sure you are using PHP 7.1 or
 
 2. Change recursively the user and group ownership for project files: 
    ```
-   sudo chown -R www-data:www-data my-treopim-project/
+   chown -R webserver_user:webserver_user my-treopim-project/
    ```
-   It is important for the code generation mechanism.
+   >**webserver_user** – can be one of the following: www, www-data, apache, etc.
 
 3. Make the cron handler files executable:
    ```
@@ -117,6 +117,7 @@ To create your new TreoPIM application, first make sure you are using PHP 7.1 or
    ```
 
 4. Configure the crontab as described below.
+
    4.1. Run the following command:
       ```
       crontab -e -u webserver_user
@@ -125,8 +126,7 @@ To create your new TreoPIM application, first make sure you are using PHP 7.1 or
       ```
       * * * * * /var/www/my-treopim-project/bin/cron.sh process-treopim /usr/bin/php 
       ```
-      >**webserver_user** – can be one of the following: www, www-data, apache, etc.<br/>
-      >**process-treopim** – a unique process ID. You should use a different process ID if you have several TreoPIM projects on one server.<br/>
+      >**process-treopim** – a unique process ID. You should use a different process ID if you have several TreoPIM projects on one server.
       >**/usr/bin/php** – PHP7.1 or above
 
 5. Install TreoPIM following the installation wizard in the web interface. Go to http://YOUR_PROJECT/
