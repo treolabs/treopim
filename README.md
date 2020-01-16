@@ -109,7 +109,7 @@ To create your new TreoPIM application, first make sure you are using PHP 7.1 or
    ```
    chown -R webserver_user:webserver_user my-treopim-project/
    ```
-   >**webserver_user** – can be one of the following: www, www-data, apache, etc.
+   >**webserver_user** – depends on your webserver and can be one of the following: www, www-data, apache, etc.
 
 3. Make the cron handler files executable:
    ```
