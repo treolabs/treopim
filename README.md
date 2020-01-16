@@ -116,12 +116,12 @@ To create your new TreoPIM application, first make sure you are using PHP 7.1 or
    sudo chmod +x my-treopim-project/bin/cron.sh
    ```
 
-4. Configure the crontab:
-   1. Open a terminal and run the following command:
+4. Configure the crontab as described below.
+   4.1. Run the following command:
       ```
       crontab -e -u webserver_user
       ```
-   2. Add the following configuration:
+   4.2. Add the following configuration:
       ```
       * * * * * /var/www/my-treopim-project/bin/cron.sh process-treopim /usr/bin/php 
       ```
