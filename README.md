@@ -38,9 +38,8 @@ TreoPIM comes with a lot of features directly out of the box, including:
 - product series;
 - products;
 - attribute groups and attributes;
-- product and category images (available only when the TreoDAM module is also installed to your TreoPIM system);
-- assets;  <!-- isn't it also available only with DAM? -->
-- documents;
+- product and category images (available only when the [TreoDAM module](https://treodam.com) is also installed to your TreoPIM system);
+- assets (available only when the [TreoDAM module](https://treodam.com) is also installed to your TreoPIM system);  
 - portals;
 - and much more.
 
