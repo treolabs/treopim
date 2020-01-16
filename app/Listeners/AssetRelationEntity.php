@@ -26,6 +26,7 @@ use Dam\Entities\Asset;
 use Dam\Entities\AssetRelation;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
+use Pim\Services\Product as ProductService;
 use Treo\Core\EventManager\Event;
 use Treo\Listeners\AbstractListener;
 
@@ -95,7 +96,7 @@ class AssetRelationEntity extends AbstractListener
     {
         $type = (string)$asset->get('type');
         $channelsIds = $this->getChannelsIds($relation);
-        if ($this->isMainRole($relation) && $relation->get('scope') === 'Channel' && !empty($channelsIds)) {
+        if (ProductService::isMainRole($relation) && $relation->get('scope') === 'Channel' && !empty($channelsIds)) {
             //checking for the existence of channels with a role Main
             $channelsCount = $this->countRelation($relation, $type, 'Main', 'Channel', $channelsIds);
             if (!empty($channelsCount)) {
@@ -248,16 +249,7 @@ class AssetRelationEntity extends AbstractListener
         return
             !empty($asset)
             && $assetRelation->get('scope') == 'Global'
-            && $this->isMainRole($assetRelation);
-    }
-
-    /**
-     * @param AssetRelation $assetRelation
-     * @return bool
-     */
-    protected function isMainRole(AssetRelation $assetRelation): bool
-    {
-        return in_array('Main', (array)$assetRelation->get('role'));
+            && ProductService::isMainRole($assetRelation);
     }
 
     /**
