@@ -117,14 +117,15 @@ To create your new TreoPIM application, first make sure you are using PHP 7.1 or
    ```
 
 4. Configure the crontab:
-   1. crontab should be configured for **www-data** user. You can do it by running:
+   1. Open a terminal and run the following command:
       ```
-      sudo crontab -u www-data -e
+      crontab -e -u webserver_user
       ```
-   2. add the following configuration:
+   2. Add the following configuration:
       ```
       * * * * * /var/www/my-treopim-project/bin/cron.sh process-treopim /usr/bin/php 
       ```
+      >**webserver_user** – can be one of the following: www, www-data, apache, etc.<br/>
       >**process-treopim** – a unique process ID. You should use a different process ID if you have several TreoPIM projects on one server.<br/>
       >**/usr/bin/php** – PHP7.1 or above
 
