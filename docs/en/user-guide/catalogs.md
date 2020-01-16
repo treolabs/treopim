@@ -6,9 +6,9 @@ Catalogs, as well as channels, form the basis of the multichannel publication of
 
 With the help of catalogs you can create as many versions of your products as you need, preserving the ability to modify your data within your company exclusively and not worrying about possible changes made by your suppliers during the data transfer.
 
-The catalog structure can be different for each user, based on their needs. For instance, catalogs can be used to segment your range of products for further export of the product data to certain channels, as well as to store historical information about your products (e.g. "Winter jackets 2019" and "Winter jackets 2020").
+The catalog structure can be different for each user, based on their needs. For instance, catalogs can be used to segment your range of products for further [export](./export-core.md) of the product data to certain channels, as well as to store historical information about your products (e.g. "Winter jackets 2019" and "Winter jackets 2020").
 
-The multi-catalog function is beneficial both for manufacturers, wholesalers, and retailers due to its ability to meet all their specific needs and requirements. For instance, manufacturers can easily enlarge/shorten their range of products on the basis of their already existing catalog(s). At the same time, wholesalers or retailers get a powerful tool to organize and systematize all the product information collected from different sources into one proper master catalog (and then create as many versions of it as needed) in a very flexible manner. There is no need to spend much time on creating a brand new catalog from scratch – just edit what you already have with the help of the TreoPim multi-catalog feature!
+The multi-catalog function is beneficial both for manufacturers, wholesalers, and retailers due to its ability to meet all their specific needs and requirements. For instance, manufacturers can easily enlarge/shorten their range of products on the basis of their already existing catalog(s). At the same time, wholesalers or retailers get a powerful tool to organize and systematize all the product information collected from different sources into one proper master catalog (and then create as many versions of it as needed) in a very flexible manner. There is no need to spend much time on creating a brand new catalog from scratch – just edit what you already have with the help of the TreoPIM multi-catalog feature!
 
 ## Catalog Fields
 
@@ -18,10 +18,10 @@ The catalog entity comes with the following preconfigured fields; mandatory are 
 |---------------------------|-----------------------------------|
 | Active					| Activity state of the catalog record          |
 | Name (multi-lang) *		| Catalog name                     |
-| Category *				| Category name this catalog must be assigned to            |
+| Code *					| Unique value used to identify the catalog. It can only consist of lowercase letters, digits and underscore symbols               |
 | Description (multi-lang)  | Description of the catalog usage    |
 
-If you want to make changes to the catalog entity (e.g. add new fields, or modify catalog views), please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the catalog entity, or if you want to make changes to the catalog entity (e.g. add new fields, or modify catalog views), please, contact your administrator. 
 
 ## Creating 
 
@@ -75,6 +75,8 @@ The following mass actions are available for catalog records on the list view pa
 
 ![Catalogs mass actions](../../_assets/catalogs/catalogs-mass-actions.jpg)
 
+> If any option is missing in your mass actions menu, please, contact your administrator.
+
 For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
@@ -87,7 +89,9 @@ The following single record actions are available for catalog records on the lis
 
 ![Catalogs single record actions](../../_assets/catalogs/catalogs-single-actions.jpg)
 
-For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide..
+> If any option is missing in your single record actions menu, please, contact your administrator.
+
+For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing 
 
@@ -165,7 +169,7 @@ Categories linked to the given catalog record can be viewed, edited, unlinked, o
 
 ### Products
 
-Products that are linked to the catalog record are displayed on its detail view page on the `PRODUCTS` panel and include the following table columns:
+[Products](https://treopim.com/help/products) that are linked to the catalog record are displayed on its detail view page on the `PRODUCTS` panel and include the following table columns:
  - Name
  - SKU
  - Type
