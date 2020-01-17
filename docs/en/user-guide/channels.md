@@ -1,6 +1,6 @@
 # Channels
 
-**Channel** – a destination point for your product data, which can be synced with third-party systems as well as exported in certain formats. Generally, a channel is a place, where your product information should appear; for example, your online shop, mobile app or print catalog.
+**Channel** – a destination point for your product data, which can be synced with third-party systems as well as [exported](../../../../../../treocore/blob/master/docs/en/user-guide/export-core.md) in certain formats. Generally, a channel is a place, where your product information should appear; for example, your online shop, mobile app or print catalog.
 
 Using channels allows you to implement your multichannel or omni-channel strategy in a more efficient way.
 
@@ -14,9 +14,9 @@ The channel entity comes with the following preconfigured fields; mandatory are 
 | Name (multi-lang) *	   | Channel name                   |
 | Code *                   | Unique value used to identify the channel. It can only consist of lowercase letters, digits and underscore symbols     |
 | Currencies *			   | Multiselect-list of currencies. The prices in the defined currency (or currencies) will be transferred via the given channel  |
-| Description			   | Description of the channel usage    |
+| Description (multi-lang)	| Description of the channel usage    |
 
-If you want to make changes to the channel entity, e.g. add new fields, or modify channel views, please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the channel entity, or if you want to make changes to the channel entity (e.g. add new fields, or modify channel views), please, contact your administrator. 
 
 ## Creating
 
@@ -26,7 +26,7 @@ To create a new channel record, click `Channels` in the navigation menu to get t
 
 Here enter the desired name for the channel record being created and activate it, if needed. Its code is automatically generated based on the entered name, but you can change it via the keyboard. Define the currencies to be used in prices for the given channel using the corresponding drop-down list. The channel description is an optional field and can be left empty.
 
-*Please, note that the `Currencies` list is set up by the administrator.*
+> Please, note that the `Currencies` list is set up by the administrator.
 
 Click the `Save` button to finish the channel record creation or `Cancel` to abort the process.
 
@@ -65,6 +65,8 @@ The following mass actions are available for channel records on the list view pa
 
 ![Channels mass actions](../../_assets/channels/channels-mass-actions.jpg)
 
+> If any option is missing in your mass actions menu, please, contact your administrator.
+
 For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
@@ -76,6 +78,8 @@ The following single record actions are available for channel records on the lis
 - Remove
 
 ![Сhannels single record actions](../../_assets/channels/channels-single-actions.jpg)
+
+> If any option is missing in your single record actions menu, please, contact your administrator.
 
 For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
@@ -91,6 +95,7 @@ Besides, you can make changes in the channel record via [in-line editing](./view
 
 Alternatively, make changes to the desired channel record in the [quick edit](./views-and-panels.md#quick-edit-view) pop-up that appears when you select the `Edit` option from the single record actions menu on the channels list view page:
 
+<!--THERE'S NO OWNERSHIP FIELDS NOW, RIGHT??? -->
 ![Editing pop-up](../../_assets/channels/channel-editing-popup.jpg)
 
 ## Removing
@@ -129,7 +134,7 @@ To see all product records linked to the given channel, use the `Show full list`
 
 ![Channel products](../../_assets/channels/show-full-option.jpg)
 
-Then the "Products" page opens, where all product records [filtered](./search-and-filtering.md) by the given channel are displayed:
+Then the "Products" [list view](https://treopim.com/help/products#listing) page opens, where all product records [filtered](./search-and-filtering.md) by the given channel are displayed:
 
 ![Products full list](../../_assets/channels/products-full-list.jpg)
 
@@ -145,6 +150,6 @@ Use the `Unlink` option from the single record actions menu to unlink the desire
 
 To remove the product, select the `Remove` option from the single record actions drop-down list for the appropriate record.
 
-To view the channel related product record from the `PRODUCTS` panel, click its name in the products list. The [detail view](./views-and-panels.md#detail-view) page of the given product will open, where you can perform further actions according to your access rights, configured by the administrator. 
+To view the channel related product record from the `PRODUCTS` panel, click its name in the products list. The [detail view](./views-and-panels.md#detail-view) page of the given product record will open, where you can perform further actions according to your access rights, configured by the administrator. 
 
-*Please, note that the **"Pricing"** module greatly extends the channels functionality. To learn more about the module and its features, please, visit our [store](https://treopim.com/store/pricing).*
+*Please, note that you can get additional modules (e.g. ["Pricing"](https://treopim.com/store/pricing), ["Completeness"](https://treopim.com/store/completeness), ["Export Feeds"](https://treopim.com/store/export-feeds), ["Import Feeds"](https://treopim.com/store/import-feeds), etc.) to your TreoPIM system to extend the channels functionality. To learn more about the modules and their features available for you, please, visit our [store](https://treopim.com/store).*
