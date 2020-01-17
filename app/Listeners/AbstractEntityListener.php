@@ -36,7 +36,7 @@ abstract class AbstractEntityListener extends AbstractListener
     /**
      * @var string
      */
-    public static $codePattern = '/^[a-z0-9_]*$/';
+    public static $codePattern = '/^[\p{Ll}0-9_]*$/u';
 
     /**
      * Create service
