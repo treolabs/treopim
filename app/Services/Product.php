@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Services;
 
+use Dam\Entities\AssetRelation;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
@@ -230,6 +231,15 @@ class Product extends AbstractService
         }
 
         return true;
+    }
+
+    /**
+     * @param AssetRelation $assetRelation
+     * @return bool
+     */
+    public static function isMainRole(AssetRelation $assetRelation): bool
+    {
+        return in_array('Main', (array)$assetRelation->get('role'));
     }
 
     /**
