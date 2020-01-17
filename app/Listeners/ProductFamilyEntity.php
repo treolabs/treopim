@@ -134,12 +134,14 @@ class ProductFamilyEntity extends AbstractEntityListener
      */
     protected function removeProductFamilyAttribute(Event $event): void
     {
+        /** @var ProductFamilyAttribute[] $productFamilyAttributes */
         $productFamilyAttributes = $this
             ->getEntityManager()
             ->getRepository('ProductFamilyAttribute')
+            ->select(['id'])
             ->where(['productFamilyId' => $event->getArgument('entity')->get('id')])
             ->find();
-        /** @var ProductFamilyAttribute $productFamilyAttribute */
+        
         foreach ($productFamilyAttributes as $productFamilyAttribute) {
             $this->getEntityManager()->removeEntity($productFamilyAttribute);
         }
