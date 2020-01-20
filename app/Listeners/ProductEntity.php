@@ -75,7 +75,7 @@ class ProductEntity extends AbstractEntityListener
         $options = $event->getArgument('options');
 
         $skipUpdate = empty($entity->skipUpdateProductAttributesByProductFamily)
-                        && empty($options['skipProductFamilyHook']);
+            && empty($options['skipProductFamilyHook']);
 
         if ($skipUpdate && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
             $this->updateProductAttributesByProductFamily($entity, $options);
@@ -88,13 +88,15 @@ class ProductEntity extends AbstractEntityListener
     public function afterUnrelate(Event $event)
     {
         //set default value in isActive for channel after deleted link
-        if($event->getArgument('relationName') == 'channels' && $event->getArgument('foreign') instanceof Channel) {
+        if ($event->getArgument('relationName') == 'channels' && $event->getArgument('foreign') instanceof Channel) {
             $dataEntity = new \StdClass();
             $dataEntity->entityName = 'Product';
             $dataEntity->entityId = $event->getArgument('entity')->get('id');
-            $dataEntity->value = (int)!empty($event
+            $dataEntity->value = (int)!empty(
+            $event
                 ->getArgument('entity')
-                ->getRelations()['channels']['additionalColumns']['isActive']['default']);
+                ->getRelations()['channels']['additionalColumns']['isActive']['default']
+            );
 
             $this
                 ->getService('Channel')
@@ -198,7 +200,7 @@ class ProductEntity extends AbstractEntityListener
 
     /**
      * @param Entity $entity
-     * @param array $options
+     * @param array  $options
      *
      * @return bool
      *
@@ -227,7 +229,7 @@ class ProductEntity extends AbstractEntityListener
                         ]
                     );
                     // save
-                    $this->getEntityManager()->saveEntity($productAttributeValue);
+                    $this->getEntityManager()->saveEntity($productAttributeValue, ['skipValidation' => true]);
 
                     // relate channels if it needs
                     if ($productFamilyAttribute->get('scope') == 'Channel') {
