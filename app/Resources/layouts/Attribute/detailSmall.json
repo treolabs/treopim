@@ -7,14 +7,16 @@
         {
           "name": "type"
         },
-        false
+        {
+          "name": "code"
+        }
       ],
       [
         {
           "name": "name"
         },
         {
-          "name": "code"
+          "name": "typeValue"
         }
       ],
       [
