@@ -94,7 +94,7 @@ class V3Dot13Dot0 extends Base
                     /** @var string $newAttributeId */
                     $newAttributeId = Util::generateId();
 
-                    $row = $attribute;
+                    $row = $this->cpRow($attribute);
                     $row['id'] = $newAttributeId;
                     $row['name'] = $attribute['name_' . Util::toUnderScore(strtolower($locale))];
                     $row['code'] = $attribute['code'] . '_' . strtolower($locale);
@@ -114,7 +114,7 @@ class V3Dot13Dot0 extends Base
                         $pfaId = $pfa['id'];
 
                         unset($pfa['channels']);
-                        $newPfa = $pfa;
+                        $newPfa = $this->cpRow($pfa);
                         $newPfa['id'] = $newPfaId;
                         $newPfa['attribute_id'] = $newAttributeId;
                         $newPfa['locale'] = $locale;
@@ -132,7 +132,7 @@ class V3Dot13Dot0 extends Base
                             $channels = $pav['channels'];
                             unset($pav['channels']);
 
-                            $newPav = $pav;
+                            $newPav = $this->cpRow($pav);
                             $newPav['id'] = Util::generateId();
                             $newPav['attribute_id'] = $newAttributeId;
                             $newPav['locale'] = $locale;
@@ -159,7 +159,7 @@ class V3Dot13Dot0 extends Base
                         $channels = $pav['channels'];
                         unset($pav['channels']);
 
-                        $newPav = $pav;
+                        $newPav = $this->cpRow($pav);
                         $newPav['id'] = Util::generateId();
                         $newPav['attribute_id'] = $newAttributeId;
                         $newPav['locale'] = $locale;
@@ -305,5 +305,22 @@ class V3Dot13Dot0 extends Base
         $sth->execute();
 
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return array
+     */
+    protected function cpRow(array $row): array
+    {
+        $result = [];
+        foreach ($row as $name => $value) {
+            if (!empty($value)) {
+                $result[$name] = $value;
+            }
+        }
+
+        return $result;
     }
 }
