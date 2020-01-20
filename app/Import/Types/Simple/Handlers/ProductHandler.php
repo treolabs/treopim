@@ -46,6 +46,11 @@ class ProductHandler extends AbstractHandler
     protected $attributes = [];
 
     /**
+     * @var bool
+     */
+    protected $saved = false;
+
+    /**
      * @param array $fileData
      * @param array $data
      *
@@ -135,10 +140,15 @@ class ProductHandler extends AbstractHandler
                     $entity = $service->createEntity($input);
 
                     $this->saveRestoreRow('created', $entityType, $entity->get('id'));
+
+                    $this->saved = true;
                 } else {
                     $entity = $this->updateEntity($service, (string)$id, $input);
 
-                    $this->saveRestoreRow('updated', $entityType, [$id => $restore]);
+                    if ($entity->isSaved()) {
+                        $this->saveRestoreRow('updated', $entityType, [$id => $restore]);
+                        $this->saved = true;
+                    }
                 }
 
                 // prepare product images if needed
@@ -162,13 +172,15 @@ class ProductHandler extends AbstractHandler
                     }
                 }
 
-                if (!is_null($entity)) {
+                if (!is_null($entity) && $this->saved) {
                     // prepare action
                     $action = empty($id) ? 'create' : 'update';
 
                     // push log
                     $this->log($entityType, $importResultId, $action, (string)$fileRow, (string)$entity->get('id'));
                 }
+
+                $this->saved = false;
 
                 $this->getEntityManager()->getPDO()->commit();
             } catch (\Throwable $e) {
@@ -265,13 +277,18 @@ class ProductHandler extends AbstractHandler
             $this->attributes[] = $entity;
 
             $this->saveRestoreRow('created', $entityType, $entity->get('id'));
+
+            $this->saved = true;
         } else {
             $id = $inputRow->id;
             unset($inputRow->id);
 
             $entity = $this->updateEntity($service, $id, $inputRow);
 
-            $this->saveRestoreRow('updated', $entityType, [$id => $restoreRow]);
+            if ($entity->isSaved()) {
+                $this->saveRestoreRow('updated', $entityType, [$id => $restoreRow]);
+                $this->saved = true;
+            }
         }
     }
 
@@ -317,14 +334,19 @@ class ProductHandler extends AbstractHandler
                 $entity = $service->createEntity($inputRow);
 
                 $this->saveRestoreRow('created', $entityType, $entity->get('id'));
+
+                $this->saved = true;
             } elseif ($conf['scope'] == 'Channel') {
                 $id = (string)$category->get('id');
                 $inputRow->channelsIds = $channelsIds;
                 $restoreRow->channelsIds = array_column($category->get('channels')->toArray(), 'id');
 
-                $this->updateEntity($service, $id, $inputRow);
+                $entity = $this->updateEntity($service, $id, $inputRow);
 
-                $this->saveRestoreRow('updated', $entityType, [$id => $restoreRow]);
+                if ($entity->isSaved()) {
+                    $this->saveRestoreRow('updated', $entityType, [$id => $restoreRow]);
+                    $this->saved = true;
+                }
             }
         }
     }
@@ -417,6 +439,8 @@ class ProductHandler extends AbstractHandler
 
             // save restore row
             $this->saveRestoreRow('created', $entityType, $entity->get('id'));
+
+            $this->saved = true;
         } else {
             // prepare restore row
             $restore = new \stdClass();
@@ -426,8 +450,11 @@ class ProductHandler extends AbstractHandler
             // update entity
             $entity = $this->updateEntity($service, $exist->get('id'), $input);
 
-            // save restore row
-            $this->saveRestoreRow('updated', $entityType, [$exist->get('id') => $restore]);
+            if ($entity->isSaved()) {
+                // save restore row
+                $this->saveRestoreRow('updated', $entityType, [$exist->get('id') => $restore]);
+                $this->saved = true;
+            }
         }
     }
 

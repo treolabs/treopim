@@ -50,7 +50,12 @@ Espo.define('pim:views/fields/overview-channels-filter', 'treo-core:views/fields
         updateChannels(callback) {
             this.channels = [];
             this.optionsList = Espo.Utils.cloneDeep(this.baseOptionList);
-            this.getFullEntityList(`Product/${this.model.id}/channels`, {select: 'name'}, list => {
+            const collectionParams = this.getMetadata().get(['entityDefs', 'Channel', 'collection']) || {};
+            const sortBy = collectionParams.sortBy || 'createdAt';
+            const asc = collectionParams.asc || false;
+            this.getFullEntityList(`Product/${this.model.id}/channels`, {
+                sortBy: sortBy, asc: asc, select: 'name'
+            }, list => {
                 this.setChannelsFromList(list);
                 this.prepareOptionsList();
                 this.updateSelected();

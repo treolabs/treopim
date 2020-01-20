@@ -103,11 +103,13 @@ class ProductAttributeValue extends AbstractService
     {
         // prepare result
         $result = [];
+
         if ($this->getConfig()->get('isMultilangActive')) {
             foreach ($this->getConfig()->get('inputLanguageList') as $locale) {
                 $result[$locale] = Util::toCamelCase('value_' . strtolower($locale));
             }
         }
+
         return $result;
     }
 

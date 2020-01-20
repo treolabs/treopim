@@ -34,7 +34,6 @@ Espo.define('pim:views/record/detail', 'views/record/detail',
                 this.actionEdit();
             }
         },
-
     })
 );
 

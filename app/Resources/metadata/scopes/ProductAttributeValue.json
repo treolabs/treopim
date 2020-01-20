@@ -14,5 +14,9 @@
   "object": true,
   "hasOwner": true,
   "hasAssignedUser": true,
-  "hasTeam": true
+  "hasTeam": true,
+  "completeness": {
+    "replacement" : "Product",
+    "service": "Completeness\\Services\\ProductCompleteness"
+  }
 }

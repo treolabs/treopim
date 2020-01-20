@@ -23,9 +23,8 @@
     "markupType": "Typ",
     "markupValue": "Wert",
     "scope": "Umfang",
-    "productCategories": "Kategorie Produkte",
     "catalogs": "Kataloge",
-    "pimImages": "Bilder"
+    "productCategories": "Kategorie Produkte"
   },
   "links": {
     "categories": "Kategorien",
@@ -37,8 +36,7 @@
     "rootCategories": "Stammkategorien",
     "teams": "Teams",
     "catalogs": "Kataloge",
-    "productCategories": "Kategorie Produkte",
-    "pimImages": "Bilder"
+    "productCategories": "Kategorie Produkte"
   },
   "labels": {
     "Create Category": "Kategorie erstellen"

@@ -47,7 +47,9 @@
   "fields": {
     "productFamily": "Artikel-Familien",
     "productSerie": "Product Serie",
-    "scope": "Umfang"
+    "channels": "Kanale",
+    "scope": "Umfang",
+    "role": "Rolle"
   },
   "options": {
     "searchRanges": {
@@ -98,7 +100,6 @@
   },
   "exceptions": {
     "Only force deleting available": "Erzwinge nur Löschen verfügbar",
-    "notDashletService": "Service %s muss DashletInterface implementieren",
     "Code is invalid": "Code ist ungültig. Code sollte eindeutig sein. Nur Buchstaben, Zahlen und Char \"_\" erwartet."
   },
   "messages": {

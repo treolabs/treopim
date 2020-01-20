@@ -28,8 +28,7 @@
     "Tax": "Tax",
     "ProductSerie": "Product Serie",
     "ProductCategory": "Product Category",
-    "ProductFamilyAttribute": "Product Family Attribute",
-    "PimImage": "Image"
+    "ProductFamilyAttribute": "Product Family Attribute"
   },
   "scopeNamesPlural": {
     "Association": "Associations",
@@ -50,8 +49,7 @@
     "Tax": "Taxes",
     "ProductSerie": "Product Series",
     "ProductCategory": "Product Categories",
-    "ProductFamilyAttribute": "Product Family Attributes",
-    "PimImage": "Images"
+    "ProductFamilyAttribute": "Product Family Attributes"
   },
   "options": {
     "channelsFilter": {
@@ -77,7 +75,9 @@
     "amount": "Amount",
     "mpn": "MPN",
     "productSerie": "Product Serie",
-    "scope": "Scope"
+    "channels": "Channels",
+    "scope": "Scope",
+    "role": "Role"
   },
   "labels": {
     "Add Field": "Add Filter",
@@ -94,7 +94,6 @@
   },
   "exceptions": {
     "Only force deleting available": "Only force deleting available",
-    "notDashletService": "Service %s must implement DashletInterface",
     "Code is invalid": "Code is invalid. Code should be unique. Only letters, numbers and char \"_\" expected."
   },
   "messages": {

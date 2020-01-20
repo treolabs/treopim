@@ -99,13 +99,6 @@
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true
     },
-    "image": {
-      "type": "image",
-      "previewSize": "medium",
-      "readOnly": true,
-      "view": "pim:views/product/fields/image",
-      "importDisabled": true
-    },
     "productStatus": {
       "type": "enum",
       "required": true,
@@ -210,13 +203,6 @@
       "importMultipleField": true,
       "exportMultipleField": true
     },
-    "pimImages": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "noLoad": true,
-      "importDisabled": true
-    },
     "measuringUnit": {
       "type": "link",
       "required": false
@@ -309,11 +295,6 @@
       "type": "belongsTo",
       "entity": "Packaging"
     },
-    "image": {
-      "type": "belongsTo",
-      "entity": "Attachment",
-      "skipOrmDefs": true
-    },
     "calls": {
       "type": "hasChildren",
       "entity": "Call",
@@ -351,12 +332,6 @@
         "link": "productCategories",
         "entity": "Category"
       }
-    },
-    "pimImages": {
-      "type": "hasMany",
-      "foreign": "product",
-      "entity": "PimImage",
-      "disableMassRelation": true
     },
     "measuringUnit": {
       "type": "belongsTo",

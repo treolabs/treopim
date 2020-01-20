@@ -84,20 +84,6 @@ class ProductEntity extends AbstractEntityListener
 
     /**
      * @param Event $event
-     *
-     * @throws \Espo\Core\Exceptions\Error
-     */
-    public function afterRelate(Event $event)
-    {
-        if ($event->getArgument('relationName') == 'productImages') {
-            $this
-                ->createService('ProductImage')
-                ->sortingImage($event->getArgument('entity')->get('id'));
-        }
-    }
-
-    /**
-     * @param Event $event
      */
     public function afterUnrelate(Event $event)
     {

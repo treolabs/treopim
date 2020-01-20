@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Services;
 
+use Dam\Entities\AssetRelation;
 use Espo\Core\Exceptions\Forbidden;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
@@ -233,6 +234,15 @@ class Product extends AbstractService
     }
 
     /**
+     * @param AssetRelation $assetRelation
+     * @return bool
+     */
+    public static function isMainRole(AssetRelation $assetRelation): bool
+    {
+        return in_array('Main', (array)$assetRelation->get('role'));
+    }
+
+    /**
      * @param Entity $product
      * @param Entity $duplicatingProduct
      */
@@ -385,20 +395,26 @@ class Product extends AbstractService
 
         $stringTypes = $this->getStringProductTypes();
 
-        // prepare query
-        $sql
-            = "SELECT
+        $selectFields = '
                   ap.id,
                   ap.association_id         AS associationId,
                   association.name          AS associationName,
                   p_main.id                 AS mainProductId,
                   p_main.name               AS mainProductName,
-                  p_main.image_id           AS mainProductImageId,
-                  (SELECT name FROM attachment WHERE id = p_main.image_id) AS mainProductImageName,
                   relatedProduct.id         AS relatedProductId,
-                  relatedProduct.name       AS relatedProductName,
-                  relatedProduct.image_id   AS relatedProductImageId,
-                  (SELECT name FROM attachment WHERE id = relatedProduct.image_id) AS relatedProductImageName
+                  relatedProduct.name       AS relatedProductName';
+
+        if (!empty($this->getMetadata()->get('entityDefs.Product.fields.image'))) {
+            $selectFields .= '
+                ,
+                p_main.image_id           AS mainProductImageId,
+                (SELECT name FROM attachment WHERE id = p_main.image_id) AS mainProductImageName,
+                relatedProduct.image_id   AS relatedProductImageId,
+                (SELECT name FROM attachment WHERE id = relatedProduct.image_id) AS relatedProductImageName';
+        }
+        // prepare query
+        $sql
+            = "SELECT {$selectFields}
                 FROM associated_product AS ap
                   JOIN product AS relatedProduct 
                     ON relatedProduct.id = ap.related_product_id AND relatedProduct.deleted = 0

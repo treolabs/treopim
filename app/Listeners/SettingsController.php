@@ -24,6 +24,7 @@ namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
 use Pim\Entities\Attribute as AttributeEntity;
+use Pim\Entities\Channel;
 use Pim\Repositories\Attribute as AttributeRepository;
 use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
@@ -52,6 +53,55 @@ class SettingsController extends AbstractListener
      * @param Event $event
      */
     public function afterActionUpdate(Event $event): void
+    {
+        $this->updateChannelsLocales();
+
+        $this->updateAttributes();
+
+        // cleanup
+        unset($_SESSION['isMultilangActive']);
+        unset($_SESSION['inputLanguageList']);
+    }
+
+    /**
+     * Update Channel locales field
+     */
+    protected function updateChannelsLocales(): void
+    {
+        if (!$this->getConfig()->get('isMultilangActive', false)) {
+            $this->getEntityManager()->nativeQuery("UPDATE channel SET locales=NULL WHERE 1");
+        } elseif (!empty($_SESSION['isMultilangActive'])) {
+            /** @var array $deletedLocales */
+            $deletedLocales = array_diff($_SESSION['inputLanguageList'], $this->getConfig()->get('inputLanguageList', []));
+
+            /** @var Channel[] $channels */
+            $channels = $this
+                ->getEntityManager()
+                ->getRepository('Channel')
+                ->select(['id', 'locales'])
+                ->find();
+
+            if (count($channels) > 0) {
+                foreach ($channels as $channel) {
+                    if (!empty($locales = $channel->get('locales'))) {
+                        $newLocales = [];
+                        foreach ($locales as $locale) {
+                            if (!in_array($locale, $deletedLocales)) {
+                                $newLocales[] = $locale;
+                            }
+                        }
+                        $channel->set('locales', $newLocales);
+                        $this->getEntityManager()->saveEntity($channel);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Update multi-lang attributes
+     */
+    protected function updateAttributes()
     {
         if (!$this->getConfig()->get('isMultilangActive', false)) {
             // delete all
@@ -97,9 +147,5 @@ class SettingsController extends AbstractListener
                 }
             }
         }
-
-        // cleanup
-        unset($_SESSION['isMultilangActive']);
-        unset($_SESSION['inputLanguageList']);
     }
 }

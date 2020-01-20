@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
+use Pim\Entities\ProductFamilyAttribute;
 use Treo\Core\EventManager\Event;
 
 /**
@@ -65,6 +66,14 @@ class ProductFamilyEntity extends AbstractEntityListener
         $entity = $event->getArgument('entity');
 
         $this->validRelationsWithProduct($entity->id);
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function afterRemove(Event $event): void
+    {
+        $this->removeProductFamilyAttribute($event);
     }
 
     /**
@@ -118,5 +127,23 @@ class ProductFamilyEntity extends AbstractEntityListener
             ->count();
 
         return !empty($count);
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function removeProductFamilyAttribute(Event $event): void
+    {
+        /** @var ProductFamilyAttribute[] $productFamilyAttributes */
+        $productFamilyAttributes = $this
+            ->getEntityManager()
+            ->getRepository('ProductFamilyAttribute')
+            ->select(['id'])
+            ->where(['productFamilyId' => $event->getArgument('entity')->get('id')])
+            ->find();
+        
+        foreach ($productFamilyAttributes as $productFamilyAttribute) {
+            $this->getEntityManager()->removeEntity($productFamilyAttribute);
+        }
     }
 }

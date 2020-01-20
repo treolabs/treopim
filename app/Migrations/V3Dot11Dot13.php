@@ -1,4 +1,5 @@
-/*
+<?php
+/**
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -17,16 +18,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/category/record/list-image', 'views/record/list',
-    Dep => Dep.extend({
+declare(strict_types=1);
 
-        setup() {
-            Dep.prototype.setup.call(this);
+namespace Pim\Migrations;
 
-            this.listenTo(this, 'after:save', function () {
-                this.collection.fetch();
-            }, this);
-        }
+use Treo\Core\Migration\AbstractMigration;
 
-    })
-);
+/**
+ * Migration class for version 3.11.13
+ *
+ * @author m.kokhanskyi@treolabs.com
+ */
+class V3Dot11Dot13 extends AbstractMigration
+{
+
+    /**
+     * @inheritDoc
+     */
+    public function up(): void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function down(): void
+    {
+    }
+}

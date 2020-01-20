@@ -18,23 +18,46 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Pim\Services;
+namespace Pim\Migrations;
+
+use Treo\Core\Migration\Base;
 
 /**
- * Interface DashletInterface
- *
- * @package Pim\Services
+ * Migration class for version 3.11.23
  *
  * @author r.ratsun <r.ratsun@treolabs.com>
  */
-interface DashletInterface
+class V3Dot11Dot23 extends Base
 {
     /**
-     * Get dashlet data
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getDashlet(): array;
+    public function up(): void
+    {
+        $this->exec("ALTER TABLE `channel` ADD locales MEDIUMTEXT DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function down(): void
+    {
+        $this->exec("ALTER TABLE `channel` DROP locales");
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @return void
+     */
+    private function exec(string $sql): void
+    {
+        try {
+            $this->getPDO()->exec($sql);
+        } catch (\PDOException $e) {
+            $GLOBALS['log']->error('Migration of PIM (3.11.23): ' . $sql . ' | ' . $e->getMessage());
+        }
+    }
 }

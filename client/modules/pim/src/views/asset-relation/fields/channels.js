@@ -17,16 +17,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/associated-product/fields/image', 'pim:views/fields/remote-image',
+Espo.define('pim:views/asset-relation/fields/channels', 'treo-core:views/fields/filtered-link-multiple',
     Dep => Dep.extend({
-
-        urlField: null,
 
         setup() {
             Dep.prototype.setup.call(this);
 
-            this.urlField = this.urlField || this.name + 'Link';
-        },
-
+            this.listenTo(this.model, 'change:scope', () => {
+                if (this.model.get('scope') !== 'Channel') {
+                    this.model.set({
+                        [this.idsName]: [],
+                        [this.nameHashName]: {}
+                    });
+                }
+            });
+        }
     })
 );
+

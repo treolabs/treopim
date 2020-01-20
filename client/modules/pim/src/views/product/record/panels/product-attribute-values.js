@@ -782,8 +782,8 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     if (value.mode === 'edit') {
                         const fetchedData = value.fetch();
                         const initialData = this.initialAttributes[id];
+                        value.model.set(fetchedData);
                         if (this.equalityValueCheck(fetchedData, initialData)) {
-                            value.model.set(fetchedData);
                             data = _.extend(data || {}, {[id]: fetchedData});
                         }
                     }
@@ -809,7 +809,13 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                     promises.push(this.ajaxPutRequest(`${this.collection.name}/${id}`, attrs))
                 });
                 this.notify('Saving...');
-                Promise.all(promises).then(response => this.notify('Saved', 'success'), error => this.actionRefresh());
+                Promise.all(promises)
+                    .then(response => {
+                        this.notify('Saved', 'success');
+                        this.model.trigger('after:attributesSave');
+                    }, error => {
+                        this.actionRefresh();
+                    });
             }
         },
 
