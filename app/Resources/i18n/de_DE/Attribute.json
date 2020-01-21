@@ -63,6 +63,7 @@
     "Attribute with such CODE already exist": "Das Attribut mit einem solchen CODE existiert bereits",
     "Attribute is used in product families. Please, update product families first": "Das Attribut wird in den Produktfamilien verwendet. Bitte aktualisieren Sie zuerst die Produktfamilien",
     "Attribute is used in products. Please, update products first": "Das Attribut wird in den Produkten verwendet. Bitte aktualisieren Sie zuerst die Produkte",
-    "You can't change field of Type in Attribute": "Sie können das Feld Typ im Attribut nicht ändern"
+    "You can't change field of Type in Attribute": "Sie können das Feld Typ im Attribut nicht ändern",
+    "The attribute already has a group": "Das Attribut hat bereits eine Gruppe"
   }
 }
