@@ -410,6 +410,7 @@ class ProductHandler extends AbstractHandler
 
             // prepare input row
             $input->productId = $product->get('id');
+            $input->productName = $product->get('name');
             $input->name = $attachment->get('name');
 
             // create entity
