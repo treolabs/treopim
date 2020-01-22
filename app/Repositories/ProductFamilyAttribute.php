@@ -308,18 +308,12 @@ class ProductFamilyAttribute extends Base
 
                 // prepare locale parent id
                 $localeParentId = 'NULL';
-                if (!empty($entity->get('localeParentId'))) {
-                    $localeParentId = $this
-                        ->getEntityManager()
-                        ->nativeQuery(
-                            "SELECT id FROM product_attribute_value WHERE product_family_attribute_id='{$entity->get('localeParentId')}' AND product_id='$productId' LIMIT 1"
-                        )
-                        ->fetch(\PDO::FETCH_ASSOC);
-                    $localeParentId = "'{$localeParentId['id']}'";
+                if (!empty($lpId = $entity->get('localeParentId'))) {
+                    $localeParentId = "(SELECT id FROM product_attribute_value WHERE product_family_attribute_id='$lpId' AND product_id='$productId' LIMIT 1)";
                 }
 
                 $sqls[]
-                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required,locale_parent_id) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired,$localeParentId)";
+                    = "SET @localeParentId=$localeParentId;INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required,locale_parent_id) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired,@localeParentId)";
                 if (!empty($teamsIds)) {
                     foreach ($teamsIds as $teamId) {
                         $sqls[] = "INSERT INTO entity_team (entity_id, team_id, entity_type) VALUES ('$id','$teamId','ProductAttributeValue')";
