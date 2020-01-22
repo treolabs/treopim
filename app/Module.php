@@ -295,21 +295,21 @@ class Module extends AbstractModule
                     "edit" => [
                         [
                             "name" => "image",
-                            "label" => "",
+                            "label" => "Category Preview",
                             "view" => "pim:views/product/fields/image"
                         ]
                     ],
                     "detail" => [
                         [
                             "name" => "image",
-                            "label" => "",
+                            "label" => "Category Preview",
                             "view" => "pim:views/product/fields/image"
                         ]
                     ],
                     "detailSmall" => [
                         [
                             "name" => "image",
-                            "label" => "",
+                            "label" => "Category Preview",
                             "view" => "pim:views/product/fields/image"
                         ]
                     ]
@@ -331,21 +331,21 @@ class Module extends AbstractModule
                     "edit" => [
                         [
                             "name" => "image",
-                            "label" => "",
+                            "label" => "Product Preview",
                             "view" => "pim:views/product/fields/image"
                         ]
                     ],
                     "detail" => [
                         [
                             "name" => "image",
-                            "label" => "",
+                            "label" => "Product Preview",
                             "view" => "pim:views/product/fields/image"
                         ]
                     ],
                     "detailSmall" => [
                         [
                             "name" => "image",
-                            "label" => "",
+                            "label" => "Product Preview",
                             "view" => "pim:views/product/fields/image"
                         ]
                     ]
