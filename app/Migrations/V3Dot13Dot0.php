@@ -122,6 +122,7 @@ class V3Dot13Dot0 extends Base
                         $newPfa['id'] = $newPfaId;
                         $newPfa['attribute_id'] = $newAttributeId;
                         $newPfa['locale'] = $locale;
+                        $newPfa['locale_parent_id'] = $pfa['id'];
                         $this->exec(sprintf("INSERT INTO product_family_attribute (%s) VALUES ('%s')", implode(",", array_keys($newPfa)), implode("','", array_values($newPfa))));
                         if (!empty($channels)) {
                             foreach (explode(",", $channels) as $channelId) {
@@ -140,6 +141,7 @@ class V3Dot13Dot0 extends Base
                             $newPav['id'] = Util::generateId();
                             $newPav['attribute_id'] = $newAttributeId;
                             $newPav['locale'] = $locale;
+                            $newPav['locale_parent_id'] = $pav['id'];
                             $newPav['product_family_attribute_id'] = $newPfaId;
                             $newPav['value'] = $pav['value_' . Util::toUnderScore(strtolower($locale))];
 
@@ -167,6 +169,7 @@ class V3Dot13Dot0 extends Base
                         $newPav['id'] = Util::generateId();
                         $newPav['attribute_id'] = $newAttributeId;
                         $newPav['locale'] = $locale;
+                        $newPav['locale_parent_id'] = $pav['id'];
                         $newPav['value'] = $pav['value_' . Util::toUnderScore(strtolower($locale))];
 
                         $this->exec(
