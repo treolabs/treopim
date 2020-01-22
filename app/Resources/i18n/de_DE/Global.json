@@ -88,7 +88,9 @@
     "New notifications": "Neue Benachrichtigungen",
     "Return to Application": "Zurück zur Anwendung",
     "you": "sie",
-    "removeHint": "Beim Entfernen des Katalogs werden die dazugehörigen Produkte gelöscht."
+    "removeHint": "Beim Entfernen des Katalogs werden die dazugehörigen Produkte gelöscht.",
+    "Category Preview": "Kategorievorschau",
+    "Product Preview": "Produktvorschau"
   },
   "dashlets": {
     "GeneralStatistics": "Allgemeine Statistiken",
