@@ -45,6 +45,14 @@
               "attribute": "attributeId"
             }
           ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "locale"
+            }
+          ]
         }
       },
       "value": {
@@ -71,6 +79,14 @@
             {
               "type": "isNotEmpty",
               "attribute": "attributeId"
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "locale"
             }
           ]
         }

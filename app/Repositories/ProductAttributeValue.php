@@ -61,6 +61,9 @@ class ProductAttributeValue extends Base
             if ($entity->get('attributeType') == 'multiEnum' && !empty($entity->get('locale')) && $entity->isAttributeChanged('value')) {
                 throw new BadRequest("Locale multiEnum attribute can't be changed");
             }
+            if (!$entity->isNew() && !empty($entity->get('locale')) && ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('channelsIds'))) {
+                throw new BadRequest("Locale attribute scope can't be changed");
+            }
         }
 
         if ($entity->isNew()) {
@@ -75,20 +78,8 @@ class ProductAttributeValue extends Base
      */
     public function afterSave(Entity $entity, array $options = [])
     {
-        // create locales attributes
-        $this->createLocaleAttributes($entity);
-
-        if ($entity->isAttributeChanged('value') && $entity->get('attribute')->get('isMultilang')) {
-            // update locales enum fields
-            if ($entity->get('attributeType') == 'enum') {
-                $this->updateLocalesEnum($entity);
-            }
-
-            // update locales multiEnum fields
-            if ($entity->get('attributeType') == 'multiEnum') {
-                $this->updateLocalesMultiEnum($entity);
-            }
-        }
+        // update locales attributes
+        $this->updateLocaleAttributes($entity);
 
         parent::afterSave($entity, $options);
     }
@@ -120,7 +111,7 @@ class ProductAttributeValue extends Base
     /**
      * @param Entity $entity
      */
-    protected function createLocaleAttributes(Entity $entity): void
+    protected function updateLocaleAttributes(Entity $entity): void
     {
         if ($entity->isNew() && empty($entity->get('productFamilyAttributeId')) && empty($entity->get('locale'))) {
             $localeAttributes = $entity->get('attribute')->get('attributes');
@@ -145,6 +136,30 @@ class ProductAttributeValue extends Base
                 }
             }
         }
+
+        if (!$entity->isNew() && !empty($entity->get('attribute')->get('isMultilang')) && ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('channelsIds'))) {
+            /** @var \Pim\Entities\ProductAttributeValue[] $children */
+            $children = $entity->get('localeChildren');
+            if (count($children) > 0) {
+                foreach ($children as $child) {
+                    $child->set('scope', $entity->get('scope'));
+                    $child->set('channelsIds', $entity->get('channelsIds'));
+                    $this->getEntityManager()->saveEntity($child, ['skipValidation' => true]);
+                }
+            }
+        }
+
+        if ($entity->isAttributeChanged('value') && $entity->get('attribute')->get('isMultilang')) {
+            // update locales enum fields
+            if ($entity->get('attributeType') == 'enum') {
+                $this->updateLocalesEnum($entity);
+            }
+
+            // update locales multiEnum fields
+            if ($entity->get('attributeType') == 'multiEnum') {
+                $this->updateLocalesMultiEnum($entity);
+            }
+        }
     }
 
     /**
@@ -152,16 +167,9 @@ class ProductAttributeValue extends Base
      */
     protected function deleteLocaleAttributes(Entity $entity): void
     {
-        /** @var string $productId */
-        $productId = $entity->get('productId');
-
-        /** @var string $attributeId */
-        $attributeId = $entity->get('attributeId');
-
-        // remove locales attributes
-        $this->getEntityManager()->nativeQuery(
-            "UPDATE product_attribute_value SET deleted=1 WHERE attribute_id IN (SELECT id FROM attribute WHERE parent_id='$attributeId' AND deleted=0) AND deleted=0 AND product_id='$productId' AND locale IS NOT NULL"
-        );
+        $this
+            ->getEntityManager()
+            ->nativeQuery("UPDATE product_attribute_value SET deleted=1 WHERE locale_parent_id=:id", ['id' => $entity->get('id')]);
     }
 
     /**
@@ -179,7 +187,7 @@ class ProductAttributeValue extends Base
                         $pav = $this
                             ->getEntityManager()
                             ->getRepository('ProductAttributeValue')
-                            ->where(['attributeId' => $localeAttribute['id'], 'productId' => $entity->get('productId')])
+                            ->where(['attributeId' => $localeAttribute['id'], 'localeParentId' => $entity->get('id')])
                             ->findOne();
 
                         if (!empty($pav)) {
@@ -219,7 +227,7 @@ class ProductAttributeValue extends Base
                         $pav = $this
                             ->getEntityManager()
                             ->getRepository('ProductAttributeValue')
-                            ->where(['attributeId' => $localeAttribute['id'], 'productId' => $entity->get('productId')])
+                            ->where(['attributeId' => $localeAttribute['id'], 'localeParentId' => $entity->get('id')])
                             ->findOne();
 
                         if (!empty($pav)) {

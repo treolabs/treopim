@@ -286,7 +286,6 @@ class ProductFamilyAttribute extends Base
 
         // Create a new records if it needs
         if ($entity->isNew()) {
-            $localeParentId = (empty($entity->get('localeParentId'))) ? "NULL" : "'" . $entity->get('localeParentId') . "'";
             $createdById = $entity->get('createdById');
             $ownerUserId = $entity->get('ownerUserId');
             $assignedUserId = $entity->get('assignedUserId');
@@ -306,6 +305,18 @@ class ProductFamilyAttribute extends Base
 
                 /** @var string $locale */
                 $locale = (empty($entity->get('locale'))) ? 'NULL' : "'" . $entity->get('locale') . "'";
+
+                // prepare locale parent id
+                $localeParentId = 'NULL';
+                if (!empty($entity->get('localeParentId'))) {
+                    $localeParentId = $this
+                        ->getEntityManager()
+                        ->nativeQuery(
+                            "SELECT id FROM product_attribute_value WHERE product_family_attribute_id='{$entity->get('localeParentId')}' AND product_id='$productId' LIMIT 1"
+                        )
+                        ->fetch(\PDO::FETCH_ASSOC);
+                    $localeParentId = "'{$localeParentId['id']}'";
+                }
 
                 $sqls[]
                     = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required,locale_parent_id) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired,$localeParentId)";
@@ -409,11 +420,8 @@ class ProductFamilyAttribute extends Base
     protected function deleteLocaleAttributes(Entity $entity, array $options): void
     {
         if (empty($options['skipLocaleAttributeDeleting']) && !empty($entity->get('attribute'))) {
-            /** @var array $attributesIds */
-            $attributesIds = array_column($entity->get('attribute')->get('attributes')->toArray(), 'id');
-
             // find product family attributes
-            $pfas = $this->where(['attributeId' => $attributesIds])->find();
+            $pfas = $entity->get('localeChildren');
 
             if (count($pfas) > 0) {
                 foreach ($pfas as $pfa) {
