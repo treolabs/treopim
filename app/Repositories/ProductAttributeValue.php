@@ -55,10 +55,10 @@ class ProductAttributeValue extends Base
             if ($entity->isNew() && !empty($entity->get('attribute')->get('locale'))) {
                 throw new BadRequest("Locale attribute can't be linked");
             }
-            if ($entity->get('attributeType') == 'enum' && !empty($entity->get('locale'))) {
+            if ($entity->get('attributeType') == 'enum' && !empty($entity->get('locale')) && $entity->isAttributeChanged('value')) {
                 throw new BadRequest("Locale enum attribute can't be changed");
             }
-            if ($entity->get('attributeType') == 'multiEnum' && !empty($entity->get('locale'))) {
+            if ($entity->get('attributeType') == 'multiEnum' && !empty($entity->get('locale')) && $entity->isAttributeChanged('value')) {
                 throw new BadRequest("Locale multiEnum attribute can't be changed");
             }
         }
@@ -131,6 +131,7 @@ class ProductAttributeValue extends Base
                     $newEntity->id = Util::generateId();
                     $newEntity->set('attributeId', $localeAttribute->get('id'));
                     $newEntity->set('locale', $localeAttribute->get('locale'));
+                    $newEntity->set('localeParentId', $entity->get('id'));
                     $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
 
                     if ($entity->get('scope') == 'Channel') {

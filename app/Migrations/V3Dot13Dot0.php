@@ -48,6 +48,10 @@ class V3Dot13Dot0 extends Base
         $this->exec("CREATE INDEX IDX_LOCALE ON `attribute` (locale, deleted)");
         $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
+        $this->exec("ALTER TABLE `product_family_attribute` ADD locale_parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+        $this->exec("CREATE INDEX IDX_LOCALE_PARENT_ID ON `product_family_attribute` (locale_parent_id)");
+        $this->exec("ALTER TABLE `product_attribute_value` ADD locale_parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+        $this->exec("CREATE INDEX IDX_LOCALE_PARENT_ID ON `product_attribute_value` (locale_parent_id)");
         echo ' Done!' . PHP_EOL;
 
         echo ' Migrate ProductFamilyAttribute DB schema... ';

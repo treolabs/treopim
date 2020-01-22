@@ -282,6 +282,7 @@ class ProductFamilyAttribute extends Base
 
         // Create a new records if it needs
         if ($entity->isNew()) {
+            $localeParentId = (empty($entity->get('localeParentId'))) ? "NULL" : "'" . $entity->get('localeParentId') . "'";
             $createdById = $entity->get('createdById');
             $ownerUserId = $entity->get('ownerUserId');
             $assignedUserId = $entity->get('assignedUserId');
@@ -303,7 +304,7 @@ class ProductFamilyAttribute extends Base
                 $locale = (empty($entity->get('locale'))) ? 'NULL' : "'" . $entity->get('locale') . "'";
 
                 $sqls[]
-                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired)";
+                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required,locale_parent_id) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired,$localeParentId)";
                 if (!empty($teamsIds)) {
                     foreach ($teamsIds as $teamId) {
                         $sqls[] = "INSERT INTO entity_team (entity_id, team_id, entity_type) VALUES ('$id','$teamId','ProductAttributeValue')";
@@ -369,6 +370,7 @@ class ProductFamilyAttribute extends Base
                     $newEntity->set('attributeId', $attribute->get('id'));
                     $newEntity->set('attributeType', $attribute->get('type'));
                     $newEntity->set('locale', $attribute->get('locale'));
+                    $newEntity->set('localeParentId', $entity->get('id'));
                     $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
 
                     if ($entity->get('scope') == 'Channel') {
