@@ -270,6 +270,8 @@ class V3Dot13Dot0 extends Base
         $this->exec("DROP INDEX IDX_LOCALE ON `product_attribute_value`");
         $this->exec("ALTER TABLE `product_attribute_value` DROP attribute_type, DROP locale, ADD name VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_NAME ON `product_attribute_value` (name, deleted)");
+        $this->exec("DROP INDEX IDX_LOCALE_PARENT_ID ON `product_attribute_value`");
+        $this->exec("ALTER TABLE `product_attribute_value` DROP locale_parent_id");
         echo ' Done!' . PHP_EOL;
 
         echo ' Migrate ProductFamilyAttribute DB schema... ';
@@ -281,6 +283,8 @@ class V3Dot13Dot0 extends Base
         $this->exec("DROP INDEX IDX_LOCALE ON `product_family_attribute`");
         $this->exec("ALTER TABLE `product_family_attribute` DROP attribute_type, DROP locale, ADD name VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
         $this->exec("CREATE INDEX IDX_NAME ON `product_family_attribute` (name, deleted)");
+        $this->exec("DROP INDEX IDX_LOCALE_PARENT_ID ON `product_family_attribute`");
+        $this->exec("ALTER TABLE `product_family_attribute` DROP locale_parent_id");
         echo ' Done!' . PHP_EOL;
 
         if (!empty($this->errors)) {
