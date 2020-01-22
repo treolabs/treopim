@@ -66,10 +66,10 @@ class ProductFamilyAttribute extends Base
         // update product attribute values
         $this->updateProductAttributeValues($entity);
 
-        parent::afterSave($entity, $options);
+        // update locales attributes recursively
+        $this->updateLocaleAttributes($entity);
 
-        // create locales attributes recursively
-        $this->createLocaleAttributes($entity);
+        parent::afterSave($entity, $options);
     }
 
     /**
@@ -133,6 +133,10 @@ class ProductFamilyAttribute extends Base
 
         if ($entity->isNew() && !empty($entity->get('attribute')->get('locale'))) {
             throw new BadRequest("Locale attribute can't be linked");
+        }
+
+        if (!$entity->isNew() && !empty($entity->get('locale')) && ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('channelsIds'))) {
+            throw new BadRequest("Locale attribute scope can't be changed");
         }
     }
 
@@ -358,7 +362,7 @@ class ProductFamilyAttribute extends Base
     /**
      * @param Entity $entity
      */
-    protected function createLocaleAttributes(Entity $entity): void
+    protected function updateLocaleAttributes(Entity $entity): void
     {
         if ($entity->isNew() && empty($entity->get('locale'))) {
             $attributes = $entity->get('attribute')->get('attributes');
@@ -381,6 +385,18 @@ class ProductFamilyAttribute extends Base
                             }
                         }
                     }
+                }
+            }
+        }
+
+        if (!$entity->isNew() && !empty($entity->get('attribute')->get('isMultilang')) && ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('channelsIds'))) {
+            /** @var \Pim\Entities\ProductFamilyAttribute[] $children */
+            $children = $entity->get('localeChildren');
+            if (count($children) > 0) {
+                foreach ($children as $child) {
+                    $child->set('scope', $entity->get('scope'));
+                    $child->set('channelsIds', $entity->get('channelsIds'));
+                    $this->getEntityManager()->saveEntity($child, ['skipValidation' => true]);
                 }
             }
         }

@@ -34,6 +34,14 @@
               "attribute": "attributeId"
             }
           ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "locale"
+            }
+          ]
         }
       },
       "scope": {
@@ -42,6 +50,14 @@
             {
               "type": "isNotEmpty",
               "attribute": "attributeId"
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isNotEmpty",
+              "attribute": "locale"
             }
           ]
         }
