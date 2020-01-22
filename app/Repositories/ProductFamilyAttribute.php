@@ -130,6 +130,10 @@ class ProductFamilyAttribute extends Base
         if (!$this->isUnique($entity)) {
             throw new BadRequest($this->exception('Such record already exists'));
         }
+
+        if ($entity->isNew() && !empty($entity->get('attribute')->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be linked");
+        }
     }
 
     /**

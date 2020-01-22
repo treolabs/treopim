@@ -17,10 +17,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/link',
+Espo.define('pim:views/product-attribute-value/fields/attribute', 'treo-core:views/fields/filtered-link',
     Dep => Dep.extend({
 
         createDisabled: true,
+
+        selectBoolFilterList: ["notLocalesAttributes"],
+
+        boolFilterData: {
+            notLocalesAttributes() {
+                return true;
+            }
+        },
 
         setup() {
             this.mandatorySelectAttributeList = ['type', 'typeValue'];
