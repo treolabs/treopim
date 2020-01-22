@@ -135,7 +135,7 @@ class ProductFamilyAttribute extends Base
             throw new BadRequest("Locale attribute can't be linked");
         }
 
-        if (!$entity->isNew() && !empty($entity->get('locale')) && ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('channelsIds'))) {
+        if (!$entity->isNew() && !empty($entity->get('locale')) && ($entity->isAttributeChanged('scope') || !empty($entity->get('channelsIds')))) {
             throw new BadRequest("Locale attribute scope can't be changed");
         }
     }

@@ -61,7 +61,7 @@ class ProductAttributeValue extends Base
             if ($entity->get('attributeType') == 'multiEnum' && !empty($entity->get('locale')) && $entity->isAttributeChanged('value')) {
                 throw new BadRequest("Locale multiEnum attribute can't be changed");
             }
-            if (!$entity->isNew() && !empty($entity->get('locale')) && ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('channelsIds'))) {
+            if (!$entity->isNew() && !empty($entity->get('locale')) && ($entity->isAttributeChanged('scope') || !empty($entity->get('channelsIds')))) {
                 throw new BadRequest("Locale attribute scope can't be changed");
             }
         }
