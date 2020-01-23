@@ -46,42 +46,42 @@ class V3Dot13Dot0 extends Base
         Util::removeDir('custom/Espo/Custom/Resources/layouts/Attribute');
         echo ' Done!' . PHP_EOL;
 
-        echo ' Migrate Attribute DB schema... ';
-        $this->exec("ALTER TABLE attribute DROP is_system");
-        $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_LOCALE ON `attribute` (locale, deleted)");
-        $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
-        $this->exec("ALTER TABLE `product_family_attribute` ADD locale_parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_LOCALE_PARENT_ID ON `product_family_attribute` (locale_parent_id)");
-        $this->exec("ALTER TABLE `product_attribute_value` ADD locale_parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_LOCALE_PARENT_ID ON `product_attribute_value` (locale_parent_id)");
-        echo ' Done!' . PHP_EOL;
-
-        echo ' Migrate ProductFamilyAttribute DB schema... ';
-        $this->exec("DROP INDEX IDX_NAME ON `product_family_attribute`");
-        $this->exec("ALTER TABLE `product_family_attribute` DROP name");
-        $this->exec("ALTER TABLE `product_family_attribute` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_ATTRIBUTE_TYPE ON `product_family_attribute` (attribute_type, deleted)");
-        $this->exec("CREATE INDEX IDX_PRODUCT_FAMILY ON `product_family_attribute` (product_family_id, deleted)");
-        $this->exec("CREATE INDEX IDX_ATTRIBUTE ON `product_family_attribute` (attribute_id, deleted)");
-        $this->exec("CREATE INDEX IDX_IS_REQUIRED ON `product_family_attribute` (is_required, deleted)");
-        $this->exec("CREATE INDEX IDX_SCOPE ON `product_family_attribute` (scope, deleted)");
-        $this->exec("ALTER TABLE `product_family_attribute` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_LOCALE ON `product_family_attribute` (locale, deleted)");
-        echo ' Done!' . PHP_EOL;
-
-        echo ' Migrate ProductAttributeValue DB schema... ';
-        $this->exec("DROP INDEX IDX_NAME ON `product_attribute_value`");
-        $this->exec("ALTER TABLE `product_attribute_value` DROP name");
-        $this->exec("ALTER TABLE `product_attribute_value` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_ATTRIBUTE_TYPE ON `product_attribute_value` (attribute_type, deleted)");
-        $this->exec("CREATE INDEX IDX_PRODUCT ON `product_attribute_value` (product_id, deleted)");
-        $this->exec("CREATE INDEX IDX_ATTRIBUTE ON `product_attribute_value` (attribute_id, deleted)");
-        $this->exec("CREATE INDEX IDX_SCOPE ON `product_attribute_value` (scope, deleted)");
-        $this->exec("ALTER TABLE `product_attribute_value` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
-        $this->exec("CREATE INDEX IDX_LOCALE ON `product_attribute_value` (locale, deleted)");
-        echo ' Done!' . PHP_EOL;
+//        echo ' Migrate Attribute DB schema... ';
+//        $this->exec("ALTER TABLE attribute DROP is_system");
+//        $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_LOCALE ON `attribute` (locale, deleted)");
+//        $this->exec("ALTER TABLE attribute ADD parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_PARENT_ID ON attribute (parent_id)");
+//        $this->exec("ALTER TABLE `product_family_attribute` ADD locale_parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_LOCALE_PARENT_ID ON `product_family_attribute` (locale_parent_id)");
+//        $this->exec("ALTER TABLE `product_attribute_value` ADD locale_parent_id VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_LOCALE_PARENT_ID ON `product_attribute_value` (locale_parent_id)");
+//        echo ' Done!' . PHP_EOL;
+//
+//        echo ' Migrate ProductFamilyAttribute DB schema... ';
+//        $this->exec("DROP INDEX IDX_NAME ON `product_family_attribute`");
+//        $this->exec("ALTER TABLE `product_family_attribute` DROP name");
+//        $this->exec("ALTER TABLE `product_family_attribute` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_ATTRIBUTE_TYPE ON `product_family_attribute` (attribute_type, deleted)");
+//        $this->exec("CREATE INDEX IDX_PRODUCT_FAMILY ON `product_family_attribute` (product_family_id, deleted)");
+//        $this->exec("CREATE INDEX IDX_ATTRIBUTE ON `product_family_attribute` (attribute_id, deleted)");
+//        $this->exec("CREATE INDEX IDX_IS_REQUIRED ON `product_family_attribute` (is_required, deleted)");
+//        $this->exec("CREATE INDEX IDX_SCOPE ON `product_family_attribute` (scope, deleted)");
+//        $this->exec("ALTER TABLE `product_family_attribute` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_LOCALE ON `product_family_attribute` (locale, deleted)");
+//        echo ' Done!' . PHP_EOL;
+//
+//        echo ' Migrate ProductAttributeValue DB schema... ';
+//        $this->exec("DROP INDEX IDX_NAME ON `product_attribute_value`");
+//        $this->exec("ALTER TABLE `product_attribute_value` DROP name");
+//        $this->exec("ALTER TABLE `product_attribute_value` ADD attribute_type VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_ATTRIBUTE_TYPE ON `product_attribute_value` (attribute_type, deleted)");
+//        $this->exec("CREATE INDEX IDX_PRODUCT ON `product_attribute_value` (product_id, deleted)");
+//        $this->exec("CREATE INDEX IDX_ATTRIBUTE ON `product_attribute_value` (attribute_id, deleted)");
+//        $this->exec("CREATE INDEX IDX_SCOPE ON `product_attribute_value` (scope, deleted)");
+//        $this->exec("ALTER TABLE `product_attribute_value` ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
+//        $this->exec("CREATE INDEX IDX_LOCALE ON `product_attribute_value` (locale, deleted)");
+//        echo ' Done!' . PHP_EOL;
 
         echo ' Migrate DATA: ' . PHP_EOL;
         $attributes = $this->fetchAll("SELECT * FROM attribute WHERE deleted=0");
