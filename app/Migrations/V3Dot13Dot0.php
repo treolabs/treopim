@@ -300,7 +300,7 @@ class V3Dot13Dot0 extends Base
         try {
             $this->getPDO()->exec($sql);
         } catch (\PDOException $e) {
-            $GLOBALS['log']->error('Migration of PIM (3.13.0): ' . $sql . ' | ' . $e->getMessage());
+            $GLOBALS['log']->error('Migration of PIM (3.13.0): ' . $e->getMessage() . ' | ' . $sql);
             $this->errors++;
         }
     }
