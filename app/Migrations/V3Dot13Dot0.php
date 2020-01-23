@@ -106,7 +106,7 @@ class V3Dot13Dot0 extends Base
                     $row['id'] = $newAttributeId;
                     $row['name'] = $attribute['name_' . Util::toUnderScore(strtolower($locale))];
                     if (empty($row['name'])) {
-                        $row['name'] = $attribute['name'];
+                        $row['name'] = $attribute['name'] . ' › ' . $locale;
                     }
                     $row['code'] = $attribute['code'] . '_' . strtolower($locale);
                     $row['parent_id'] = $attributeId;
