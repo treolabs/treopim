@@ -251,11 +251,11 @@ class V3Dot13Dot0 extends Base
             $this->exec("DELETE FROM product_family_attribute WHERE attribute_id='{$attribute['id']}'");
 
             // get product attribute values
-            $pavs = $this->fetchAll("SELECT id, product_id, locale, value FROM product_attribute_value WHERE attribute_id='{$attribute['id']}' AND locale IS NOT NULL");
+            $pavs = $this->fetchAll("SELECT id, product_id, locale, locale_parent_id, value FROM product_attribute_value WHERE attribute_id='{$attribute['id']}' AND locale_parent_id IS NOT NULL");
             foreach ($pavs as $pav) {
                 $pavKey = Util::toUnderScore(strtolower($pav['locale']));
                 $this->exec(
-                    "UPDATE product_attribute_value SET value_$pavKey='{$pav['value']}' WHERE attribute_id='{$attribute['parent_id']}' AND product_id='{$pav['product_id']}'"
+                    "UPDATE product_attribute_value SET value_$pavKey='{$pav['value']}' WHERE id='{$attribute['locale_parent_id']}' AND product_id='{$pav['product_id']}'"
                 );
 
                 // cleanup
