@@ -42,6 +42,10 @@ class V3Dot13Dot0 extends Base
      */
     public function up(): void
     {
+        echo ' Delete custom layouts for Attribute entity... ';
+        Util::removeDir('custom/Espo/Custom/Resources/layouts/Attribute');
+        echo ' Done!' . PHP_EOL;
+
         echo ' Migrate Attribute DB schema... ';
         $this->exec("ALTER TABLE attribute DROP is_system");
         $this->exec("ALTER TABLE attribute ADD locale VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci");
@@ -101,6 +105,9 @@ class V3Dot13Dot0 extends Base
                     $row = $this->cpRow($attribute);
                     $row['id'] = $newAttributeId;
                     $row['name'] = $attribute['name_' . Util::toUnderScore(strtolower($locale))];
+                    if (empty($row['name'])) {
+                        $row['name'] = $attribute['name'];
+                    }
                     $row['code'] = $attribute['code'] . '_' . strtolower($locale);
                     $row['parent_id'] = $attributeId;
                     $row['locale'] = $locale;
@@ -211,6 +218,10 @@ class V3Dot13Dot0 extends Base
      */
     public function down(): void
     {
+        echo ' Delete custom layouts for Attribute entity... ';
+        Util::removeDir('custom/Espo/Custom/Resources/layouts/Attribute');
+        echo ' Done!' . PHP_EOL;
+
         echo ' Add multi-lang columns... ';
         if ($this->getConfig()->get('isMultilangActive')) {
             foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
