@@ -1,9 +1,5 @@
 {
   "fields": {
-    "name": {
-      "type": "varchar",
-      "readonly": true
-    },
     "product": {
       "type": "link",
       "required": true
@@ -13,24 +9,32 @@
       "required": true,
       "view": "pim:views/product-attribute-value/fields/attribute"
     },
-    "productFamilyAttribute": {
-      "type": "link"
+    "attributeType": {
+      "type": "varchar",
+      "readonly": true
     },
     "isRequired": {
       "type": "bool",
       "default": false
     },
+    "locale": {
+      "type": "varchar",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
+    "productFamilyAttribute": {
+      "type": "link"
+    },
     "value": {
       "type": "text",
       "rows": 4,
       "lengthOfCut": 400,
-      "isMultilang": true,
       "view": "pim:views/product-attribute-value/fields/value-container",
       "hasCompleteValidation": true
-    },
-    "image": {
-      "type": "image",
-      "notStorable": true
     },
     "data": {
       "type": "jsonObject"
@@ -50,24 +54,26 @@
       "noLoad": false,
       "view": "pim:views/product-attribute-value/fields/channels"
     },
-    "isCustom": {
-      "type": "bool",
-      "default": true,
-      "notStorable": true
-    },
-    "attributeType": {
-      "type": "varchar",
-      "notStorable": true
-    },
-    "attributeIsMultilang": {
-      "type": "bool",
-      "notStorable": true,
+    "localeParent": {
+      "type": "link",
+      "readonly": true,
       "layoutListDisabled": true,
       "layoutListSmallDisabled": true,
       "layoutDetailDisabled": true,
       "layoutDetailSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true
+    },
+    "localeChildren": {
+      "type": "linkMultiple",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
     },
     "createdAt": {
       "type": "datetime",
@@ -101,9 +107,17 @@
       "type": "linkMultiple",
       "view": "views/fields/teams"
     },
+    "image": {
+      "type": "image",
+      "notStorable": true
+    },
+    "isCustom": {
+      "type": "bool",
+      "default": true,
+      "notStorable": true
+    },
     "typeValue": {
       "type": "array",
-      "isMultilang": true,
       "notStorable": true,
       "layoutListDisabled": true,
       "layoutListSmallDisabled": true,
@@ -143,6 +157,18 @@
       "foreign": "productAttributeValues",
       "entity": "Channel"
     },
+    "localeParent": {
+      "type": "belongsTo",
+      "foreign": "localeChildren",
+      "entity": "ProductAttributeValue",
+      "audited": false
+    },
+    "localeChildren": {
+      "type": "hasMany",
+      "foreign": "localeParent",
+      "entity": "ProductAttributeValue",
+      "audited": false
+    },
     "createdBy": {
       "type": "belongsTo",
       "entity": "User"
@@ -167,9 +193,9 @@
     }
   },
   "indexes": {
-    "name": {
+    "attributeType": {
       "columns": [
-        "name",
+        "attributeType",
         "deleted"
       ]
     },
@@ -182,6 +208,30 @@
     "assignedUser": {
       "columns": [
         "assignedUserId",
+        "deleted"
+      ]
+    },
+    "product": {
+      "columns": [
+        "productId",
+        "deleted"
+      ]
+    },
+    "attribute": {
+      "columns": [
+        "attributeId",
+        "deleted"
+      ]
+    },
+    "scope": {
+      "columns": [
+        "scope",
+        "deleted"
+      ]
+    },
+    "locale": {
+      "columns": [
+        "locale",
         "deleted"
       ]
     }

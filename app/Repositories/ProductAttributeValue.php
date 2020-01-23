@@ -21,9 +21,11 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
 use Espo\Core\Utils\Json;
 use Espo\ORM\Entity;
+use Treo\Core\Utils\Util;
 
 /**
  * Class ProductAttributeValue
@@ -33,61 +35,206 @@ use Espo\ORM\Entity;
 class ProductAttributeValue extends Base
 {
     /**
-     * @param string $productFamilyAttributeId
+     * @param string $id
      */
-    public function removeCollectionByProductFamilyAttribute(string $productFamilyAttributeId)
+    public function removeCollectionByProductFamilyAttribute(string $id)
     {
         $this
-            ->where(['productFamilyAttributeId' => $productFamilyAttributeId])
+            ->where(['productFamilyAttributeId' => $id])
             ->removeCollection(['skipProductAttributeValueHook' => true]);
     }
 
     /**
-     * @param Entity $entity
-     * @param array  $options
+     * @inheritDoc
+     *
+     * @throws BadRequest
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
+        if (empty($options['skipValidation'])) {
+            if ($entity->isNew() && !empty($entity->get('attribute')->get('locale'))) {
+                throw new BadRequest("Locale attribute can't be linked");
+            }
+            if ($entity->get('attributeType') == 'enum' && !empty($entity->get('locale')) && $entity->isAttributeChanged('value')) {
+                throw new BadRequest("Locale enum attribute can't be changed");
+            }
+            if ($entity->get('attributeType') == 'multiEnum' && !empty($entity->get('locale')) && $entity->isAttributeChanged('value')) {
+                throw new BadRequest("Locale multiEnum attribute can't be changed");
+            }
+            if (!$entity->isNew() && !empty($entity->get('locale')) && ($entity->isAttributeChanged('scope') || !empty($entity->get('channelsIds')))) {
+                throw new BadRequest("Locale attribute scope can't be changed");
+            }
+        }
+
+        if ($entity->isNew()) {
+            $entity->set('attributeType', $entity->get('attribute')->get('type'));
+        }
+
         parent::beforeSave($entity, $options);
+    }
 
-        // get attribute
-        $attribute = $entity->get('attribute');
+    /**
+     * @inheritDoc
+     */
+    public function afterSave(Entity $entity, array $options = [])
+    {
+        // update locales attributes
+        $this->updateLocaleAttributes($entity);
 
-        // get fields
-        $fields = $this->getMetadata()->get(['entityDefs', 'ProductAttributeValue', 'fields'], []);
+        parent::afterSave($entity, $options);
+    }
 
-        if ($attribute->get('type') == 'enum' && !empty($attribute->get('isMultilang')) && $entity->isAttributeChanged('value')) {
-            // find key
-            $key = array_search($entity->get('value'), $attribute->get('typeValue'));
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeRemove(Entity $entity, array $options = [])
+    {
+        if (empty($options['skipProductAttributeValueHook']) && !empty($entity->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be deleted");
+        }
 
-            foreach ($fields as $mField => $mData) {
-                if (isset($mData['multilangField']) && $mData['multilangField'] == 'value') {
-                    $data = $attribute->get('type' . ucfirst($mField));
-                    if (isset($data[$key])) {
-                        $entity->set($mField, $data[$key]);
-                    } else {
-                        $entity->set($mField, $entity->get('value'));
+        parent::beforeRemove($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterRemove(Entity $entity, array $options = [])
+    {
+        $this->deleteLocaleAttributes($entity);
+
+        parent::afterRemove($entity, $options);
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateLocaleAttributes(Entity $entity): void
+    {
+        if ($entity->isNew() && empty($entity->get('productFamilyAttributeId')) && empty($entity->get('locale'))) {
+            $localeAttributes = $entity->get('attribute')->get('attributes');
+            if (count($localeAttributes) > 0) {
+                foreach ($localeAttributes as $localeAttribute) {
+                    $newEntity = $this->get();
+                    $newEntity->set($entity->toArray());
+                    $newEntity->id = Util::generateId();
+                    $newEntity->set('attributeId', $localeAttribute->get('id'));
+                    $newEntity->set('locale', $localeAttribute->get('locale'));
+                    $newEntity->set('localeParentId', $entity->get('id'));
+                    $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
+
+                    if ($entity->get('scope') == 'Channel') {
+                        $channels = $entity->get('channels');
+                        if (count($channels) > 0) {
+                            foreach ($channels as $channel) {
+                                $this->relate($newEntity, 'channels', $channel);
+                            }
+                        }
                     }
                 }
             }
         }
 
-        if ($attribute->get('type') == 'multiEnum' && !empty($attribute->get('isMultilang')) && $entity->isAttributeChanged('value')) {
-            $values = Json::decode($entity->get('value'), true);
+        if (!$entity->isNew() && !empty($entity->get('attribute')->get('isMultilang')) && ($entity->isAttributeChanged('scope') || $entity->isAttributeChanged('channelsIds'))) {
+            /** @var \Pim\Entities\ProductAttributeValue[] $children */
+            $children = $entity->get('localeChildren');
+            if (count($children) > 0) {
+                foreach ($children as $child) {
+                    $child->set('scope', $entity->get('scope'));
+                    $child->set('channelsIds', $entity->get('channelsIds'));
+                    $this->getEntityManager()->saveEntity($child, ['skipValidation' => true]);
+                }
+            }
+        }
 
-            $keys = [];
-            foreach ($values as $value) {
-                $keys[] = array_search($value, $attribute->get('typeValue'));
+        if ($entity->isAttributeChanged('value') && $entity->get('attribute')->get('isMultilang')) {
+            // update locales enum fields
+            if ($entity->get('attributeType') == 'enum') {
+                $this->updateLocalesEnum($entity);
             }
 
-            foreach ($fields as $mField => $mData) {
-                if (isset($mData['multilangField']) && $mData['multilangField'] == 'value') {
-                    $data = $attribute->get('type' . ucfirst($mField));
-                    $values = [];
-                    foreach ($keys as $key) {
-                        $values[] = isset($data[$key]) ? $data[$key] : null;
+            // update locales multiEnum fields
+            if ($entity->get('attributeType') == 'multiEnum') {
+                $this->updateLocalesMultiEnum($entity);
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function deleteLocaleAttributes(Entity $entity): void
+    {
+        $this
+            ->getEntityManager()
+            ->nativeQuery("UPDATE product_attribute_value SET deleted=1 WHERE locale_parent_id=:id", ['id' => $entity->get('id')]);
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateLocalesEnum(Entity $entity): void
+    {
+        if (!empty($attribute = $entity->get('attribute')) && !empty($localeAttributes = $attribute->get('attributes')->toArray())) {
+            /** @var int $key */
+            $key = array_search($entity->get('value'), $attribute->get('typeValue'));
+
+            if (is_int($key)) {
+                foreach ($localeAttributes as $localeAttribute) {
+                    if (isset($localeAttribute['typeValue'][$key])) {
+                        $pav = $this
+                            ->getEntityManager()
+                            ->getRepository('ProductAttributeValue')
+                            ->where(['attributeId' => $localeAttribute['id'], 'localeParentId' => $entity->get('id')])
+                            ->findOne();
+
+                        if (!empty($pav)) {
+                            $pav->set('value', $localeAttribute['typeValue'][$key]);
+                            $this->getEntityManager()->saveEntity($pav, ['skipValidation' => true]);
+                        }
                     }
-                    $entity->set($mField, Json::encode($values));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function updateLocalesMultiEnum(Entity $entity): void
+    {
+        if (!empty($attribute = $entity->get('attribute')) && !empty($localeAttributes = $attribute->get('attributes')->toArray())) {
+            $keys = [];
+            foreach (Json::decode($entity->get('value'), true) as $value) {
+                $key = array_search($value, $attribute->get('typeValue'));
+                if (is_int($key)) {
+                    $keys[] = $key;
+                }
+            }
+
+            if (!empty($keys)) {
+                foreach ($localeAttributes as $localeAttribute) {
+                    $value = [];
+                    foreach ($keys as $key) {
+                        if (isset($localeAttribute['typeValue'][$key])) {
+                            $value[] = $localeAttribute['typeValue'][$key];
+                        }
+                    }
+
+                    if (!empty($value)) {
+                        $pav = $this
+                            ->getEntityManager()
+                            ->getRepository('ProductAttributeValue')
+                            ->where(['attributeId' => $localeAttribute['id'], 'localeParentId' => $entity->get('id')])
+                            ->findOne();
+
+                        if (!empty($pav)) {
+                            $pav->set('value', Json::encode($value));
+                            $this->getEntityManager()->saveEntity($pav, ['skipValidation' => true]);
+                        }
+                    }
                 }
             }
         }

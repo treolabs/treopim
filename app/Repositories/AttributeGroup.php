@@ -18,8 +18,79 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace Pim\Repositories;
 
-class AttributeGroup extends \Espo\Core\Templates\Repositories\Base
+use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Templates\Repositories\Base;
+use Espo\ORM\Entity;
+
+/**
+ * Class AttributeGroup
+ *
+ * @author r.ratsun@treolabs.com
+ */
+class AttributeGroup extends Base
 {
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be linked");
+        }
+
+        parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be unlinked");
+        }
+
+        parent::beforeUnrelate($entity, $relationName, $foreign, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('isMultilang'))) {
+            /** @var string $id */
+            $id = $entity->get('id');
+
+            /** @var string $parentId */
+            $parentId = $foreign->get('id');
+
+            $this->getEntityManager()->nativeQuery("UPDATE attribute SET attribute_group_id='$id' WHERE parent_id='$parentId' AND locale IS NOT NULL");
+        }
+
+        parent::afterRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
+    {
+        if ($relationName == 'attributes' && !empty($foreign->get('isMultilang'))) {
+            /** @var string $parentId */
+            $parentId = $foreign->get('id');
+
+            $this->getEntityManager()->nativeQuery("UPDATE attribute SET attribute_group_id=null WHERE parent_id='$parentId' AND locale IS NOT NULL");
+        }
+
+        parent::afterUnrelate($entity, $relationName, $foreign, $options);
+    }
 }

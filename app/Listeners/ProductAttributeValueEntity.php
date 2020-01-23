@@ -65,7 +65,6 @@ class ProductAttributeValueEntity extends AbstractListener
         if (!$entity->isNew() && !empty($entity->get('productFamilyAttribute'))) {
             if ($entity->isAttributeChanged('scope')
                 || $entity->isAttributeChanged('isRequired')
-                || $entity->isAttributeChanged('channelsIds')
                 || $entity->isAttributeChanged('attributeId')) {
                 throw new BadRequest($this->exception('Product Family attribute cannot be changed'));
             }

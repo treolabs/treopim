@@ -36,12 +36,12 @@ class Catalog extends Base
      */
     protected function afterRemove(Entity $entity, array $options = [])
     {
-        parent::afterRemove($entity, $options);
-
         /** @var string $id */
         $id = $entity->get('id');
 
         // remove catalog products
         $this->getEntityManager()->nativeQuery("UPDATE product SET deleted=1 WHERE catalog_id='$id'");
+
+        parent::afterRemove($entity, $options);
     }
 }

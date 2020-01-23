@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -18,21 +17,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+Espo.define('pim:views/product-family-attribute/fields/attribute', 'treo-core:views/fields/filtered-link',
+    Dep => Dep.extend({
 
-namespace Pim\Services;
+        createDisabled: true,
 
-use Espo\Core\Templates\Services\Base;
+        selectBoolFilterList: ["notLocalesAttributes"],
 
-/**
- * Class ProductFamilyAttribute
- *
- * @author r.ratsun@treolabs.com
- */
-class ProductFamilyAttribute extends Base
-{
-    /**
-     * @var array
-     */
-    protected $mandatorySelectAttributeList = ['locale'];
-}
+        boolFilterData: {
+            notLocalesAttributes() {
+                return true;
+            }
+        }
+
+    })
+);
+

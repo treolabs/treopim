@@ -33,8 +33,7 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             'isRequired',
             'productFamilyAttributeId',
             'scope',
-            'value',
-            'attributeIsMultilang'
+            'value'
         ],
 
         groupKey: 'attributeGroupId',
@@ -544,10 +543,10 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             Object.keys(fields).forEach(name => {
                 let fieldView = fields[name];
                 let hide = !this.checkFieldValue(currentFieldFilter, fieldView.model.get(fieldView.name), fieldView.model.get('isRequired'));
-                if (!hide){
+                if (!hide) {
                     hide = this.updateCheckByChannelFilter(fieldView, attributesWithChannelScope);
                 }
-                if (!hide && fieldView.model.get('attributeIsMultilang')){
+                if (!hide) {
                     hide = this.updateCheckByLocaleFilter(fieldView, currentFieldFilter);
                 }
                 this.controlRowVisibility(fieldView, name, hide);
@@ -573,10 +572,20 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
         },
 
         updateCheckByLocaleFilter(fieldView, currentFieldFilter) {
-            // get filter
-            let filter = (this.model.advancedEntityView || {}).localesFilter;
+            let isShowGeneric = (this.model.advancedEntityView || {}).showGenericFields;
 
-            return filter !== null && filter !== '' && !fieldView.model.get('attributeIsMultilang');
+            if (!isShowGeneric && fieldView.model.get('locale') === null) {
+                return true;
+            }
+
+            let localeFilter = (this.model.advancedEntityView || {}).localesFilter;
+            let fieldLocale = fieldView.model.get('locale');
+
+            if (localeFilter !== null && localeFilter !== '' && localeFilter !== fieldLocale && fieldLocale !== null) {
+                return true;
+            }
+
+            return false;
         },
 
         getValueFields() {

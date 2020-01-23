@@ -2,9 +2,8 @@
   "fields": {
     "name": {
       "type": "varchar",
-      "required": false,
+      "required": true,
       "trim": true,
-      "isMultilang": true,
       "layoutDetailDisabled": true
     },
     "createdAt": {
@@ -95,22 +94,8 @@
       "audited": false,
       "readOnly": false,
       "tooltip": false,
-      "isMultilang": true,
       "layoutDetailDisabled": true,
       "view": "pim:views/attribute/fields/type-value"
-    },
-    "isSystem": {
-      "notNull": true,
-      "type": "bool",
-      "layoutListDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutFiltersDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "default": false,
-      "audited": false,
-      "readOnly": false,
-      "tooltip": false,
-      "importDisabled": true
     },
     "productAttributeValues": {
       "type": "linkMultiple",
@@ -146,6 +131,35 @@
       "layoutDetailDisabled": true,
       "layoutDetailSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
+    },
+    "locale": {
+      "type": "varchar",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
+    "parent": {
+      "type": "link",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
+    "attributes": {
+      "type": "linkMultiple",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true,
       "noLoad": true,
       "importDisabled": true
     }
@@ -190,6 +204,19 @@
       "foreign": "attribute",
       "entity": "ProductFamilyAttribute",
       "layoutRelationshipsDisabled": true
+    },
+    "parent": {
+      "type": "belongsTo",
+      "foreign": "attributes",
+      "entity": "Attribute",
+      "audited": false
+    },
+    "attributes": {
+      "type": "hasMany",
+      "foreign": "parent",
+      "entity": "Attribute",
+      "audited": false,
+      "layoutRelationshipsDisabled": true
     }
   },
   "collection": {
@@ -206,6 +233,12 @@
     "assignedUser": {
       "columns": [
         "assignedUserId",
+        "deleted"
+      ]
+    },
+    "locale": {
+      "columns": [
+        "locale",
         "deleted"
       ]
     }

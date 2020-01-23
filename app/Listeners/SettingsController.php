@@ -22,7 +22,10 @@ declare(strict_types=1);
 
 namespace Pim\Listeners;
 
+use Espo\Core\Exceptions\BadRequest;
+use Pim\Entities\Attribute as AttributeEntity;
 use Pim\Entities\Channel;
+use Pim\Repositories\Attribute as AttributeRepository;
 use Treo\Listeners\AbstractListener;
 use Treo\Core\EventManager\Event;
 
@@ -52,6 +55,8 @@ class SettingsController extends AbstractListener
     public function afterActionUpdate(Event $event): void
     {
         $this->updateChannelsLocales();
+
+        $this->updateAttributes();
 
         // cleanup
         unset($_SESSION['isMultilangActive']);
@@ -88,6 +93,57 @@ class SettingsController extends AbstractListener
                         $channel->set('locales', $newLocales);
                         $this->getEntityManager()->saveEntity($channel);
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Update multi-lang attributes
+     */
+    protected function updateAttributes()
+    {
+        if (!$this->getConfig()->get('isMultilangActive', false)) {
+            // delete all
+            $this->getEntityManager()->nativeQuery(
+                "UPDATE attribute SET deleted=1 WHERE locale IS NOT NULL;UPDATE product_family_attribute SET deleted=1 WHERE locale IS NOT NULL;UPDATE product_attribute_value SET deleted=1 WHERE locale IS NOT NULL"
+            );
+        } else {
+            /** @var AttributeRepository $repository */
+            $repository = $this->getEntityManager()->getRepository('Attribute');
+
+            /** @var AttributeEntity[] $attributes */
+            $attributes = $repository
+                ->where(['isMultilang' => true])
+                ->find();
+
+            if (count($attributes) > 0) {
+                /** @var array $allLocales */
+                $allLocales = $this->getConfig()->get('inputLanguageList', []);
+
+                /** @var array $addedLocales */
+                $addedLocales = !$_SESSION['isMultilangActive'] ? $allLocales : array_diff($allLocales, $_SESSION['inputLanguageList']);
+
+                // create
+                if (!empty($addedLocales)) {
+                    foreach ($attributes as $attribute) {
+                        try {
+                            $repository->createLocaleAttribute($attribute, $addedLocales);
+                        } catch (BadRequest $e) {
+                            $GLOBALS['log']->error('BadRequest: ' . $e->getMessage());
+                        }
+                    }
+                }
+
+                /** @var array $deletedLocales */
+                $deletedLocales = !$_SESSION['isMultilangActive'] ? [] : array_diff($_SESSION['inputLanguageList'], $allLocales);
+
+                // delete
+                if (!empty($deletedLocales)) {
+                    $localesStr = implode("','", $deletedLocales);
+                    $this->getEntityManager()->nativeQuery(
+                        "UPDATE attribute SET deleted=1 WHERE locale IN ('$localesStr');UPDATE product_family_attribute SET deleted=1 WHERE locale IN ('$localesStr');UPDATE product_attribute_value SET deleted=1 WHERE locale IN ('$localesStr')"
+                    );
                 }
             }
         }

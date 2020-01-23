@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * Pim
  * Free Extension
  * Copyright (c) TreoLabs GmbH
@@ -18,21 +17,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+Espo.define('pim:views/attribute/record/row-actions/default', 'views/record/row-actions/default', function (Dep) {
 
-namespace Pim\Services;
+    return Dep.extend({
 
-use Espo\Core\Templates\Services\Base;
+        getActionList: function () {
+            // get locale
+            let locale = this.model.get('locale');
 
-/**
- * Class ProductFamilyAttribute
- *
- * @author r.ratsun@treolabs.com
- */
-class ProductFamilyAttribute extends Base
-{
-    /**
-     * @var array
-     */
-    protected $mandatorySelectAttributeList = ['locale'];
-}
+            let list = [];
+            $.each(Dep.prototype.getActionList.call(this), function () {
+                if (locale === null || (locale !== null && this.action !== 'quickRemove')) {
+                    list.push(this);
+                }
+            });
+
+            return list;
+        }
+
+    });
+
+});

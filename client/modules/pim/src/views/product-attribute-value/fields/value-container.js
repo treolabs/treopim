@@ -72,7 +72,6 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         updateModelDefs() {
             // prepare data
             let type = this.model.get('attributeType');
-            let isMultiLang = this.model.get('attributeIsMultilang');
             let typeValue = this.model.get('typeValue');
 
             if (type) {
@@ -86,17 +85,6 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
 
                 if (type === 'unit') {
                     fieldDefs.measure = (typeValue || ['Length'])[0];
-                }
-
-                // for multi-language
-                if (isMultiLang) {
-                    if (this.getConfig().get('isMultilangActive')) {
-                        (this.getConfig().get('inputLanguageList') || []).forEach(lang => {
-                            let field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
-                            this.model.defs.fields[field] = Espo.Utils.cloneDeep(fieldDefs);
-                        });
-                    }
-                    fieldDefs.isMultilang = true;
                 }
 
                 // set field defs

@@ -26,6 +26,7 @@ use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 use Espo\Core\Exceptions\Error;
+use Pim\Entities\Attribute as AttributeEntity;
 use Treo\Core\Utils\Util;
 
 /**
@@ -43,6 +44,7 @@ class Attribute extends Base
         parent::init();
 
         $this->addDependency('language');
+        $this->addDependency('queueManager');
     }
 
     /**
@@ -52,21 +54,59 @@ class Attribute extends Base
      */
     public function beforeSave(Entity $entity, array $options = [])
     {
-        // call parent action
-        parent::beforeSave($entity, $options);
+        if (!$this->isTypeValueValid($entity)) {
+            throw new BadRequest("The number of 'Values' items should be identical for all locales");
+        }
 
         // set sort order
         if (is_null($entity->get('sortOrder'))) {
             $entity->set('sortOrder', (int)$this->max('sortOrder') + 1);
         }
 
-        if (!$this->isTypeValueValid($entity)) {
-            throw new BadRequest("The number of 'Values' items should be identical for all locales");
-        }
-
         if (!$entity->isNew() && $entity->isAttributeChanged('sortOrder')) {
             $this->updateSortOrder($entity);
         }
+
+        parent::beforeSave($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterSave(Entity $entity, array $options = [])
+    {
+        // create or delete locale attributes if it needs
+        $this->updateLocalesAttributes($entity);
+
+        parent::afterSave($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeRemove(Entity $entity, array $options = [])
+    {
+        if (!empty($entity->get('locale'))) {
+            throw new BadRequest("Locale attribute can't be deleted");
+        }
+
+        parent::beforeRemove($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterRemove(Entity $entity, array $options = [])
+    {
+        /** @var string $id */
+        $id = $entity->get('id');
+
+        // delete all locales attributes
+        $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id' AND locale IS NOT NULL");
+
+        parent::afterRemove($entity, $options);
     }
 
     /**
@@ -83,6 +123,39 @@ class Attribute extends Base
     }
 
     /**
+     * @param AttributeEntity $attribute
+     * @param array           $locales
+     *
+     * @return void
+     * @throws Error
+     */
+    public function createLocaleAttribute(AttributeEntity $attribute, array $locales): void
+    {
+        foreach ($locales as $locale) {
+            $localeAttribute = $this->getEntityManager()->getEntity('Attribute');
+            $localeAttribute->set($attribute->toArray());
+            $localeAttribute->id = Util::generateId();
+            $localeAttribute->set('isMultilang', false);
+            $localeAttribute->set('locale', $locale);
+            $localeAttribute->set('parentId', $attribute->get('id'));
+            $localeAttribute->set('name', $attribute->get('name') . ' › ' . $locale);
+            $localeAttribute->set('code', $attribute->get('code') . '_' . strtolower($locale));
+
+            $this->getEntityManager()->saveEntity($localeAttribute);
+
+            /** @var string $name */
+            $name = $this
+                ->getInjection('language')
+                ->translate("Adding a locale '%s' for an attribute '%s'", 'queueManager', 'Attribute');
+            $name = sprintf($name, $locale, $attribute->get('name'));
+
+            $this
+                ->getInjection('queueManager')
+                ->push($name, 'QueueManagerCreateLocaleAttribute', ['id' => $localeAttribute->get('id')]);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     protected function beforeUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
@@ -96,6 +169,58 @@ class Attribute extends Base
                 throw new Error($this->exception("You can not unlink product family attribute"));
             }
         }
+    }
+
+    /**
+     * @param AttributeEntity $attribute
+     *
+     * @return bool
+     */
+    protected function updateLocalesAttributes(AttributeEntity $attribute): bool
+    {
+        // exit if has locale
+        if (!empty($attribute->get('locale'))) {
+            return false;
+        }
+
+        // exit if no locales
+        if (!$this->getConfig()->get('isMultilangActive', false) || empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
+            return false;
+        }
+
+        /** @var string $id */
+        $id = $attribute->get('id');
+
+        if ($attribute->isNew()) {
+            if ($attribute->get('isMultilang')) {
+                $this->createLocaleAttribute($attribute, $locales);
+            }
+        } else {
+            if ($attribute->isAttributeChanged('isMultilang')) {
+                if ($attribute->get('isMultilang')) {
+                    $this->createLocaleAttribute($attribute, $locales);
+                } else {
+                    $this->getEntityManager()->nativeQuery("UPDATE attribute SET deleted=1 WHERE parent_id='$id'");
+                }
+            }
+
+            if (in_array($attribute->get('type'), ['enum', 'multiEnum']) && $attribute->isAttributeChanged('typeValue')) {
+                foreach ($attribute->get('attributes') as $item) {
+                    $item->set('typeValue', $attribute->get('typeValue'));
+                    $this->getEntityManager()->saveEntity($item);
+                }
+            }
+
+            if ($attribute->isAttributeChanged('attributeGroupId')) {
+                /** @var string $attributeGroupId */
+                $attributeGroupId = (empty($attribute->get('attributeGroupId'))) ? 'NULL' : "'" . $attribute->get('attributeGroupId') . "'";
+                $this
+                    ->getEntityManager()
+                    ->nativeQuery("UPDATE attribute SET attribute_group_id=$attributeGroupId WHERE parent_id='$id'");
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -173,14 +298,11 @@ class Attribute extends Base
      */
     protected function isTypeValueValid(Entity $entity): bool
     {
-        if (!empty($entity->get('isMultilang')) && $this->getConfig()->get('isMultilangActive', false) && in_array($entity->get('type'), ['enum', 'multiEnum'])) {
-            $count = count($entity->get('typeValue'));
-            foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
-                $field = 'typeValue' . ucfirst(Util::toCamelCase(strtolower($locale)));
-                if (count($entity->get($field)) != $count) {
-                    return false;
-                }
-            }
+        if (!empty($entity->get('locale'))
+            && in_array($entity->get('type'), ['enum', 'multiEnum'])
+            && count($entity->get('typeValue')) != count($entity->get('parent')->get('typeValue'))
+        ) {
+            return false;
         }
 
         return true;

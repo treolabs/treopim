@@ -45,7 +45,6 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
             if (this.model.get('attributeId')) {
                 // prepare data
                 let type = this.model.get('attributeType');
-                let isMultiLang = this.model.get('attributeIsMultilang');
                 let typeValue = this.model.get('typeValue');
 
                 if (type) {
@@ -62,15 +61,9 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                         fieldDefs.measure = (typeValue || ['Length'])[0];
                     }
 
-                    // for multi-language
-                    if (isMultiLang) {
-                        if (this.getConfig().get('isMultilangActive')) {
-                            (this.getConfig().get('inputLanguageList') || []).forEach(lang => {
-                                let field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
-                                this.model.defs.fields[field] = Espo.Utils.cloneDeep(fieldDefs);
-                            });
-                        }
-                        fieldDefs.isMultilang = true;
+                    // enum and multiEnum is readOnly for locales attributes
+                    if ((type === 'enum' || type === 'multiEnum') && this.model.get('locale') !== null) {
+                        fieldDefs.readOnly = true;
                     }
 
                     // set field defs

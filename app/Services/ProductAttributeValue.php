@@ -34,6 +34,11 @@ use Treo\Core\Utils\Util;
 class ProductAttributeValue extends AbstractService
 {
     /**
+     * @var array
+     */
+    protected $mandatorySelectAttributeList = ['locale', 'attributeType'];
+
+    /**
      * @inheritdoc
      */
     public function prepareEntityForOutput(Entity $entity)
@@ -41,8 +46,6 @@ class ProductAttributeValue extends AbstractService
         parent::prepareEntityForOutput($entity);
 
         $entity->set('isCustom', $this->isCustom($entity));
-        $entity->set('attributeType', !empty($entity->get('attribute')) ? $entity->get('attribute')->get('type') : null);
-        $entity->set('attributeIsMultilang', !empty($entity->get('attribute')) ? $entity->get('attribute')->get('isMultilang') : false);
 
         $this->convertValue($entity);
     }
@@ -67,33 +70,29 @@ class ProductAttributeValue extends AbstractService
      */
     protected function convertValue(Entity $entity)
     {
-        $type = $entity->get('attributeType');
-
-        if (!empty($type)) {
-            switch ($type) {
-                case 'array':
-                    $entity->set('value', Json::decode($entity->get('value'), true));
-                    break;
-                case 'bool':
-                    $entity->set('value', (bool)$entity->get('value'));
-                    foreach ($this->getInputLanguageList() as $multiLangField) {
-                        $entity->set($multiLangField, (bool)$entity->get($multiLangField));
-                    }
-                    break;
-                case 'int':
-                    $entity->set('value', (int)$entity->get('value'));
-                    break;
-                case 'unit':
-                case 'float':
-                    $entity->set('value', (float)$entity->get('value'));
-                    break;
-                case 'multiEnum':
-                    $entity->set('value', Json::decode($entity->get('value'), true));
-                    foreach ($this->getInputLanguageList() as $multiLangField) {
-                        $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
-                    }
-                    break;
-            }
+        switch ($entity->get('attributeType')) {
+            case 'array':
+                $entity->set('value', Json::decode($entity->get('value'), true));
+                break;
+            case 'bool':
+                $entity->set('value', (bool)$entity->get('value'));
+                foreach ($this->getInputLanguageList() as $multiLangField) {
+                    $entity->set($multiLangField, (bool)$entity->get($multiLangField));
+                }
+                break;
+            case 'int':
+                $entity->set('value', (int)$entity->get('value'));
+                break;
+            case 'unit':
+            case 'float':
+                $entity->set('value', (float)$entity->get('value'));
+                break;
+            case 'multiEnum':
+                $entity->set('value', Json::decode($entity->get('value'), true));
+                foreach ($this->getInputLanguageList() as $multiLangField) {
+                    $entity->set($multiLangField, Json::decode($entity->get($multiLangField), true));
+                }
+                break;
         }
     }
 

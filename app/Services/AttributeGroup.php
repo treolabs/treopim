@@ -18,9 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace Pim\Services;
 
-class AttributeGroup extends \Espo\Core\Templates\Services\Base
+use Espo\Core\Templates\Services\Base;
+
+/**
+ * Class AttributeGroup
+ *
+ * @author r.ratsun@treolabs.com
+ */
+class AttributeGroup extends Base
 {
     /**
      * Get sorted linked attributes
@@ -31,20 +40,24 @@ class AttributeGroup extends \Espo\Core\Templates\Services\Base
      */
     public function findLinkedEntitiesAttributes(string $attributeGroupId): array
     {
-        $attributesTypes =  $this->getMetadata()->get('entityDefs.Attribute.fields.type.options', []);
-
         $result = $this->getEntityManager()
             ->getRepository('Attribute')
             ->distinct()
             ->join('attributeGroup')
-            ->where(['attributeGroupId' => $attributeGroupId, 'type' => $attributesTypes])
+            ->where(
+                [
+                    'attributeGroupId' => $attributeGroupId,
+                    'type'             => $this->getMetadata()->get('entityDefs.Attribute.fields.type.options', []),
+                    'locale'           => null
+                ]
+            )
             ->order('sortOrder', 'ASC')
             ->find()
             ->toArray();
 
         return [
             'total' => count($result),
-            'list' => $result
+            'list'  => $result
         ];
     }
 }

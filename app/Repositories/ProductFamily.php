@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Repositories;
 
 use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Exceptions\Error;
 use Espo\Core\Templates\Repositories\Base;
 use Espo\ORM\Entity;
 
@@ -35,27 +36,26 @@ class ProductFamily extends Base
 {
     /**
      * @inheritDoc
+     *
+     * @throws BadRequest
+     * @throws Error
      */
     public function unrelate(Entity $entity, $relationName, $foreign, array $options = [])
     {
         if ($relationName == 'productFamilyAttributes') {
-            // prepare id
-            if ($foreign instanceof Entity) {
-                $id = $foreign->get('id');
-            } elseif (is_string($foreign)) {
-                $id = $foreign;
-            } else {
+            if (is_string($foreign)) {
+                $foreign = $this->getEntityManager()->getEntity('ProductFamilyAttribute', $foreign);
+            } elseif (!$foreign instanceof Entity) {
                 throw new BadRequest("'Remove all relations' action is blocked for such relation");
             }
 
-            // make product attribute as custom
-            $sql = "UPDATE product_attribute_value SET product_family_attribute_id=NULL,is_required=0 WHERE product_family_attribute_id='$id';";
+            if (!empty($foreign->get('attribute')->get('locale'))) {
+                throw new BadRequest("Locale attribute can't be unlinked");
+            }
 
-            // unlink
-            $sql .= "UPDATE product_family_attribute SET deleted=1 WHERE id='$id'";
-
-            // execute
-            $this->getEntityManager()->nativeQuery($sql);
+            $this
+                ->getEntityManager()
+                ->removeEntity($foreign, ['skipAttributeValueDeleting' => 1]);
 
             return true;
         }

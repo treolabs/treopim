@@ -530,7 +530,7 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
             // prepare ids
             let ids = [];
             group.rowList.forEach(id => {
-                if (!this.collection.get(id).get('isInherited')){
+                if (!this.collection.get(id).get('isInherited') && this.collection.get(id).get('locale') === null){
                     ids.push(id);
                 }
             });

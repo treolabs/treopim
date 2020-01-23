@@ -3,7 +3,6 @@
     "attributeGroup": "Attribute Group",
     "productAttributes": "Product attributes",
     "typeValue": "Values",
-    "isSystem": "Is system",
     "type": "Attribute Type",
     "code": "Code",
     "name": "Attribute Name",
@@ -50,6 +49,9 @@
   },
   "filterLabels": {
     "All": "All"
+  },
+  "queueManager": {
+    "Adding a locale '%s' for an attribute '%s'": "Adding a locale '%s' for an attribute '%s'"
   },
   "exceptions": {
     "You can not unlink product family attribute": "You can not unlink product family attribute",

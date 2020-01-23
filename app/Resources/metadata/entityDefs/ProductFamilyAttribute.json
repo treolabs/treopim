@@ -1,20 +1,30 @@
 {
   "fields": {
-    "name": {
-      "type": "varchar",
-      "trim": true
-    },
     "productFamily": {
       "type": "link",
       "required": true
     },
     "attribute": {
       "type": "link",
-      "required": true
+      "required": true,
+      "view": "pim:views/product-family-attribute/fields/attribute"
+    },
+    "attributeType": {
+      "type": "varchar",
+      "readonly": true
     },
     "isRequired": {
       "type": "bool",
       "default": false
+    },
+    "locale": {
+      "type": "varchar",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
     },
     "scope": {
       "type": "enum",
@@ -38,6 +48,27 @@
       "type": "linkMultiple",
       "layoutListDisabled": true,
       "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
+    },
+    "localeParent": {
+      "type": "link",
+      "readonly": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "layoutFiltersDisabled": true
+    },
+    "localeChildren": {
+      "type": "linkMultiple",
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "layoutFiltersDisabled": true,
       "noLoad": true,
@@ -94,6 +125,18 @@
       "entity": "ProductAttributeValue",
       "layoutRelationshipsDisabled": true
     },
+    "localeParent": {
+      "type": "belongsTo",
+      "foreign": "localeChildren",
+      "entity": "ProductFamilyAttribute",
+      "audited": false
+    },
+    "localeChildren": {
+      "type": "hasMany",
+      "foreign": "localeParent",
+      "entity": "ProductFamilyAttribute",
+      "audited": false
+    },
     "createdBy": {
       "type": "belongsTo",
       "entity": "User"
@@ -122,9 +165,39 @@
     "fullTextSearch": false
   },
   "indexes": {
-    "name": {
+    "attributeType": {
       "columns": [
-        "name",
+        "attributeType",
+        "deleted"
+      ]
+    },
+    "productFamily": {
+      "columns": [
+        "productFamilyId",
+        "deleted"
+      ]
+    },
+    "attribute": {
+      "columns": [
+        "attributeId",
+        "deleted"
+      ]
+    },
+    "isRequired": {
+      "columns": [
+        "isRequired",
+        "deleted"
+      ]
+    },
+    "scope": {
+      "columns": [
+        "scope",
+        "deleted"
+      ]
+    },
+    "locale": {
+      "columns": [
+        "locale",
         "deleted"
       ]
     },

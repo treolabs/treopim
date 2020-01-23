@@ -54,50 +54,6 @@ class LayoutController extends AbstractListener
         } else if ($isAdminPage && method_exists($this, $methodAdmin)) {
             $this->{$methodAdmin}($event);
         }
-
-    }
-
-    /**
-     * @param Event $event
-     */
-    protected function modifyAttributeDetail(Event $event)
-    {
-        /** @var array $result */
-        $result = Json::decode($event->getArgument('result'), true);
-
-        $result[0]['rows'][] = [['name' => 'name'], ['name' => 'typeValue']];
-
-        if ($this->getConfig()->get('isMultilangActive', false)) {
-            $result[0]['rows'][] = [['name' => 'isMultilang', 'inlineEditDisabled' => true], false];
-            foreach ($this->getInputLanguageList() as $locale => $key) {
-                $result[0]['rows'][] = [['name' => 'name' . $key], ['name' => 'typeValue' . $key]];
-            }
-        }
-
-        $event->setArgument('result', Json::encode($result));
-    }
-
-    /**
-     * @param Event $event
-     */
-    protected function modifyAttributeDetailSmall(Event $event)
-    {
-        $this->modifyAttributeDetail($event);
-    }
-
-    /**
-     * @param Event $event
-     */
-    protected function modifyProductAttributeValueDetailSmall(Event $event)
-    {
-        /** @var array $result */
-        $result = Json::decode($event->getArgument('result'), true);
-
-        foreach ($this->getInputLanguageList() as $locale => $key) {
-            $result[0]['rows'][] = [['name' => 'value' . $key], false];
-        }
-
-        $event->setArgument('result', Json::encode($result));
     }
 
     /**
@@ -117,20 +73,8 @@ class LayoutController extends AbstractListener
     }
 
     /**
-     * @return array
+     * @param Event $event
      */
-    protected function getInputLanguageList(): array
-    {
-        $result = [];
-        if ($this->getConfig()->get('isMultilangActive', false)) {
-            foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
-                $result[$locale] = ucfirst(Util::toCamelCase(strtolower($locale)));
-            }
-        }
-
-        return $result;
-    }
-
     protected function hideAssetRelation(Event $event): void
     {
         /** @var array $result */

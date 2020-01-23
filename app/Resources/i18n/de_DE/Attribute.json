@@ -7,7 +7,6 @@
     "isRequired": "Ist Erforderlich",
     "createdAt": "erstellt am",
     "createdBy": "erstellt von",
-    "isSystem": "Ist das System",
     "modifiedAt": "geändert am",
     "modifiedBy": "geändert von",
     "productAttributes": "Produktattribute",
@@ -57,6 +56,9 @@
   },
   "filterLabels": {
     "All": "Alle"
+  },
+  "queueManager": {
+    "Adding a locale '%s' for an attribute '%s'": "Hinzufügen des Gebietsschemas '%s' für das Attribut '%s'"
   },
   "exceptions": {
     "You can not unlink product family attribute": "Sie können das Produktfamilienattribut nicht aufheben",

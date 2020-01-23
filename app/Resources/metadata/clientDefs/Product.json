@@ -65,7 +65,8 @@
       "createAction": "createRelatedConfigured",
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
-        "notLinkedProductAttributeValues"
+        "notLinkedProductAttributeValues",
+        "notLocalesAttributes"
       ],
       "rowActionsView": "pim:views/product-attribute-value/record/row-actions/relationship-no-unlink-in-product",
       "view": "pim:views/product/record/panels/product-attribute-values",

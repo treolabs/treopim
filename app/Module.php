@@ -35,19 +35,6 @@ use Treo\Core\Utils\Util;
 class Module extends AbstractModule
 {
     /**
-     * @var array
-     */
-    public static $multiLangTypes
-        = [
-            'bool',
-            'enum',
-            'multiEnum',
-            'varchar',
-            'text',
-            'wysiwyg'
-        ];
-
-    /**
      * @inheritdoc
      */
     public static function getLoadOrder(): int
@@ -62,13 +49,10 @@ class Module extends AbstractModule
     {
         parent::loadMetadata($data);
 
-        $this->setLocalesToChannels($data);
-
         // prepare result
         $result = Json::decode(Json::encode($data), true);
 
-        // prepare attribute scope
-        $result = $this->attributeScope($result);
+        $this->setLocalesToChannels($result);
 
         $result = $this->addImage($result);
 
@@ -77,190 +61,34 @@ class Module extends AbstractModule
     }
 
     /**
-     * @param array $result
-     *
-     * @return array
+     * @param array $data
      */
-    protected function attributeScope(array $result): array
+    protected function setLocalesToChannels(&$data)
     {
-        /**
-         * Attribute
-         */
-        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['isMultilang']['visible']['conditionGroup'] = [
-            [
-                'type'      => 'in',
-                'attribute' => 'type',
-                'value'     => self::$multiLangTypes
-            ]
-        ];
-        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name']['required']['conditionGroup'] = [
-            [
-                'type'      => 'notIn',
-                'attribute' => 'type',
-                'value'     => [md5('some-str')]
-            ]
-        ];
-
-        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue']['visible']['conditionGroup'] = [
-            [
-                'type'      => 'in',
-                'attribute' => 'type',
-                'value'     => [
-                    'enum',
-                    'multiEnum',
-                    'unit'
-                ]
-            ]
-        ];
-        $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue']['required']['conditionGroup'] = [
-            [
-                'type'      => 'in',
-                'attribute' => 'type',
-                'value'     => [
-                    'enum',
-                    'multiEnum'
-                ]
-            ]
-        ];
-
-        /**
-         * ProductAttributeValue
-         */
-        $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value']['required']['conditionGroup'] = [
-            [
-                'type'      => 'isTrue',
-                'attribute' => 'isRequired'
-            ]
-        ];
-
-        foreach ($this->getInputLanguageList() as $locale => $key) {
-            /**
-             * Attribute
-             */
-            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['required']['conditionGroup'] = [
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'isMultilang'
-                ]
-            ];
-            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['name' . $key]['visible']['conditionGroup'] = [
-                [
-                    'type'      => 'in',
-                    'attribute' => 'type',
-                    'value'     => self::$multiLangTypes
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'isMultilang'
-                ]
-            ];
-            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['visible']['conditionGroup'] = [
-                [
-                    'type'      => 'in',
-                    'attribute' => 'type',
-                    'value'     => ['enum', 'multiEnum']
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'isMultilang'
-                ]
-            ];
-            $result['clientDefs']['Attribute']['dynamicLogic']['fields']['typeValue' . $key]['required']['conditionGroup'] = [
-                [
-                    'type'      => 'in',
-                    'attribute' => 'type',
-                    'value'     => ['enum', 'multiEnum']
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'isMultilang'
-                ]
-            ];
-
-            /**
-             * ProductAttributeValue
-             */
-            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['visible']['conditionGroup'] = [
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'attributeIsMultilang'
-                ]
-            ];
-            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['readOnly']['conditionGroup'] = [
-                [
-                    'type'      => 'in',
-                    'attribute' => 'attributeType',
-                    'value'     => ['enum', 'multiEnum']
-                ]
-            ];
-            $result['clientDefs']['ProductAttributeValue']['dynamicLogic']['fields']['value' . $key]['required']['conditionGroup'] = [
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'isRequired'
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'attributeIsMultilang'
-                ]
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getInputLanguageList(): array
-    {
-        $result = [];
-
-        /** @var Config $config */
-        $config = $this->container->get('config');
-
-        if ($config->get('isMultilangActive', false)) {
-            foreach ($config->get('inputLanguageList', []) as $locale) {
-                $result[$locale] = ucfirst(Util::toCamelCase(strtolower($locale)));
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param \stdClass $metadata
-     */
-    protected function setLocalesToChannels(\stdClass &$metadata)
-    {
-        // prepare result
-        $data = Json::decode(Json::encode($metadata), true);
-
         /** @var Config $config */
         $config = $this->container->get('config');
 
         if ($config->get('isMultilangActive', false)) {
             $data['entityDefs']['Channel']['fields']['locales']['options'] = $config->get('inputLanguageList', []);
         }
-
-        // set data
-        $metadata = Json::decode(Json::encode($data));
     }
 
     /**
      * @param $data
+     *
      * @return array
      */
     protected function addImage($data): array
     {
-        if($this->container->get('metadata')->isModuleInstalled('Dam')) {
+        if ($this->container->get('metadata')->isModuleInstalled('Dam')) {
             $clientDefsAssociatedProduct = [
                 "dynamicLogic" => [
                     "fields" => [
-                        "mainProductImage" => [
+                        "mainProductImage"    => [
                             "visible" => [
                                 "conditionGroup" => [
                                     [
-                                        "type" => "isNotEmpty",
+                                        "type"      => "isNotEmpty",
                                         "attribute" => "id"
                                     ]
                                 ]
@@ -270,7 +98,7 @@ class Module extends AbstractModule
                             "visible" => [
                                 "conditionGroup" => [
                                     [
-                                        "type" => "isNotEmpty",
+                                        "type"      => "isNotEmpty",
                                         "attribute" => "id"
                                     ]
                                 ]
@@ -284,33 +112,33 @@ class Module extends AbstractModule
                 "bottomPanels" => [
                     "detail" => [
                         [
-                            "name" => "asset_relations",
-                            "label" => "Asset Relations",
-                            "view" => "dam:views/asset_relation/record/panels/bottom-panel",
+                            "name"       => "asset_relations",
+                            "label"      => "Asset Relations",
+                            "view"       => "dam:views/asset_relation/record/panels/bottom-panel",
                             "entityName" => "Category"
                         ]
                     ]
                 ],
-                "sidePanels" => [
-                    "edit" => [
+                "sidePanels"   => [
+                    "edit"        => [
                         [
-                            "name" => "image",
-                            "label" => "Category Preview",
-                            "view" => "pim:views/product/fields/image"
+                            "name"  => "image",
+                            "label" => "",
+                            "view"  => "pim:views/product/fields/image"
                         ]
                     ],
-                    "detail" => [
+                    "detail"      => [
                         [
-                            "name" => "image",
-                            "label" => "Category Preview",
-                            "view" => "pim:views/product/fields/image"
+                            "name"  => "image",
+                            "label" => "",
+                            "view"  => "pim:views/product/fields/image"
                         ]
                     ],
                     "detailSmall" => [
                         [
-                            "name" => "image",
-                            "label" => "Category Preview",
-                            "view" => "pim:views/product/fields/image"
+                            "name"  => "image",
+                            "label" => "",
+                            "view"  => "pim:views/product/fields/image"
                         ]
                     ]
                 ]
@@ -320,53 +148,53 @@ class Module extends AbstractModule
                 "bottomPanels" => [
                     "detail" => [
                         [
-                            "name" => "asset_relations",
-                            "label" => "Asset Relations",
-                            "view" => "pim:views/product/record/panels/asset-relation-bottom-panel",
+                            "name"       => "asset_relations",
+                            "label"      => "Asset Relations",
+                            "view"       => "pim:views/product/record/panels/asset-relation-bottom-panel",
                             "entityName" => "Product"
                         ]
                     ]
                 ],
-                "sidePanels" => [
-                    "edit" => [
+                "sidePanels"   => [
+                    "edit"        => [
                         [
-                            "name" => "image",
-                            "label" => "Product Preview",
-                            "view" => "pim:views/product/fields/image"
+                            "name"  => "image",
+                            "label" => "",
+                            "view"  => "pim:views/product/fields/image"
                         ]
                     ],
-                    "detail" => [
+                    "detail"      => [
                         [
-                            "name" => "image",
-                            "label" => "Product Preview",
-                            "view" => "pim:views/product/fields/image"
+                            "name"  => "image",
+                            "label" => "",
+                            "view"  => "pim:views/product/fields/image"
                         ]
                     ],
                     "detailSmall" => [
                         [
-                            "name" => "image",
-                            "label" => "Product Preview",
-                            "view" => "pim:views/product/fields/image"
+                            "name"  => "image",
+                            "label" => "",
+                            "view"  => "pim:views/product/fields/image"
                         ]
                     ]
                 ],
-                "menu" => [
-                    "list" => [
+                "menu"         => [
+                    "list"  => [
                         "buttons" => [
                             [
-                                "acl" => "read",
-                                "label" => "",
-                                "link" => "#Product/list",
-                                "style" => "primary",
-                                "title" => "List",
+                                "acl"      => "read",
+                                "label"    => "",
+                                "link"     => "#Product/list",
+                                "style"    => "primary",
+                                "title"    => "List",
                                 "iconHtml" => "<span class=\"fa fa-list\"></span>"
                             ],
                             [
-                                "acl" => "read",
-                                "label" => "",
-                                "link" => "#Product/plate",
-                                "style" => "default",
-                                "title" => "Plate",
+                                "acl"      => "read",
+                                "label"    => "",
+                                "link"     => "#Product/plate",
+                                "style"    => "default",
+                                "title"    => "Plate",
                                 "iconHtml" => "<span class=\"fa fa-th\"></span>"
                             ]
                         ]
@@ -374,19 +202,19 @@ class Module extends AbstractModule
                     "plate" => [
                         "buttons" => [
                             [
-                                "acl" => "read",
-                                "label" => "",
-                                "link" => "#Product/list",
-                                "style" => "default",
-                                "title" => "List",
+                                "acl"      => "read",
+                                "label"    => "",
+                                "link"     => "#Product/list",
+                                "style"    => "default",
+                                "title"    => "List",
                                 "iconHtml" => "<span class=\"fa fa-list\"></span>"
                             ],
                             [
-                                "acl" => "read",
-                                "label" => "",
-                                "link" => "#Product/plate",
-                                "style" => "primary",
-                                "title" => "Plate",
+                                "acl"      => "read",
+                                "label"    => "",
+                                "link"     => "#Product/plate",
+                                "style"    => "primary",
+                                "title"    => "Plate",
                                 "iconHtml" => "<span class=\"fa fa-th\"></span>"
                             ]
                         ]
@@ -396,84 +224,84 @@ class Module extends AbstractModule
 
             $entityDefsAssociatedProduct = [
                 "fields" => [
-                    "mainProductImage" => [
-                        "type" => "image",
+                    "mainProductImage"    => [
+                        "type"        => "image",
                         "previewSize" => "small",
-                        "readOnly" => true,
+                        "readOnly"    => true,
                         "notStorable" => true,
-                        "view" => "pim:views/fields/full-width-list-image"
+                        "view"        => "pim:views/fields/full-width-list-image"
                     ],
                     "relatedProductImage" => [
-                        "type" => "image",
+                        "type"        => "image",
                         "previewSize" => "small",
-                        "readOnly" => true,
+                        "readOnly"    => true,
                         "notStorable" => true,
-                        "view" => "pim:views/fields/full-width-list-image"
+                        "view"        => "pim:views/fields/full-width-list-image"
                     ]
                 ]
             ];
 
             $entityDefsCategory = [
                 "fields" => [
-                    "image" => [
-                        "type" => "image",
-                        "previewSize" => "medium",
-                        "readOnly" => true,
-                        "view" => "pim:views/product/fields/image",
+                    "image"  => [
+                        "type"           => "image",
+                        "previewSize"    => "medium",
+                        "readOnly"       => true,
+                        "view"           => "pim:views/product/fields/image",
                         "importDisabled" => true
                     ],
                     "assets" => [
-                        "type" => "linkMultiple",
-                        "layoutDetailDisabled" => true,
+                        "type"                     => "linkMultiple",
+                        "layoutDetailDisabled"     => true,
                         "layoutMassUpdateDisabled" => true,
-                        "importDisabled" => true,
-                        "noLoad" => true
+                        "importDisabled"           => true,
+                        "noLoad"                   => true
                     ]
                 ],
-                "links" => [
-                    "image" => [
-                        "type" => "belongsTo",
-                        "entity" => "Attachment",
+                "links"  => [
+                    "image"  => [
+                        "type"        => "belongsTo",
+                        "entity"      => "Attachment",
                         "skipOrmDefs" => true
                     ],
                     "assets" => [
-                        "type" => "hasMany",
+                        "type"         => "hasMany",
                         "relationName" => "categoryAsset",
-                        "foreign" => "categories",
-                        "entity" => "Asset",
-                        "audited" => false
+                        "foreign"      => "categories",
+                        "entity"       => "Asset",
+                        "audited"      => false
                     ]
                 ]
             ];
 
             $entityDefsProduct = [
                 "fields" => [
-                    "image" => [
-                        "type" => "image",
-                        "previewSize" => "medium",
-                        "readOnly" => true,
-                        "view" => "pim:views/product/fields/image",
+                    "image"  => [
+                        "type"           => "image",
+                        "previewSize"    => "medium",
+                        "readOnly"       => true,
+                        "view"           => "pim:views/product/fields/image",
                         "importDisabled" => true
                     ],
                     "assets" => [
-                        "type" => "linkMultiple",
-                        "layoutDetailDisabled" => true,
+                        "type"                     => "linkMultiple",
+                        "layoutDetailDisabled"     => true,
                         "layoutMassUpdateDisabled" => true,
-                        "importDisabled" => true,
-                        "noLoad" => true
+                        "importDisabled"           => true,
+                        "noLoad"                   => true
                     ]
                 ],
-                "links" => [
+                "links"  => [
                     "assets" => [
-                        "type" => "hasMany",
+                        "type"         => "hasMany",
                         "relationName" => "productAsset",
-                        "foreign" => "products",
-                        "entity" => "Asset",
-                        "audited" => false
+                        "foreign"      => "products",
+                        "entity"       => "Asset",
+                        "audited"      => false
                     ],
-                    "image" => [
-                        "type" => "belongsTo",
-                        "entity" => "Attachment",
+                    "image"  => [
+                        "type"        => "belongsTo",
+                        "entity"      => "Attachment",
                         "skipOrmDefs" => true
                     ]
                 ]
@@ -481,85 +309,85 @@ class Module extends AbstractModule
 
             $entityDefsAsset = [
                 "fields" => [
-                    "products" => [
-                        "type" => "linkMultiple",
-                        "layoutDetailDisabled" => true,
+                    "products"   => [
+                        "type"                     => "linkMultiple",
+                        "layoutDetailDisabled"     => true,
                         "layoutMassUpdateDisabled" => true,
-                        "importDisabled" => true,
-                        "noLoad" => true
+                        "importDisabled"           => true,
+                        "noLoad"                   => true
                     ],
                     "categories" => [
-                        "type" => "linkMultiple",
-                        "layoutDetailDisabled" => true,
+                        "type"                     => "linkMultiple",
+                        "layoutDetailDisabled"     => true,
                         "layoutMassUpdateDisabled" => true,
-                        "importDisabled" => true,
-                        "noLoad" => true
+                        "importDisabled"           => true,
+                        "noLoad"                   => true
                     ]
                 ],
-                "links" => [
-                    "products" => [
-                        "type" => "hasMany",
+                "links"  => [
+                    "products"   => [
+                        "type"         => "hasMany",
                         "relationName" => "productAsset",
-                        "foreign" => "assets",
-                        "entity" => "Product",
-                        "audited" => false
+                        "foreign"      => "assets",
+                        "entity"       => "Product",
+                        "audited"      => false
                     ],
                     "categories" => [
-                        "type" => "hasMany",
+                        "type"         => "hasMany",
                         "relationName" => "categoryAsset",
-                        "foreign" => "assets",
-                        "entity" => "Category",
-                        "audited" => false
+                        "foreign"      => "assets",
+                        "entity"       => "Category",
+                        "audited"      => false
                     ]
                 ]
             ];
 
             $entityDefsAssetRelation = [
                 "fields" => [
-                    "scope" => [
-                        "type" => "enum",
+                    "scope"    => [
+                        "type"     => "enum",
                         "required" => false,
-                        "options" => [
+                        "options"  => [
                             "Global",
                             "Channel"
                         ],
-                        "default" => "Global",
+                        "default"  => "Global",
                         "isSorted" => false,
-                        "audited" => false,
+                        "audited"  => false,
                         "readOnly" => false,
-                        "tooltip" => false
+                        "tooltip"  => false
                     ],
                     "channels" => [
-                        "type" => "linkMultiple",
+                        "type"           => "linkMultiple",
                         "importDisabled" => true,
-                        "noLoad" => false,
-                        "required" => false,
-                        "readOnly" => false,
-                        "tooltip" => false,
-                        "view" => "pim:views/asset-relation/fields/channels"
+                        "noLoad"         => false,
+                        "required"       => false,
+                        "readOnly"       => false,
+                        "tooltip"        => false,
+                        "view"           => "pim:views/asset-relation/fields/channels"
                     ],
-                    "role" => [
-                        "type" => "multiEnum",
+                    "role"     => [
+                        "type"             => "multiEnum",
                         "storeArrayValues" => true,
-                        "required" => false,
-                        "fontSize" => 1,
-                        "options" => [
+                        "required"         => false,
+                        "fontSize"         => 1,
+                        "options"          => [
                             "Main"
                         ],
-                        "optionColors" => [
+                        "optionColors"     => [
                             "Main" => "00BFFF"
                         ],
-                        "audited" => false,
-                        "readOnly" => false,
-                        "tooltip" => false
+                        "audited"          => false,
+                        "readOnly"         => false,
+                        "tooltip"          => false
                     ]
                 ],
-                "links" => [
+                "links"  => [
                     "channels" => [
-                        "type" => "hasMany",
+                        "type"         => "hasMany",
                         "relationName" => "assetRelationChannel",
-                        "foreign" => "assetRelations",
-                        "entity" => "Channel"
+                        "foreign"      => "assetRelations",
+                        "entity"       => "Channel"
                     ]
                 ]
             ];
@@ -567,21 +395,21 @@ class Module extends AbstractModule
             $clientDefsAssetRelation = [
                 "dynamicLogic" => [
                     "fields" => [
-                        "scope" => [
+                        "scope"    => [
                             "visible" => [
                                 "conditionGroup" => [
                                     [
-                                        "type" => "or",
+                                        "type"  => "or",
                                         "value" => [
                                             [
-                                                "type" => "equals",
+                                                "type"      => "equals",
                                                 "attribute" => "entityName",
-                                                "value" => "Product"
+                                                "value"     => "Product"
                                             ],
                                             [
-                                                "type" => "equals",
+                                                "type"      => "equals",
                                                 "attribute" => "entityName",
-                                                "value" => "Category"
+                                                "value"     => "Category"
                                             ]
                                         ]
                                     ]
@@ -589,21 +417,21 @@ class Module extends AbstractModule
                             ]
                         ],
                         "channels" => [
-                            "visible" => [
+                            "visible"  => [
                                 "conditionGroup" => [
                                     [
-                                        "type" => "equals",
+                                        "type"      => "equals",
                                         "attribute" => "scope",
-                                        "value" => "Channel"
+                                        "value"     => "Channel"
                                     ]
                                 ]
                             ],
                             "required" => [
                                 "conditionGroup" => [
                                     [
-                                        "type" => "equals",
+                                        "type"      => "equals",
                                         "attribute" => "scope",
-                                        "value" => "Channel"
+                                        "value"     => "Channel"
                                     ]
                                 ]
                             ]
@@ -615,34 +443,34 @@ class Module extends AbstractModule
             $entityDefsChannel = [
                 "fields" => [
                     "assetRelations" => [
-                        "type" => "linkMultiple",
-                        "layoutListDisabled" => true,
-                        "layoutListSmallDisabled" => true,
-                        "layoutDetailDisabled" => true,
+                        "type"                      => "linkMultiple",
+                        "layoutListDisabled"        => true,
+                        "layoutListSmallDisabled"   => true,
+                        "layoutDetailDisabled"      => true,
                         "layoutDetailSmallDisabled" => true,
-                        "layoutMassUpdateDisabled" => true,
-                        "importDisabled" => true,
-                        "noLoad" => true
+                        "layoutMassUpdateDisabled"  => true,
+                        "importDisabled"            => true,
+                        "noLoad"                    => true
                     ]
                 ],
-                "links" => [
+                "links"  => [
                     "assetRelations" => [
-                        "type" => "hasMany",
+                        "type"         => "hasMany",
                         "relationName" => "assetRelationChannel",
-                        "foreign" => "channels",
-                        "entity" => "AssetRelation"
+                        "foreign"      => "channels",
+                        "entity"       => "AssetRelation"
                     ]
                 ]
             ];
 
-            $data['clientDefs']['AssociatedProduct'] =
-                array_merge_recursive($data['clientDefs']['AssociatedProduct'], $clientDefsAssociatedProduct);
+            $data['clientDefs']['AssociatedProduct']
+                = array_merge_recursive($data['clientDefs']['AssociatedProduct'], $clientDefsAssociatedProduct);
 
             $data['clientDefs']['Category'] = array_merge_recursive($data['clientDefs']['Category'], $clientDefsCategory);
             $data['clientDefs']['Product'] = array_merge_recursive($data['clientDefs']['Product'], $clientDefsProduct);
 
-            $data['entityDefs']['AssociatedProduct'] =
-                array_merge_recursive($data['entityDefs']['AssociatedProduct'], $entityDefsAssociatedProduct);
+            $data['entityDefs']['AssociatedProduct']
+                = array_merge_recursive($data['entityDefs']['AssociatedProduct'], $entityDefsAssociatedProduct);
 
             $data['entityDefs']['Category'] = array_merge_recursive($data['entityDefs']['Category'], $entityDefsCategory);
             $data['entityDefs']['Product'] = array_merge_recursive($data['entityDefs']['Product'], $entityDefsProduct);
@@ -654,15 +482,15 @@ class Module extends AbstractModule
             $data['clientDefs']['AssetRelation'] = array_merge_recursive($data['clientDefs']['AssetRelation'], $clientDefsAssetRelation);
 
             //expansion GeneralStatistics
-            $data['dashlets']['GeneralStatistics']['options']['defaults']['urlMap']['productWithoutImage'] =
-                [
-                    "url" => '#Product',
-                    "options" => [
-                        "boolFilterList" => [
-                            "withoutImageAssets"
-                        ]
+            $data['dashlets']['GeneralStatistics']['options']['defaults']['urlMap']['productWithoutImage']
+                = [
+                "url"     => '#Product',
+                "options" => [
+                    "boolFilterList" => [
+                        "withoutImageAssets"
                     ]
-                ];
+                ]
+            ];
             $data['clientDefs']['Product']['boolFilterList'][] = 'withoutImageAssets';
             $data['clientDefs']['Product']['boolFilterList'][] = 'withoutImageAssets';
         }
