@@ -44,26 +44,26 @@ class V3Dot12Dot0 extends AbstractMigration
      */
     public function up(): void
     {
-        (new Auth($this->getContainer()))->useNoAuth();
-
-        $config = $this->getContainer()->get('config');
-        if ($config->get('pimAndDamInstalled') !== true) {
-            //set flag about installed Pim and Image
-            $config->set('pimAndDamInstalled', false);
-        }
-
-        if (!$this->getContainer()->get('metadata')->isModuleInstalled('Dam')) {
-            $this->sendNotification();
-        } elseif(!empty($this->getContainer()->get('metadata')->get('entityDefs.Product.links.assets'))) {
-            //migration pimImage
-            $migrationPimImage = new MigrationPimImage();
-            $migrationPimImage->setContainer($this->getContainer());
-            $migrationPimImage->run();
-
-            //set flag about installed Pim and Image
-            $config->set('pimAndDamInstalled', true);
-        }
-        $config->save();
+//        (new Auth($this->getContainer()))->useNoAuth();
+//
+//        $config = $this->getContainer()->get('config');
+//        if ($config->get('pimAndDamInstalled') !== true) {
+//            //set flag about installed Pim and Image
+//            $config->set('pimAndDamInstalled', false);
+//        }
+//
+//        if (!$this->getContainer()->get('metadata')->isModuleInstalled('Dam')) {
+//            $this->sendNotification();
+//        } elseif(!empty($this->getContainer()->get('metadata')->get('entityDefs.Product.links.assets'))) {
+//            //migration pimImage
+//            $migrationPimImage = new MigrationPimImage();
+//            $migrationPimImage->setContainer($this->getContainer());
+//            $migrationPimImage->run();
+//
+//            //set flag about installed Pim and Image
+//            $config->set('pimAndDamInstalled', true);
+//        }
+//        $config->save();
     }
 
     /**
