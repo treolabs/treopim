@@ -114,6 +114,13 @@ class V3Dot13Dot0 extends Base
                     $row['type_value'] = $attribute['type_value_' . Util::toUnderScore(strtolower($locale))];
                     $row['is_multilang'] = '0';
 
+                    // unset multi-lang columns
+                    foreach ($row as $rk => $rv) {
+                        if (strpos($rk, 'name_') !== false || strpos($rk, 'type_value_') !== false) {
+                            unset($row[$rk]);
+                        }
+                    }
+
                     $this->exec(sprintf("INSERT INTO attribute (%s) VALUES ('%s')", implode(",", array_keys($row)), implode("','", array_values($row))));
 
                     $pfas = $this->fetchAll(
@@ -251,7 +258,9 @@ class V3Dot13Dot0 extends Base
             $this->exec("DELETE FROM product_family_attribute WHERE attribute_id='{$attribute['id']}'");
 
             // get product attribute values
-            $pavs = $this->fetchAll("SELECT id, product_id, locale, locale_parent_id, value FROM product_attribute_value WHERE attribute_id='{$attribute['id']}' AND locale_parent_id IS NOT NULL");
+            $pavs = $this->fetchAll(
+                "SELECT id, product_id, locale, locale_parent_id, value FROM product_attribute_value WHERE attribute_id='{$attribute['id']}' AND locale_parent_id IS NOT NULL"
+            );
             foreach ($pavs as $pav) {
                 $pavKey = Util::toUnderScore(strtolower($pav['locale']));
                 $this->exec(
