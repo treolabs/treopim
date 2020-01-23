@@ -161,7 +161,7 @@ class V3Dot13Dot0 extends Base
                             $newPav['value'] = $pav['value_' . Util::toUnderScore(strtolower($locale))];
 
                             $this->exec(
-                                sprintf("INSERT INTO product_attribute_value (%s) VALUES ('%s')", implode(",", array_keys($newPav)), implode("','", array_values($newPav)))
+                                sprintf("INSERT INTO product_attribute_value (%s) VALUES (:%s)", implode(",", array_keys($newPav)), implode(",:", array_keys($newPav))), $newPav
                             );
                             if (!empty($channels)) {
                                 foreach (explode(",", $channels) as $channelId) {
@@ -188,7 +188,7 @@ class V3Dot13Dot0 extends Base
                         $newPav['value'] = $pav['value_' . Util::toUnderScore(strtolower($locale))];
 
                         $this->exec(
-                            sprintf("INSERT INTO product_attribute_value (%s) VALUES ('%s')", implode(",", array_keys($newPav)), implode("','", array_values($newPav)))
+                            sprintf("INSERT INTO product_attribute_value (%s) VALUES (:%s)", implode(",", array_keys($newPav)), implode(",:", array_keys($newPav))), $newPav
                         );
                         if (!empty($channels)) {
                             foreach (explode(",", $channels) as $channelId) {
@@ -207,7 +207,7 @@ class V3Dot13Dot0 extends Base
         echo ' Done!' . PHP_EOL;
 
         echo ' Drop multi-lang columns... ';
-        if ($this->getConfig()->get('isMultilangActive') && !empty($attribute['is_multilang'])) {
+        if ($this->getConfig()->get('isMultilangActive')) {
             foreach ($this->getConfig()->get('inputLanguageList', []) as $locale) {
                 $key = Util::toUnderScore(strtolower($locale));
                 $this->exec("ALTER TABLE `attribute` DROP name_$key, DROP type_value_$key");
@@ -315,11 +315,24 @@ class V3Dot13Dot0 extends Base
 
     /**
      * @param string $sql
+     * @param array  $inputParams
      */
-    protected function exec(string $sql): void
+    protected function exec(string $sql, array $inputParams = []): void
     {
+        // prepare params
+        $params = null;
+        if (!empty($inputParams)) {
+            $params = [];
+            foreach ($inputParams as $key => $value) {
+                $params[':' . $key] = $value;
+            }
+        }
+
         try {
-            $this->getPDO()->exec($sql);
+            $sth = $this
+                ->getPDO()
+                ->prepare($sql);
+            $sth->execute($params);
         } catch (\PDOException $e) {
             $GLOBALS['log']->error('Migration of PIM (3.13.0): ' . $e->getMessage() . ' | ' . $sql);
             $this->errors++;
