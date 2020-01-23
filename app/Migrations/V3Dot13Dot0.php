@@ -115,14 +115,9 @@ class V3Dot13Dot0 extends Base
                     $row['type_value'] = $attribute['type_value_' . Util::toUnderScore(strtolower($locale))];
                     $row['is_multilang'] = '0';
 
-                    // unset multi-lang columns
-                    foreach ($row as $rk => $rv) {
-                        if (strpos($rk, 'name_') !== false || strpos($rk, 'type_value_') !== false) {
-                            unset($row[$rk]);
-                        }
-                    }
-
-                    $this->exec(sprintf("INSERT INTO attribute (%s) VALUES ('%s')", implode(",", array_keys($row)), implode("','", array_values($row))));
+                    $this->exec(
+                        sprintf("INSERT INTO attribute (%s) VALUES (:%s)", implode(",", array_keys($row)), implode(",:", array_keys($row))), $row
+                    );
 
                     $pfas = $this->fetchAll(
                         "SELECT *, (SELECT GROUP_CONCAT(channel_id ORDER BY channel_id ASC) FROM product_family_attribute_channel WHERE product_family_attribute.id=product_family_attribute_channel.product_family_attribute_id) AS channels FROM product_family_attribute WHERE deleted=0 AND attribute_id='$attributeId'"
@@ -138,7 +133,9 @@ class V3Dot13Dot0 extends Base
                         $newPfa['attribute_id'] = $newAttributeId;
                         $newPfa['locale'] = $locale;
                         $newPfa['locale_parent_id'] = $pfa['id'];
-                        $this->exec(sprintf("INSERT INTO product_family_attribute (%s) VALUES ('%s')", implode(",", array_keys($newPfa)), implode("','", array_values($newPfa))));
+                        $this->exec(
+                            sprintf("INSERT INTO product_family_attribute (%s) VALUES (:%s)", implode(",", array_keys($newPfa)), implode(",:", array_keys($newPfa))), $newPfa
+                        );
                         if (!empty($channels)) {
                             foreach (explode(",", $channels) as $channelId) {
                                 $this->exec("INSERT INTO product_family_attribute_channel (channel_id, product_family_attribute_id) VALUES ('$channelId','$newPfaId')");
