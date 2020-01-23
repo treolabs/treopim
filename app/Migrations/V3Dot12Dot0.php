@@ -119,13 +119,13 @@ class V3Dot12Dot0 extends AbstractMigration
         $assetIds = [];
 
         foreach ($attachments as $k => $attachment) {
-            $oldPath = ($attachment['private'] == '1' ? 'data/dam/private/' : 'data/dam/public/')
-                . "master/" . $attachment['storage_file_path'] . "/" . $attachment['name'];
+            $oldPath = ($attachment['private'] === '1' ? 'data/dam/private/' : 'data/dam/public/')
+                . 'master/' . $attachment['storage_file_path'] . '/' . $attachment['name'];
 
             if (file_exists($oldPath)) {
                 $attachmentUpdate = [];
                 $storagePath = $this->getFilePath(FilePathBuilder::UPLOAD);
-                $newPath = UploadDir::BASE_PATH . $storagePath . "/" . $attachment['name'];
+                $newPath = UploadDir::BASE_PATH . $storagePath . '/' . $attachment['name'];
 
                 if ($this->getFileManager()->move($oldPath, $newPath, false)) {
                     $attachmentUpdate['storage_file_path'] = $storagePath;
@@ -269,33 +269,36 @@ class V3Dot12Dot0 extends AbstractMigration
      * @param string $entityName
      * @param string $assetIds
      */
-    protected function insertPimImageChannel(string $entityName, string $assetIds)
+    protected function insertPimImageChannel(string $entityName, string $assetIds): void
     {
-        $where = '';
-        if ($entityName == 'Product') {
+        if ($entityName === 'Product') {
             $where = ' pi.product_id IS NOT NULL AND pi.product_id != \'\'';
-        } elseif ($entityName == 'Category') {
+            $relationAsset = 'product_id';
+        } elseif ($entityName === 'Category') {
             $where = ' pi.category_id IS NOT NULL AND pi.category_id != \'\'';
+            $relationAsset = 'category_id';
         } else {
             return;
         }
+
         $this->getEntityManager()
             ->nativeQuery(
                 "INSERT INTO pim_image_channel (channel_id, pim_image_id)
                                     SELECT arc.channel_id, pi.id AS pim_image_id
                                     FROM asset AS a
-                                             RIGHT JOIN asset_relation ar
-                                                        ON ar.asset_id = a.id
+                                             RIGHT JOIN asset_relation ar ON
+                                                                ar.asset_id = a.id
                                                             AND ar.deleted = 0
                                                             AND ar.scope = 'Channel'
                                                             AND ar.entity_name = '{$entityName}'
                                              RIGHT JOIN asset_relation_channel arc
                                                         ON ar.id = arc.asset_relation_id
                                                             AND arc.deleted = 0
-                                             LEFT JOIN pim_image pi
-                                                       ON pi.image_id = a.file_id
-                                                           AND pi.deleted = 0
-                                                           AND pi.scope = 'Channel'
+                                             LEFT JOIN pim_image pi ON       
+                                                                pi.image_id = a.file_id
+                                                           AND  pi.deleted = 0
+                                                           AND  pi.scope = 'Channel'
+                                                           AND  pi.{$relationAsset} = ar.entity_id
                                     WHERE {$where} 
                                         AND a.deleted = 0 
                                         AND a.type = 'Gallery Image' 

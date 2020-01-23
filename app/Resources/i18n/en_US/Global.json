@@ -82,7 +82,9 @@
   "labels": {
     "Add Field": "Add Filter",
     "removeExplain": "Select this to unlink attribute from other Entities before removing",
-    "removeHint": "When removing the Catalog, the Products belonging to it are deleted."
+    "removeHint": "When removing the Catalog, the Products belonging to it are deleted.",
+    "Category Preview": "Category Preview",
+    "Product Preview": "Product Preview"
   },
   "dashlets": {
     "GeneralStatistics": "General Statistics",
