@@ -105,7 +105,7 @@ class V3Dot13Dot0 extends Base
                     $row = $this->cpRow($attribute);
                     $row['id'] = $newAttributeId;
                     $row['name'] = $attribute['name_' . Util::toUnderScore(strtolower($locale))];
-                    if (empty($row['name'])) {
+                    if (empty($row['name']) || (!empty($row['name']) && $row['name'] == $attribute['name'])) {
                         $row['name'] = $attribute['name'] . ' › ' . $locale;
                     }
                     $row['code'] = $attribute['code'] . '_' . strtolower($locale);
