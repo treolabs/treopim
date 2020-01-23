@@ -44,19 +44,19 @@ class V3Dot12Dot3 extends AbstractMigration
      */
     public function up(): void
     {
-//        (new Auth($this->getContainer()))->useNoAuth();
-//
-//        if (class_exists(Completeness::class)
-//            && method_exists(Completeness::class, 'runUpdateCompleteness')
-//        ) {
-//            $hasCompleteness = $this->getContainer()->get('metadata')->get(['scopes', 'Product', 'hasCompleteness'], false);
-//            if (!empty($hasCompleteness)) {
-//                $this->recalcEntities('Product');
-//                if (method_exists(ProductCompleteness::class, 'setHasCompleteness')) {
-//                    ProductCompleteness::setHasCompleteness($this->getContainer(), 'ProductAttributeValue', true);
-//                }
-//            }
-//        }
+        (new Auth($this->getContainer()))->useNoAuth();
+
+        if (class_exists(Completeness::class)
+            && method_exists(Completeness::class, 'runUpdateCompleteness')
+        ) {
+            $hasCompleteness = $this->getContainer()->get('metadata')->get(['scopes', 'Product', 'hasCompleteness'], false);
+            if (!empty($hasCompleteness)) {
+                $this->recalcEntities('Product');
+                if (method_exists(ProductCompleteness::class, 'setHasCompleteness')) {
+                    ProductCompleteness::setHasCompleteness($this->getContainer(), 'ProductAttributeValue', true);
+                }
+            }
+        }
     }
 
 
