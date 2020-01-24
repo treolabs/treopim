@@ -20,23 +20,22 @@
 
 declare(strict_types=1);
 
-namespace Pim\Jobs;
+namespace Pim\Listeners;
 
-use Espo\Core\Jobs\Base;
+use Treo\Listeners\AbstractListener;
+use Treo\Core\EventManager\Event;
 
 /**
- * Class PimCleanup
+ * Class TreoCleanupJob
  *
- * @author r.ratsun@treolabs.com
+ * @author r.ratsun <r.ratsun@treolabs.com>
  */
-class PimCleanup extends Base
+class TreoCleanupJob extends AbstractListener
 {
     /**
-     * Run job
-     *
-     * @return bool
+     * @param Event $event
      */
-    public function run()
+    public function run(Event $event): void
     {
         // association
         $ids = $this->fetchIds("SELECT id FROM association WHERE deleted=1");
@@ -124,8 +123,6 @@ class PimCleanup extends Base
 
         // tax
         $this->execute("DELETE FROM tax WHERE deleted=1");
-
-        return true;
     }
 
     /**
@@ -138,7 +135,7 @@ class PimCleanup extends Base
         try {
             $statement = $this->getEntityManager()->nativeQuery($sql);
         } catch (\PDOException $e) {
-            $GLOBALS['log']->error('PimCleanup: ' . $e->getMessage());
+            $GLOBALS['log']->error('PimCleanup: ' . $e->getMessage() . '|' . $sql);
         }
 
         return (isset($statement)) ? $statement : null;

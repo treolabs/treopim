@@ -42,6 +42,11 @@ class V3Dot13Dot0 extends Base
      */
     public function up(): void
     {
+        echo ' Update scheduled jobs... ';
+        $this->getPDO()->exec("DELETE FROM scheduled_job WHERE job='PimCleanup'");
+        $this->getPDO()->exec("DELETE FROM job WHERE name='PimCleanup'");
+        echo ' Done!' . PHP_EOL;
+
         echo ' Delete custom layouts for Attribute entity... ';
         Util::removeDir('custom/Espo/Custom/Resources/layouts/Attribute');
         echo ' Done!' . PHP_EOL;
