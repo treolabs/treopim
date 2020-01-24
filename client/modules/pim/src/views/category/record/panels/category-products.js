@@ -185,15 +185,15 @@ Espo.define('pim:views/category/record/panels/category-products', ['views/record
 
         createProductCategory(selectObj) {
             let promises = [];
-            selectObj.forEach(categoryModel => {
+            selectObj.forEach(productModel => {
                 this.getModelFactory().create(this.scope, model => {
                     model.setRelate({
                         model: this.model,
                         link: this.model.defs.links[this.link].foreign
                     });
                     model.setRelate({
-                        model: categoryModel,
-                        link: categoryModel.defs.links[this.link].foreign
+                        model: productModel,
+                        link: productModel.defs.links[this.link].foreign
                     });
                     model.set({
                         assignedUserId: this.getUser().id,
