@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
+use Pim\Entities\Attribute;
 use Treo\Core\EventManager\Event;
 
 /**
@@ -67,6 +68,24 @@ class AttributeGroupEntity extends AbstractEntityListener
                     'Attribute group is linked with attribute(s). Please, unlink attribute(s) first',
                     'exceptions',
                     'AttributeGroup'
+                )
+            );
+        }
+    }
+
+    /**
+     * @param Event $event
+     * @throws BadRequest
+     */
+    public function beforeRelate(Event $event)
+    {
+        if ($event->getArgument('foreign') instanceof Attribute
+                && !empty($event->getArgument('foreign')->get('attributeGroup'))){
+            throw new BadRequest(
+                $this->translate(
+                    'The attribute already has a group',
+                    'exceptions',
+                    'Attribute'
                 )
             );
         }
