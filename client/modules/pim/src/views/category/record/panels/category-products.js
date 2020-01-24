@@ -155,12 +155,6 @@ Espo.define('pim:views/category/record/panels/category-products', ['views/record
                     }, this);
                 }
 
-                if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
-                    this.listenTo(this.model, 'overview-filters-changed', () => {
-                        this.applyOverviewFilters();
-                    });
-                }
-
                 var viewName = this.defs.recordListView || this.getMetadata().get('clientDefs.' + this.scope + '.recordViews.list') || 'Record.List';
 
                 this.once('after:render', function () {
@@ -180,11 +174,6 @@ Espo.define('pim:views/category/record/panels/category-products', ['views/record
                             }
                             collection.fetch();
                         }.bind(this));
-                        if (this.getMetadata().get(['scopes', this.model.name, 'advancedFilters'])) {
-                            view.listenTo(view, 'after:render', () => {
-                                this.applyOverviewFilters();
-                            });
-                        }
                     });
                 }, this);
 
@@ -192,63 +181,6 @@ Espo.define('pim:views/category/record/panels/category-products', ['views/record
             }, this);
 
             this.setupFilterActions();
-        },
-
-        applyOverviewFilters() {
-            let rows = this.getListRows();
-            let categoriesWithChannelScope = [];
-            Object.keys(rows).forEach(name => {
-                let row = rows[name];
-                this.controlRowVisibility(row, this.updateCheckByChannelFilter(row, categoriesWithChannelScope));
-            });
-            this.hideChannelCategoriesWithGlobalScope(rows, categoriesWithChannelScope);
-        },
-
-        updateCheckByChannelFilter(row, categoriesWithChannelScope) {
-            let hide = false;
-            let currentChannelFilter = (this.model.advancedEntityView || {}).channelsFilter;
-            if (currentChannelFilter) {
-                if (currentChannelFilter === 'onlyGlobalScope') {
-                    hide = row.model.get('scope') !== 'Global';
-                } else {
-                    hide = (row.model.get('scope') === 'Channel' && !(row.model.get('channelsIds') || []).includes(currentChannelFilter));
-                    if ((row.model.get('channelsIds') || []).includes(currentChannelFilter)) {
-                        categoriesWithChannelScope.push(row.model.get('categoryId'));
-                    }
-                }
-            }
-            return hide;
-        },
-
-        controlRowVisibility(row, hide) {
-            if (hide) {
-                row.$el.addClass('hidden');
-            } else {
-                row.$el.removeClass('hidden');
-            }
-        },
-
-        getListRows() {
-            let fields = {};
-            let list = this.getView('list');
-            if (list) {
-                for (let row in list.nestedViews || {}) {
-                    let rowView = list.getView(row);
-                    if (rowView) {
-                        fields[row] = rowView;
-                    }
-                }
-            }
-            return fields;
-        },
-
-        hideChannelCategoriesWithGlobalScope(rows, categoriesWithChannelScope) {
-            Object.keys(rows).forEach(name => {
-                let row = rows[name];
-                if (categoriesWithChannelScope.includes(row.model.get('categoryId')) && row.model.get('scope') === 'Global') {
-                    this.controlRowVisibility(row, true);
-                }
-            });
         },
 
         createProductCategory(selectObj) {
