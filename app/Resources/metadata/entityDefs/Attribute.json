@@ -136,21 +136,13 @@
     },
     "locale": {
       "type": "varchar",
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true
+      "readOnly": true,
+      "layoutMassUpdateDisabled": true
     },
     "parent": {
       "type": "link",
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true
+      "readOnly": true,
+      "layoutMassUpdateDisabled": true
     },
     "attributes": {
       "type": "linkMultiple",
