@@ -17,10 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
+
 namespace Pim\Import\Types\Simple\FieldConverters;
+
 use Espo\ORM\Entity;
 use Import\Types\Simple\FieldConverters\Unit as DefaultUnit;
+
 /**
  * Class Unit
  *
@@ -39,7 +43,7 @@ class Unit extends DefaultUnit
             $unit = (!empty($config['columnUnit']) && $row[$config['columnUnit']] != '') ? $row[$config['columnUnit']] : $config['defaultUnit'];
 
             // validate unit float value
-            if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
+            if (!is_null($value) && filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
                 throw new \Exception("Incorrect value for attribute '{$config['attribute']->get('name')}'");
             }
 
@@ -55,6 +59,7 @@ class Unit extends DefaultUnit
             parent::convert($inputRow, $entityType, $config, $row, $delimiter);
         }
     }
+
     /**
      * @inheritDoc
      */
@@ -67,6 +72,7 @@ class Unit extends DefaultUnit
             unset($restore->{$item['name'].'Unit'});
         }
     }
+
     /**
      * @inheritDoc
      */
