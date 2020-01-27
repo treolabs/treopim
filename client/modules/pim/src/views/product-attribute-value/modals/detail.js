@@ -20,7 +20,46 @@
 Espo.define('pim:views/product-attribute-value/modals/detail', 'views/modals/detail',
     Dep => Dep.extend({
 
-        fullFormDisabled: true
+        fullFormDisabled: true,
 
+        actionEdit() {
+            const viewName = this.getMetadata().get(['clientDefs', this.scope, 'modalViews', 'edit']) || 'views/modals/edit';
+            const options = {
+                scope: this.scope,
+                id: this.id,
+                fullFormDisabled: this.fullFormDisabled
+            };
+
+            this.handleRecordViewOptions(options);
+
+            this.createView('quickEdit', viewName, options, function (view) {
+                view.once('after:render', function () {
+                    Espo.Ui.notify(false);
+                    this.dialog.hide();
+                }, this);
+
+                this.listenToOnce(view, 'remove', function () {
+                    this.dialog.show();
+                }, this);
+
+                this.listenToOnce(view, 'leave', function () {
+                    this.remove();
+                }, this);
+
+                this.listenToOnce(view, 'after:save', function (model) {
+                    this.trigger('after:save', model);
+
+                    this.model.set(model.getClonedAttributes());
+                }, this);
+
+                view.render();
+            }, this);
+        },
+
+        handleRecordViewOptions(options) {
+            _.extend(options, {
+                model: this.model
+            });
+        }
     })
 );
