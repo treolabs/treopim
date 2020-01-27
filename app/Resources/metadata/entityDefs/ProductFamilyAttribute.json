@@ -19,6 +19,7 @@
     },
     "locale": {
       "type": "varchar",
+      "readOnly": true,
       "layoutListDisabled": true,
       "layoutListSmallDisabled": true,
       "layoutDetailDisabled": true,
@@ -55,7 +56,7 @@
     },
     "localeParent": {
       "type": "link",
-      "readonly": true,
+      "readOnly": true,
       "layoutListDisabled": true,
       "layoutListSmallDisabled": true,
       "layoutDetailDisabled": true,

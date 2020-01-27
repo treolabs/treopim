@@ -10,7 +10,9 @@
     "productAttributeValues": "Product Attribute Values",
     "isRequired": "Required",
     "productFamilyAttributes": "Product Family Attributes",
-    "isMultilang": "Multi-Language"
+    "isMultilang": "Multi-Language",
+    "locale": "Locale",
+    "parent": "Parent"
   },
   "options": {
     "type": {

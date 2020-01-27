@@ -15,7 +15,9 @@
     "typeValue": "Werttyp",
     "type": "Typ",
     "productFamilyAttributes": "Produktfamilie Attribute",
-    "isMultilang": "Mehrsprachig"
+    "isMultilang": "Mehrsprachig",
+    "locale": "Gebietsschema",
+    "parent": "Elternteil"
   },
   "options": {
     "type": {
