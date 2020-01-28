@@ -9,7 +9,7 @@
     "treolabs/multi-languages": "~1.14.0",
     "treolabs/import-feeds-common": "~1.4.0",
     "treolabs/treodam-common": "~1.0.0",
-    "treolabs/completeness-common": "~1.0.1"
+    "treolabs/completeness-common": "~1.1.0"
   },
   "autoload": {
     "psr-4": {
