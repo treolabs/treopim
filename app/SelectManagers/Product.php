@@ -508,15 +508,33 @@ class Product extends AbstractSelectManager
         $result = [];
 
         if (!empty($params['where']) && is_array($params['where'])) {
-            $where = [];
-            foreach ($params['where'] as $row) {
-                if (empty($row['isAttribute'])) {
-                    $where[] = $row;
-                } else {
-                    $result[] = $row;
+            $result= $this->searchFilterForAttribute($params['where']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    protected function searchFilterForAttribute(array &$params): array
+    {
+        $result = [];
+
+        foreach ($params as $key => $row) {
+            if (!isset($row['isAttribute']) || empty($row['isAttribute'])) {
+                if (isset($row['value']) && is_array($row['value'])) {
+                    if (!empty($subResult = $this->searchFilterForAttribute($row['value']))) {
+                        $result = array_merge($result, $subResult);
+                        unset($params[$key]);
+                    }
                 }
+            } else {
+                $result[] = $row;
+                unset($params[$key]);
             }
-            $params['where'] = $where;
         }
 
         return $result;
