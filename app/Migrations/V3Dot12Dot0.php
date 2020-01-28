@@ -39,6 +39,10 @@ use Treo\Core\Utils\Auth;
  */
 class V3Dot12Dot0 extends AbstractMigration
 {
+
+    public const PATH_ENTITY_DEFS_PIM_IMAGE = 'custom/Espo/Custom/Resources/metadata/entityDefs/PimImage.json';
+    public const PATH_SCOPE_PIM_IMAGE = 'custom/Espo/Custom/Resources/metadata/scopes/PimImage.json';
+
     /**
      * @inheritdoc
      * @throws Error
@@ -46,7 +50,8 @@ class V3Dot12Dot0 extends AbstractMigration
     public function up(): void
     {
         (new Auth($this->getContainer()))->useNoAuth();
-
+        $this->removeCustomPimImage();
+        die();
         $config = $this->getContainer()->get('config');
         if ($config->get('pimAndDamInstalled') !== true) {
             //set flag about installed Pim and Image
@@ -96,25 +101,27 @@ class V3Dot12Dot0 extends AbstractMigration
 
     protected function createCustomPimImage(): void
     {
-        /** @var EntityManager $entityManagerUtil */
-        $entityManagerUtil = $this
-            ->getContainer()
-            ->get('entityManagerUtil');
+        if(!file_exists(self::PATH_SCOPE_PIM_IMAGE)) {
+            /** @var EntityManager $entityManagerUtil */
+            $entityManagerUtil = $this
+                ->getContainer()
+                ->get('entityManagerUtil');
 
-        $params = [
-            'hasAssignedUser' => true,
-            'hasTeam' => true,
-            'entity' => false,
-            'customizable' => false
-        ];
+            $params = [
+                'hasAssignedUser' => true,
+                'hasTeam' => true,
+                'entity' => false,
+                'customizable' => false
+            ];
 
-        $entityManagerUtil->create('PimImage', 'Base', $params);
-        sleep(2);
-        if (file_exists('custom/Espo/Custom/Resources/metadata/entityDefs/PimImage.json')) {
-            file_put_contents('custom/Espo/Custom/Resources/metadata/entityDefs/PimImage.json', self::ENTIT_DEFS_PIM_IMAGE);
-        }
-        if (file_exists('custom/Espo/Custom/Resources/metadata/scopes/PimImage.json')) {
-            file_put_contents('custom/Espo/Custom/Resources/metadata/scopes/PimImage.json', self::ENTITY_SCOPE);
+            $entityManagerUtil->create('PimImage', 'Base', $params);
+            sleep(2);
+            if (file_exists(self::PATH_ENTITY_DEFS_PIM_IMAGE)) {
+                file_put_contents(self::PATH_ENTITY_DEFS_PIM_IMAGE, self::ENTITY_DEFS_PIM_IMAGE);
+            }
+            if (file_exists(self::PATH_SCOPE_PIM_IMAGE)) {
+                file_put_contents(self::PATH_SCOPE_PIM_IMAGE, self::ENTITY_SCOPE);
+            }
         }
     }
 
@@ -381,202 +388,197 @@ class V3Dot12Dot0 extends AbstractMigration
         return $this->getContainer()->get('fileManager');
     }
 
-    public const ENTIT_DEFS_PIM_IMAGE = '{
-  "fields": {
-    "name": {
-      "type": "varchar",
-      "required": false,
-      "trim": true,
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true
-    },
-    "category": {
-      "type": "link"
-    },
-    "product": {
-      "type": "link"
-    },
-    "type": {
-      "type": "enum",
-      "notStorable": true,
-      "required": false,
-      "fontSize": 1,
-      "options": [
-        "File",
-        "Files",
-        "Link"
-      ],
-      "default": "File",
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutFiltersDisabled": true,
-      "layoutMassUpdateDisabled": true
-    },
-    "image": {
-      "type": "image",
-      "required": false,
-      "previewSize": "small"
-    },
-    "images": {
-      "type": "attachmentMultiple",
-      "required": false,
-      "previewSize": "small",
-      "sourceList": [],
-      "layoutListDisabled": true,
-      "layoutMassUpdateDisabled": true
-    },
-    "link": {
-      "type": "varchar",
-      "required": false,
-      "trim": true,
-      "layoutListDisabled": true,
-      "layoutListSmallDisabled": true,
-      "layoutFiltersDisabled": true,
-      "layoutMassUpdateDisabled": true
-    },
-    "sortOrder": {
-      "type": "int",
-      "required": false,
-      "default": null,
-      "disableFormatting": false
-    },
-    "scope": {
-      "type": "enum",
-      "required": true,
-      "fontSize": 1,
-      "options": [
-        "Global",
-        "Channel"
-      ],
-      "default": "Global",
-      "layoutListSmallDisabled": true
-    },
-    "channels": {
-      "type": "linkMultiple",
-      "layoutListSmallDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "noLoad": false
-    },
-    "createdAt": {
-      "type": "datetime",
-      "readOnly": true
-    },
-    "modifiedAt": {
-      "type": "datetime",
-      "readOnly": true
-    },
-    "createdBy": {
-      "type": "link",
-      "readOnly": true,
-      "view": "views/fields/user"
-    },
-    "modifiedBy": {
-      "type": "link",
-      "readOnly": true,
-      "view": "views/fields/user"
-    },
-    "assignedUser": {
-      "type": "link",
-      "required": true,
-      "view": "views/fields/assigned-user"
-    },
-    "teams": {
-      "type": "linkMultiple",
-      "view": "views/fields/teams"
-    }
-  },
-  "links": {
-    "category": {
-      "type": "belongsTo",
-      "foreign": "pimImages",
-      "entity": "Category"
-    },
-    "product": {
-      "type": "belongsTo",
-      "foreign": "pimImages",
-      "entity": "Product"
-    },
-    "image": {
-      "type": "belongsTo",
-      "entity": "Attachment",
-      "skipOrmDefs": true
-    },
-    "channels": {
-      "type": "hasMany",
-      "relationName": "pimImageChannel",
-      "foreign": "pimImages",
-      "entity": "Channel",
-      "disableMassRelation": true
-    },
-    "images": {
-      "type": "hasChildren",
-      "entity": "Attachment",
-      "foreign": "parent",
-      "layoutRelationshipsDisabled": true,
-      "relationName": "attachments"
-    },
-    "createdBy": {
-      "type": "belongsTo",
-      "entity": "User"
-    },
-    "modifiedBy": {
-      "type": "belongsTo",
-      "entity": "User"
-    },
-    "assignedUser": {
-      "type": "belongsTo",
-      "entity": "User"
-    },
-    "teams": {
-      "type": "hasMany",
-      "entity": "Team",
-      "relationName": "EntityTeam",
-      "layoutRelationshipsDisabled": true
-    }
-  },
-  "collection": {
-    "sortBy": "sortOrder",
-    "asc": true
-  },
-  "indexes": {
-    "name": {
-      "columns": [
-        "name",
-        "deleted"
-      ]
-    },
-    "assignedUser": {
-      "columns": [
-        "assignedUserId",
-        "deleted"
-      ]
-    }
-  }
-}';
+    public const ENTITY_DEFS_PIM_IMAGE = '{
+      "fields": {
+        "name": {
+          "type": "varchar",
+          "required": false,
+          "trim": true,
+          "layoutDetailDisabled": true,
+          "layoutDetailSmallDisabled": true
+        },
+        "category": {
+          "type": "link"
+        },
+        "product": {
+          "type": "link"
+        },
+        "type": {
+          "type": "enum",
+          "notStorable": true,
+          "required": false,
+          "fontSize": 1,
+          "options": [
+            "File",
+            "Files",
+            "Link"
+          ],
+          "default": "File",
+          "layoutListDisabled": true,
+          "layoutListSmallDisabled": true,
+          "layoutFiltersDisabled": true,
+          "layoutMassUpdateDisabled": true
+        },
+        "image": {
+          "type": "image",
+          "required": false,
+          "previewSize": "small"
+        },
+        "images": {
+          "type": "attachmentMultiple",
+          "required": false,
+          "previewSize": "small",
+          "sourceList": [],
+          "layoutListDisabled": true,
+          "layoutMassUpdateDisabled": true
+        },
+        "link": {
+          "type": "varchar",
+          "required": false,
+          "trim": true,
+          "layoutListDisabled": true,
+          "layoutListSmallDisabled": true,
+          "layoutFiltersDisabled": true,
+          "layoutMassUpdateDisabled": true
+        },
+        "sortOrder": {
+          "type": "int",
+          "required": false,
+          "default": null,
+          "disableFormatting": false
+        },
+        "scope": {
+          "type": "enum",
+          "required": true,
+          "fontSize": 1,
+          "options": [
+            "Global",
+            "Channel"
+          ],
+          "default": "Global",
+          "layoutListSmallDisabled": true
+        },
+        "channels": {
+          "type": "linkMultiple",
+          "layoutListSmallDisabled": true,
+          "layoutMassUpdateDisabled": true,
+          "noLoad": false
+        },
+        "createdAt": {
+          "type": "datetime",
+          "readOnly": true
+        },
+        "modifiedAt": {
+          "type": "datetime",
+          "readOnly": true
+        },
+        "createdBy": {
+          "type": "link",
+          "readOnly": true,
+          "view": "views/fields/user"
+        },
+        "modifiedBy": {
+          "type": "link",
+          "readOnly": true,
+          "view": "views/fields/user"
+        },
+        "assignedUser": {
+          "type": "link",
+          "required": true,
+          "view": "views/fields/assigned-user"
+        },
+        "teams": {
+          "type": "linkMultiple",
+          "view": "views/fields/teams"
+        }
+      },
+      "links": {
+        "category": {
+          "type": "belongsTo",
+          "foreign": "pimImages",
+          "entity": "Category"
+        },
+        "product": {
+          "type": "belongsTo",
+          "foreign": "pimImages",
+          "entity": "Product"
+        },
+        "image": {
+          "type": "belongsTo",
+          "entity": "Attachment",
+          "skipOrmDefs": true
+        },
+        "channels": {
+          "type": "hasMany",
+          "relationName": "pimImageChannel",
+          "foreign": "pimImages",
+          "entity": "Channel",
+          "disableMassRelation": true
+        },
+        "images": {
+          "type": "hasChildren",
+          "entity": "Attachment",
+          "foreign": "parent",
+          "layoutRelationshipsDisabled": true,
+          "relationName": "attachments"
+        },
+        "createdBy": {
+          "type": "belongsTo",
+          "entity": "User"
+        },
+        "modifiedBy": {
+          "type": "belongsTo",
+          "entity": "User"
+        },
+        "assignedUser": {
+          "type": "belongsTo",
+          "entity": "User"
+        },
+        "teams": {
+          "type": "hasMany",
+          "entity": "Team",
+          "relationName": "EntityTeam",
+          "layoutRelationshipsDisabled": true
+        }
+      },
+      "collection": {
+        "sortBy": "sortOrder",
+        "asc": true
+      },
+      "indexes": {
+        "name": {
+          "columns": [
+            "name",
+            "deleted"
+          ]
+        },
+        "assignedUser": {
+          "columns": [
+            "assignedUserId",
+            "deleted"
+          ]
+        }
+      }
+    }';
 
     public const ENTITY_SCOPE = '{
-  "entity": true,
-  "layouts": true,
-  "tab": true,
-  "acl": true,
-  "aclPortal": true,
-  "aclPortalLevelList": [
-    "all",
-    "account",
-    "contact",
-    "own",
-    "no"
-  ],
-  "customizable": false,
-  "importable": true,
-  "notifications": true,
-  "stream": false,
-  "disabled": false,
-  "type": "Base",
-  "module": "Pim",
-  "object": true,
-  "hasAssignedUser": false,
-  "hasTeam": false,
-  "hasOwner": false
-}';
+      "entity": true,
+      "layouts": true,
+      "tab": true,
+      "acl": true,
+      "aclPortal": true,
+      "aclPortalLevelList": [ "all", "account","contact","own","no"],
+      "customizable": false,
+      "importable": true,
+      "notifications": true,
+      "stream": false,
+      "disabled": false,
+      "type": "Base",
+      "module": "Pim",
+      "object": true,
+      "hasAssignedUser": false,
+      "hasTeam": false,
+      "hasOwner": false,
+      "isCustom": true
+    }';
 }
