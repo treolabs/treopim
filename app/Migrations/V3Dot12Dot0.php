@@ -50,8 +50,6 @@ class V3Dot12Dot0 extends AbstractMigration
     public function up(): void
     {
         (new Auth($this->getContainer()))->useNoAuth();
-        $this->removeCustomPimImage();
-        die();
         $config = $this->getContainer()->get('config');
         if ($config->get('pimAndDamInstalled') !== true) {
             //set flag about installed Pim and Image
@@ -122,17 +120,28 @@ class V3Dot12Dot0 extends AbstractMigration
             if (file_exists(self::PATH_SCOPE_PIM_IMAGE)) {
                 file_put_contents(self::PATH_SCOPE_PIM_IMAGE, self::ENTITY_SCOPE);
             }
+            if (empty($this->getContainer()->get('metadata')->get(['entityDefs', 'Channel', 'fields', 'pimImages']))) {
+                $this->getContainer()->get('fieldManager')->create('Channel', 'pimImages', $this->getChannelFieldDefs());
+            }
         }
     }
 
     protected function removeCustomPimImage(): void
     {
-        /** @var EntityManager $entityManagerUtil */
-        $entityManagerUtil = $this
-            ->getContainer()
-            ->get('entityManagerUtil');
+        if(file_exists(self::PATH_SCOPE_PIM_IMAGE)) {
+            /** @var EntityManager $entityManagerUtil */
+            $entityManagerUtil = $this
+                ->getContainer()
+                ->get('entityManagerUtil');
 
-        $entityManagerUtil->delete('PimImage');
+            $entityManagerUtil->delete('PimImage');
+        }
+
+        if (!empty($this->getContainer()->get('metadata')->get(['entityDefs', 'Channel', 'fields', 'pimImages']))) {
+            $this->getContainer()
+                ->get('fieldManager')
+                ->delete('Channel', 'pimImages');
+        }
     }
 
     /**
@@ -146,6 +155,12 @@ class V3Dot12Dot0 extends AbstractMigration
         }
 
         (new Auth($this->getContainer()))->useNoAuth();
+
+        if (!empty($this->getContainer()->get('metadata')->get(['entityDefs', 'Channel', 'fields', 'pimImages']))) {
+            $this->getContainer()
+                ->get('fieldManager')
+                ->update('Channel', 'pimImages', $this->getChannelFieldDefs(false));
+        }
 
         $attachments = $this
             ->getEntityManager()
@@ -386,6 +401,33 @@ class V3Dot12Dot0 extends AbstractMigration
     protected function getFileManager()
     {
         return $this->getContainer()->get('fileManager');
+    }
+
+    /**
+     * @param bool $layoutDisabled
+     * @return array
+     */
+    public function getChannelFieldDefs($layoutDisabled = true): array
+    {
+        $defs['type'] = 'linkMultiple';
+        $defs['linkMultiple'] = true;
+        $defs['layoutMassUpdateDisabled'] = true;
+        $defs['importDisabled'] = true;
+        $defs['layoutDetailDisabled'] = true;
+        $defs['noLoad'] = true;
+
+        $defs['layoutRelationshipsDisabled'] = $layoutDisabled;
+        $defs['layoutListDisabled'] = $layoutDisabled;
+        $defs['layoutFiltersDisabled'] = $layoutDisabled;
+        $defs['layoutDetailSmallDisabled'] = $layoutDisabled;
+        $defs['layoutListSmallDisabled'] = $layoutDisabled;
+
+        $defs['linkDefs']['type'] = 'hasMany';
+        $defs['linkDefs']['relationName'] = 'pimImageChannel';
+        $defs['linkDefs']['foreign'] = 'channels';
+        $defs['linkDefs']['entity'] = 'PimImage';
+
+        return $defs;
     }
 
     public const ENTITY_DEFS_PIM_IMAGE = '{
