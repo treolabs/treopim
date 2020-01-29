@@ -72,6 +72,12 @@ class Product extends AbstractSelectManager
             return;
         }
 
+        $scopes = $this->getMetadata()->get(['entityDefs', 'Product', 'collection'], []);
+
+        if (isset($scopes['attributeTextFilter']) && $scopes['attributeTextFilter'] == true) {
+            return;
+        }
+
         // get last
         $last = array_pop($result['whereClause']);
 
