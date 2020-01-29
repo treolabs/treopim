@@ -23,7 +23,7 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/
         createDisabled: true,
 
         setup() {
-            this.mandatorySelectAttributeList = ['type', 'typeValue'];
+            this.mandatorySelectAttributeList = ['type', 'typeValue', 'isMultilang'];
             let inputLanguageList = this.getConfig().get('inputLanguageList') || [];
             if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
                 this.typeValueFields = inputLanguageList.map(lang => {
@@ -45,9 +45,21 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'views/fields/
             let attributes = {
                 attributeType: model.get('type'),
                 typeValue: model.get('typeValue'),
+                attributeIsMultilang: model.get('isMultilang')
             };
             (this.typeValueFields || []).forEach(item => attributes[item] = model.get(item));
             this.model.set(attributes);
+        },
+
+        clearLink() {
+            this.unsetAttributeFieldsInModel();
+
+            Dep.prototype.clearLink.call(this);
+        },
+
+        unsetAttributeFieldsInModel() {
+            ['attributeType', 'typeValue', 'attributeIsMultilang', ...(this.typeValueFields || [])]
+                .forEach(field => this.model.unset(field));
         }
 
     })
