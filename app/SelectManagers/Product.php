@@ -74,7 +74,7 @@ class Product extends AbstractSelectManager
 
         $scopes = $this->getMetadata()->get(['entityDefs', 'Product', 'collection'], []);
 
-        if (isset($scopes['attributeTextFilter']) && $scopes['attributeTextFilter'] == true) {
+        if (isset($scopes['attributeTextFilterDisable']) && $scopes['attributeTextFilterDisable'] == true) {
             return;
         }
 
