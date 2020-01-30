@@ -71,36 +71,6 @@ class Category extends \Espo\Core\Templates\Entities\Base
     }
 
     /**
-     * @return EntityCollection
-     * @throws Error
-     */
-    public function getTreeProducts(): EntityCollection
-    {
-        // validation
-        $this->isEntity();
-
-        // prepare where
-        $where = [
-            'productCategories.categoryId' => [$this->get('id')]
-        ];
-
-        $categoryChildren = $this->getChildren();
-
-        if (count($categoryChildren) > 0) {
-            $where['productCategories.categoryId'] =
-                array_merge($where['productCategories.categoryId'], array_column($categoryChildren->toArray(), 'id'));
-        }
-
-        return $this
-            ->getEntityManager()
-            ->getRepository('Product')
-            ->distinct()
-            ->join('productCategories')
-            ->where($where)
-            ->find();
-    }
-
-    /**
      * @return bool
      * @throws Error
      */

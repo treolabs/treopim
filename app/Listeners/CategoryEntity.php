@@ -88,9 +88,10 @@ class CategoryEntity extends AbstractEntityListener
             throw new BadRequest($this->translate('Code is invalid', 'exceptions', 'Global'));
         }
 
-        if (!$entity->isNew() && $entity->isAttributeChanged('categoryParentId') && count($entity->getTreeProducts()) > 0) {
-            throw new BadRequest($this->exception('Category has linked products'));
-        }
+        // @todo change parent for category with products is disabled
+//        if (!$entity->isNew() && $entity->isAttributeChanged('categoryParentId') && count($entity->getTreeProducts()) > 0) {
+//            throw new BadRequest($this->exception('Category has linked products'));
+//        }
 
         if ((count($entity->get('catalogs')) > 0 || !empty($entity->get('catalogsIds')))
             && !empty($entity->get('categoryParent'))) {
@@ -138,16 +139,6 @@ class CategoryEntity extends AbstractEntityListener
         if (count($event->getArgument('entity')->get('categories')) > 0) {
             throw new BadRequest($this->exception("Category has child category and can't be deleted"));
         }
-    }
-
-    /**
-     * @param Event $event
-     */
-    public function afterRemove(Event $event)
-    {
-        $this
-            ->getService('Category')
-            ->removeProductCategoryByCategory($event->getArgument('entity')->id);
     }
 
     /**

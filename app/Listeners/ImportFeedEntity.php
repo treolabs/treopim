@@ -73,20 +73,6 @@ class ImportFeedEntity extends AbstractListener
                     }
                 }
             }
-
-            // check for the same product categories
-            if ($item['name'] == 'productCategories') {
-                foreach ($configurator as $k => $i) {
-                    if ($i['name'] == $item['name'] && $i['scope'] == $item['scope'] && $key != $k) {
-                        if ($item['scope'] == 'Channel'
-                            && empty(array_intersect($item['channelsIds'], $i['channelsIds']))) {
-                            continue;
-                        }
-
-                        return false;
-                    }
-                }
-            }
         }
 
         return true;

@@ -217,27 +217,6 @@ class Product extends Base
     }
 
     /**
-     * Get product categories
-     *
-     * @return EntityCollection
-     * @throws Error
-     */
-    public function getCategories(): EntityCollection
-    {
-        if (empty($this->get('id'))) {
-            throw new Error('No such Product');
-        }
-
-        return $this
-            ->getEntityManager()
-            ->getRepository('Category')
-            ->distinct()
-            ->join('productCategories')
-            ->where(['productCategories.productId' => $this->get('id')])
-            ->find();
-    }
-
-    /**
      * @param string $locale
      *
      * @return null|string
