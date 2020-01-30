@@ -206,6 +206,13 @@
       "type": "float",
       "default": 0
     },
+    "categories": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true
+    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
@@ -318,6 +325,12 @@
     "measuringUnit": {
       "type": "belongsTo",
       "entity": "MeasuringUnit"
+    },
+    "categories": {
+      "type": "hasMany",
+      "relationName": "productCategoryLinker",
+      "foreign": "products",
+      "entity": "Category"
     },
     "createdBy": {
       "type": "belongsTo",
