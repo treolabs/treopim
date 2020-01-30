@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Services;
 
 use Espo\Core\Templates\Services\Base;
+use Espo\ORM\Entity;
 
 /**
  * Class ProductFamilyAttribute
@@ -35,4 +36,22 @@ class ProductFamilyAttribute extends Base
      * @var array
      */
     protected $mandatorySelectAttributeList = ['locale'];
+
+    /**
+     * @param Entity $entity
+     * @return string|null
+     */
+    public function getDefaultValue(Entity $entity): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @param Entity $entity
+     * @return string|null
+     */
+    public function getDefaultData(Entity $entity): ?string
+    {
+        return null;
+    }
 }
