@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Migrations;
 
 use Treo\Core\Migration\Base;
+use Treo\Core\Utils\Util;
 
 /**
  * Migration class for version 3.13.1
@@ -41,6 +42,11 @@ class V3Dot13Dot1 extends Base
      */
     public function up(): void
     {
+        echo ' Delete custom layouts for Category and Product... ';
+        Util::removeDir('custom/Espo/Custom/Resources/layouts/Category');
+        Util::removeDir('custom/Espo/Custom/Resources/layouts/Product');
+        echo ' Done!' . PHP_EOL;
+
         echo ' Update DB table `category`... ';
         $this->exec(
             "ALTER TABLE `category` ADD scope VARCHAR(255) DEFAULT 'Global' COLLATE utf8mb4_unicode_ci;UPDATE category SET scope='Global' WHERE 1"
@@ -84,6 +90,11 @@ class V3Dot13Dot1 extends Base
      */
     public function down(): void
     {
+        echo ' Delete custom layouts for Category and Product... ';
+        Util::removeDir('custom/Espo/Custom/Resources/layouts/Category');
+        Util::removeDir('custom/Espo/Custom/Resources/layouts/Product');
+        echo ' Done!' . PHP_EOL;
+
         echo ' Create DB table `product_category`... ';
         $this->exec(
             "CREATE TABLE `product_category` (`id` VARCHAR(24) NOT NULL COLLATE utf8mb4_unicode_ci, `name` VARCHAR(255) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `deleted` TINYINT(1) DEFAULT '0' COLLATE utf8mb4_unicode_ci, `sorting` INT DEFAULT '0' COLLATE utf8mb4_unicode_ci, `scope` VARCHAR(255) DEFAULT 'Global' COLLATE utf8mb4_unicode_ci, `created_at` DATETIME DEFAULT NULL COLLATE utf8mb4_unicode_ci, `modified_at` DATETIME DEFAULT NULL COLLATE utf8mb4_unicode_ci, `product_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `category_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `created_by_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `modified_by_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `owner_user_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `assigned_user_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, INDEX `IDX_PRODUCT_ID` (product_id), INDEX `IDX_CATEGORY_ID` (category_id), INDEX `IDX_CREATED_BY_ID` (created_by_id), INDEX `IDX_MODIFIED_BY_ID` (modified_by_id), INDEX `IDX_OWNER_USER_ID` (owner_user_id), INDEX `IDX_ASSIGNED_USER_ID` (assigned_user_id), INDEX `IDX_OWNER_USER` (owner_user_id, deleted), INDEX `IDX_ASSIGNED_USER` (assigned_user_id, deleted), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB"

@@ -10,6 +10,9 @@
     "name": "categoryRouteName"
   },
   {
+    "name": "scope"
+  },
+  {
     "name": "isActive"
   }
 ]

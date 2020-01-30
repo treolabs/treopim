@@ -24,6 +24,15 @@
         {
           "name": "code"
         }
+      ],
+      [
+        {
+          "name": "scope",
+          "inlineEditDisabled": true
+        },
+        {
+          "name": "channels"
+        }
       ]
     ]
   }

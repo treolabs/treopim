@@ -200,7 +200,8 @@
       "type": "hasMany",
       "relationName": "categoryChannelLinker",
       "foreign": "categories",
-      "entity": "Channel"
+      "entity": "Channel",
+      "layoutRelationshipsDisabled": true
     }
   },
   "collection": {
