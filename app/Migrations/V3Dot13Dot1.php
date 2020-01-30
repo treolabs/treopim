@@ -107,6 +107,14 @@ class V3Dot13Dot1 extends Base
         $this->exec("DROP TABLE product_category_linker");
         echo ' Done!' . PHP_EOL;
 
+        echo ' DROP DB table `category_channel_linker`... ';
+        $this->exec("DROP TABLE category_channel_linker");
+        echo ' Done!' . PHP_EOL;
+
+        echo ' Update DB table `category`... ';
+        $this->exec("ALTER TABLE `category` DROP scope");
+        echo ' Done!' . PHP_EOL;
+
         if (!empty($this->errors)) {
             echo ' ' . $this->errors . ' requests failed. Please, refer to the log file for details.' . PHP_EOL;
         }
