@@ -194,15 +194,6 @@
       "importDisabled": true,
       "noLoad": true
     },
-    "productCategories": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "noLoad": true,
-      "importMultipleField": true,
-      "exportMultipleField": true
-    },
     "measuringUnit": {
       "type": "link",
       "required": false
@@ -322,15 +313,6 @@
           "readOnly": false,
           "tooltip": false
         }
-      }
-    },
-    "productCategories": {
-      "type": "hasMany",
-      "foreign": "product",
-      "entity": "ProductCategory",
-      "addRelationCustomDefs": {
-        "link": "productCategories",
-        "entity": "Category"
       }
     },
     "measuringUnit": {
