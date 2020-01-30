@@ -3,6 +3,9 @@
     "name": "catalogs"
   },
   {
+    "name": "products"
+  },
+  {
     "name": "asset_relations"
   }
 ]

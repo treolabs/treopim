@@ -15,6 +15,7 @@
   "links": {
     "categoryParent": "Parent Category",
     "categories": "Categories",
+    "products": "Products",
     "channels": "Channels",
     "catalogs": "Catalogs"
   },
