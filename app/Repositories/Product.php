@@ -83,20 +83,6 @@ class Product extends Base
     }
 
     /**
-     * @inheritDoc
-     *
-     * @throws BadRequest
-     */
-    public function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
-    {
-        if ($relationName == 'categories' && !$this->isCategoryValid($entity, is_string($foreign) ? $foreign : (string)$foreign->get('id'))) {
-            throw new BadRequest("Category cannot be related with the Product");
-        }
-
-        parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
-    }
-
-    /**
      * @inheritdoc
      */
     protected function afterSave(Entity $entity, array $options = [])
@@ -106,6 +92,32 @@ class Product extends Base
 
         // parent action
         parent::afterSave($entity, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    protected function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'categories' && !$this->isCategoryValid($entity, is_string($foreign) ? $foreign : (string)$foreign->get('id'))) {
+            throw new BadRequest("Category cannot be related with the Product");
+        }
+
+        parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
+    {
+        if ($relationName == 'channels') {
+            $this->unrelateCategoryByChannel($entity, is_string($foreign) ? $foreign : (string)$foreign->get('id'));
+        }
+
+        parent::afterUnrelate($entity, $relationName, $foreign, $options);
     }
 
     /**
@@ -179,5 +191,19 @@ class Product extends Base
     protected function isCategoryValid(Entity $product, string $categoryId): bool
     {
         return in_array($categoryId, $this->getCategoriesIdsThatCanBeRelatedWithProduct((string)$product->get('id')));
+    }
+
+    /**
+     * @param Entity $product
+     * @param string $channelId
+     */
+    protected function unrelateCategoryByChannel(Entity $product, string $channelId): void
+    {
+        $this
+            ->getEntityManager()
+            ->nativeQuery(
+                "UPDATE product_category_linker SET deleted=1 WHERE product_id='{$product->get('id')}' AND deleted=0 AND category_id IN (SELECT category_id FROM category_channel_linker WHERE channel_id=:channel_id AND deleted=0)",
+                ['channel_id' => $channelId]
+            );
     }
 }
