@@ -35,6 +35,10 @@
         "notEntity"
       ],
       "view": "pim:views/category/record/panels/catalogs"
+    },
+    "products": {
+      "create": false,
+      "select": false
     }
   },
   "menu": {
@@ -107,6 +111,16 @@
             {
               "type": "isEmpty",
               "attribute": "categoryRouteName"
+            }
+          ]
+        }
+      },
+      "products": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isFalse",
+              "attribute": "hasChildren"
             }
           ]
         }

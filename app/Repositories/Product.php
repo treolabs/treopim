@@ -110,6 +110,20 @@ class Product extends Base
 
     /**
      * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    protected function beforeMassRelate(Entity $entity, $relationName, array $params = [], array $options = [])
+    {
+        if ($relationName == 'categories') {
+            throw new BadRequest('Action is unavailable');
+        }
+
+        parent::beforeMassRelate($entity, $relationName, $params, $options);
+    }
+
+    /**
+     * @inheritDoc
      */
     protected function afterUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
     {

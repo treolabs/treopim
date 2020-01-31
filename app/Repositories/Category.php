@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Templates\Repositories\Base;
+use Espo\ORM\Entity;
 
 /**
  * Class Category
@@ -31,4 +33,31 @@ use Espo\Core\Templates\Repositories\Base;
  */
 class Category extends Base
 {
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    protected function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'products') {
+            throw new BadRequest('Action is unavailable');
+        }
+
+        parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    protected function beforeMassRelate(Entity $entity, $relationName, array $params = [], array $options = [])
+    {
+        if ($relationName == 'products') {
+            throw new BadRequest('Action is unavailable');
+        }
+
+        parent::beforeMassRelate($entity, $relationName, $params, $options);
+    }
 }

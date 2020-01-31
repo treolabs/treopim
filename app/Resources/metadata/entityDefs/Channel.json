@@ -72,6 +72,7 @@
     "categories": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
       "layoutMassUpdateDisabled": true,
       "importDisabled": true,
       "noLoad": true
@@ -146,7 +147,8 @@
       "type": "hasMany",
       "relationName": "categoryChannelLinker",
       "foreign": "channels",
-      "entity": "Category"
+      "entity": "Category",
+      "layoutRelationshipsDisabled": true
     },
     "productAttributeValues": {
       "type": "hasMany",
