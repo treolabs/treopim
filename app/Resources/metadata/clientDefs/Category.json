@@ -61,6 +61,16 @@
   },
   "dynamicLogic": {
     "fields": {
+      "scope": {
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isTrue",
+              "attribute": "hasChildren"
+            }
+          ]
+        }
+      },
       "channels": {
         "visible": {
           "conditionGroup": [
@@ -77,6 +87,14 @@
               "type": "equals",
               "attribute": "scope",
               "value": "Channel"
+            }
+          ]
+        },
+        "readOnly": {
+          "conditionGroup": [
+            {
+              "type": "isTrue",
+              "attribute": "hasChildren"
             }
           ]
         }
