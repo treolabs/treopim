@@ -7,16 +7,14 @@
     "notChildCategory",
     "notLinkedWithProduct",
     "linkedWithCatalog",
-    "onlyRootCategory",
-    "onlyCatalogCategories"
+    "onlyRootCategory"
   ],
   "hiddenBoolFilterList": [
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
     "linkedWithCatalog",
-    "onlyRootCategory",
-    "onlyCatalogCategories"
+    "onlyRootCategory"
   ],
   "disabledMassActions": [
     "merge"

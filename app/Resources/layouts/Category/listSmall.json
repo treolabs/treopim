@@ -13,6 +13,9 @@
     "name": "scope"
   },
   {
+    "name": "channels"
+  },
+  {
     "name": "isActive"
   }
 ]

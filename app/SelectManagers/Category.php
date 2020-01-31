@@ -74,49 +74,6 @@ class Category extends AbstractSelectManager
 
     /**
      * @param array $result
-     *
-     * @return mixed
-     */
-    protected function boolFilterOnlyCatalogCategories(array &$result)
-    {
-        // get id
-        $value = $this->getSelectCondition('onlyCatalogCategories');
-
-        // get catalog
-        if (empty($value)) {
-            return null;
-        }
-
-        // get catalog trees
-        $catalogs = $this
-            ->getEntityManager()
-            ->getRepository('Catalog')
-            ->where(['id' => $value])
-            ->find();
-
-        $catalogsTrees = [];
-
-        if (count($catalogs) > 0) {
-            foreach ($catalogs as $catalog) {
-                $catalogsTrees = array_merge($catalogsTrees, array_column($catalog->get('categories')->toArray(), 'id'));
-            }
-        }
-
-        if (!empty($catalogsTrees)) {
-            // prepare where
-            $where[] = ['id' => $catalogsTrees];
-            foreach ($catalogsTrees as $catalogTree) {
-                $where[] = ['categoryRoute*' => "%|" . $catalogTree . "|%"];
-            }
-
-            $result['whereClause'][] = ['OR' => $where];
-        } else {
-            $result['whereClause'][] = ['id' => -1];
-        }
-    }
-
-    /**
-     * @param array $result
      */
     protected function boolFilterNotChildCategory(array &$result)
     {
