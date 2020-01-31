@@ -137,45 +137,11 @@ class Category extends AbstractSelectManager
      */
     protected function boolAdvancedFilterAllowedForProduct(string $id, array &$result)
     {
-        /** @var \Pim\Entities\Product $product */
-        $product = $this->getEntityManager()->getEntity('Product', $id);
-        if (empty($product)) {
-            throw new NotFound('No such product');
-        }
+        // get allowed ids
+        $ids = $this->getEntityManager()->getRepository('Product')->getCategoriesIdsThatCanBeRelatedWithProduct($id);
 
-        /**
-         * Show categories only from catalog trees
-         */
-        if (empty($catalog = $product->get('catalog')) || count($catalog->get('categories')) == 0) {
-            $result['whereClause'][] = [
-                'id' => 'no-such-id'
-            ];
-        } else {
-            foreach ($catalog->get('categories') as $tree) {
-                $result['whereClause'][100500]['OR'][] = [
-                    'categoryRoute*' => "%|{$tree->get('id')}|%"
-                ];
-            }
-        }
-
-        /**
-         * Show categories only with same channels
-         */
-        $channels = $product->get('channels');
-        if (count($channels) == 0) {
-            $result['whereClause'][] = [
-                'scope' => 'Global'
-            ];
-        } else {
-            $arg1 = implode("','", array_column($channels->toArray(), 'id'));
-            $result['whereClause'][] = [
-                'id' => $this
-                    ->getEntityManager()
-                    ->nativeQuery(
-                        "SELECT DISTINCT c.id FROM category c LEFT JOIN category_channel_linker ccl ON ccl.category_id=c.id AND ccl.deleted=0 WHERE c.deleted=0 AND c.scope='Global' OR ccl.channel_id IN ('$arg1')"
-                    )
-                    ->fetchAll(\PDO::FETCH_COLUMN)
-            ];
-        }
+        $result['whereClause'][] = [
+            'id' => empty($ids) ? ['no-such-id'] : $ids
+        ];
     }
 }

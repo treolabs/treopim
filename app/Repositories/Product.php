@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Pim\Repositories;
 
+use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
 use Espo\ORM\Entity;
 use Espo\Core\Utils\Util;
@@ -40,6 +41,56 @@ class Product extends Base
     public function getInputLanguageList(): array
     {
         return $this->getConfig()->get('inputLanguageList', []);
+    }
+
+    /**
+     * @param string $productId
+     *
+     * @return array
+     */
+    public function getCategoriesIdsThatCanBeRelatedWithProduct(string $productId): array
+    {
+        // get trees
+        $trees = $this
+            ->getEntityManager()
+            ->nativeQuery(
+                "SELECT category_id FROM catalog_category WHERE catalog_id=(SELECT catalog_id FROM product WHERE id=:product_id AND deleted=0) ANd deleted=0",
+                ['product_id' => $productId]
+            )
+            ->fetchAll(\PDO::FETCH_COLUMN);
+
+        $whereTree = [];
+        foreach ($trees as $tree) {
+            $whereTree[] = "(c.category_route LIKE '%|$tree|%' OR c.id='$tree')";
+        }
+        $whereTree = implode(' OR ', $whereTree);
+
+        return $this
+            ->getEntityManager()
+            ->nativeQuery(
+                "SELECT DISTINCT c.id
+                 FROM category c
+                    LEFT JOIN category_channel_linker ccl ON ccl.category_id=c.id AND ccl.deleted=0
+                 WHERE c.deleted=0
+                   AND ($whereTree)
+                   AND (c.scope='Global' OR ccl.channel_id IN (SELECT channel_id FROM product_channel WHERE deleted=0 AND product_id=:product_id))",
+                ['product_id' => $productId]
+            )
+            ->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws BadRequest
+     */
+    public function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'categories' && !$this->isCategoryValid($entity, is_string($foreign) ? $foreign : (string)$foreign->get('id'))) {
+            throw new BadRequest("Category cannot be related with the Product");
+        }
+
+        parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
     }
 
     /**
@@ -114,5 +165,16 @@ class Product extends Base
         }
 
         return true;
+    }
+
+    /**
+     * @param Entity $product
+     * @param string $categoryId
+     *
+     * @return bool
+     */
+    protected function isCategoryValid(Entity $product, string $categoryId): bool
+    {
+        return in_array($categoryId, $this->getCategoriesIdsThatCanBeRelatedWithProduct((string)$product->get('id')));
     }
 }
