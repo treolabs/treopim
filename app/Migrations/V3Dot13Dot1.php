@@ -47,18 +47,6 @@ class V3Dot13Dot1 extends Base
         Util::removeDir('custom/Espo/Custom/Resources/layouts/Product');
         echo ' Done!' . PHP_EOL;
 
-        echo ' Update DB table `category`... ';
-        $this->exec(
-            "ALTER TABLE `category` ADD scope VARCHAR(255) DEFAULT 'Global' COLLATE utf8mb4_unicode_ci;UPDATE category SET scope='Global' WHERE 1"
-        );
-        echo ' Done!' . PHP_EOL;
-
-        echo ' Create DB table `category_channel_linker`... ';
-        $this->exec(
-            "CREATE TABLE `category_channel_linker` (`id` INT AUTO_INCREMENT NOT NULL UNIQUE COLLATE utf8mb4_unicode_ci, `category_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `channel_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `deleted` TINYINT(1) DEFAULT '0' COLLATE utf8mb4_unicode_ci, INDEX `IDX_7C5F29FE12469DE2` (category_id), INDEX `IDX_7C5F29FE72F5A1AA` (channel_id), UNIQUE INDEX `UNIQ_7C5F29FE12469DE272F5A1AA` (category_id, channel_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;DROP INDEX id ON `category_channel_linker`"
-        );
-        echo ' Done!' . PHP_EOL;
-
         echo ' Create DB table `product_category_linker`... ';
         $this->exec(
             "CREATE TABLE `product_category_linker` (`id` INT AUTO_INCREMENT NOT NULL UNIQUE COLLATE utf8mb4_unicode_ci, `category_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `product_id` VARCHAR(24) DEFAULT NULL COLLATE utf8mb4_unicode_ci, `sorting` INT DEFAULT NULL COLLATE utf8mb4_unicode_ci, `deleted` TINYINT(1) DEFAULT '0' COLLATE utf8mb4_unicode_ci, INDEX `IDX_5E4F9F5B12469DE2` (category_id), INDEX `IDX_5E4F9F5B4584665A` (product_id), UNIQUE INDEX `UNIQ_5E4F9F5B12469DE24584665A` (category_id, product_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB;DROP INDEX id ON `product_category_linker`"
@@ -116,14 +104,6 @@ class V3Dot13Dot1 extends Base
 
         echo ' DROP DB table `product_category_linker`... ';
         $this->exec("DROP TABLE product_category_linker");
-        echo ' Done!' . PHP_EOL;
-
-        echo ' DROP DB table `category_channel_linker`... ';
-        $this->exec("DROP TABLE category_channel_linker");
-        echo ' Done!' . PHP_EOL;
-
-        echo ' Update DB table `category`... ';
-        $this->exec("ALTER TABLE `category` DROP scope");
         echo ' Done!' . PHP_EOL;
 
         if (!empty($this->errors)) {

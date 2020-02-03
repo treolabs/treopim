@@ -10,12 +10,6 @@
     "name": "categoryRouteName"
   },
   {
-    "name": "scope"
-  },
-  {
-    "name": "channels"
-  },
-  {
     "name": "isActive"
   }
 ]

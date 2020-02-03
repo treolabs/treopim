@@ -35,10 +35,6 @@
         "notEntity"
       ],
       "view": "pim:views/category/record/panels/catalogs"
-    },
-    "products": {
-      "create": false,
-      "select": false
     }
   },
   "menu": {
@@ -64,46 +60,6 @@
     }
   },
   "dynamicLogic": {
-    "fields": {
-      "scope": {
-        "readOnly": {
-          "conditionGroup": [
-            {
-              "type": "isTrue",
-              "attribute": "hasChildren"
-            }
-          ]
-        }
-      },
-      "channels": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "scope",
-              "value": "Channel"
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "equals",
-              "attribute": "scope",
-              "value": "Channel"
-            }
-          ]
-        },
-        "readOnly": {
-          "conditionGroup": [
-            {
-              "type": "isTrue",
-              "attribute": "hasChildren"
-            }
-          ]
-        }
-      }
-    },
     "panels": {
       "catalogs": {
         "visible": {

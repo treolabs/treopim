@@ -69,14 +69,6 @@
       "emHidden": true,
       "view": "pim:views/fields/code-from-name"
     },
-    "categories": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutDetailSmallDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
-      "noLoad": true
-    },
     "products": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
@@ -142,13 +134,6 @@
       "relationName": "productChannel",
       "foreign": "channels",
       "entity": "Product"
-    },
-    "categories": {
-      "type": "hasMany",
-      "relationName": "categoryChannelLinker",
-      "foreign": "channels",
-      "entity": "Category",
-      "layoutRelationshipsDisabled": true
     },
     "productAttributeValues": {
       "type": "hasMany",

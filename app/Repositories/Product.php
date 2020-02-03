@@ -70,13 +70,9 @@ class Product extends Base
             ->nativeQuery(
                 "SELECT DISTINCT c.id
                  FROM category c
-                    LEFT JOIN category_channel_linker ccl ON ccl.category_id=c.id AND ccl.deleted=0
-                    LEFT JOIN category c1 ON c1.category_parent_id=c.id AND c1.deleted=0
                  WHERE c.deleted=0
-                   AND c1.id IS NULL
                    AND c.id NOT IN (SELECT category_id FROM product_category_linker WHERE product_id=:product_id AND deleted=0)
-                   AND ($whereTree)
-                   AND (c.scope='Global' OR ccl.channel_id IN (SELECT channel_id FROM product_channel WHERE deleted=0 AND product_id=:product_id))",
+                   AND ($whereTree)",
                 ['product_id' => $productId]
             )
             ->fetchAll(\PDO::FETCH_COLUMN);

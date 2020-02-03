@@ -24,23 +24,6 @@
       "notNull": true,
       "type": "bool"
     },
-    "scope": {
-      "type": "enum",
-      "required": true,
-      "fontSize": 1,
-      "options": [
-        "Global",
-        "Channel"
-      ],
-      "default": "Global"
-    },
-    "channels": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "importDisabled": true,
-      "noLoad": false
-    },
     "createdAt": {
       "type": "datetime",
       "readOnly": true
@@ -195,13 +178,6 @@
           "type": "int"
         }
       }
-    },
-    "channels": {
-      "type": "hasMany",
-      "relationName": "categoryChannelLinker",
-      "foreign": "categories",
-      "entity": "Channel",
-      "layoutRelationshipsDisabled": true
     }
   },
   "collection": {

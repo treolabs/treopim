@@ -4,7 +4,6 @@
     "description": "Beschreibung",
     "code": "Code",
     "categories": "Kategorien",
-    "channels": "Kanäle",
     "categoryParent": "Hauptkategorie",
     "image": "Hauptbild",
     "categoryRouteName": "Kategoriebaum",
@@ -22,12 +21,10 @@
     "teams": "Teams",
     "markupType": "Typ",
     "markupValue": "Wert",
-    "scope": "Umfang",
     "catalogs": "Kataloge"
   },
   "links": {
     "categories": "Kategorien",
-    "channels": "Kanäle",
     "categoryParent": "Hauptkategorie",
     "categoryRoot": "Stammkategorie",
     "createdBy": "erstellt von",
