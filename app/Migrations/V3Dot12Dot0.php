@@ -73,18 +73,17 @@ class V3Dot12Dot0 extends AbstractMigration
      */
     public function changeCleanup()
     {
-        $jobs = $this
+        $idJob = $this
             ->getEntityManager()
-            ->getRepository('Job')
-            ->where(['name' => 'Cleanup', 'status' => 'Pending'])
-            ->find();
+            ->nativeQuery("SELECT id FROM scheduled_job WHERE job = 'TreoCleanup' LIMIT 1;")
+            ->fetch(PDO::FETCH_COLUMN);
 
-        foreach ($jobs as $job) {
-            $time = new \DateTime($job->get('executeTime'));
-            $time->modify('+30 day');
-            $job->set('executeTime', $time->format('Y-m-d H:i:s'));
-            $this->getEntityManager()->saveEntity($job);
-        }
+        $this
+            ->getEntityManager()
+            ->nativeQuery(
+                "UPDATE job SET execute_time = :time WHERE job.scheduled_job_id = :idJob AND status = 'Pending';",
+                ['idJob' => $idJob,
+                 'time' => (new \DateTime())->modify('+30 day')->format('Y-m-d H:i:s')]);
     }
 
     /**
