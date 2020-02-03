@@ -494,7 +494,7 @@ class Product extends AbstractSelectManager
         }
 
         // set custom where
-        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND category_id IN ('$ids'))";
+        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category_linker WHERE product_id IS NOT NULL AND deleted=0 AND category_id IN ('$ids'))";
     }
 
     /**
