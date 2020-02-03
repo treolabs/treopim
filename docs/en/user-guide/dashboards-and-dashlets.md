@@ -32,7 +32,7 @@ In the given pop-up you can also remove the desired dashboard (or dashboards) by
 
 ![Dashboard removing](../../_assets/dashboards-and-dashlets/dashboard-removing.jpg)
 
-### Switching between Dashboards
+### Switching Between Dashboards
 
 In order to switch between dashboards available in the system, click the button with the desired dashboard name located in the upper right corner of the TreoPIM starting page:
 

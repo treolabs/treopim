@@ -22,12 +22,14 @@ Even if you want to manage your product content in different languages, there is
 
 Please, note that multilingual functionality is available after the "Multi-Languages" module is installed (along with the TreoPIM system installation) and set up. Go to our store to learn more about the ["Multi-Languages" module](https://treopim.com/store/multi-languages).
 
+<!-- **DO WE STILL NEED THIS, SINCE THERE'S THE `LOCALE` FIELD IN CHANNELS NOW???? **
 There are two ways to set up your product catalog if you carry product information in different languages:
 
-1. Create a separate category tree for each language / locale.
-2. Create just one category tree using multi-language fields for the category name.
+1. Create a separate category tree for each language (locale).
+2. Create just one category tree using multilingual fields for the category name.
 
-The first approach is preferable, if you want to provide different channels with different product catalogs, e.g. some product should be transferred to channel 1, but not to channel 2. The second one is a better choice if you want to deliver the product information about all your products to all channels.
+The first approach is preferable, if you want to provide different [channels](./channels.md) with different product catalogs, e.g. some product should be transferred to channel 1, but not to channel 2. The second one is a better choice if you want to deliver the product information about all your products to all channels.
+-->
 
 ## Category Fields
 
@@ -41,7 +43,7 @@ The category entity comes with the following preconfigured fields; mandatory are
 | Code *                   | Unique value used to identify the category. It can only consist of lowercase letters, digits and underscore symbols				      |
 | Description (multi-lang) | Description of the category usage                  |
 
-If you want to make changes to the category entity, e.g. add new fields, or modify category views, please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the category entity, or if you want to make changes to the category entity, e.g. add new fields, or modify product family views, please, contact your administrator.
 
 ## Creating
 
@@ -69,14 +71,17 @@ To open the list of category records available in the system, click the `Categor
 
 By default, the following fields are displayed on the [list view](./views-and-panels.md#list-view) page for category records:
  - Name
- - Main image
  - Code 
  - Category tree 
  - Active
 
 To change the category records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Category records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+Category records can be searched and filtered according to your needs. For details on these options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+
+Once the [TreoDAM module](https://treodam.com/) is installed, the `Main Image` field is also added to category records on their list view page: 
+
+![Categories list with DAM](../../_assets/categories/categories-list-dam.jpg)
 
 To view some category record details, click the name field value of the corresponding record in the list of categories; the [detail view](./views-and-panels.md#detail-view) page will open showing the category records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
@@ -138,7 +143,8 @@ Use the `Duplicate` option from the actions menu to go to the category creation 
 
 ## Category Tree
 
-TreoPIM offers you a dynamic display of all categories available in the system in a tree view. To see this, click the `Tree View` button on the categories list view:              
+TreoPIM offers you a dynamic display of all categories available in the system in a tree view. To see this, click the `Tree View` button on the categories list view:   
+           
 ![Tree view button](../../_assets/categories/tree-view-button.jpg)
 
 In this view, parent–child relations are more explicit, and category trees are built (modified) via simple drag-and-drop of categories:

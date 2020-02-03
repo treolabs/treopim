@@ -2,9 +2,9 @@
 
 **Brand** – a name, term, design, symbol, or other feature that distinguishes the product from its rivals in the eyes of the customer. Brands are used in business, marketing and advertising to increase sales. 
 
-By default, only one brand can be assigned to the product. Brand is optional for the product. It is technically possible to have different brands with same name, because of different IDs that would be assigned to them.
+By default, only one brand can be assigned to the product. Brand is optional for the [product](https://treopim.com/help/products). It is technically possible to have different brands with same name, because of different IDs that would be assigned to them.
 
-Brands can be activated or deactivated. Deactivated brands cannot be used in the system and are not transferred via any channel.
+Brands can be activated or deactivated. Deactivated brands cannot be used in the system and are not transferred via any [channel](https://treopim.com/help/channels).
 
 ## Brand Fields
 
@@ -13,11 +13,11 @@ The brand entity comes with the following preconfigured fields; mandatory are ma
 | **Field Name**           | **Description**                            |
 |--------------------------|--------------------------------------------|
 | Active                   | Activity state of the brand record         |
-| Name (multi-lang) *      | Name of the brand (e.g. Apple, Nike, etc.) |
+| Name (multi-lang) *      | Brand name (e.g. Apple, Nike, etc.) |
 | Code *                   | Unique value used to identify the brand. It can only consist of lowercase letters, digits and underscore symbols     |
 | Description (multi-lang) | Description of the brand usage                   |
 
-If you want to make changes to the brand entity, e.g. add new fields, or modify brand views, please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the brand entity, or if you want to make changes to the brand entity (e.g. add new fields, or modify channel views), please, contact your administrator. 
 
 ## Creating
 
@@ -48,7 +48,7 @@ By default, the following fields are displayed on the [list view](./views-and-pa
 
 To change the brand records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Brand records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+Brand records can be searched and filtered according to your needs. For details on these options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
 To view some brand record details, click the name field value of the corresponding record in the list of brands; the [detail view](./views-and-panels.md#detail-view) page will open showing the brand records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
@@ -64,6 +64,8 @@ The following mass actions are available for brand records on the list view page
 
 ![Brands mass actions](../../_assets/brands/brands-mass-actions.jpg)
 
+> If any option is missing in your mass actions menu, please, contact your administrator.
+
 For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
@@ -76,6 +78,8 @@ The following single record actions are available for brand records on the list 
 
 ![Brands single record actions](../../_assets/brands/brands-single-actions.jpg)
 
+> If any option is missing in your single record actions menu, please, contact your administrator.
+
 For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing
@@ -85,6 +89,8 @@ To edit the brand, click the `Edit` button on the detail view page of the curren
 ![Brands editing](../../_assets/brands/brands-edit.jpg)
 
 Here edit the desired fields and click the `Save` button to apply your changes.
+
+Please, note that the locale fields appear when the ["Multi-Languages" module](https://treopim.com/store/multi-languages) is enabled and configured by the administrator.
 
 Besides, you can make changes in the brand record via [in-line editing](./views-and-panels.md#in-line-editing) on its detail view page.
 
@@ -106,7 +112,7 @@ By default, it is not possible to remove the brand, if there is any product asso
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions menu to go to the brand creation page and get all the values of the last chosen brand record copied in the empty fields of the new brand record to be created. Modifying the brand code is required, as this value has to be unique.
+Use the `Duplicate` option from the actions menu to go to the brand [creation page](#creating) and get all the values of the last chosen brand record copied in the empty fields of the new brand record to be created. Modifying the brand code is required, as this value has to be unique.
 
 ## Working With Products Related to Brands
 
@@ -116,11 +122,11 @@ Products that are linked to the brand are displayed on its [detail view](./views
  - Type
  - Active
 
-![Brand products](../../_assets/brands/brands-products.jpg)
+![Brand products](../../_assets/brands/brand-products.jpg)
 
-If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to brands, please, contact your administrator.
+> If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to brands, please, contact your administrator.
 
-By design, if a brand record is deactivated, all the related products will automatically be deactivated as well. Otherwise, if a brand is activated, all the related products will remain in the previous activity state without any changes. To activate the products linked to this brand record, please filter them by this brand and apply the corresponding [mass action](./views-and-panels.md#mass-actions).
+By design, if a brand record is deactivated, all the related products will automatically be deactivated as well. Otherwise, if a brand is activated, all the related products will remain in the previous activity state without any changes. To activate the products linked to this brand record, please, filter them by this brand and apply the corresponding [mass action](./views-and-panels.md#mass-actions).
 
 To create a new product to be linked to the given brand record, use the `+` button located on the `PRODUCTS` panel and enter the necessary data in the product creation pop-up that appears:
 
@@ -128,7 +134,7 @@ To create a new product to be linked to the given brand record, use the `+` butt
 
 To link the already existing products with the given brand record, use the `Select` option from the actions menu located in the upper right corner of the `PRODUCTS` panel. Then in the "Products" pop-up window choose one or several products you would like to assign to this brand record and click the `Select` button.
 
-*Please, note that if the product has already been related to other brand record, it will be reassigned to a new brand, which is opened in the main window.* 
+> Please, note that if the product has already been related to other brand record, it will be reassigned to a new brand, which is opened in the main window.
 
 To see all products linked to the given brand record, use the `Show full list` option:
 

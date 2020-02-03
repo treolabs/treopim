@@ -1,8 +1,8 @@
 # Associations
 
-**Association** – a type of the relationship between products, where one in some way is dependent on the other one(s), or can influence the other one(s) in accordance with different marketing strategies (e.g cross-sell, up-sell, etc.). Each product can associate different products and can be associated from different products.
+**Association** – a type of the relationship between [products](https://treopim.com/help/products), where one in some way is dependent on the other one(s), or can influence the other one(s) in accordance with different marketing strategies (e.g cross-sell, up-sell, etc.). Associations can be either one-way (Product A is associated with Product B, but not otherwise), or two-way (if Product A is associated with Product B, then Product B is associated with Product A).
 
-Associations can be activated and deactivated. Deactivated associations cannot be used in the system, i.e. all records of the associated products will not be transferred via any channel.
+Associations can be activated and deactivated. Deactivated associations cannot be used in the system, i.e. all records of the associated products will not be transferred via any [channel](https://treopim.com/help/channels).
 
 ## Association Fields
 
@@ -15,7 +15,7 @@ The association entity comes with the following preconfigured fields; mandatory 
 | Backward association     | Backward association name         |
 | Description (multi-lang) | The aim of this association usage |
 
-If you want to make changes to the association entity (e.g. add new fields, or modify association views), please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the association entity, or if you want to make changes to the association entity (e.g. add new fields, or modify association views), please, contact your administrator. 
 
 ## Creating
 
@@ -44,7 +44,7 @@ By default, the following fields are displayed on the [list view](./views-and-pa
 
 To change the association records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Association records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+Association records can be searched and filtered according to your needs. For details on these options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
 To view some association record details, click the name field value of the corresponding record in the list of associations; the [detail view](./views-and-panels.md#detail-view) page will open showing the association records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
@@ -54,10 +54,10 @@ The following mass actions are available for association records on the list vie
 - Remove
 - Mass update
 - Export
-- Add relation
-- Remove relation
 
 ![Associations mass actions](../../_assets/associations/associations-mass-actions.jpg)
+
+> If any option is missing in your mass actions menu, please, contact your administrator.
 
 For details on these actions, please, see the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
@@ -69,6 +69,8 @@ The following single record actions are available for association records on the
 - Remove
 
 ![Associations single record actions](../../_assets/associations/associations-single-actions.jpg)
+
+> If any option is missing in your single record actions menu, please, contact your administrator.
 
 For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
@@ -96,17 +98,18 @@ or from the single record actions menu on the associations list view page:
 
 ![Remove2](../../_assets/associations/remove-list.jpg)
 
-By default, it is not possible to remove the association, if there is any product associated with it.
+By default, it is not possible to remove the association, if there is any product associated with it. In this case, the following error message appears:
+
+![Error msg](../../_assets/associations/error-msg.jpg)
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions drop-down menu to go to the association creation page and get all the values of the last chosen association record copied in the empty fields of the new association record to be created. Modifying the association code is required, as this value has to be unique.
+Use the `Duplicate` option from the actions drop-down menu to go to the association [creation page](#creating) and get all the values of the last chosen association record copied in the empty fields of the new association record to be created. Modifying the association code is required, as this value has to be unique.
 
 ## Working With Associated Products
 
 [Associated products](./associated-products.md) are displayed on the `ASSOCIATED PRODUCTS` panel within the [product](./products.md) detail view page and include the following table columns:
 
- - Related product image
  - Related product
  - Association
 

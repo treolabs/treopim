@@ -1,6 +1,6 @@
 # Search and Filtering
 
-Search and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity [list](./views-and-panels.md#list-view) or [plate](./views-and-panels.md#plate-view) view page:
+Search and filtering allow you to quickly focus on the records you want to see. These sections are automatically available on each entity [list](./views-and-panels.md#list-view) view page:
 
 ![Search and filtering](../../_assets/search-and-filtering/search-filter.jpg)
 *Search and filtering on the products list view page*
@@ -25,7 +25,7 @@ On the [products](./products.md) detail view page, there is also the ability to 
 
 ![Product filters](../../_assets/search-and-filtering/product-filters.jpg)
 
-Keep in mind that the locales filter appears when the "Multi-Languages" module is installed and input language options are configured by your administrator. Go to our [store](https://treopim.com/store/multi-languages) to learn more about the "Multi-Languages" module and its features.
+Keep in mind that the locales filter appears when the "Multi-Languages" module is activated and input language options are configured by your administrator. Go to our [store](https://treopim.com/store/multi-languages) to learn more about the "Multi-Languages" module and its features.
 
 You can have one or more filters based on a certain field for all field types. The exception is field types that can be used as a filter only once (because there is no need for it), which are:
   - Boolean;
@@ -86,7 +86,7 @@ Depending of the field type, you can apply the following filtering criteria:
 |                                             | None Of                | Value list, multiselect                                    |
 |                                             | Is Empty               | –                                                          |
 |                                             | Is Not Empty           | –                                                          |
-| *Number, Varchar, Text,  URL, Wysiwyg*      | Starts With            | Input field                                                |
+| *Number, Varchar, Text, URL, Wysiwyg*      | Starts With            | Input field                                                |
 |                                             | Contains               | Input field                                                |
 |                                             | Equals                 | Input field                                                |
 |                                             | End With               | Input field                                                |
@@ -109,7 +109,7 @@ Depending of the field type, you can apply the following filtering criteria:
 |                                             | Is Empty               |                                                            |
 |                                             | Is Not Empty           |                                                            |
 |                                             | None Of                | Related entity records, multiselect                        |
-| *Image, File, Attachment Multiple*          | –                      | Filtering for these field types is not possible  (for now) |
+| *Image, File, Attachment Multiple*          | –                      | Filtering for these field types is not possible (for now) |
 
 ## Automatic Search Mask Recognition *(in development)*
 
@@ -129,19 +129,19 @@ After clicking on the search results, the appropriate filter will be set automat
 | Numbers, e.g. "123"     | Auto-increment, Currency, Integer, Float     | Is                          |
 | Date, e.g. "12.12.2018" | Date, DateTime                               | On                          |
 
-## Predefined Search Filters
+## Predefined Filters
 
-Predefined search filters are available in the drop-down menu on the left of the search field on any entity list view page:
+Predefined filters are available in the drop-down menu on the left of the search field on any entity list view page:
 
-![Search filters list](../../_assets/search-and-filtering/search-filters-list.jpg)
+![Filters list](../../_assets/search-and-filtering/filters-list.jpg)
 
 To filter the records, select the desired checkbox or several checkboxes. 
 
-To extend the list, please contact your developer.
+To extend the list, please contact [us](https://treopim.com/contact) or your developer.
 
-## Custom Search Filters
+## Custom Filters
 
-To save a custom search filter, select the `Add filter > 'desired filter'` option from the filtering drop-down list:
+To save a custom filter, select the `Add filter > 'desired filter'` option from the filtering drop-down list:
 
 ![Filters list](../../_assets/search-and-filtering/filter-list.jpg)
 
@@ -151,7 +151,7 @@ The selected filter will be added to the current page:
 
 If needed, click the `X` button to remove the added filter.
 
-To extend the list of fields to be used for filtering, please, contact your administrator.
+> To extend the list of fields to be used for filtering, please, contact your administrator.
 
 ## Custom Attribute Filters
 
@@ -167,15 +167,15 @@ Please, note that attribute filters are available for products only.
 
 ## Templates
 
-You can create custom search filter templates. To do this, add the desired filters as described above and select the `Save filter` option from the filtering drop-down list:
+You can create custom filter templates. To do this, add the desired filters as described above and select the `Save filter` option from the filtering drop-down list:
 
 ![Save filter option](../../_assets/search-and-filtering/save-filter-option.jpg)
 
-On the "Save filters" page that appears, enter the name for the filter(s) and click the `Save` button to create the template. As a result, your search filter template will be added to the filtering drop-down list and set as a currently applied filter: 
+On the "Save filters" page that appears, enter the name for the filter(s) and click the `Save` button to create the template. As a result, your filter template will be added to the filtering drop-down list and set as a currently applied filter: 
 
 ![Filter saved](../../_assets/search-and-filtering/filter-saved.jpg)
 
-To remove your custom search filter template, use the `Remove filter` option from the filtering drop-down list:
+To remove your custom filter template, use the `Remove filter` option from the filtering drop-down list:
 
 ![Remove filter option](../../_assets/search-and-filtering/remove-filter-option.jpg)
 
