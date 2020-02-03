@@ -48,6 +48,7 @@ class V3Dot12Dot0 extends AbstractMigration
 
         $config = $this->getContainer()->get('config');
         if ($config->get('pimAndDamInstalled') !== true) {
+            $this->changeCleanup();
             //set flag about installed Pim and Image
             $config->set('pimAndDamInstalled', false);
         }
@@ -64,6 +65,25 @@ class V3Dot12Dot0 extends AbstractMigration
             $config->set('pimAndDamInstalled', true);
         }
         $config->save();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function changeCleanup()
+    {
+        $jobs = $this
+            ->getEntityManager()
+            ->getRepository('Job')
+            ->where(['name' => 'Cleanup', 'status' => 'Pending'])
+            ->find();
+
+        foreach ($jobs as $job) {
+            $time = new \DateTime($job->get('executeTime'));
+            $time->modify('+30 day');
+            $job->set('executeTime', $time->format('Y-m-d H:i:s'));
+            $this->getEntityManager()->saveEntity($job);
+        }
     }
 
     /**
