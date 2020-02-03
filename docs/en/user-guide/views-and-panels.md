@@ -60,13 +60,21 @@ The following mass actions are available in the TreoPIM system:
 ![Mass Actions](../../_assets/views-and-panels/mass-actions.jpg)
 
 - **Remove** – to remove the selected entity records.
+
 - **Merge** – to merge the selected entity records.
+
 - **Mass update** – to update several selected entity records at once. To have a longer list of fields available for mass updating, please, contact your administrator.
+
 - **Export** – to [export](../../../../../../treocore/blob/master/docs/en/user-guide/export-core.md) the desired data fields of the selected entity records in the XLSX (Excel) or CSV format.
-	> For more advanced export features, please, use the **Export Feeds** module. You can find the details on this module in our [store](https://treopim.com/store/export-feeds).
+
+  > For more advanced export features, please, use the **Export Feeds** module. You can find the details on this module in our [store](https://treopim.com/store/export-feeds).
+
 - **Follow** – to enable tracking of the changes for the selected entity records. 
+
 - **Unfollow** – to disable tracking of the changes for the selected entity records.
+
 - **Add relation** – to relate the selected entity records with other entities (or entity).
+
 - **Remove relation** – to remove the relations that have been added to the selected entity records.
 
 > To modify the mass actions list, please, contact your administrator.
@@ -91,6 +99,8 @@ The plate view is a variant of the [list view](#list-view) for [products](./prod
 To switch to this view, click the plates icon located in the upper right corner of the entity records list view:
 
 ![Plate view](../../_assets/views-and-panels/plate-view.jpg)
+
+To switch to this view, click the plates icon located in the upper right corner of the entity records list view.
 
 The [mass actions](#mass-actions) and [singe record actions](#single-record-actions) are also available here, just like for the list view.
 
@@ -130,19 +140,20 @@ The detail view page shows detailed information about the selected entity record
 - *record details, where information about the currently open entity record is displayed on the `OVERVIEW` and `OWNERSHIP INFORMATION` panels (5).* 
 
 ![Detail View](../../_assets/views-and-panels/detail-view.jpg)
-
 The detail view page may also include:
 
 - other panels that are either default for a certain entity or configured by the administrator:
 
-  ![Detail View panels](../../_assets/views-and-panels/detail-view-panels.jpg)
+![Detail View panels](../../_assets/views-and-panels/detail-view-panels.jpg)
 
+  ![Detail View Page](../../_assets/views-and-panels/overview-panel.jpg)
 - several *small list views* for the related entity records, if these were configured by the administrator:
   
   ![Related Entity Panels](../../_assets/views-and-panels/related-entity-panels.jpg)
 
 - *side view* with additional information concerning record management and activity stream, if activated for the entity and configured to be displayed on the side view.
   
+
 Views can be shown in the main or pop-up window. They consist of the panels, which can be configured by the administrator. Usually these are structured in a way to provide you with key information through the record management.
 
 You can start following the entity record right on the detail view page. To do this, click the `Follow` button, placed in the upper right corner of your detail view page. It will turn into `Followed`. Click this button again to stop following the entity record.
@@ -185,6 +196,8 @@ In the quick detail pop-up, click the `Full Form` button to open the common [det
 
 The side view panel is used to show additional information on the currently open record and is shown on the right side of the main [detail](#detail-view) window:
 
+The side view panel is used to show additional information and is shown in the main window always together with the [detail](#detail-view) (or [quick detail](#quick-detail-view-small-detail-view)) view panels:
+
 ![Side view](../../_assets/views-and-panels/side-view.jpg)
 
 The `OWNERSHIP INFORMATION` panel is available by default on the side view panel and contains the following information:
@@ -201,6 +214,8 @@ The `OWNERSHIP INFORMATION` panel is available by default on the side view panel
 Additionally, the [`STREAM`](../../../../../../treocore/blob/master/docs/en/user-guide/stream-core.md) panel may be displayed on the side view, if this is configured by the administrator:
 
 ![Side view stream](../../_assets/views-and-panels/side-view-stream.jpg)
+
+> The `Owner`, `Assigned user`, and `Teams` fields are enabled/disabled by the administrator.
 
 Other modules can add more panels to the side view. Please, visit our [store](https://treopim.com/store) to learn more about modules available for you.
 

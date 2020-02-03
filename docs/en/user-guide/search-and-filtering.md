@@ -130,7 +130,6 @@ After clicking on the search results, the appropriate filter will be set automat
 | Date, e.g. "12.12.2018" | Date, DateTime                               | On                          |
 
 ## Predefined Filters
-
 Predefined filters are available in the drop-down menu on the left of the search field on any entity list view page:
 
 ![Filters list](../../_assets/search-and-filtering/filters-list.jpg)

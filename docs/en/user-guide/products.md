@@ -6,6 +6,9 @@ There are several [types](#product-types) of products in the TreoPIM system, and
 
 Moreover, once the [TreoDAM module](https://treodam.com) is also installed in the TreoPIM system, there is also the ability to manage [asset relations](#asset-relations) for your product records. Learn more about TreoDAM [here](https://treodam.com/features).
 
+There are several [types](#product-types) of products in the TreoPIM system, and each product, irregardless of its type, can be assigned to a certain [product family](./product-families.md), which will define the attributes to be set for this product. A product can be assigned to several [categories](./categories.md), be of a certain [brand](./brands.md), described in several languages and be prepared for selling via different [channels](./channels.md). A product can be in [association](./associations.md) of a certain type with some other product, and thus within different associations and with different products. It is possible to set different [attribute](./attributes.md) values for different channels and upload product images.
+<!-- MENTION DAM HERE???-->
+
 ## Product Fields
 
 The product entity comes with the following preconfigured fields; mandatory are marked with *:
@@ -21,7 +24,9 @@ The product entity comes with the following preconfigured fields; mandatory are 
 | Assigned User *		   | The name of the user assigned to the given product	|
 | Teams					   | The name of the team whose users can operate with the given product	|
 
-> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the product entity, or if you want to make changes to the product entity (e.g. add new fields, or modify product views), please, contact your administrator. 
+If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the product entity, or if you want to make changes to the product entity (e.g. add new fields, or modify product views), please, contact your administrator. 
+
+> If you want to make changes to the product entity, e.g. add new fields, or modify product views, please, contact your administrator.
 
 ## Product Types
 
@@ -58,6 +63,7 @@ Alternatively, use the [quick create](./user-interface.md#quick-create) button o
 To open the list of product records available in the system, click the `Products` option in the navigation menu:
 
 ![Products list view page](../../_assets/products/products-list-view.jpg)
+
 
 By default, the following fields are displayed on the [list view](./views-and-panels.md#list-view) page for product records:
  - Name
@@ -110,7 +116,8 @@ For details on these actions, please, refer to the [**Single Record Actions**](.
 
 ## Search and Filtering Types
 
-Product records can be searched and filtered according to your needs on their list view page (also on the plate view, if the [TreoDAM module](https://treodam.com/) is installed). For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+Product records can be searched and filtered according to your needs on their list view page (also on the plate view, if the [TreoDAM module](https://treodam.com/) is installed). For details on these options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+
 
 Besides the standard field filtering, two other types – [by attributes](#by-attributes) and [by categories](#by-categories) – are available for product records.
 
@@ -135,6 +142,9 @@ To search product records by categories, enter the desired category name into th
 As a result, the defined category will be highlighted in the catalog tree, and only products belonging to this category will be displayed in the product records list. 
 
 The same category tree and category filter option are also available on the product record [detail](https://treopim.com/help/views-and-panels#detail-view) and [edit](./views-and-panels.md#detail-view) view pages:
+
+![Category filter detail view](../../_assets/products/category-filter-detail-view.jpg)
+The same category tree and category filter option are also available on the product record [detail](https://treopim.com/help/views-and-panels#detail-view) and [edit](https://treopim.com/help/views-and-panels#detail-view) view pages:
 
 ![Category filter detail view](../../_assets/products/category-filter-detail-view.jpg)
 
