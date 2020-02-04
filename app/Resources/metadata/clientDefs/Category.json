@@ -35,6 +35,11 @@
         "notEntity"
       ],
       "view": "pim:views/category/record/panels/catalogs"
+    },
+    "products": {
+      "selectBoolFilterList": [
+        "allowedForCategory_{{id}}"
+      ]
     }
   },
   "menu": {

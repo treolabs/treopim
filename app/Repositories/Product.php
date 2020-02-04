@@ -59,6 +59,10 @@ class Product extends Base
             )
             ->fetchAll(\PDO::FETCH_COLUMN);
 
+        if (empty($trees)) {
+            return [];
+        }
+
         $whereTree = [];
         foreach ($trees as $tree) {
             $whereTree[] = "(c.category_route LIKE '%|$tree|%' OR c.id='$tree')";
@@ -97,8 +101,11 @@ class Product extends Base
      */
     protected function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
     {
-        if ($relationName == 'categories' && !$this->isCategoryValid($entity, is_string($foreign) ? $foreign : (string)$foreign->get('id'))) {
-            throw new BadRequest("Category cannot be related with the Product");
+        /** @var string $foreignId */
+        $foreignId = is_string($foreign) ? $foreign : (string)$foreign->get('id');
+
+        if ($relationName == 'categories' && !in_array($foreignId, $this->getCategoriesIdsThatCanBeRelatedWithProduct((string)$entity->get('id')))) {
+            throw new BadRequest("Such category can't be related with current product");
         }
 
         parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
@@ -190,17 +197,6 @@ class Product extends Base
         }
 
         return true;
-    }
-
-    /**
-     * @param Entity $product
-     * @param string $categoryId
-     *
-     * @return bool
-     */
-    protected function isCategoryValid(Entity $product, string $categoryId): bool
-    {
-        return in_array($categoryId, $this->getCategoriesIdsThatCanBeRelatedWithProduct((string)$product->get('id')));
     }
 
     /**

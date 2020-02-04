@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Pim\SelectManagers;
 
-use Espo\Core\Exceptions\NotFound;
 use Pim\Core\SelectManagers\AbstractSelectManager;
 
 /**
@@ -88,9 +87,6 @@ class Category extends AbstractSelectManager
     /**
      * @param string $id
      * @param array  $result
-     *
-     * @throws NotFound
-     * @throws \Espo\Core\Exceptions\Error
      */
     protected function boolAdvancedFilterAllowedForProduct(string $id, array &$result)
     {

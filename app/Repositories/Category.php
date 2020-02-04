@@ -29,10 +29,37 @@ use Espo\ORM\Entity;
 /**
  * Class Category
  *
- * @author r.ratsun@treolabs.com
+ * @author r.ratsun <r.ratsun@treolabs.com>
  */
 class Category extends Base
 {
+    /**
+     * @param string $productId
+     *
+     * @return array
+     */
+    public function getProductsIdsThatCanBeRelatedWithCategory(string $categoryId): array
+    {
+        /** @var Entity $category */
+        $category = $this->get($categoryId);
+
+        /** @var string $treeId */
+        $treeId = empty($category->get('categoryRoute')) ? $categoryId : explode("|", $category->get('categoryRoute'))[1];
+
+        return $this
+            ->getEntityManager()
+            ->nativeQuery(
+                "SELECT DISTINCT p.id
+                 FROM catalog_category cc
+                   LEFT JOIN product p ON p.catalog_id=cc.catalog_id AND p.deleted=0
+                 WHERE cc.deleted=0
+                   AND cc.category_id=:treeId
+                   AND p.id NOT IN (SELECT product_id FROM product_category_linker WHERE category_id=:id AND deleted=0)",
+                ['id' => $categoryId, 'treeId' => $treeId]
+            )
+            ->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
     /**
      * @inheritDoc
      *
@@ -40,8 +67,11 @@ class Category extends Base
      */
     protected function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
     {
-        if ($relationName == 'products') {
-            throw new BadRequest('Action is unavailable');
+        /** @var string $foreignId */
+        $foreignId = is_string($foreign) ? $foreign : (string)$foreign->get('id');
+
+        if ($relationName == 'products' && !in_array($foreignId, $this->getProductsIdsThatCanBeRelatedWithCategory((string)$entity->get('id')))) {
+            throw new BadRequest("Such product can't be related with current category");
         }
 
         parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
