@@ -232,7 +232,7 @@ TreoPIM supports linking to products not only separate attributes, but also [att
 
 Please, note that attributes linked to products are arranged by attribute groups correspondingly. Their placement depends on the configuration and [sort order](./attribute-groups.md#sort-order) value of the attribute group to which they belong.
 
-Attribute records linked to the given product can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT ATTRIBUTES` panel:
+Attributes linked to the given product record can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT ATTRIBUTES` panel:
 
 ![Attributes actions](../../_assets/products/attributes-actions-menu.jpg)
 
@@ -265,7 +265,7 @@ Click the `Save` button to complete the category creation process or `Cancel` to
 
 Please, note that you can link the same category to the product twice, but with different scopes – `Global` or `Channel`.
 
-To assign a category (or several categories) to the product record, use the `Select` option from the actions menu located in the upper right corner of the `PRODUCT CATEGORIES` panel:
+To assign the already existing category (or several categories) to the product record, use the `Select` option from the actions menu located in the upper right corner of the `PRODUCT CATEGORIES` panel:
 
 ![Adding categories](../../_assets/products/categories-select.jpg)
 
@@ -273,7 +273,7 @@ In the "Categories" pop-up that appears, choose the desired category (or categor
 
 Please, note that you can link both root and child categories to the product. The only condition is that their root category should be linked to the [catalog](./catalogs.md) to which the given product belongs.
 
-Product categories can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT CATEGORIES` panel:
+Product category records can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT CATEGORIES` panel:
 
 ![Categories actions](../../_assets/products/categories-actions-menu.jpg)
 
@@ -348,7 +348,7 @@ All the assets that are linked to the currently open product record are displaye
 - Scope
 - Channels
 
-![Images panel](../../_assets/products/asset-relations-panel.jpg)
+![Asset relations panel](../../_assets/products/asset-relations-panel.jpg)
 
 On this panel, you can link the following *asset types* to the given product record:
 - Gallery image
@@ -408,5 +408,5 @@ Here you can also define the sort order of the records within each asset type gr
 
 The changes are saved on the fly.
 
-
+To view the product related asset record from the `ASSET RELATIONS` panel, click its name in the `Related entity name` column. The [detail view](./views-and-panels.md#detail-view) page of the given asset will open, where you can perform further actions according to your access rights, configured by the administrator.
 

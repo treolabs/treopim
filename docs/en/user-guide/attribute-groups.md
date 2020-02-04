@@ -13,7 +13,7 @@ The attribute group entity comes with the following preconfigured fields; mandat
 | Sort order               | Sorting order of the attribute group. With this parameter, attribute groups will be arranged in the appropriate order on the product [detail view](./views-and-panels.md#detail-view) page                   |
 | Description (multi-lang) | Description of the attribute group purpose   |
 
-If you want to make changes to the attribute group entity (e.g. add new fields, or modify attribute group views), please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the attribute group entity, or if you want to make changes to the attribute group entity, e.g. add new fields, or modify its views, please, contact your administrator.
 
 ## Creating
 

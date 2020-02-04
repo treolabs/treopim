@@ -16,21 +16,6 @@ There can be many category trees in TreoPIM. Each category can have only one par
 
 Each adopter of [TreoPIM](./what-is-treopim.md) may decide for himself what works better for him – setting up and supporting multiple category trees or just one. Irregardless of the choice, it is still possible to synchronize different content for products you want to supply. 
 
-## Product Categories in Multiple Languages
-
-Even if you want to manage your product content in different languages, there is no need in maintaining multiple category trees. 
-
-Please, note that multilingual functionality is available after the "Multi-Languages" module is installed (along with the TreoPIM system installation) and set up. Go to our store to learn more about the ["Multi-Languages" module](https://treopim.com/store/multi-languages).
-
-<!-- **DO WE STILL NEED THIS, SINCE THERE'S THE `LOCALE` FIELD IN CHANNELS NOW???? **
-There are two ways to set up your product catalog if you carry product information in different languages:
-
-1. Create a separate category tree for each language (locale).
-2. Create just one category tree using multilingual fields for the category name.
-
-The first approach is preferable, if you want to provide different [channels](./channels.md) with different product catalogs, e.g. some product should be transferred to channel 1, but not to channel 2. The second one is a better choice if you want to deliver the product information about all your products to all channels.
--->
-
 ## Category Fields
 
 The category entity comes with the following preconfigured fields; mandatory are marked with *:
@@ -153,94 +138,145 @@ In this view, parent–child relations are more explicit, and category trees are
 
 ## Working With Entities Related to Categories
 
-Relations to images and [product categories](./products.md#product-categories) are available for all categories by default. These related entities records are displayed on the corresponding panels on the category [detail view](./views-and-panels.md#detail-view) page. If any panel is missing, please, contact your administrator as to your access rights configuration.
+Relations to [products](./products.md#category-products) are available for all categories by default. For *root* categories, there is additionally the relation to [catalogs](#catalogs). Moreover, once the [TreoDAM module](https://treodam.com) is also installed in the TreoPIM system, [assets](#asset-relations) can also be related to categories. All the related entities records are displayed on the corresponding panels on the category [detail view](./views-and-panels.md#detail-view) page. 
 
-To be able to relate more entities to categories, please, contact your administrator.
+> If any panel is missing, please, contact your administrator as to your access rights configuration. To be able to relate more entities to categories, please, also contact your administrator.
 
-### Images
+### Category Products
 
-Images that are linked to the currently open category record are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `IMAGES` panel and include the following table columns:
-- Image
-- Name
-- Scope
-- Channels
-
-![Images panel](../../_assets/categories/images-panel.jpg)
-
-On this panel, you can link images to the given category record by selecting the existing ones or creating new image records.
-
-To create new image records to be linked to the currently open category record, click the `+` button located in the upper right corner of the `IMAGES` panel and enter the necessary data in the image creation pop-up that appears:
-
-![Image creation](../../_assets/categories/image-creation.jpg)
-
-The following *image uploading types* are available in the TreoPIM system by default:
-- **File** / **Files** – image files that are stored locally (on your PC or other device). When the `File` type is selected on the image creation step, the desired image file is  uploaded as an attachment. To attach several image files at the same time, the `Files` type is to be defined accordingly.
-- **Link** – the URL to the image file, which is stored on the external server. When this type is selected on the image creation step, the image link must be entered in the corresponding field:
-
-	![Image URL](../../_assets/categories/image-url.jpg)
-
-By default, the defined image has the `Global` scope, but you can change it to `Channel` and select the desired channel (or channels) in the added field:
-
-![Channel image](../../_assets/categories/image-channel.jpg)
-
-Click the `Save` button to complete the image record creation process or `Cancel` to abort it.
-
-Please, note that once the image record is created within the product, it is displayed on the `IMAGES` panel as a common image file (irregardless of its uploading type). 
-
-To assign an image (or several images) to the category record, use the `Select` option from the actions menu located in the upper right corner of the `IMAGES` panel:
-
-![Adding images](../../_assets/categories/images-select.jpg)
-
-In the "Images" pop-up that appears, choose the desired image (or images) from the list and press the `Select` button to link the item(s) to the category record.
-
-To see all image records linked to the given category, use the `Show full list` option:
-
-![Show full option](../../_assets/categories/show-full-option.jpg)
-
-Then the "Images" page opens, where all image records [filtered](./search-and-filtering.md) by the given category are displayed:
-
-![Images full list](../../_assets/categories/images-full-list.jpg)
-
-To open the pop-up with the preview of the images that are listed on the `IMAGES` panel, click the desired one in the `Image` column in the image records list.
-
-Images linked to the given category record can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `IMAGES` panel:
-
-![Images actions](../../_assets/categories/images-actions-menu.jpg)
-
-On the `IMAGES` panel you can also define image records order within the given category record via their drag-and-drop:
-
-![Images order](../../_assets/categories/images-order.jpg)
-
-The changes are saved on the fly.
-
-Please, note that the first image record in the list is automatically considered as the main category image.
-
-To view the category related image record from the `IMAGES` panel, click its name in the images list. The [detail view](./views-and-panels.md#detail-view) page of the given image will open, where you can perform further actions according to your access rights, configured by the administrator. 
-
-### Product Categories
-
-[Products](./products.md) that are linked to the category record are shown on the `PRODUCT CATEGORIES` panel within the category [detail view](./views-and-panels.md#detail-view) page and include the following table columns:
+[Products](./products.md) that are linked to the category record are shown on the `CATEGORY PRODUCTS` panel within the category [detail view](./views-and-panels.md#detail-view) page and include the following table columns:
  - Product
  - Scope
  - Channels
 
-![Product categories panel](../../_assets/categories/product-categories-panel.jpg)
+![Category panel](../../_assets/categories/category-products-panel.jpg)
 
-It is possible to link products to a category by creating new product categories. To do this for the currently open category, click the `+` button located in the upper right corner of the `PRODUCT CATEGORIES` panel and enter the necessary data in the product category creation pop-up that appears:
+It is possible to link product records to a category by creating new category products. To do this for the currently open category record, click the `+` button located in the upper right corner of the `CATEGORY PRODUCTS` panel and enter the necessary data in the category product creation pop-up that appears:
 
-![Creating categories](../../_assets/categories/create-product-category.jpg)
+![Creating category products](../../_assets/categories/create-category-product.jpg)
+
+Fill in the `Sorting` field to define a certain sort order of the category product records on the panel, if needed. 
 
 By default, the defined category has the `Global` scope, but you can change it to `Channel` and select the desired channel (or channels) in the added field:
 
-![Channel category](../../_assets/categories/category-channel.jpg)
+![Channel product](../../_assets/categories/product-channel.jpg)
 
 Click the `Save` button to complete the category creation process or `Cancel` to abort it.
 
-Please, note that you can link the same product category twice, but with different scopes – `Global` or `Channel`.
+It is possible to link the same category product twice, but with different category scopes – `Global` or `Channel`:
 
-Please, note that you can link both root and child product categories. The only condition is that their root category should be linked to the [catalog](./catalogs.md) to which the given product belongs.
+![Category products scope](../../_assets/categories/category-products-scope.jpg)
 
-Product categories can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `PRODUCT CATEGORIES` panel:
+Please, note that you can link category products of both root and child categories. The only condition is that their root category should be linked to the same [catalog](./catalogs.md) to which the given product belongs.
 
-![Categories actions](../../_assets/categories/product-categories-actions-menu.jpg)
+Category product records can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `CATEGORY PRODUCTS` panel:
 
+![Products actions](../../_assets/categories/products-actions-menu.jpg)
+
+Moreover, category product records can be arranged in a certain order via their drag-and-drop on the `CATEGORY PRODUCTS` panel:
+
+![Products order](../../_assets/categories/products-order.jpg)
+
+As a result, the records sorting value is changed accordingly.
+
+### Catalogs
+
+Root categories are also related to [catalogs](#catalogs) and the latter are displayed on the `CATALOGS` panel within the root category [detail view](./views-and-panels.md#detail-view) page and include the following table columns:
+ - Name
+ - Code
+ - Categories
+ - Active
+
+![Catalogs panel](../../_assets/categories/catalogs-panel.jpg)
+
+It is possible to link catalog records to a root category by selecting the existing ones or creating new catalogs. 
+
+To create a new catalog record to be linked to the currently open root category, click the `+` button on the `CATALOGS` panel and enter the necessary data in the catalog creation pop-up that appears:
+
+![Creating category catalog](../../_assets/categories/category-catalog-create.jpg)
+
+Click the `Save` button to complete the catalog creation process or `Cancel` to abort it.
+
+To link the already existing catalog (or several catalogs) to the root category record, use the `Select` option from the actions menu located in the upper right corner of the `CATALOGS` panel:
+
+![Adding catalogs](../../_assets/categories/catalogs-select.jpg)
+
+In the "Catalogs" pop-up that appears, choose the desired catalog (or catalogs) from the list and press the `Select` button to link the item(s) to the root category.
+
+Catalogs linked to the given category record can be viewed, edited, unlinked, or removed via the corresponding options from the single record actions menu on the `CATALOGS` panel:
+
+![Catalogs actions](../../_assets/categories/catalogs-actions-menu.jpg)
+
+### Asset Relations
+
+> The `ASSET RELATIONS` panel is present on the category record detail view page only when the [TreoDAM module](https://treodam.com) is also installed in the TreoPIM system.
+
+All the assets that are linked to the currently open category record are displayed on its [detail view](./views-and-panels.md#detail-view) page on the `ASSET RELATIONS` panel and include the following table columns:
+- Preview
+- Name
+- Related entity name
+- Role
+- Scope
+- Channels
+
+![Asset relations panel](../../_assets/categories/asset-relations-panel-categories.jpg)
+
+On this panel, you can link the following *asset types* to the given category record:
+- Gallery image
+- Description image
+- Icon
+- Office document
+- Text
+- CSV
+- PDF document
+- Archive
+
+All the linked assets are grouped by type correspondingly.
+
+To create a new asset record to be linked to the currently open category record, click the `+` button located in the upper right corner of the `ASSET RELATIONS` panel and enter the necessary data in the asset creation pop-up that appears:
+
+![Asset creation](../../_assets/categories/asset-creation-popup.jpg)
+
+Here select the asset type from the corresponding drop-down list and upload the desired file (or several files) via their drag-and-drop or using the `Choose files` button. Once the files are loaded, enter their data in the fields that appear:
+
+![Asset details](../../_assets/categories/asset-details.jpg)
+
+By default, the defined asset has the `Global` scope, but you can change it to `Channel` and select the desired channel (or channels) in the added field:
+
+![Channel asset](../../_assets/categories/asset-channel.jpg)
+
+Select the `Private` checkbox to make the current asset record private, i.e. allow access to it only via the entry point. If the checkbox is not selected, TreoPIM users can reach the asset via the direct shared link to its storage place.
+
+Additionally, it is possible to assign a role to the asset record being created by clicking the corresponding field and selecting the desired option from the list:
+
+![Asset role](../../_assets/categories/asset-role.jpg)
+
+By default, only the `Main` role is available, but the list can be expanded by the administrator. 
+
+Click the `Save` button to complete the asset record creation process or `Cancel` to abort it.
+
+Please, note that the **`Gallery image`** asset record of the **`Global`** scope *only* with the **`Main`** role assigned to it becomes the main image for the given category record and is displayed on the right hand side `CATEGORY PREVIEW` panel:
+
+![Category main image](../../_assets/categories/category-main-image.jpg)
+
+To view the main image in full size, click the category preview icon.
+
+Once the `Main` role is assigned to a different `Gallery image` asset record of the `Global` scope, the `CATEGORY PREVIEW` panel content is automatically updated correspondingly. 
+
+To assign an existing in the system asset (or several assets) to the category record, use the `Select` option from the actions menu located in the upper right corner of the `ASSET RELATIONS` panel:
+
+![Adding assets](../../_assets/categories/assets-select.jpg)
+
+In the common record selection pop-up that appears, choose the desired assets from the list (they may be of different types) and press the `Select` button to link the item(s) to the category record.
+
+Assets linked to the given category record, irregardless of their types, can be viewed, edited, or removed via the corresponding options from the single record actions menu on the `ASSET RELATIONS` panel:
+
+![Assets actions](../../_assets/categories/assets-actions-menu.jpg)
+
+Here you can also define the sort order of the records within each asset type group via their drag-and-drop:
+
+![Asset order](../../_assets/categories/assets-order.jpg)
+
+The changes are saved on the fly.
+
+To view the category related asset record from the `ASSET RELATIONS` panel, click its name in the `Related entity name` column. The [detail view](./views-and-panels.md#detail-view) page of the given asset will open, where you can perform further actions according to your access rights, configured by the administrator. 
