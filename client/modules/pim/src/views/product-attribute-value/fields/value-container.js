@@ -80,7 +80,8 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
                     type: type,
                     options: typeValue,
                     view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
-                    required: !!this.model.get('isRequired')
+                    required: !!this.model.get('isRequired'),
+                    readOnly: (type === 'enum' || type === 'multiEnum') && !!this.model.get('locale')
                 };
 
                 if (type === 'unit') {
