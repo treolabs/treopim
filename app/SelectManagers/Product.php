@@ -89,6 +89,12 @@ class Product extends AbstractSelectManager
             return;
         }
 
+        $scopes = $this->getMetadata()->get(['entityDefs', 'Product', 'collection'], []);
+
+        if (isset($scopes['attributeTextFilterDisable']) && $scopes['attributeTextFilterDisable'] == true) {
+            return;
+        }
+
         // get last
         $last = array_pop($result['whereClause']);
 
@@ -135,6 +141,50 @@ class Product extends AbstractSelectManager
 
         // prepare custom where
         $result['customWhere'] .= " AND (" . implode(" OR ", $rows) . ")";
+    }
+
+    /**
+     * @param array $result
+     */
+    protected function boolFilterNotLinkedCategoryAndOnlyCatalogsProducts(array &$result)
+    {
+        $data = $this->getSelectCondition('notLinkedCategoryAndOnlyCatalogsProducts');
+
+        if (isset($data['categoryId']) && isset($data['scope'])) {
+            $catalogs = $this
+                ->getEntityManager()
+                ->getRepository('Catalog')
+                ->distinct()
+                ->select(['id'])
+                ->join('categories')
+                ->where([
+                    'categories.id' => $data['categoryId']
+                ])
+                ->find()
+                ->toArray();
+
+            if (!empty($catalogs)) {
+                $productsIds = $this
+                    ->getEntityManager()
+                    ->getRepository('Product')
+                    ->distinct()
+                    ->select(['id'])
+                    ->join(['productCategories'])
+                    ->where([
+                        'catalogId' => array_column($catalogs, 'id'),
+                        'productCategories.categoryId' => $data['categoryId'],
+                        'productCategories.scope' => $data['scope']
+                    ])
+                    ->find()
+                    ->toArray();
+
+                if (!empty($productsIds)) {
+                    $result['whereClause'][] = [
+                        'id!=' => array_column($productsIds, 'id')
+                    ];
+                }
+            }
+        }
     }
 
     /**
