@@ -57,6 +57,11 @@ class Product extends AbstractSelectManager
         // add product attributes filter
         $this->addProductAttributesFilter($selectParams, $productAttributes);
 
+        if ($params['sortBy'] == 'pcSorting') {
+            $selectParams['additionalColumns']['sorting'] = 'pcSorting';
+            $selectParams['orderBy'] = 'product_category_linker.sorting';
+        }
+
         return $selectParams;
     }
 

@@ -118,10 +118,10 @@
       "importDisabled": true,
       "noLoad": true,
       "columns": {
-        "productsSorting": "sorting"
+        "pcSorting": "sorting"
       }
     },
-    "productsSorting": {
+    "pcSorting": {
       "type": "int",
       "notStorable": true
     }
