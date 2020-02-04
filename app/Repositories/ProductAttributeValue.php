@@ -181,9 +181,15 @@ class ProductAttributeValue extends Base
             /** @var int $key */
             $key = array_search($entity->get('value'), $attribute->get('typeValue'));
 
-            if (is_int($key)) {
+            if (is_int($key) || $entity->get('value') == '') {
                 foreach ($localeAttributes as $localeAttribute) {
-                    if (isset($localeAttribute['typeValue'][$key])) {
+                    if ($entity->get('value') == '') {
+                        $value = $entity->get('value');
+                    } elseif (isset($localeAttribute['typeValue'][$key])) {
+                        $value = $localeAttribute['typeValue'][$key];
+                    }
+
+                    if (isset($value)) {
                         $pav = $this
                             ->getEntityManager()
                             ->getRepository('ProductAttributeValue')
@@ -191,7 +197,7 @@ class ProductAttributeValue extends Base
                             ->findOne();
 
                         if (!empty($pav)) {
-                            $pav->set('value', $localeAttribute['typeValue'][$key]);
+                            $pav->set('value', $value);
                             $this->getEntityManager()->saveEntity($pav, ['skipValidation' => true]);
                         }
                     }
