@@ -26,7 +26,7 @@ use Dam\Entities\Asset;
 use Dam\Entities\AssetRelation;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Exceptions\Error;
-use Pim\Services\Product as ProductService;
+use DamCommon\Utils\AssetRelation as UtilAssetRelation;
 use Treo\Core\EventManager\Event;
 use Treo\Listeners\AbstractListener;
 
@@ -61,7 +61,7 @@ class AssetRelationEntity extends AbstractListener
     {
         $assetRelation = $event->getArgument('entity');
         $asset = $this->getEntityManager()->getEntity('Asset', $assetRelation->get('assetId'));
-        $isGalleryImage = $asset->get('type') == 'Gallery Image';
+        $isGalleryImage = $asset->get('type') === 'Gallery Image';
         if ($this->isMainGlobalRole($assetRelation, $asset)) {
             $this->clearingRoleForType($assetRelation, $asset->get('type'), 'Main');
             if ($isGalleryImage) {
@@ -80,7 +80,7 @@ class AssetRelationEntity extends AbstractListener
     {
         $assetRelation = $event->getArgument('entity');
         $asset = $this->getEntityManager()->getEntity('Asset', $assetRelation->get('assetId'));
-        if ($this->isMainGlobalRole($assetRelation, $asset) && $asset->get('type') == 'Gallery Image') {
+        if ($this->isMainGlobalRole($assetRelation, $asset) && $asset->get('type') === 'Gallery Image') {
             $this->updateMainImage($assetRelation, null);
         }
     }
@@ -96,7 +96,7 @@ class AssetRelationEntity extends AbstractListener
     {
         $type = (string)$asset->get('type');
         $channelsIds = $this->getChannelsIds($relation);
-        if (ProductService::isMainRole($relation) && $relation->get('scope') === 'Channel' && !empty($channelsIds)) {
+        if (UtilAssetRelation::isMainRole($relation) && $relation->get('scope') === 'Channel' && !empty($channelsIds)) {
             //checking for the existence of channels with a role Main
             $channelsCount = $this->countRelation($relation, $type, 'Main', 'Channel', $channelsIds);
             if (!empty($channelsCount)) {
@@ -248,8 +248,8 @@ class AssetRelationEntity extends AbstractListener
     {
         return
             !empty($asset)
-            && $assetRelation->get('scope') == 'Global'
-            && ProductService::isMainRole($assetRelation);
+            && $assetRelation->get('scope') === 'Global'
+            && UtilAssetRelation::isMainRole($assetRelation);
     }
 
     /**

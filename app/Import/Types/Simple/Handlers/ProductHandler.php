@@ -22,11 +22,18 @@ declare(strict_types=1);
 
 namespace Pim\Import\Types\Simple\Handlers;
 
+use Dam\Entities\Asset;
+use Dam\Entities\AssetRelation;
+use DamCommon\Utils\AssetRelation as UtilAssetRelation;
+use Espo\Core\Exceptions\Conflict;
 use Espo\ORM\Entity;
 use Espo\Services\Record;
 use Import\Types\Simple\Handlers\AbstractHandler;
+use StdClass;
 use Treo\Core\Exceptions\NoChange;
+use Treo\Core\Utils\Config;
 use Treo\Core\Utils\Util;
+use Treo\Entities\Attachment;
 
 /**
  * Class Product
@@ -38,7 +45,10 @@ class ProductHandler extends AbstractHandler
     /**
      * @var array
      */
-    protected $images = [];
+    protected $assetRelations = [];
+
+    /** @var UtilAssetRelation */
+    protected $utilAssetRelation;
 
     /**
      * @var array
@@ -106,8 +116,8 @@ class ProductHandler extends AbstractHandler
             $entity = !empty($id) ? $this->getEntityManager()->getEntity($entityType, $id) : null;
 
             // prepare row
-            $input = new \stdClass();
-            $restore = new \stdClass();
+            $input = new stdClass();
+            $restore = new stdClass();
 
             try {
                 // begin transaction
@@ -120,7 +130,7 @@ class ProductHandler extends AbstractHandler
                         continue;
                     }
 
-                    if (isset($item['attributeId']) || isset($item['pimImage']) || $item['name'] == 'productCategories') {
+                    if (isset($item['attributeId']) || isset($item['asset']) || $item['name'] == 'productCategories') {
                         $additionalFields[] = [
                             'item' => $item,
                             'row' => $row
@@ -152,8 +162,14 @@ class ProductHandler extends AbstractHandler
                 }
 
                 // prepare product images if needed
-                if (!empty($entity) && !empty(array_column($data['data']['configuration'], 'pimImage'))) {
-                    $this->images = $entity->get('pimImages');
+                if (!empty($entity) && !empty(array_column($data['data']['configuration'], 'assetRelation'))) {
+                    $this->utilAssetRelation = new UtilAssetRelation();
+                    $this->utilAssetRelation->setContainer($this->container);
+
+                    $this->assetRelations = $this
+                        ->utilAssetRelation
+                        ->getAssetsRelationsByProduct(['asset.fileId', 'asset.type'], (string)$entity->get('id'))
+                        ->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_ASSOC);
                 }
 
                 // prepare product attributes
@@ -166,9 +182,9 @@ class ProductHandler extends AbstractHandler
                     } elseif (isset($value['item']['attributeId'])) {
                         // import attributes
                         $this->importAttribute($entity, $value, $delimiter);
-                    } elseif (isset($value['item']['pimImage'])) {
+                    } elseif (isset($value['item']['assetRelation'])) {
                         // import product images
-                        $this->importImages($entity, $value);
+                        $this->importAssets($entity, $value);
                     }
                 }
 
@@ -198,9 +214,9 @@ class ProductHandler extends AbstractHandler
     /**
      * @param Record $service
      * @param string $id
-     * @param \stdClass $data
+     * @param stdClass $data
      */
-    protected function updateEntity(Record $service, string $id, \stdClass $data): ?Entity
+    protected function updateEntity(Record $service, string $id, stdClass $data): ?Entity
     {
         try {
             $result = $service->updateEntity($id, $data);
@@ -222,8 +238,8 @@ class ProductHandler extends AbstractHandler
         $entityType = 'ProductAttributeValue';
         $service = $this->getServiceFactory()->create($entityType);
 
-        $inputRow = new \stdClass();
-        $restoreRow = new \stdClass();
+        $inputRow = new stdClass();
+        $restoreRow = new stdClass();
 
         $conf = $data['item'];
         $conf['name'] = 'value';
@@ -319,8 +335,8 @@ class ProductHandler extends AbstractHandler
         $exists = $this->getExists('Category', $field, explode($delimiter, $categories));
 
         foreach ($exists as $exist) {
-            $inputRow = new \stdClass();
-            $restoreRow = new \stdClass();
+            $inputRow = new stdClass();
+            $restoreRow = new stdClass();
 
             if (empty($category = $this->getProductCategory($product, $exist, $conf['scope']))) {
                 $inputRow->categoryId = $exist;
@@ -378,25 +394,30 @@ class ProductHandler extends AbstractHandler
      * @param array $data
      *
      * @throws \Espo\Core\Exceptions\Error
+     * @throws Conflict
      */
-    protected function importImages(Entity $product, array $data)
+    protected function importAssets(Entity $product, array $data): void
     {
         // prepare image entity type
-        $entityType = 'PimImage';
+        $entityType = 'Asset';
 
         // prepare data
         $conf = $data['item'];
         $row = $data['row'];
-
+        $isNewAsset = false;
         // prepare input row
-        $input = new \stdClass();
-
+        $input = new stdClass();
         // prepare where
-        if (isset($row[$conf['column']]) && !empty($row[$conf['column']])) {
-            $field = 'link';
+        if (!empty($row[$conf['column']])) {
             $value = $row[$conf['column']];
-            $input->link = $row[$conf['column']];
+            if (!empty($asset = $this->utilAssetRelation->getAsset($value))) {
+                $input->asset = $asset;
+                $isNewAsset = true;
+            } else {
+                $input->asset = $this->createAsset($value);
+            }
         } elseif (!empty($conf['default'])) {
+            return;
             $field = 'imageId';
             $value = $conf['default'];
         } else {
@@ -405,46 +426,34 @@ class ProductHandler extends AbstractHandler
 
         // prepare scope
         $input->scope = $conf['scope'];
-        if ($conf['scope'] == 'Channel') {
+        if ($conf['scope'] === 'Channel') {
             $input->channelsIds = $conf['channelsIds'];
         }
 
-        // check exist product image
-        $exist = null;
-        if (!empty($this->images)) {
-            foreach ($this->images as $image) {
-                if ($image->get($field) == $value) {
-                    $exist = $image;
-                    break;
-                }
-            }
-        }
-
-        // prepare service
-        $service = $this->getServiceFactory()->create($entityType);
+        // check exist asset
+        $exist =
+            !empty($this->assetRelations[$input->asset->get('fileId')])
+                ? $this->assetRelations[$input->asset->get('fileId')]
+                : false;
 
         if (empty($exist)) {
             // convert image
             $this->convertItem($input, $entityType, $conf, $row, '');
 
-            // get attachment
-            $attachment = $this->getEntityManager()->getEntity('Attachment', $input->{$conf['name'] . 'Id'});
-
-            // prepare input row
-            $input->productId = $product->get('id');
-            $input->productName = $product->get('name');
-            $input->name = $attachment->get('name');
-
-            // create entity
-            $entity = $service->createEntity($input);
+            $assetRelation = $this->createAssetRelation($input->asset, $product, $input);
 
             // save restore row
-            $this->saveRestoreRow('created', $entityType, $entity->get('id'));
+            $this->saveRestoreRow('created', $assetRelation->getEntityName(), $assetRelation->get('id'));
+            if ($isNewAsset) {
+                $this->saveRestoreRow('created', $input->asset->getEntityName(), $input->asset->get('id'));
+            }
 
             $this->saved = true;
         } else {
+            // prepare service
+            $service = $this->getServiceFactory()->create($entityType);
             // prepare restore row
-            $restore = new \stdClass();
+            $restore = new stdClass();
             $restore->scope = $exist->get('scope');
             $restore->channelsIds = array_column($exist->get('channels')->toArray(), 'id');
 
@@ -460,6 +469,78 @@ class ProductHandler extends AbstractHandler
     }
 
     /**
+     * @param string $link
+     * @return Asset
+     * @throws Conflict
+     * @throws \Espo\Core\Exceptions\Error
+     */
+    protected function createAsset(string $link): Asset
+    {
+        if (empty($contents = @file_get_contents($link))) {
+            throw new Error('Wrong asset link. Link: ' . $link);
+        }
+        $attachmentInput = new StdClass();
+        $attachmentInput->name = array_pop(explode('/', $link));
+        $attachmentInput->role = 'Attachment';
+        $attachmentInput->field = 'file';
+        $attachmentInput->relatedType = 'Asset';
+        $attachmentInput->file = $contents;
+        $attachmentInput->type = mime_content_type($link);
+        $attachmentInput->size = filesize($link);
+        $attachmentInput->contents = $contents;
+        /** @var Attachment $attachment */
+        $attachment = $this->getServiceFactory()->create('Attachment')->createEntity($attachment);
+
+        $assetInput = new StdClass();
+        $assetInput->type = 'Gallery Image';
+        $assetInput->privat = true;
+        $assetInput->fileId = $attachment->get('id');
+        $assetInput->fileName = $attachment->get('name');
+        $assetInput->name = explode('.', $attachment->get('name'))[0];
+        $assetInput->nameOfFile = $assetInput->name;
+        $assetInput->code = md5((string)microtime());
+        $assetInput->collectionId = '5e022260913785fe8';
+
+        foreach ($this->getInputLanguageList() as $lang) {
+            $nameField = 'name' . $lang;
+            $assetInput->{$nameField} = $assetInput->name;
+        }
+
+        $asset = $this->getServiceFactory()->create('Asset')->createEntity($asset);
+
+        return $asset;
+    }
+
+    /**
+     * @param Asset $asset
+     * @param Entity $related
+     * @param array $fields
+     * @return AssetRelation
+     * @throws \Espo\Core\Exceptions\Error
+     */
+    protected function createAssetRelation(Asset $asset, Entity $related, StdClass $fields): AssetRelation
+    {
+        $entity = $this->getEntityManager()->getEntity('AssetRelation');
+
+        foreach ($fields as $field => $value) {
+            if ($entity->hasField($field)) {
+                $entity->set($field, $value);
+            }
+        }
+        $entity->set([
+            'name' => $asset->get('name') . ' / ' . $asset->get('size'),
+            'entityName' => $related->getEntityName(),
+            'entityId' => $related->id,
+            'assetId' => $asset->id,
+            'assetType' => $asset->type
+        ]);
+
+        $this->getEntityManager()->saveEntity($entity);
+
+        return $entity;
+    }
+
+    /**
      * @inheritDoc
      */
     protected function getType(string $entityType, array $item): ?string
@@ -471,6 +552,25 @@ class ProductHandler extends AbstractHandler
         } else {
             $result = parent::getType($entityType, $item);
         }
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getInputLanguageList(): array
+    {
+        $result = [];
+
+        /** @var Config $config */
+        $config = $this->container->get('config');
+
+        if ($config->get('isMultilangActive', false)) {
+            foreach ($config->get('inputLanguageList', []) as $locale) {
+                $result[$locale] = ucfirst(Util::toCamelCase(strtolower($locale)));
+            }
+        }
+
         return $result;
     }
 }
