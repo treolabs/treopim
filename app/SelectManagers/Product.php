@@ -57,7 +57,24 @@ class Product extends AbstractSelectManager
         // add product attributes filter
         $this->addProductAttributesFilter($selectParams, $productAttributes);
 
+        if ($params['sortBy'] == 'pcSorting') {
+            $selectParams['additionalColumns']['sorting'] = 'pcSorting';
+            $selectParams['orderBy'] = 'product_category_linker.sorting';
+        }
+
         return $selectParams;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function applyBoolFilter($filterName, &$result)
+    {
+        parent::applyBoolFilter($filterName, $result);
+
+        if (preg_match_all('/^allowedForCategory_(.*)$/', $filterName, $matches)) {
+            $this->boolAdvancedFilterAllowedForCategory((string)$matches[1][0], $result);
+        }
     }
 
     /**
@@ -544,7 +561,7 @@ class Product extends AbstractSelectManager
         }
 
         // set custom where
-        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category WHERE product_id IS NOT NULL AND deleted=0 AND category_id IN ('$ids'))";
+        $result['customWhere'] .= " AND product.id IN (SELECT product_id FROM product_category_linker WHERE product_id IS NOT NULL AND deleted=0 AND category_id IN ('$ids'))";
     }
 
     /**
@@ -876,5 +893,19 @@ class Product extends AbstractSelectManager
         }
 
         return $where;
+    }
+
+    /**
+     * @param string $id
+     * @param array  $result
+     */
+    protected function boolAdvancedFilterAllowedForCategory(string $id, array &$result)
+    {
+        // get allowed ids
+        $ids = $this->getEntityManager()->getRepository('Category')->getProductsIdsThatCanBeRelatedWithCategory($id);
+
+        $result['whereClause'][] = [
+            'id' => empty($ids) ? ['no-such-id'] : $ids
+        ];
     }
 }

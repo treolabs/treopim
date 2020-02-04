@@ -89,9 +89,9 @@ Espo.define('pim:views/product/record/catalog-tree-panel', 'view',
         expandTreeWithProductCategory() {
             const catalogTreeData = this.getStorage().get('catalog-tree-panel-data', this.scope);
             if (this.model && (!catalogTreeData || !catalogTreeData.category)) {
-                this.ajaxGetRequest(`Product/${this.model.id}/productCategories`, this.getSortingParams())
+                this.ajaxGetRequest(`Product/${this.model.id}/categories`, this.getSortingParams())
                     .then(productCategories => {
-                        let id = (((productCategories.list || [])[0] || {}).categoryId);
+                        let id = (((productCategories.list || [])[0] || {}).id);
                         if (id) {
                             this.ajaxGetRequest(`Category/${id}`).then(category => {
                                 let parentCategoryId = id;

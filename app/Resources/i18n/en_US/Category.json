@@ -6,19 +6,15 @@
     "isActive": "Active",
     "categoryParent": "Parent Category",
     "categories": "Categories",
-    "channels": "Channels",
     "image": "Main Image",
     "categoryRouteName": "Сategory Tree",
-    "scope": "Scope",
-    "productCategories": "Category Products",
     "catalogs": "Catalogs"
   },
   "links": {
     "categoryParent": "Parent Category",
     "categories": "Categories",
-    "channels": "Channels",
-    "catalogs": "Catalogs",
-    "productCategories": "Category Products"
+    "products": "Products",
+    "catalogs": "Catalogs"
   },
   "labels": {
     "Create Category": "Create Category"

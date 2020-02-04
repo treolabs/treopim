@@ -22,11 +22,8 @@ declare(strict_types=1);
 
 namespace Pim\Services;
 
-use Espo\Core\Exceptions\NotFound;
 use Espo\Core\Templates\Services\Base;
-use Espo\ORM\Entity;
 use Treo\Core\EventManager\Event;
-use Treo\Core\Utils\Util;
 
 /**
  * Class of AbstractService

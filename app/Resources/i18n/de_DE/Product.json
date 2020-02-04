@@ -39,6 +39,7 @@
     "packedAmount": "Gepackte Menge"
   },
   "links": {
+    "categories": "Kategorien",
     "brand": "Marke",
     "tax": "MwSt.",
     "packaging": "Verpackung",

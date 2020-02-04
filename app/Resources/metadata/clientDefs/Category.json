@@ -7,18 +7,14 @@
     "notChildCategory",
     "notLinkedWithProduct",
     "linkedWithCatalog",
-    "onlyRootCategory",
-    "onlyCatalogCategories",
-    "notLinkedProductCategories"
+    "onlyRootCategory"
   ],
   "hiddenBoolFilterList": [
     "notEntity",
     "notChildCategory",
     "notLinkedWithProduct",
     "linkedWithCatalog",
-    "onlyRootCategory",
-    "onlyCatalogCategories",
-    "notLinkedProductCategories"
+    "onlyRootCategory"
   ],
   "disabledMassActions": [
     "merge"
@@ -33,29 +29,17 @@
     "detail": "pim:views/category/record/detail"
   },
   "relationshipPanels": {
-    "productCategories": {
-      "layout": "listForProductCategoriesInCategory",
-      "view": "pim:views/category/record/panels/category-products",
-      "selectAction": "selectRelatedEntity",
-      "selectBoolFilterList": [
-        "onlyActive",
-        "notLinkedCategoryAndOnlyCatalogsProducts"
-      ],
-      "select": true,
-      "recordsPerPage": 200,
-      "dragDrop": {
-        "isActive": true,
-        "sortField": "sorting"
-      },
-      "sortBy": "sorting",
-      "asc": true
-    },
     "catalogs": {
       "selectAction": "selectRelatedEntity",
       "selectBoolFilterList": [
         "notEntity"
       ],
       "view": "pim:views/category/record/panels/catalogs"
+    },
+    "products": {
+      "selectBoolFilterList": [
+        "allowedForCategory_{{id}}"
+      ]
     }
   },
   "menu": {
@@ -88,6 +72,16 @@
             {
               "type": "isEmpty",
               "attribute": "categoryRouteName"
+            }
+          ]
+        }
+      },
+      "products": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "isFalse",
+              "attribute": "hasChildren"
             }
           ]
         }

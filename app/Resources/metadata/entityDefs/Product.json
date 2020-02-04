@@ -194,15 +194,6 @@
       "importDisabled": true,
       "noLoad": true
     },
-    "productCategories": {
-      "type": "linkMultiple",
-      "layoutDetailDisabled": true,
-      "layoutMassUpdateDisabled": true,
-      "layoutFiltersDisabled": true,
-      "noLoad": true,
-      "importMultipleField": true,
-      "exportMultipleField": true
-    },
     "measuringUnit": {
       "type": "link",
       "required": false
@@ -214,6 +205,20 @@
     "packedAmount": {
       "type": "float",
       "default": 0
+    },
+    "categories": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "importDisabled": true,
+      "noLoad": true,
+      "columns": {
+        "pcSorting": "sorting"
+      }
+    },
+    "pcSorting": {
+      "type": "int",
+      "notStorable": true
     },
     "createdAt": {
       "type": "datetime",
@@ -324,18 +329,20 @@
         }
       }
     },
-    "productCategories": {
-      "type": "hasMany",
-      "foreign": "product",
-      "entity": "ProductCategory",
-      "addRelationCustomDefs": {
-        "link": "productCategories",
-        "entity": "Category"
-      }
-    },
     "measuringUnit": {
       "type": "belongsTo",
       "entity": "MeasuringUnit"
+    },
+    "categories": {
+      "type": "hasMany",
+      "relationName": "productCategoryLinker",
+      "foreign": "products",
+      "entity": "Category",
+      "additionalColumns": {
+        "sorting": {
+          "type": "int"
+        }
+      }
     },
     "createdBy": {
       "type": "belongsTo",

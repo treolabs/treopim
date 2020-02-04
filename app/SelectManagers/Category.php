@@ -34,6 +34,18 @@ class Category extends AbstractSelectManager
     /**
      * @inheritDoc
      */
+    public function applyBoolFilter($filterName, &$result)
+    {
+        parent::applyBoolFilter($filterName, $result);
+
+        if (preg_match_all('/^allowedForProduct_(.*)$/', $filterName, $matches)) {
+            $this->boolAdvancedFilterAllowedForProduct((string)$matches[1][0], $result);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function applyAdditional(array &$result, array $params)
     {
         // prepare additional select columns
@@ -61,51 +73,6 @@ class Category extends AbstractSelectManager
 
     /**
      * @param array $result
-     *
-     * @return mixed
-     */
-    protected function boolFilterOnlyCatalogCategories(array &$result)
-    {
-        // get id
-        $value = $this->getSelectCondition('onlyCatalogCategories');
-
-        // get catalog
-        if (empty($value)) {
-            return null;
-        }
-
-        // get catalog trees
-        $catalogs = $this
-            ->getEntityManager()
-            ->getRepository('Catalog')
-            ->where([
-                'id' => $value
-            ])
-            ->find();
-
-        $catalogsTrees = [];
-
-        if (count($catalogs) > 0) {
-            foreach ($catalogs as $catalog) {
-                $catalogsTrees = array_merge($catalogsTrees, array_column($catalog->get('categories')->toArray(), 'id'));
-            }
-        }
-
-        if (!empty($catalogsTrees)) {
-            // prepare where
-            $where[] = ['id' => $catalogsTrees];
-            foreach ($catalogsTrees as $catalogTree) {
-                $where[] = ['categoryRoute*' => "%|" . $catalogTree . "|%"];
-            }
-
-            $result['whereClause'][] = ['OR' => $where];
-        } else {
-            $result['whereClause'][] = ['id' => -1];
-        }
-    }
-
-    /**
-     * @param array $result
      */
     protected function boolFilterNotChildCategory(array &$result)
     {
@@ -118,28 +85,16 @@ class Category extends AbstractSelectManager
     }
 
     /**
-     * @param array $result
+     * @param string $id
+     * @param array  $result
      */
-    protected function boolFilterNotLinkedProductCategories(array &$result)
+    protected function boolAdvancedFilterAllowedForProduct(string $id, array &$result)
     {
-        $data = $this->getSelectCondition('notLinkedProductCategories');
+        // get allowed ids
+        $ids = $this->getEntityManager()->getRepository('Product')->getCategoriesIdsThatCanBeRelatedWithProduct($id);
 
-        // prepare product categories
-        $productCategories = $this
-            ->getEntityManager()
-            ->getRepository('ProductCategory')
-            ->select(['categoryId'])
-            ->where(
-                [
-                    'productId' => $data['productId'],
-                    'scope'     => $data['scope']
-                ]
-            )
-            ->find()
-            ->toArray();
-
-        if (!empty($productCategories)) {
-            $result['whereClause'][] = ['id!=' => array_column($productCategories, 'categoryId')];
-        }
+        $result['whereClause'][] = [
+            'id' => empty($ids) ? ['no-such-id'] : $ids
+        ];
     }
 }

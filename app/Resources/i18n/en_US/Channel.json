@@ -9,14 +9,11 @@
     "locales": "Locales",
     "code": "Code",
     "products": "Products",
-    "productCategories": "Product Categories",
     "productFamilyAttributes": "Product Family Attributes"
   },
   "links": {
-    "categories": "Categories",
     "channelProducts": "Product Channels",
     "products": "Products",
-    "productCategories": "Product Categories",
     "productFamilyAttributes": "Product Family Attributes"
   },
   "labels": {
