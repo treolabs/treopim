@@ -61,6 +61,16 @@ class Category extends Base
     }
 
     /**
+     * @param string $categoryId
+     *
+     * @return bool
+     */
+    public function hasChild(string $categoryId): bool
+    {
+        return !empty($this->select(['id'])->where(['categoryParentId' => $categoryId])->findOne());
+    }
+
+    /**
      * @inheritDoc
      *
      * @throws BadRequest
@@ -70,8 +80,14 @@ class Category extends Base
         /** @var string $foreignId */
         $foreignId = is_string($foreign) ? $foreign : (string)$foreign->get('id');
 
-        if ($relationName == 'products' && !in_array($foreignId, $this->getProductsIdsThatCanBeRelatedWithCategory((string)$entity->get('id')))) {
-            throw new BadRequest("Such product can't be related with current category");
+        if ($relationName == 'products') {
+            if ($this->hasChild((string)$entity->get('id'))) {
+                throw new BadRequest("Any product can't be related to category if category has child category");
+            }
+
+            if (!in_array($foreignId, $this->getProductsIdsThatCanBeRelatedWithCategory((string)$entity->get('id')))) {
+                throw new BadRequest("Such product can't be related with current category");
+            }
         }
 
         parent::beforeRelate($entity, $relationName, $foreign, $data, $options);

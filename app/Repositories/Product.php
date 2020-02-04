@@ -74,7 +74,9 @@ class Product extends Base
             ->nativeQuery(
                 "SELECT DISTINCT c.id
                  FROM category c
+                   LEFT JOIN category c1 ON c1.category_parent_id=c.id AND c1.deleted=0
                  WHERE c.deleted=0
+                   AND c1.id IS NULL
                    AND c.id NOT IN (SELECT category_id FROM product_category_linker WHERE product_id=:product_id AND deleted=0)
                    AND ($whereTree)",
                 ['product_id' => $productId]
