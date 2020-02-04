@@ -31,6 +31,18 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
             this.listenTo(this.model, 'change:attributeId', () => {
                 this.updateModelDefs();
                 if (this.model.get('attributeId')) {
+                    const inputLanguageList = this.getConfig().get('inputLanguageList') || [];
+
+                    if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
+                        const valuesKeysList = ['value', ...inputLanguageList.map(lang => {
+                            return lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
+                        })];
+
+                        valuesKeysList.forEach(value => {
+                            this.model.set({[value]: null}, { silent: true });
+                        });
+                    }
+
                     this.clearView('middle');
                     this.gridLayout = null;
                     this.createMiddleView(() => this.reRender());
