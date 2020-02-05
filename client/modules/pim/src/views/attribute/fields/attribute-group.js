@@ -27,7 +27,7 @@ Espo.define('pim:views/attribute/fields/attribute-group', 'treo-core:views/field
 
             this.updateReadOnlyStatus();
 
-            this.listenTo(this.model, 'after:save sync', () => {
+            this.listenTo(this.model, 'sync', () => {
                 this.updateReadOnlyStatus()
             });
         },
