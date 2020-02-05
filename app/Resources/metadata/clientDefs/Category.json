@@ -39,7 +39,11 @@
     "products": {
       "selectBoolFilterList": [
         "allowedForCategory_{{id}}"
-      ]
+      ],
+      "dragDrop": {
+        "isActive": true,
+        "sortField": "pcSorting"
+      }
     }
   },
   "menu": {

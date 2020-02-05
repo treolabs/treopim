@@ -152,11 +152,24 @@ class Product extends AbstractService
 
     /**
      * @param AssetRelation $assetRelation
+     *
      * @return bool
      */
     public static function isMainRole(AssetRelation $assetRelation): bool
     {
         return in_array('Main', (array)$assetRelation->get('role'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function beforeUpdateEntity(Entity $entity, $data)
+    {
+        parent::beforeUpdateEntity($entity, $data);
+
+        if (isset($data->pcSorting) && isset($data->_id)) {
+            $this->updateSortOrder($data->_id, $entity);
+        }
     }
 
     /**
@@ -380,5 +393,48 @@ class Product extends AbstractService
     protected function getStringProductTypes(): string
     {
         return join("','", array_keys($this->getMetadata()->get('pim.productType')));
+    }
+
+    /**
+     * @param string $categoryId
+     * @param Entity $product
+     */
+    protected function updateSortOrder(string $categoryId, Entity $product): void
+    {
+        // create max
+        $max = $product->get('pcSorting');
+
+        // update current
+        $this
+            ->getEntityManager()
+            ->nativeQuery(
+                'UPDATE product_category_linker SET sorting=:sorting WHERE category_id=:categoryId AND product_id=:productId AND deleted=0',
+                ['sorting' => $max, 'categoryId' => $categoryId, 'productId' => $product->get('id')]
+            );
+
+        // get next records
+        $ids = $this
+            ->getEntityManager()
+            ->nativeQuery(
+                "SELECT id FROM product_category_linker WHERE sorting>=:sorting AND category_id=:categoryId AND deleted=0 AND product_id!=:productId ORDER BY sorting",
+                ['sorting' => $max, 'categoryId' => $categoryId, 'productId' => $product->get('id')]
+            )
+            ->fetchAll(\PDO::FETCH_COLUMN);
+
+        // update next records
+        if (!empty($ids)) {
+            // prepare sql
+            $sql = '';
+            foreach ($ids as $id) {
+                // increase max
+                $max = $max + 10;
+
+                // prepare sql
+                $sql .= "UPDATE product_category_linker SET sorting='$max' WHERE id='$id';";
+            }
+
+            // execute sql
+            $this->getEntityManager()->nativeQuery($sql);
+        }
     }
 }

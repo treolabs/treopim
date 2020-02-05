@@ -33,6 +33,8 @@ use Espo\ORM\Entity;
  */
 class Category extends Base
 {
+//    public function update
+
     /**
      * @param string $productId
      *
@@ -91,6 +93,14 @@ class Category extends Base
         }
 
         parent::beforeRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        parent::afterRelate($entity, $relationName, $foreign, $data, $options);
     }
 
     /**
