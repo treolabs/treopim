@@ -33,7 +33,15 @@ use Espo\ORM\Entity;
  */
 class Category extends Base
 {
-//    public function update
+    /**
+     * Update category product sorting
+     */
+    public function updateCategoryProductSorting(): void
+    {
+        $this
+            ->getEntityManager()
+            ->nativeQuery("UPDATE product_category_linker SET sorting=:sorting WHERE sorting IS NULL AND deleted=0", ['sorting' => time()]);
+    }
 
     /**
      * @param string $productId
@@ -100,6 +108,10 @@ class Category extends Base
      */
     protected function afterRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
     {
+        if ($relationName == 'products') {
+            $this->updateCategoryProductSorting();
+        }
+
         parent::afterRelate($entity, $relationName, $foreign, $data, $options);
     }
 
