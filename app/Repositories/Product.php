@@ -115,6 +115,18 @@ class Product extends Base
 
     /**
      * @inheritDoc
+     */
+    protected function afterRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
+    {
+        if ($relationName == 'categories') {
+            $this->getEntityManager()->getRepository('Category')->updateCategoryProductSorting();
+        }
+
+        parent::afterRelate($entity, $relationName, $foreign, $data, $options);
+    }
+
+    /**
+     * @inheritDoc
      *
      * @throws BadRequest
      */
