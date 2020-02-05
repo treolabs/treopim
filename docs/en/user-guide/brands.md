@@ -108,7 +108,11 @@ or from the single record actions menu on the brands list view page:
 
 ![Remove2](../../_assets/brands/remove-list.jpg)
 
-By default, it is not possible to remove the brand, if there is any product associated with it.
+The record removal operation has to be confirmed in the pop-up that appears:
+
+![Brand removal confirmation](../../_assets/brands/brand-remove-confirm.jpg)
+
+By default, it is not possible to remove the brand, if there is any product related to it.  
 
 ## Duplicating
 
@@ -136,13 +140,9 @@ To link the already existing products with the given brand record, use the `Sele
 
 > Please, note that if the product has already been related to other brand record, it will be reassigned to a new brand, which is opened in the main window.
 
-To see all products linked to the given brand record, use the `Show full list` option:
+To see all products linked to the given brand record, use the `Show full list` option. Then the "Products" page opens, where all product records [filtered](./search-and-filtering.md) by the given brand are displayed:
 
-![Brand products](../../_assets/brands/show-full-option.jpg)
-
-Then the "Products" page opens, where all product records [filtered](./search-and-filtering.md) by the given brand are displayed:
-
-![Products full list](../../_assets/brands/products-full-list.jpg)
+![Brand products](../../_assets/brands/brands-products-full-list.jpg)
 
 To view the brand related product, click its name in the products list or select the `View` option from the single record actions menu for the appropriate record:
 

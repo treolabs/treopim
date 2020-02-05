@@ -174,6 +174,11 @@ or from the single record actions menu on the products list/plate view page:
 
 ![Remove2](../../_assets/products/remove-list.jpg)
 
+The record removal operation has to be confirmed in the pop-up that appears:
+
+![Product removal confirmation](../../_assets/products/product-remove-confirm.jpg)
+
+
 ## Duplicating
 
 Use the `Duplicate` option from the actions menu to go to the product [creation page](#creating) and get all the values of the last chosen product record copied in the empty fields of the new product record to be created. Modifying the SKU value is required, as this value has to be unique within the catalog.

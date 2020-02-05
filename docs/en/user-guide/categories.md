@@ -82,6 +82,8 @@ The following mass actions are available for category records on the list view p
 
 ![Categories mass actions](../../_assets/categories/categories-mass-actions.jpg)
 
+> If any option is missing in your mass actions menu, please, contact your administrator.
+
 For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
@@ -93,6 +95,8 @@ The following single record actions are available for category records on the li
 - Remove
 
 ![Categories single record actions](../../_assets/categories/categories-single-actions.jpg)
+
+> If any option is missing in your single record actions menu, please, contact your administrator.
 
 For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
@@ -119,6 +123,10 @@ To remove the category record, use the `Remove` option from the actions menu on 
 or from the single record actions menu on the categories list view page:
 
 ![Remove2](../../_assets/categories/remove-list.jpg)
+
+The record removal operation has to be confirmed in the pop-up that appears:
+
+![Category removal confirmation](../../_assets/categories/category-remove-confirm.jpg)
 
 By default, it is not possible to remove the category, if it has child categories in any [product](./products.md#product-categories) associated with it.
 
@@ -189,7 +197,7 @@ Root categories are also related to [catalogs](#catalogs) and the latter are dis
 
 ![Catalogs panel](../../_assets/categories/catalogs-panel.jpg)
 
-It is possible to link catalog records to a root category by selecting the existing ones or creating new catalogs. 
+It is possible to link catalog records to the root category by selecting the existing ones or creating new catalogs. 
 
 To create a new catalog record to be linked to the currently open root category, click the `+` button on the `CATALOGS` panel and enter the necessary data in the catalog creation pop-up that appears:
 

@@ -74,6 +74,8 @@ The following mass actions are available for product family records on the list 
 
 ![PF mass actions](../../_assets/product-families/pf-mass-actions.jpg)
 
+> If any option is missing in your mass actions menu, please, contact your administrator.
+
 For details on these actions, refer to the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
@@ -85,6 +87,8 @@ The following single record actions are available for product family records on 
 - Remove
 
 ![PF single record actions](../../_assets/product-families/pf-single-actions.jpg)
+
+> If any option is missing in your single record actions menu, please, contact your administrator.
 
 For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 

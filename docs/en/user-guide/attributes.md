@@ -19,35 +19,29 @@ The attribute entity comes with the following preconfigured fields; mandatory ar
 | Name (multi-lang) *      | Attribute name                     |
 | Attribute group          | Attribute group name               |
 
-If you want to make changes to the attribute entity (e.g. add new fields, or modify attribute views), please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the attribute group entity, or if you want to make changes to the attribute entity (e.g. add new fields, or modify attribute views), please contact your administrator.
 
 ## Available Attribute Types
 
-Attributes are automatically validated according to their type. The following attribute types are available in the TreoPIM system:
+Attributes are automatically validated according to their type. The following attribute types are available in the [TreoPIM system](./what-is-treopim.md):
 
 ![Attribute types](../../_assets/attributes/attribute-types-list.jpg)
 
 | **Attribute Type**           | **Description**                   |
 |------------------------------|-----------------------------------|
 | Array                        | Data array, where each product attribute can get more than one value. No array values can be set upon the attribute creation or editing.|
-| Boolean                      | Checkbox for the product attribute				|
-| Date                         | Date picker with the calender and option to set up the date manually |
+| Boolean                      | Checkbox for the product attribute; can be made [multilingual](https://treopim.com/store/multi-languages#multilingual-attributes).				|
+| Date                         | Date picker with the calender and option to set up the date manually. |
 | DateTime                     | Date and time picker						|
-| Enum                         | List of possible values, which is set up upon the attribute creation or editing; a single value can be set for the product attribute. |
+| Enum                         | List of possible values, which is set up upon the attribute creation or editing; a single value can be set for the product attribute. This attribute type can be made [multilingual](https://treopim.com/store/multi-languages#multilingual-attributes). |
 | Float                        | Number with a decimal part		|
 | Int                          | Integer attribute					|
-| Multi-Enum                   | List of possible values, which is set up upon attribute creation or editing; multiple values can be set for the product attribute. |
-| Text                         | Text area, for long multiline texts		|
+| Multi-Enum                   | List of possible values, which is set up upon attribute creation or editing; multiple values can be set for the product attribute. This attribute type can be made [multilingual](https://treopim.com/store/multi-languages#multilingual-attributes). |
+| Text                         | Text area, for long multiline texts; can be made [multilingual](https://treopim.com/store/multi-languages#multilingual-attributes).		|
 | Unit                         | Number with a measurement value selection  |
 | Url                          | URL with a hyperlink, which is automatically created |
-| Varchar                      | Short text attribute				|
-| Varchar Multilang            | Short text attribute with separate values for each locale	|
-| Text Multilang               | Text area for long multiline texts with separate values for each locale   |
-| Enum Multilang               | Multilingual list of possible values, which is set up upon the attribute creation or editing; a single value can be set for the product attribute separately for each locale.  |
-| Multi-Enum Multilang         | Multilingual list of possible values, which is set up upon the attribute creation or editing, multiple values can be set for the product attribute separately for each locale. |
-| Array Multilang              | Multilingual data array, where each product attribute can get more than one value separately for each locale. No array values can be set upon the attribute creation or editing.   |
-| Wysiwyg                      | Text area for long multiline texts that contains a built-in text editor   |
-| Wysiwyg Multilang            | Text area for long multiline texts that contains a built-in text editor with separate values for each locale  |
+| Varchar                      | Short text attribute; can be made [multilingual](https://treopim.com/store/multi-languages#multilingual-attributes).				|
+| Wysiwyg                      | Text area for long multiline texts that contains a built-in text editor. This attribute type can be made [multilingual](https://treopim.com/store/multi-languages#multilingual-attributes).   |
 | Image				           | Image file attachment  |
 
 ## Creating
@@ -56,15 +50,21 @@ To create a new attribute record, click `Attributes` in the navigation menu to g
 
 ![Attributes creation](../../_assets/attributes/attributes-create.jpg)
 
-Here enter the attribute name and code and select its type from the `Attribute Type` drop-down list. Define its attribute group using the corresponding select button, if needed. Your username is loaded to the `Owner` and `Assigned user` fields by default. You can change them via the corresponding select buttons, as well as define the team, if needed. Click the `Save` button to finish the attribute record creation or `Cancel` to abort the process.
+Here enter the attribute name and code and select its type from the `Attribute Type` drop-down list. Define its attribute group using the corresponding select button, if needed. Your user name is loaded to the `Owner` and `Assigned user` fields on the	`OWNERSHIP INFORMATION` panel by default. You can change them via the corresponding select buttons, as well as define the team, if needed. Click the `Save` button to finish the attribute record creation or `Cancel` to abort the process.
 
-If the attribute code is not unique, the error message will appear notifying you about it.
+If the attribute code is not unique, the error message will appear notifying you about it. 
 
-Please, note that attribute type cannot be changed after the attribute is created. 
+> Please, note that the attribute type cannot be changed after the attribute record is created. 
 
-When creating attribute records of the `Enum`, `Multi-Enum`, `Enum Multilang`, and `Multi-Enum Multilang` types, their attribute values should also be defined:
+When creating attribute records of the `Enum`, and `Multi-Enum` types, their attribute values should also be defined:
 
 ![Enum values list](../../_assets/attributes/enum-values-list.jpg)
+
+Once the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, the attribute type can be made multilingual on their creation step:
+
+![ML attributes](../../_assets/attributes/ml-attributes.jpg)
+
+For details on multilingual attributes, please, visit [our store](https://treopim.com/store/multi-languages#multilingual-attributes).
 
 Alternatively, use the [quick create](./user-interface.md#quick-create) button on any TreoPIM page and fill in the required fields in the attribute creation pop-up that appears:
 
@@ -84,7 +84,7 @@ By default, the following fields are displayed on the list view page for attribu
 
 To sort attribute records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Attribute records can be searched and filtered according to your needs.  For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+Attribute records can be searched and filtered according to your needs. For details on these options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
 To view some attribute record details, click the name field value of the corresponding record in the list of attributes; the [detail view](./views-and-panels.md#detail-view) page will open showing the attribute records. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
@@ -94,10 +94,10 @@ The following mass actions are available for attribute records:
 - Remove
 - Mass update
 - Export
-- Add relation
-- Remove relation
 
 ![Attributes mass actions](../../_assets/attributes/attributes-mass-actions.jpg)
+
+> If any option is missing in your mass actions menu, please, contact your administrator.
 
 For details on these actions, please, see the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
@@ -110,6 +110,8 @@ The following single record actions are available for attribute records:
  
 ![Attributes single record actions](../../_assets/attributes/attributes-single-record-actions.jpg)
  
+> If any option is missing in your single record actions menu, please, contact your administrator.
+
 For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
 ## Editing
@@ -140,7 +142,7 @@ By default, it is not possible to remove the attribute if there is any product o
 
 ![Attribute removal confirmation](../../_assets/attributes/remove-attribute.jpg)
 
-Select the checkbox to unlink the attribute record from other entities and click `Remove` to complete the operation. Click `Cancel` to abort the process. 
+Select the checkbox to unlink the attribute record from other entities and click `Remove` to complete the operation. To abort the process, click `Cancel`. 
 
 ## Duplicating
 

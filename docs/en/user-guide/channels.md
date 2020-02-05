@@ -112,6 +112,10 @@ or from the single record actions menu on the channels list view page:
 
 ![Remove2](../../_assets/channels/remove-list.jpg)
 
+The record removal operation has to be confirmed in the pop-up that appears:
+
+![Channel removal confirmation](../../_assets/channels/channel-remove-confirm.jpg)
+
 ## Duplicating
 
 Use the `Duplicate` option from the actions menu to go to the channel creation page and get all the values of the last chosen channel record copied in the empty fields of the new channel record to be created. Modifying the channel code is required, as this value has to be unique.

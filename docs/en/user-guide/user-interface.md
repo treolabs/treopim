@@ -108,9 +108,9 @@ Click the `Edit` button to make changes on these two panels in the editing page 
 ![User profile editing](../../_assets/user-interface/user-profile-editing.jpg) 
 
 Click the `Save` button to apply the changes or `Cancel` to abort them.
-<!-- modified! needs to be changed in the CORE guide as well-->
+
 > If there is no `Edit` button on your user profile page, please, contact the administrator.
-<!-- -->
+
 On the user profile page, click the `Access` button to view your current permissions within the TreoPIM system on the scope and field levels in the pop-up window that appears:
 
 ![User Access Window](../../_assets/user-interface/user-access-window.jpg)
@@ -121,11 +121,10 @@ Click the actions button to see the list of actions available for the currently 
 
 ![User Actions Menu](../../_assets/user-interface/user-actions-menu.jpg)
 
-<!-- modified! needs to be changed in the CORE guide as well-->
 > If there are less options in your actions menu, please, contact the administrator.
 
 To remove the current user, click the `Remove` option and confirm your decision in the pop-up that appears. Use the `Duplicate` option from the same menu to go to the user creation page and get all the values of your current user record copied in the empty fields of the new user record to be created. 
-<!-- -->
+
 To change your user password, select the corresponding option in the actions menu and complete the operation on the "Change Password" page:
 
 ![User Password Change](../../_assets/user-interface/user-change-paswd.jpg)
@@ -133,11 +132,11 @@ To change your user password, select the corresponding option in the actions men
 If you forget your password, it can be recovered using the `Forgot Password?` link on the TreoPIM login page.
 
 You can also manage your team and access control, if you have the corresponding permissions.
-<!-- modified! needs to be changed in the CORE guide as well + make stream as a cross-reference to the Core guide `stream` article?....<!-- -->
+
 At the bottom of the screen you will see your personal activity stream:
 
 ![User profile stream](../../_assets/user-interface/user-profile-stream.jpg)
-<!-- -->
+
 You can manage the types of activity to be displayed here in the corresponding actions menu:
 
 ![User profile stream menu](../../_assets/user-interface/user-profile-stream-menu.jpg)
@@ -151,8 +150,8 @@ Self-posted messages can be edited and removed via the corresponding options of 
 
 ![Stream post menu](../../_assets/user-interface/stream-post-menu.jpg)
 
-To learn more about the stream and its features, please, refer to the **"Stream"** article within the TreoCore user guide.
-<!-- -->  <!--+ make this interactive, when the Core guide is uploaded -->
+To learn more about the stream and its features, please, refer to the [**"Stream"**](../../../../../../treocore/blob/master/docs/en/user-guide/stream-core.md) article within the TreoCore user guide.
+
 #### User Preferences
 
 If you want to edit your user preferences, select the `Preferences` option from the user drop-down menu or use the `Preferences` button on the user profile page and make the desired changes on the "LOCALE", "MISC", "USER INTERFACE", "SMTP" panels of the current user page.
@@ -218,7 +217,7 @@ Select the `Last Viewed` option from the user drop-down menu to see the history 
 TreoPIM is a single page application (SPA). To improve the page loading time, it actively uses cache for content as well as for the user interface.
 
 If you want to be sure in getting the latest information and application functions, please use the `Clear Local Cache` option from the user drop-down menu:
-<!-- added this screenshot --> 
+ 
 ![Clear local cache option](../../_assets/user-interface/clear-local-cache-option.jpg)
 
 ## Breadcrumb Navigation

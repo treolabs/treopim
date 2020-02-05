@@ -98,6 +98,10 @@ or from the single record actions menu on the associations list view page:
 
 ![Remove2](../../_assets/associations/remove-list.jpg)
 
+The record removal operation has to be confirmed in the pop-up that appears:
+
+![Association removal confirmation](../../_assets/associations/association-remove-confirm.jpg)
+
 By default, it is not possible to remove the association, if there is any product associated with it. In this case, the following error message appears:
 
 ![Error msg](../../_assets/associations/error-msg.jpg)
