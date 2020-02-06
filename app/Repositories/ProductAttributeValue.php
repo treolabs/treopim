@@ -109,6 +109,37 @@ class ProductAttributeValue extends Base
     }
 
     /**
+     * @param Entity $productFamilyAttribute
+     * @param Entity $product
+     *
+     * @return string|null
+     */
+    public function getLocaleParentId(Entity $productFamilyAttribute, Entity $product): ?string
+    {
+        $localeParentId = null;
+        if (!empty($productFamilyAttribute->get('locale'))) {
+            $localeParentId = $this
+                ->getEntityManager()
+                ->getRepository('ProductAttributeValue')
+                ->select(['id'])
+                ->where(
+                    [
+                        'productFamilyAttributeId' => $productFamilyAttribute->get('localeParentId'),
+                        'productId'                => $product->get('id'),
+                        'locale'                   => null
+                    ]
+                )
+                ->findOne();
+
+            if (!empty($localeParentId)) {
+                $localeParentId = (string)$localeParentId->get('id');
+            }
+        }
+
+        return $localeParentId;
+    }
+
+    /**
      * @param Entity $entity
      */
     protected function updateLocaleAttributes(Entity $entity): void
