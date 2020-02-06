@@ -270,7 +270,7 @@ class V3Dot13Dot0 extends Base
             foreach ($pavs as $pav) {
                 $pavKey = Util::toUnderScore(strtolower($pav['locale']));
                 $this->exec(
-                    "UPDATE product_attribute_value SET value_$pavKey='{$pav['value']}' WHERE id='{$attribute['locale_parent_id']}' AND product_id='{$pav['product_id']}'"
+                    "UPDATE product_attribute_value SET value_$pavKey='{$pav['value']}' WHERE id='{$pav['locale_parent_id']}' AND product_id='{$pav['product_id']}'"
                 );
 
                 // cleanup
