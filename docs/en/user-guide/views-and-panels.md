@@ -15,7 +15,7 @@ The following actions are available for entity records directly out of the box:
 | Duplicate       | [Detail view](#detail-view)                                  |
 | Merge           | [List view](#list-view)                                      |
 | Mass update     | [List view](#list-view)                                      |
-| Export          | [List view](#list-view)                                      |
+| [Export](export](../../../../../../treocore/blob/master/docs/en/user-guide/export-core.md))          | [List view](#list-view)                                      |
 | Follow          | [List view](#list-view), [detail view](#detail-view), [edit view](#edit-view) |
 | Unfollow        | [List view](#list-view), [detail view](#detail-view), [edit view](#edit-view) |
 | Add relation    | [List view](#list-view)                                      |
@@ -23,7 +23,7 @@ The following actions are available for entity records directly out of the box:
 
 Please, note that for [product](./products.md) records all actions that are available on the list view can also be performed on the [plate view](#plate-view). The latter is supported only for product records.
 
-If you want to make changes to some entity (e.g. add new fields, modify its views or relations), please, contact your administrator.
+> If you want to make changes to some entity (e.g. add new fields, modify its views or relations), please, contact your administrator.
 
 ## List View
 
@@ -60,17 +60,24 @@ The following mass actions are available in the TreoPIM system:
 ![Mass Actions](../../_assets/views-and-panels/mass-actions.jpg)
 
 - **Remove** – to remove the selected entity records.
+
 - **Merge** – to merge the selected entity records.
+
 - **Mass update** – to update several selected entity records at once. To have a longer list of fields available for mass updating, please, contact your administrator.
-- **Export** – to export the desired data fields of the selected entity records in the XLSX (Excel) or CSV format.
+
+- **Export** – to [export](../../../../../../treocore/blob/master/docs/en/user-guide/export-core.md) the desired data fields of the selected entity records in the XLSX (Excel) or CSV format.
+
+  > For more advanced export features, please, use the **Export Feeds** module. You can find the details on this module in our [store](https://treopim.com/store/export-feeds).
+
 - **Follow** – to enable tracking of the changes for the selected entity records. 
+
 - **Unfollow** – to disable tracking of the changes for the selected entity records.
+
 - **Add relation** – to relate the selected entity records with other entities (or entity).
+
 - **Remove relation** – to remove the relations that have been added to the selected entity records.
 
-To modify the mass actions list, please, contact your administrator.
-
-*For more advanced export features, please, use the **Export Feeds** module. You can find the details on this module in our [store](https://treopim.com/store/export-feeds).*
+> To modify the mass actions list, please, contact your administrator.
 
 ### Single Record Actions
 
@@ -78,28 +85,28 @@ To see the actions available for the records in the list, click the single recor
 
 ![Single Record Actions](../../_assets/views-and-panels/single-record-actions.jpg)
 
-By default, the following actions are available for all entities:
+By default, the following single record actions are available for all entities:
 - **View** – to go to the detail view of the record.
 - **Edit** – to go to the detail view of the record in the edit mode.
 - **Remove** – to remove the selected record.
 
-To modify the single record actions list, please, contact your administrator.
+> To modify the single record actions list, please, contact your administrator.
 
 ## Plate View
 
-The plate view is a variant of the [list view](#list-view), in which all entity records are displayed as plates:
+The plate view is a variant of the [list view](#list-view) for [products](./products.md), in which all product records are displayed as plates. It is available only when the [TreoDAMmodule](https://treodam.com/) is installed.
+
+To switch to this view, click the plates icon located in the upper right corner of the entity records list view:
 
 ![Plate view](../../_assets/views-and-panels/plate-view.jpg)
 
-To switch to this view, click the plates icon located in the upper right corner of the list view page of entity records.
+To switch to this view, click the plates icon located in the upper right corner of the entity records list view.
 
 The [mass actions](#mass-actions) and [singe record actions](#single-record-actions) are also available here, just like for the list view.
 
 You can configure the plate view layout by selecting the desired item number to be displayed in a row (1–6) and defining the record field to be used for sorting via the corresponding drop-down menus:
 
 ![Plate view cfg](../../_assets/views-and-panels/plate-view-cfg.jpg)
-
-Within the TreoPIM system the plate view is available only for [products](./products.md).
 
 ## Small List Views
 
@@ -108,19 +115,21 @@ Small list views are panels and pop-up windows with data on the entities related
 The following actions are available for the small list view panels:
 
 - **General actions** – applicable to all records on the related entities panel:
+
   ![Related entity global actions](../../_assets/views-and-panels/related-entity-actions-global.jpg)
   - *Refresh* – to refresh the related entities list on the panel;
-  - *Create* – to create a new record for the related entity;
+  - *Create* – to create a new related entity record;
   - *Select* – to create a relation between the entity record, which is opened in the main window and the entity record, which was chosen in the pop-up window. 
 
-*Please, keep in mind that choosing some record in the pop-up window will reassign it to the entity record, which is opened in the main window. The previous relation will be dropped, if the relation is one-to-many.*
+> Please, keep in mind that choosing some record in the pop-up window will reassign it to the entity record, which is opened in the main window. The previous relation will be dropped, if the relation is one-to-many.
 
-- **Single record actions** – applicable to each record of the related entities separately. The list of actions here is usually the same as on the list view for this entity.
+- **Single record actions** – applicable to each record of the related entities separately. The list of actions here is usually the same as on the [list view](#list-view) for this entity:
+
   ![Related entity single actions](../../_assets/views-and-panels/related-entity-actions-single.jpg)
 
 ## Detail View
 
-The detail view page appears when the  entity record name is clicked in the corresponding list of records. It has its own layout, which can be configured by the administrator. 
+The detail view page appears when the entity record name is clicked in the corresponding list of records. It has its own layout, which can be configured by the administrator. 
 
 The detail view page shows detailed information about the selected entity record and all its relations and includes:
 
@@ -128,33 +137,34 @@ The detail view page shows detailed information about the selected entity record
 - *[taskbar](./user-interface.md#taskbar) (2);*
 - *[breadcrumb navigation](./user-interface.md#breadcrumb-navigation) including the page name (3);*
 - *actions and tabs panel (4);*
-- *record details, where detailed information about the currently open entity record is displayed (5).* 
+- *record details, where information about the currently open entity record is displayed on the `OVERVIEW` and `OWNERSHIP INFORMATION` panels (5).* 
 
 ![Detail View](../../_assets/views-and-panels/detail-view.jpg)
-
 The detail view page may also include:
 
-- the `OVERVIEW` panel and some other panels that are either default for a certain entity or configured by the administrator:
+- other panels that are either default for a certain entity or configured by the administrator:
+
+![Detail View panels](../../_assets/views-and-panels/detail-view-panels.jpg)
 
   ![Detail View Page](../../_assets/views-and-panels/overview-panel.jpg)
-
-- several *small list views* for the related records, if these were configured by the administrator:
+- several *small list views* for the related entity records, if these were configured by the administrator:
   
-  ![Related Entity Panel](../../_assets/views-and-panels/related-entity-panel.jpg)
+  ![Related Entity Panels](../../_assets/views-and-panels/related-entity-panels.jpg)
 
-- *side view* with additional information concerning record management and activity stream, if activated for the entity.
+- *side view* with additional information concerning record management and activity stream, if activated for the entity and configured to be displayed on the side view.
   
+
 Views can be shown in the main or pop-up window. They consist of the panels, which can be configured by the administrator. Usually these are structured in a way to provide you with key information through the record management.
 
 You can start following the entity record right on the detail view page. To do this, click the `Follow` button, placed in the upper right corner of your detail view page. It will turn into `Followed`. Click this button again to stop following the entity record.
 
-*This option is available only when the `Stream` checkbox is activated for the given entity by the administrator in the Entity Manager.*
+> This option is available only when the `Stream` checkbox is activated for the given entity by the administrator in the Entity Manager.
 
-[Filtering](./search-and-filtering.md) the record data display by fields, locales, and scopes is available on the [products](./products.md) detail view page only via the corresponding drop-down menus:
+[Filtering](./search-and-filtering.md) the record data display by fields, [locales](https://treopim.com/store/multi-languages), and scopes is available on the [products](./products.md) detail view page only via the corresponding drop-down menus:
 
 ![Product filters](../../_assets/views-and-panels/product-filters.jpg)
 
-Keep in mind that the locales filter appears when the "Multi-Languages" module is installed and input language options are configured by your administrator. Go to our [store](https://treopim.com/store/multi-languages) to learn more about the "Multi-Languages" module and its features.
+Keep in mind that the locales filter appears when the "Multi-Languages" module is activated and input language options are configured by your administrator. Go to our [store](https://treopim.com/store/multi-languages) to learn more about the "Multi-Languages" module and its features.
 
 Navigation through the existing entity records can be done on the detail view pages using the corresponding buttons: 
 
@@ -184,22 +194,30 @@ In the quick detail pop-up, click the `Full Form` button to open the common [det
 
 ## Side View
 
-The side view panel is used to show additional information and is shown in the main window always together with the detail (or quick detail) view panels:
+The side view panel is used to show additional information on the currently open record and is shown on the right side of the main [detail](#detail-view) window:
+
+The side view panel is used to show additional information and is shown in the main window always together with the [detail](#detail-view) (or [quick detail](#quick-detail-view-small-detail-view)) view panels:
 
 ![Side view](../../_assets/views-and-panels/side-view.jpg)
 
-The following information is available by default on the side view panel:
+The `OWNERSHIP INFORMATION` panel is available by default on the side view panel and contains the following information:
 
-- **Owner** – who is currently responsible for the record; the value is changeable.
-- **Assigned User** – who should work on the record; the value is changeable.
-- **Teams** – which team(s) can have access to this record; values are changeable.
+- **Owner** – the name of the user currently responsible for the record; the value is changeable.
+- **Assigned User** – the name of the user assigned to work on the record; the value is changeable.
+- **Teams** – the name of the team(s) with access to this record; values are changeable.
 - **Created** – the date and time of the record creation, as well as its author; not changeable.
-- **Modified** – the date and time of the record modification, not changeable.
-- **Followers** – who is following the changes in the record.
+- **Modified** – the date and time of the record modification, as well as the author of the changes; not changeable.
+- **Followers** – the name(s) of the user(s) following the changes in the record.
 
-The `Owner`, `Assigned user`, and `Teams` fields are enabled/disabled by the administrator.
+> The `Owner`, `Assigned user`, and `Teams` fields are enabled/disabled by the administrator.
 
-Other modules can add more panels to the side view panel. Please, visit our [store](https://treopim.com/store) to learn more about modules available for you.
+Additionally, the [`STREAM`](../../../../../../treocore/blob/master/docs/en/user-guide/stream-core.md) panel may be displayed on the side view, if this is configured by the administrator:
+
+![Side view stream](../../_assets/views-and-panels/side-view-stream.jpg)
+
+> The `Owner`, `Assigned user`, and `Teams` fields are enabled/disabled by the administrator.
+
+Other modules can add more panels to the side view. Please, visit our [store](https://treopim.com/store) to learn more about modules available for you.
 
 ## Create View
 
@@ -239,7 +257,7 @@ Click the `Full Form` button to get to the [edit view](#edit-view) page.
 
 ## In-Line Editing
 
-With in-line editing you can change values *on the fly*. This ensures quick change of field values and reduces the number of clicks to do this.
+With in-line editing you can change field values *on the fly*. This ensures quick change of field values and reduces the number of clicks to do this.
 
 Currently in-line editing is available on the [detail view](#detail-view) pages only. To edit the record information on these pages using the in-line editing, click the pencil icon located in the upper right corner of the field you want to edit:
 

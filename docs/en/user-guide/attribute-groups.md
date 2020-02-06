@@ -13,7 +13,7 @@ The attribute group entity comes with the following preconfigured fields; mandat
 | Sort order               | Sorting order of the attribute group. With this parameter, attribute groups will be arranged in the appropriate order on the product [detail view](./views-and-panels.md#detail-view) page                   |
 | Description (multi-lang) | Description of the attribute group purpose   |
 
-If you want to make changes to the attribute group entity (e.g. add new fields, or modify attribute group views), please contact your administrator.
+> If the [multi-languages](https://treopim.com/store/multi-languages#module-configuration) settings are activated, but multilingual fields are missing for the attribute group entity, or if you want to make changes to the attribute group entity, e.g. add new fields, or modify its views, please, contact your administrator.
 
 ## Creating
 
@@ -42,7 +42,7 @@ By default, the following fields are displayed on the [list view](./views-and-pa
 
 To change the attribute group records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Attribute group records can be searched and filtered according to your needs. For details on the search and filtering options,  refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+Attribute group records can be searched and filtered according to your needs. For details on these options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
 To view some attribute group record details, click the name field value of the corresponding record in the list of attribute groups; the [detail view](./views-and-panels.md#detail-view) page will open. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
@@ -57,6 +57,8 @@ The following mass actions are available for attribute group records:
 
 ![AG mass actions](../../_assets/attribute-groups/ag-mass-actions.jpg)
 
+> If any option is missing in your mass actions menu, please, contact your administrator.
+
 For details on these actions, please, see the [**Mass Actions**](./views-and-panels.md#mass-actions) section of the **Views and Panels** article in this user guide.
 
 ### Single Record Actions
@@ -67,6 +69,8 @@ The following single record actions are available for attribute group records:
 - Remove
 
 ![AG single record actions](../../_assets/attribute-groups/ag-single-actions.jpg)
+
+> If any option is missing in your single record actions menu, please, contact your administrator.
 
 For details on these actions, please, refer to the [**Single Record Actions**](./views-and-panels.md#single-record-actions) section of the **Views and Panels** article in this user guide.
 
@@ -94,6 +98,10 @@ or from the single record actions menu on the attribute groups list view page:
 
 ![Remove2](../../_assets/attribute-groups/remove-list.jpg)
 
+The record removal operation has to be confirmed in the pop-up that appears:
+
+![AG removal confirmation](../../_assets/attribute-groups/ag-remove-confirm.jpg)
+
 If you are removing the attribute group that contains related attributes, these attributes will be unlinked from this attribute group.
 
 ## Duplicating
@@ -109,19 +117,21 @@ Attributes that are linked to the attribute group record are displayed on its [d
 
 ![Attributes panel](../../_assets/attribute-groups/attributes-panel.jpg)
 
-If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to attribute groups, please, contact your administrator.
+> If this panel is missing, please, contact your administrator as to your access rights configuration. Also, to be able to relate more entities to attribute groups, please, contact your administrator.
+
+It is possible to link attribute records to the attribute group by selecting the existing ones or creating new attributes. 
 
 To create a new [attribute](./attributes.md) record, сlick the `+` button  located on the `ATTRIBUTES` panel and fill in the fields in the attribute creation pop-up that appears:
 
-![AG create attribute](../../_assets/attribute-groups/ag-create-attribute.jpg)
+![AG create attribute](../../_assets/attribute-groups/ag-create-attribute.jpg) 
 
-To link the already existing attribute(s) with the open attribute group record, use the `Select` option:
-
+To link the already existing attribute(s) with the open attribute group record, use the `Select` option from the actions menu located in the upper right corner of the `ATTRIBUTES` panel:
+ 
 ![Selecting attributes](../../_assets/attribute-groups/attributes-select.jpg)
 
 In the "Attributes" pop-up window that appears, select one or several attributes you would like to assign to this attribute group and click the `Select` button to complete the action.
 
-*Please consider, if the attribute has already been related to other attribute group(s), it will be reassigned to the currently open attribute group.*
+> Please consider, if the attribute has already been related to other attribute group(s), it will be reassigned to the currently open attribute group.
 
 Attributes linked to the given attribute group record can be viewed, edited, unlinked, or removed via the corresponding options from the single record actions menu on the `ATTRIBUTES` panel:
 

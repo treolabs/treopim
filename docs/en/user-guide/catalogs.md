@@ -58,7 +58,7 @@ By default, the following fields are displayed on the [list view](./views-and-pa
 
 To change the catalog records order in the list, click any sortable column title; this will sort the column either ascending or descending. 
 
-Catalog records can be searched and filtered according to your needs. For details on the search and filtering options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
+Catalog records can be searched and filtered according to your needs. For details on these options, refer to the [**Search and Filtering**](./search-and-filtering.md) article in this user guide.
 
 To view some catalog record details, click the name field value of the corresponding record in the list of catalogs; the [detail view](./views-and-panels.md#detail-view) page will open showing the catalog records and the records of the related entities. Alternatively, use the `View` option from the single record actions menu to open the [quick detail](./views-and-panels.md#quick-detail-view-small-detail-view) pop-up.
 
@@ -127,7 +127,7 @@ Click the `Remove` button to complete the operation or `Cancel` to abort it.
 
 ## Duplicating
 
-Use the `Duplicate` option from the actions menu to go to the catalog creation page and get all the values of the last chosen catalog record copied in the empty fields of the new catalog record to be created. Modifying the catalog code is required, as this value has to be unique.
+Use the `Duplicate` option from the actions menu to go to the catalog [creation page](#creating) and get all the values of the last chosen catalog record copied in the empty fields of the new catalog record to be created. Modifying the catalog code is required, as this value has to be unique.
 
 As a result, the catalog is 100% duplicated together with all its products.
 
@@ -149,7 +149,7 @@ Categories that are linked to the catalog record are shown on the `CATEGORIES` p
 
 On this panel, you can link categories to the given catalog record by selecting the existing ones or creating new category records.
 
-To create new category records, click the `+` button located in the upper right corner of the `CATEGORIES` panel and enter the necessary data in the category creation pop-up that appears:
+To create a new category record, click the `+` button located in the upper right corner of the `CATEGORIES` panel and enter the necessary data in the category creation pop-up that appears:
 
 ![Creating categories](../../_assets/catalogs/catalogs-create-category.jpg)
 
