@@ -73,17 +73,14 @@ class QueueManagerCreateLocaleAttribute extends Base
             $newEntity->id = Util::generateId();
             $newEntity->set('attributeId', $attribute->get('id'));
             $newEntity->set('locale', $attribute->get('locale'));
+            $newEntity->set('localeParentId', $pfa->get('id'));
+
+            if ($pfa->get('scope') == 'Channel'
+                && !empty($channelsIds = array_column($pfa->get('channels')->toArray(), 'id'))) {
+                $newEntity->set('channelsIds', $channelsIds);
+            }
 
             $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
-
-            if ($pfa->get('scope') == 'Channel') {
-                $channels = $pfa->get('channels');
-                if (count($channels) > 0) {
-                    foreach ($channels as $channel) {
-                        $this->getEntityManager()->getRepository('ProductFamilyAttribute')->relate($newEntity, 'channels', $channel);
-                    }
-                }
-            }
         }
 
         return true;
@@ -112,6 +109,7 @@ class QueueManagerCreateLocaleAttribute extends Base
             $newEntity->id = Util::generateId();
             $newEntity->set('attributeId', $attribute->get('id'));
             $newEntity->set('locale', $attribute->get('locale'));
+            $newEntity->set('localeParentId', $pav->get('id'));
 
             $this->getEntityManager()->saveEntity($newEntity, ['skipValidation' => true]);
 

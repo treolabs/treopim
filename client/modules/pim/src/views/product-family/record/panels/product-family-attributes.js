@@ -205,7 +205,7 @@ Espo.define('pim:views/product-family/record/panels/product-family-attributes', 
                 this.listenTo(collection, 'change:isRequired', model => {
                     if (!model.hasChanged('modifiedAt')) {
                         this.notify('Saving...');
-                        model.save().then(() => {
+                        model.save({isRequired: model.get('isRequired')}, {patch: true}).then(() => {
                             this.notify('Saved', 'success');
                         });
                     }

@@ -306,14 +306,14 @@ class ProductFamilyAttribute extends Base
                 /** @var string $locale */
                 $locale = (empty($entity->get('locale'))) ? 'NULL' : "'" . $entity->get('locale') . "'";
 
-                // prepare locale parent id
-                $localeParentId = 'NULL';
+                // prepare locale parent id and value
+                $sqls[] = "SET @localeParentId='NULL';SET @localeParentValue='NULL'";
                 if (!empty($lpId = $entity->get('localeParentId'))) {
-                    $localeParentId = "(SELECT id FROM product_attribute_value WHERE product_family_attribute_id='$lpId' AND product_id='$productId' LIMIT 1)";
+                    $sqls[] = "(SELECT id, value INTO @localeParentId, @localeParentValue FROM product_attribute_value WHERE product_family_attribute_id='$lpId' AND product_id='$productId' LIMIT 1)";
                 }
 
                 $sqls[]
-                    = "SET @localeParentId=$localeParentId;INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required,locale_parent_id) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired,@localeParentId)";
+                    = "INSERT INTO product_attribute_value (id,scope,product_id,attribute_id,product_family_attribute_id,created_by_id,created_at,owner_user_id,assigned_user_id,attribute_type,locale,is_required,locale_parent_id,value) VALUES ('$id','$scope','$productId','$attributeId','$pfaId','$createdById','$createdAt','$ownerUserId','$assignedUserId','$type',$locale,$isRequired,@localeParentId,@localeParentValue)";
                 if (!empty($teamsIds)) {
                     foreach ($teamsIds as $teamId) {
                         $sqls[] = "INSERT INTO entity_team (entity_id, team_id, entity_type) VALUES ('$id','$teamId','ProductAttributeValue')";

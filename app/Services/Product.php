@@ -184,20 +184,22 @@ class Product extends AbstractService
 
             if (count($rows) > 0) {
                 foreach ($rows as $item) {
-                    $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
-                    $entity->set($item->toArray());
-                    $entity->id = Util::generateId();
-                    $entity->set('productId', $product->get('id'));
+                    if (empty($item->get('productFamilyAttributeId'))) {
+                        $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                        $entity->set($item->toArray());
+                        $entity->id = Util::generateId();
+                        $entity->set('productId', $product->get('id'));
 
-                    $this->getEntityManager()->saveEntity($entity, ['skipProductAttributeValueHook' => true]);
+                        $this->getEntityManager()->saveEntity($entity, ['skipProductAttributeValueHook' => true]);
 
-                    // relate channels
-                    if (count($item->get('channels')) > 0) {
-                        foreach ($item->get('channels') as $channel) {
-                            $this
-                                ->getEntityManager()
-                                ->getRepository('ProductAttributeValue')
-                                ->relate($entity, 'channels', $channel);
+                        // relate channels
+                        if (count($item->get('channels')) > 0) {
+                            foreach ($item->get('channels') as $channel) {
+                                $this
+                                    ->getEntityManager()
+                                    ->getRepository('ProductAttributeValue')
+                                    ->relate($entity, 'channels', $channel);
+                            }
                         }
                     }
                 }
