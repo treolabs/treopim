@@ -24,6 +24,7 @@ namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
 use Espo\ORM\Entity;
+use Pim\Repositories\ProductAttributeValue;
 use Treo\Core\EventManager\Event;
 use Pim\Entities\Channel;
 
@@ -169,16 +170,21 @@ class ProductEntity extends AbstractEntityListener
 
         if ($entity->isNew()) {
             if (count($productFamilyAttributes) > 0) {
+                /** @var ProductAttributeValue $repository */
+                $repository = $this->getEntityManager()->getRepository('ProductAttributeValue');
+
                 foreach ($productFamilyAttributes as $productFamilyAttribute) {
                     // create
-                    $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                    $productAttributeValue = $repository->get();
                     $productAttributeValue->set(
                         [
                             'productId'                => $entity->get('id'),
                             'attributeId'              => $productFamilyAttribute->get('attributeId'),
                             'productFamilyAttributeId' => $productFamilyAttribute->get('id'),
                             'isRequired'               => $productFamilyAttribute->get('isRequired'),
-                            'scope'                    => $productFamilyAttribute->get('scope')
+                            'scope'                    => $productFamilyAttribute->get('scope'),
+                            'locale'                   => $productFamilyAttribute->get('locale'),
+                            'localeParentId'           => $repository->getLocaleParentId($productFamilyAttribute, $entity)
                         ]
                     );
                     // save
