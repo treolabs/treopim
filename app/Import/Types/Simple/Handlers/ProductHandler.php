@@ -130,7 +130,7 @@ class ProductHandler extends AbstractHandler
                         continue;
                     }
 
-                    if (isset($item['attributeId']) || isset($item['asset']) || $item['name'] == 'productCategories') {
+                    if (isset($item['attributeId']) || isset($item['assetRelation']) || $item['name'] == 'productCategories') {
                         $additionalFields[] = [
                             'item' => $item,
                             'row' => $row
@@ -168,7 +168,7 @@ class ProductHandler extends AbstractHandler
 
                     $this->assetRelations = $this
                         ->utilAssetRelation
-                        ->getAssetsRelationsByProduct(['asset.fileId', 'asset.type'], (string)$entity->get('id'))
+                        ->getAssetsRelationsByProduct(['asset.file_id', 'asset.type'], (string)$entity->get('id'))
                         ->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_ASSOC);
                 }
 
@@ -410,7 +410,7 @@ class ProductHandler extends AbstractHandler
         // prepare where
         if (!empty($row[$conf['column']])) {
             $value = $row[$conf['column']];
-            if (!empty($asset = $this->utilAssetRelation->getAsset($value))) {
+            if (!empty($asset = $this->utilAssetRelation->getAsset($value, ['type' => 'Gallery Image']))) {
                 $input->asset = $asset;
                 $isNewAsset = true;
             } else {
@@ -471,25 +471,27 @@ class ProductHandler extends AbstractHandler
     /**
      * @param string $link
      * @return Asset
-     * @throws Conflict
-     * @throws \Espo\Core\Exceptions\Error
      */
     protected function createAsset(string $link): Asset
     {
         if (empty($contents = @file_get_contents($link))) {
             throw new Error('Wrong asset link. Link: ' . $link);
         }
-        $attachmentInput = new StdClass();
-        $attachmentInput->name = array_pop(explode('/', $link));
-        $attachmentInput->role = 'Attachment';
-        $attachmentInput->field = 'file';
-        $attachmentInput->relatedType = 'Asset';
-        $attachmentInput->file = $contents;
-        $attachmentInput->type = mime_content_type($link);
-        $attachmentInput->size = filesize($link);
-        $attachmentInput->contents = $contents;
-        /** @var Attachment $attachment */
-        $attachment = $this->getServiceFactory()->create('Attachment')->createEntity($attachment);
+
+        // create attachment
+        $attachment = $this->getEntityManager()->getEntity('Attachment');
+        $attachment->set('name', array_pop(explode('/', $link)));
+        $attachment->set('role', 'Attachment');
+        $attachment->set('field', 'file');
+        $attachment->set('relatedType', 'Asset');
+
+        $sm = $this->container->get('fileStorageManager');
+        $sm->putContents($attachment, $contents);
+        // get file storage manager
+        $type = mime_content_type($sm->getLocalFilePath($attachment));
+        // set mime type
+        $attachment->set('type', $type);
+        $this->getEntityManager()->saveEntity($attachment);
 
         $assetInput = new StdClass();
         $assetInput->type = 'Gallery Image';
@@ -506,9 +508,7 @@ class ProductHandler extends AbstractHandler
             $assetInput->{$nameField} = $assetInput->name;
         }
 
-        $asset = $this->getServiceFactory()->create('Asset')->createEntity($asset);
-
-        return $asset;
+        return $this->getServiceFactory()->create('Asset')->createEntity($assetInput);
     }
 
     /**
