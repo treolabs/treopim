@@ -1,6 +1,6 @@
 
 <div class="row search-row">
-    <div class="form-group col-md-6 col-sm-7">
+    <div class="form-group col-md-12 col-sm-12">
         <div class="input-group">
             <div class="input-group-btn left-dropdown{{#unless leftDropdown}} hidden{{/unless}}">
                 <button type="button" class="btn btn-default dropdown-toggle filters-button" title="{{translate 'Filter'}}" data-toggle="dropdown" tabindex="-1">
