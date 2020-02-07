@@ -121,19 +121,10 @@ class Product extends AbstractSelectManager
             ->fetchAll(\PDO::FETCH_ASSOC);
         $attributesIds = array_column($attributesIds, 'id');
 
-        // prepare attributes values
-        $attributesValues = ["value LIKE '%$textFilter%'"];
-        if ($this->getConfig()->get('isMultilangActive', false) && !empty($locales = $this->getConfig()->get('inputLanguageList', []))) {
-            foreach ($locales as $locale) {
-                $attributesValues[] = "value_" . strtolower($locale) . " LIKE '%$textFilter%'";
-            }
-        }
-        $attributesValues = implode(" OR ", $attributesValues);
-
         // get products ids
         $productsIds = $this
             ->getEntityManager()
-            ->nativeQuery("SELECT product_id FROM product_attribute_value WHERE deleted=0 AND attribute_id IN ('" . implode("','", $attributesIds) . "') AND ($attributesValues)")
+            ->nativeQuery("SELECT product_id FROM product_attribute_value WHERE deleted=0 AND attribute_id IN ('" . implode("','", $attributesIds) . "') AND (value LIKE '%$textFilter%')")
             ->fetchAll(\PDO::FETCH_ASSOC);
         $productsIds = array_column($productsIds, 'product_id');
 
