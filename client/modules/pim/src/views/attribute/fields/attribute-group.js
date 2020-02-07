@@ -22,5 +22,23 @@ Espo.define('pim:views/attribute/fields/attribute-group', 'treo-core:views/field
 
         selectBoolFilterList:  ['onlyActive'],
 
+        setup() {
+            Dep.prototype.setup.call(this);
+
+            this.updateReadOnlyStatus();
+
+            this.listenTo(this.model, 'sync', () => {
+                this.updateReadOnlyStatus()
+            });
+        },
+
+        updateReadOnlyStatus() {
+            if (!this.model.isNew() && this.model.get('attributeGroupId')) {
+                this.setReadOnly();
+            } else {
+                this.setNotReadOnly();
+            }
+        }
+
     })
 );
