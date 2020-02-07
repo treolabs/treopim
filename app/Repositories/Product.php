@@ -140,18 +140,6 @@ class Product extends Base
     }
 
     /**
-     * @inheritDoc
-     */
-    protected function afterUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
-    {
-        if ($relationName == 'channels') {
-            $this->unrelateCategoryByChannel($entity, is_string($foreign) ? $foreign : (string)$foreign->get('id'));
-        }
-
-        parent::afterUnrelate($entity, $relationName, $foreign, $options);
-    }
-
-    /**
      * @param Entity $entity
      *
      * @return bool
@@ -211,19 +199,5 @@ class Product extends Base
         }
 
         return true;
-    }
-
-    /**
-     * @param Entity $product
-     * @param string $channelId
-     */
-    protected function unrelateCategoryByChannel(Entity $product, string $channelId): void
-    {
-        $this
-            ->getEntityManager()
-            ->nativeQuery(
-                "UPDATE product_category_linker SET deleted=1 WHERE product_id='{$product->get('id')}' AND deleted=0 AND category_id IN (SELECT category_id FROM category_channel_linker WHERE channel_id=:channel_id AND deleted=0)",
-                ['channel_id' => $channelId]
-            );
     }
 }
