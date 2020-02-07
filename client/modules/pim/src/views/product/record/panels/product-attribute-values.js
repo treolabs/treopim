@@ -264,13 +264,6 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
                         assignedUserName: this.getUser().get('name'),
                         scope: 'Global'
                     };
-                    if (['enum'].includes(attributeModel.get('type'))) {
-                        attributes.value = (attributeModel.get('typeValue') || [])[0];
-                        if (this.getConfig().get('isMultilangActive') && (this.getConfig().get('inputLanguageList') || []).length) {
-                            let typeValues = this.getFieldManager().getActualAttributeList(attributeModel.get('type'), 'typeValue').splice(1);
-                            typeValues.forEach(typeValue => attributes[typeValue.replace('typeValue', 'value')] = (attributeModel.get(typeValue) || [])[0]);
-                        }
-                    }
                     model.set(attributes);
                     promises.push(model.save());
                 });
