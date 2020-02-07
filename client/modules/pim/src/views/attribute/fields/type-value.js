@@ -165,7 +165,7 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
         },
 
         setDisableMultiLang() {
-            this.disableMultiLang = !this.model.get('isMultilang') || !this.model.get('locale')
+            this.disableMultiLang = !this.model.get('isMultilang') && !this.model.get('locale')
                 || !this.multiLangFieldTypes.includes(this.model.get('type'));
             this.langFieldNameList = this.disableMultiLang ? [] : this.getLangFieldNameList();
         },
