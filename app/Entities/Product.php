@@ -78,6 +78,10 @@ class Product extends Base
      */
     public function get($name, $params = [])
     {
+        if ($name == 'categories' && isset($params['additionalColumns']['pcSorting'])) {
+            unset($params['additionalColumns']['pcSorting']);
+        }
+
         // for product attribute
         if (preg_match_all($this->attrMask, (string)$name, $parts)) {
             // parse key

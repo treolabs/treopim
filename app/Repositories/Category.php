@@ -87,10 +87,10 @@ class Category extends Base
      */
     protected function beforeRelate(Entity $entity, $relationName, $foreign, $data = null, array $options = [])
     {
-        /** @var string $foreignId */
-        $foreignId = is_string($foreign) ? $foreign : (string)$foreign->get('id');
+        if (!$entity->isNew() && $relationName == 'products') {
+            /** @var string $foreignId */
+            $foreignId = is_string($foreign) ? $foreign : (string)$foreign->get('id');
 
-        if ($relationName == 'products') {
             if ($this->hasChild((string)$entity->get('id'))) {
                 throw new BadRequest("Any product can't be related to category if category has child category");
             }
