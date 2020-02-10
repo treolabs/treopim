@@ -128,12 +128,4 @@ class Category extends Base
 
         parent::beforeMassRelate($entity, $relationName, $params, $options);
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function afterSave(Entity $entity, array $options = [])
-    {
-        parent::afterSave($entity, $options);
-    }
 }
