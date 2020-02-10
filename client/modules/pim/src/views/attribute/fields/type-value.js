@@ -41,11 +41,6 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
                 e.preventDefault();
                 let index = $(e.currentTarget).data('index');
                 this.removeGroup(index);
-            },
-            'change input[data-name][data-index]': function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-                this.trigger('change');
             }
         }, Dep.prototype.events),
 
@@ -103,13 +98,34 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
             });
         },
 
+        afterRender() {
+            Dep.prototype.afterRender.call(this);
+
+            this.updateReadOnlyElements();
+        },
+
+        updateReadOnlyElements() {
+            if (this.mode === 'edit' && (!this.model.get('isMultilang') && this.model.get('locale'))) {
+                //remove actions with options
+                this.$el.find('a[data-action="removeGroup"]').remove();
+                this.$el.find('a[data-action="addNewValue"]').remove();
+                this.$el.find(`input[data-name="${this.name}"]`).attr({disabled: 'disabled'});
+
+                //remove sortable
+                this.$list.sortable('destroy');
+            }
+        },
+
         getLangFieldNameList() {
             let result = [];
 
             const inputLanguageList = this.getConfig().get('inputLanguageList') || [];
             if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
-                result = inputLanguageList.map(lang => {
-                    return lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLowerCase()), this.name);
+                inputLanguageList.map(lang => {
+                    if (!this.model.get('locale') || this.model.get('locale') === lang) {
+                        const name = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLowerCase()), this.name);
+                        result.push(name);
+                    }
                 });
             }
 
@@ -167,6 +183,7 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
         setDisableMultiLang() {
             this.disableMultiLang = !this.model.get('isMultilang') && !this.model.get('locale')
                 || !this.multiLangFieldTypes.includes(this.model.get('type'));
+
             this.langFieldNameList = this.disableMultiLang ? [] : this.getLangFieldNameList();
         },
 
