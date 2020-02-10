@@ -25,7 +25,8 @@
         "products": "Produkte"
     },
     "labels": {
-        "Create Brand": "Marke erstellen"
+        "Create Brand": "Marke erstellen",
+        "removeExplain": "Wählen Sie diese Option, um die Verknüpfung der Marke mit anderen Entitäten vor dessem Löschen zu entfernen."
     },
     "exceptions": {
         "Brand is used in products. Please, update products first": "Die Marke wird in den Produkten verwendet. Bitte aktualisieren Sie zuerst die Produkte",

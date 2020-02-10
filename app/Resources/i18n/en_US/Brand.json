@@ -9,7 +9,8 @@
         "products": "Products"
     },
     "labels": {
-        "Create Brand": "Create Brand"
+        "Create Brand": "Create Brand",
+        "removeExplain": "Select this to unlink the brand from other entities before its removal"
     },
     "exceptions": {
         "Brand with such CODE already exist": "Brand with such CODE already exist",

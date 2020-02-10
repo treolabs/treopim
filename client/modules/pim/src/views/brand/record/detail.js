@@ -62,9 +62,9 @@ Espo.define('pim:views/brand/record/detail', 'views/record/detail',
                         '<span class="confirm-message">' + this.translate('removeRecordConfirmation', 'messages') + '</span>' +
                     '</div>' +
                     '<div class="col-xs-12">' +
-                        '<div class="cell pull-left" style="margin-top: 15px;">' +
-                            '<input type="checkbox" class="force-remove"> ' +
-                            '<label class="control-label">' + this.translate('removeExplain', 'labels', 'Global') + '</label>' +
+                        '<div class="cell pull-left" style="margin-top: 15px; display: flex;">' +
+                            '<input type="checkbox" class="force-remove" style="margin-right: 5px;"> ' +
+                            '<label class="control-label">' + this.translate('removeExplain', 'labels', 'Brand') + '</label>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
