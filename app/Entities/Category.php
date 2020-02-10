@@ -37,6 +37,18 @@ class Category extends \Espo\Core\Templates\Entities\Base
     protected $entityType = "Category";
 
     /**
+     * @inheritDoc
+     */
+    public function get($name, $params = [])
+    {
+        if ($name == 'products' && isset($params['additionalColumns']['pcSorting'])) {
+            unset($params['additionalColumns']['pcSorting']);
+        }
+
+        return parent::get($name, $params);
+    }
+
+    /**
      * @return bool
      * @throws Error
      */
