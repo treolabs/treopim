@@ -20,7 +20,9 @@
 Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
     Dep => Dep.extend({
 
+        detailTemplate: 'pim:attribute/fields/type-value/detail',
         editTemplate: 'pim:attribute/fields/type-value/edit',
+        listTemplate: 'pim:attribute/fields/type-value/list',
 
         disableMultiLang: false,
 
@@ -64,12 +66,14 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
                 this.langFieldNameList.forEach(name => {
                     group.options.push({
                         name: name,
-                        value: (this.selectedComplex[name] || [])[index] || (this.selectedComplex[this.name] || [])[index],
+                        value: (this.selectedComplex[name] || [])[index],
                         shortLang: name.slice(-4, -2).toLowerCase() + '_' + name.slice(-2).toUpperCase(),
                     });
                 });
                 return group;
             });
+
+            // data.langValues = this.selectedComplex
 
             this.modifyDataByType(data);
 
