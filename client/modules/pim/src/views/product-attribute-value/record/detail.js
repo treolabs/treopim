@@ -58,13 +58,21 @@ Espo.define('pim:views/product-attribute-value/record/detail', 'views/record/det
                 // prepare data
                 let type = this.model.get('attributeType');
                 let typeValue = this.model.get('typeValue');
+                let view;
 
+                switch (type) {
+                    case 'bool':
+                        view = 'pim:views/fields/bool-required';
+                        break;
+                    default:
+                        view = this.getMetadata().get(['clientDefs', this.scope, 'additionalFieldsParams', type, 'view']) || this.getFieldManager().getViewName(type);
+                }
                 if (type) {
                     // prepare field defs
                     let fieldDefs = {
                         type: type,
                         options: typeValue,
-                        view: type !== 'bool' ? this.getFieldManager().getViewName(type) : 'pim:views/fields/bool-required',
+                        view: view,
                         required: !!this.model.get('isRequired')
                     };
 

@@ -103,7 +103,7 @@ Espo.define('pim:views/product-attribute-value/fields/value-container', 'views/f
         },
 
         getValueFieldView(type) {
-            return this.getFieldManager().getViewName(type);
+            return this.getMetadata().get(['clientDefs', this.scope, 'additionalFieldsParams', type, 'view']) || this.getFieldManager().getViewName(type);
         },
 
         fetch() {
