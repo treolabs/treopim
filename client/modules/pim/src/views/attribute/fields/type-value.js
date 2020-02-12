@@ -22,7 +22,6 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
 
         detailTemplate: 'pim:attribute/fields/type-value/detail',
         editTemplate: 'pim:attribute/fields/type-value/edit',
-        listTemplate: 'pim:attribute/fields/type-value/list',
 
         disableMultiLang: false,
 
@@ -43,6 +42,11 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
                 e.preventDefault();
                 let index = $(e.currentTarget).data('index');
                 this.removeGroup(index);
+            },
+            'change input[data-name][data-index]': function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.trigger('change');
             }
         }, Dep.prototype.events),
 
@@ -67,13 +71,19 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
                     group.options.push({
                         name: name,
                         value: (this.selectedComplex[name] || [])[index],
-                        shortLang: name.slice(-4, -2).toLowerCase() + '_' + name.slice(-2).toUpperCase(),
+                        shortLang: name.slice(-4, -2).toLowerCase() + '_' + name.slice(-2).toUpperCase()
                     });
                 });
                 return group;
             });
 
-            // data.langValues = this.selectedComplex
+            data.langValues = this.langFieldNameList.map(name => {
+                return {
+                    name: name,
+                    value: (this.selectedComplex[name] || []).join(', '),
+                    shortLang: name.slice(-4, -2).toLowerCase() + '_' + name.slice(-2).toUpperCase()
+                }
+            });
 
             this.modifyDataByType(data);
 
@@ -113,7 +123,6 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
                 //remove actions with options
                 this.$el.find('a[data-action="removeGroup"]').remove();
                 this.$el.find('a[data-action="addNewValue"]').remove();
-                this.$el.find(`input[data-name="${this.name}"]`).attr({disabled: 'disabled'});
 
                 //remove sortable
                 this.$list.sortable('destroy');
@@ -126,10 +135,8 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
             const inputLanguageList = this.getConfig().get('inputLanguageList') || [];
             if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
                 inputLanguageList.map(lang => {
-                    if (!this.model.get('locale') || this.model.get('locale') === lang) {
-                        const name = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLowerCase()), this.name);
-                        result.push(name);
-                    }
+                    const name = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLowerCase()), this.name);
+                    result.push(name);
                 });
             }
 
@@ -185,9 +192,7 @@ Espo.define('pim:views/attribute/fields/type-value', 'views/fields/array',
         },
 
         setDisableMultiLang() {
-            this.disableMultiLang = !this.model.get('isMultilang') && !this.model.get('locale')
-                || !this.multiLangFieldTypes.includes(this.model.get('type'));
-
+            this.disableMultiLang = !this.model.get('isMultilang') || !this.multiLangFieldTypes.includes(this.model.get('type'));
             this.langFieldNameList = this.disableMultiLang ? [] : this.getLangFieldNameList();
         },
 
