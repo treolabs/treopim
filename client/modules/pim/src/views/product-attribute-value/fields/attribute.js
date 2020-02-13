@@ -31,7 +31,11 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'treo-core:vie
         },
 
         setup() {
-            this.mandatorySelectAttributeList = ['type', 'typeValue'];
+            this.mandatorySelectAttributeList = [
+                'type',
+                'typeValue',
+                'attributeIsMultilang'
+            ];
 
             this.updateMandatorySelectAttributeList();
             Dep.prototype.setup.call(this);

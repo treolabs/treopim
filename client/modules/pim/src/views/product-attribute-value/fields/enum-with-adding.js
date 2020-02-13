@@ -57,7 +57,7 @@ Espo.define('pim:views/product-attribute-value/fields/enum-with-adding', 'views/
                         if (value) {
                             const typeValueParams = { typeValue: this.model.get('typeValue') };
 
-                            if (this.getConfig().get('isMultilangActive')) {
+                            if (this.getConfig().get('isMultilangActive') && this.model.get('attributeIsMultilang')) {
                                 (this.getConfig().get('inputLanguageList') || []).forEach(lang => {
                                     const field = lang.split('_').reduce((prev, curr) =>
                                         prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'typeValue');
