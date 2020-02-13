@@ -142,7 +142,7 @@ class GeneralStatisticsDashlet extends AbstractProductDashletService
 
         return "SELECT $select 
                 FROM product p 
-                LEFT JOIN product_category pc ON pc.product_id=p.id AND pc.deleted=0
+                LEFT JOIN product_category_linker pc ON pc.product_id=p.id AND pc.deleted=0
                 WHERE p.deleted=0 
                   AND p.type IN $types
                   AND pc.id IS NULL";
