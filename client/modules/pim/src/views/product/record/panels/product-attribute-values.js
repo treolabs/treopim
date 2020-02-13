@@ -241,19 +241,14 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             let inputLanguageList = this.getConfig().get('inputLanguageList') || [];
 
             if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
-                const fieldKeysArray = [];
-
                 inputLanguageList.forEach(lang => {
-                    const field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
-                    const typeValueField = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'typeValue');
+                    ['value', 'typeValue'].forEach(key => {
+                        const field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), key);
 
-                    fieldKeysArray.push(field, typeValueField);
-                });
-
-                fieldKeysArray.forEach(field => {
-                    if (!this.baseSelectFields.includes(field)) {
-                        this.baseSelectFields.push(field);
-                    }
+                        if (!this.baseSelectFields.includes(field)) {
+                            this.baseSelectFields.push(field);
+                        }
+                    })
                 });
             }
         },
