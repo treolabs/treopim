@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Pim\Listeners;
 
 use Espo\ORM\Entity;
-use Espo\Core\ServiceFactory;
+use Treo\Core\ServiceFactory;
 use Treo\Listeners\AbstractListener;
 
 /**
