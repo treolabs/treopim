@@ -117,6 +117,21 @@ class Category extends Base
 
     /**
      * @inheritDoc
+     */
+    protected function afterUnrelate(Entity $entity, $relationName, $foreign, array $options = [])
+    {
+        parent::afterUnrelate($entity, $relationName, $foreign, $options);
+
+        if ($relationName == 'catalogs') {
+            $this
+                ->getEntityManager()
+                ->getRepository('Catalog')
+                ->unrelateProductsCategories(is_string($foreign) ? $foreign : (string)$foreign->get('id'), (string)$entity->get('id'));
+        }
+    }
+
+    /**
+     * @inheritDoc
      *
      * @throws BadRequest
      */

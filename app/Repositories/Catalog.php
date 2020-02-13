@@ -32,6 +32,34 @@ use Espo\ORM\Entity;
 class Catalog extends Base
 {
     /**
+     * @param string $catalogId
+     * @param string $categoryId
+     */
+    public function unrelateProductsCategories(string $catalogId, string $categoryId): void
+    {
+        $ids = $this
+            ->getEntityManager()
+            ->nativeQuery(
+                "SELECT pcl.id 
+                     FROM product_category_linker pcl 
+                         JOIN product p ON p.id=pcl.product_id AND p.deleted=0 
+                         JOIN category c ON c.id=pcl.category_id AND c.deleted=0 
+                     WHERE pcl.deleted=0 
+                       AND p.catalog_id=:id 
+                       AND c.category_route LIKE :likeRoute",
+                [
+                    'id'        => $catalogId,
+                    'likeRoute' => "%|$categoryId|%",
+                ]
+            )
+            ->fetchAll(\PDO::FETCH_COLUMN);
+
+        $this
+            ->getEntityManager()
+            ->nativeQuery("UPDATE product_category_linker SET deleted=1 WHERE id IN ('" . implode("','", $ids) . "')");
+    }
+
+    /**
      * @inheritDoc
      */
     protected function afterRemove(Entity $entity, array $options = [])
@@ -55,33 +83,5 @@ class Catalog extends Base
         if ($relationName == 'categories') {
             $this->unrelateProductsCategories((string)$entity->get('id'), is_string($foreign) ? $foreign : (string)$foreign->get('id'));
         }
-    }
-
-    /**
-     * @param string $catalogId
-     * @param string $categoryId
-     */
-    protected function unrelateProductsCategories(string $catalogId, string $categoryId): void
-    {
-        $ids = $this
-            ->getEntityManager()
-            ->nativeQuery(
-                "SELECT pcl.id 
-                     FROM product_category_linker pcl 
-                         JOIN product p ON p.id=pcl.product_id AND p.deleted=0 
-                         JOIN category c ON c.id=pcl.category_id AND c.deleted=0 
-                     WHERE pcl.deleted=0 
-                       AND p.catalog_id=:id 
-                       AND c.category_route LIKE :likeRoute",
-                [
-                    'id'        => $catalogId,
-                    'likeRoute' => "%|$categoryId|%",
-                ]
-            )
-            ->fetchAll(\PDO::FETCH_COLUMN);
-
-        $this
-            ->getEntityManager()
-            ->nativeQuery("UPDATE product_category_linker SET deleted=1 WHERE id IN ('" . implode("','", $ids) . "')");
     }
 }
