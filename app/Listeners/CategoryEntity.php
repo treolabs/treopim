@@ -155,6 +155,21 @@ class CategoryEntity extends AbstractEntityListener
     }
 
     /**
+     * @param Event $event
+     *
+     * @throws BadRequest
+     */
+    public function beforeUnrelate(Event $event)
+    {
+        if ($event->getArgument('relationName') === 'productCategories') {
+            $productCategory = $event->getArgument('foreign');
+            if ($productCategory instanceof Entity) {
+                $this->getEntityManager()->removeEntity($productCategory);
+            }
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     protected function exception(string $key): string
