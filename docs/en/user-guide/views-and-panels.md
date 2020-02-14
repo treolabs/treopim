@@ -94,7 +94,7 @@ By default, the following single record actions are available for all entities:
 
 ## Plate View
 
-The plate view is a variant of the [list view](#list-view) for [products](./products.md), in which all product records are displayed as plates. It is available only when the [TreoDAMmodule](https://treodam.com/) is installed.
+The plate view is a variant of the [list view](#list-view) for [products](./products.md), in which all product records are displayed as plates. It is available only when the [TreoDAM module](https://treodam.com/) is installed.
 
 To switch to this view, click the plates icon located in the upper right corner of the entity records list view:
 
