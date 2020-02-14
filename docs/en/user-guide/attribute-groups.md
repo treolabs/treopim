@@ -125,13 +125,17 @@ To create a new [attribute](./attributes.md) record, сlick the `+` button  loca
 
 ![AG create attribute](../../_assets/attribute-groups/ag-create-attribute.jpg) 
 
-To link the already existing attribute(s) with the open attribute group record, use the `Select` option from the actions menu located in the upper right corner of the `ATTRIBUTES` panel:
+To link the already existing attribute(s) with the open attribute group record, use the `Select` option from the actions menu located in the upper right corner of the `ATTRIBUTES` panel. In the pop-up that appears, select one or several attribute records that are not linked to any attribute group and click the `Select` button to complete the action:
  
 ![Selecting attributes](../../_assets/attribute-groups/attributes-select.jpg)
 
-In the "Attributes" pop-up window that appears, select one or several attributes you would like to assign to this attribute group and click the `Select` button to complete the action.
+To see all attribute records linked to the given attribute group, use the `Show full list` option:
 
-> Please consider, if the attribute has already been related to other attribute group(s), it will be reassigned to the currently open attribute group.
+![Show full option](../../_assets/attribute-groups/show-full-option.jpg)
+
+Then the "Attributes" [list view](./attributes.md#listing) page opens, where all attribute records [filtered](./search-and-filtering.md) by the given attribute group are displayed:
+
+![Attributes full list](../../_assets/attribute-groups/attributes-full-list.jpg)
 
 Attributes linked to the given attribute group record can be viewed, edited, unlinked, or removed via the corresponding options from the single record actions menu on the `ATTRIBUTES` panel:
 
