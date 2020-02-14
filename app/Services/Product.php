@@ -179,31 +179,52 @@ class Product extends AbstractService
     protected function duplicateProductAttributeValues(Entity $product, Entity $duplicatingProduct)
     {
         if ($duplicatingProduct->get('productFamilyId') == $product->get('productFamilyId')) {
+            $this->clearDuplicatedProductAttributes((string)$product->get('id'));
+
             // get data for duplicating
             $rows = $duplicatingProduct->get('productAttributeValues');
 
             if (count($rows) > 0) {
                 foreach ($rows as $item) {
-                    if (empty($item->get('productFamilyAttributeId'))) {
-                        $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
-                        $entity->set($item->toArray());
-                        $entity->id = Util::generateId();
-                        $entity->set('productId', $product->get('id'));
+                    $entity = $this->getEntityManager()->getEntity('ProductAttributeValue');
+                    $entity->set($item->toArray());
+                    $entity->id = Util::generateId();
+                    $entity->duplicated = true;
+                    $entity->set('productId', $product->get('id'));
 
-                        $this->getEntityManager()->saveEntity($entity, ['skipProductAttributeValueHook' => true]);
+                    $this->getEntityManager()->saveEntity($entity, ['skipProductAttributeValueHook' => true, 'skipValidation' => true]);
 
-                        // relate channels
-                        if (count($item->get('channels')) > 0) {
-                            foreach ($item->get('channels') as $channel) {
-                                $this
-                                    ->getEntityManager()
-                                    ->getRepository('ProductAttributeValue')
-                                    ->relate($entity, 'channels', $channel);
-                            }
+                    // relate channels
+                    if (count($item->get('channels')) > 0) {
+                        foreach ($item->get('channels') as $channel) {
+                            $this
+                                ->getEntityManager()
+                                ->getRepository('ProductAttributeValue')
+                                ->relate($entity, 'channels', $channel);
                         }
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * @param string $productId
+     */
+    protected function clearDuplicatedProductAttributes(string $productId)
+    {
+        $ids = $this
+            ->getEntityManager()
+            ->nativeQuery("SELECT id FROM product_attribute_value WHERE product_id='$productId'")
+            ->fetchAll(\PDO::FETCH_ASSOC|\PDO::FETCH_COLUMN);
+
+        if (!empty($ids)) {
+            $ids = implode("','", $ids);
+
+            $this->getEntityManager()->nativeQuery("
+                DELETE FROM product_attribute_value_channel WHERE product_attribute_value_id IN ('{$ids}');
+                DELETE FROM product_attribute_value WHERE id IN ('{$ids}');
+            ");
         }
     }
 
