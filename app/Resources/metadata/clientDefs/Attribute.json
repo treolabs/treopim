@@ -6,7 +6,8 @@
     "notLinkedWithProduct",
     "notLinkedProductAttributeValues",
     "notLinkedProductFamilyAttributes",
-    "unitTypeDisabled"
+    "unitTypeDisabled",
+    "notLocalesAttributes"
   ],
   "hiddenBoolFilterList": [
     "notLinkedWithProduct",
