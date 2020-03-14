@@ -62,7 +62,7 @@ class ProductAttributeValueEntity extends AbstractListener
             throw new BadRequest($this->exception('Product and Attribute cannot be empty'));
         }
 
-        if (!$entity->isNew() && !empty($entity->get('productFamilyAttribute'))) {
+        if (!$entity->isNew() && !empty($entity->get('productFamilyAttribute')) && empty($entity->skipPfValidation)) {
             if ($entity->isAttributeChanged('scope')
                 || $entity->isAttributeChanged('isRequired')
                 || $entity->isAttributeChanged('channelsIds')

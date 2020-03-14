@@ -74,7 +74,7 @@ class ProductEntity extends AbstractEntityListener
 
         $skipUpdate = empty($entity->skipUpdateProductAttributesByProductFamily) && empty($options['skipProductFamilyHook']);
 
-        if ($skipUpdate && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
+        if ($skipUpdate && empty($entity->isDuplicate)) {
             $this->updateProductAttributesByProductFamily($entity, $options);
         }
     }
@@ -205,12 +205,6 @@ class ProductEntity extends AbstractEntityListener
      */
     protected function updateProductAttributesByProductFamily(Entity $entity, array $options): bool
     {
-        // get product family
-        $productFamily = $entity->get('productFamily');
-
-        // get product family attributes
-        $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
-
         if (!$entity->isNew() && $entity->isAttributeChanged('productFamilyId')) {
             // unlink attributes from old product family
             $this
@@ -221,15 +215,16 @@ class ProductEntity extends AbstractEntityListener
                 );
         }
 
+        if (empty($productFamily = $entity->get('productFamily'))) {
+            return true;
+        }
+
+        // get product family attributes
+        $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
+
         if (count($productFamilyAttributes) > 0) {
             /** @var \Pim\Repositories\ProductAttributeValue $repository */
             $repository = $this->getEntityManager()->getRepository('ProductAttributeValue');
-
-            // prepare locales
-            $locales = [];
-            if ($this->getConfig()->get('isMultilangActive', false)) {
-                $locales = $this->getConfig()->get('inputLanguageList', []);
-            }
 
             foreach ($productFamilyAttributes as $productFamilyAttribute) {
                 // create
@@ -244,47 +239,31 @@ class ProductEntity extends AbstractEntityListener
                     ]
                 );
 
+                // relate channels if it needs
+                if ($productFamilyAttribute->get('scope') == 'Channel') {
+                    $channels = $productFamilyAttribute->get('channels');
+                    if (count($channels) > 0) {
+                        $productAttributeValue->set('channelsIds', array_column($channels->toArray(), 'id'));
+                    }
+                }
+
                 // save
                 try {
                     $this->getEntityManager()->saveEntity($productAttributeValue);
                 } catch (BadRequest $e) {
                     $message = sprintf('Such product attribute \'%s\' already exists', $productFamilyAttribute->get('attribute')->get('name'));
                     if ($message == $e->getMessage()) {
-                        // get existing copy
                         $copy = $repository->findCopy($productAttributeValue);
+                        $copy->set('productFamilyAttributeId', $productFamilyAttribute->get('id'));
+                        $copy->set('isRequired', $productAttributeValue->get('isRequired'));
 
-                        // set copy value to new record
-                        $productAttributeValue->set('value', $copy->get('value'));
-                        foreach ($locales as $locale) {
-                            // prepare locale
-                            $locale = Util::toCamelCase(strtolower($locale), '_', true);
-
-                            // set locale value
-                            $entity->set("value$locale", $copy->get("value$locale"));
+                        if ($productFamilyAttribute->get('scope') == 'Channel') {
+                            $copy->set('channelsIds', $productAttributeValue->get('channelsIds'));
                         }
 
-                        // delete copy
-                        $this
-                            ->getEntityManager()
-                            ->nativeQuery(
-                                "UPDATE product_attribute_value SET deleted=1 WHERE id=:id", ['id' => $copy->get('id')]
-                            );
+                        $copy->skipPfValidation = true;
 
-                        // save again
-                        $this->getEntityManager()->saveEntity($productAttributeValue);
-                    }
-                }
-
-                // relate channels if it needs
-                if ($productFamilyAttribute->get('scope') == 'Channel') {
-                    $channels = $productFamilyAttribute->get('channels');
-                    if (count($channels) > 0) {
-                        foreach ($channels as $channel) {
-                            $this
-                                ->getEntityManager()
-                                ->getRepository('ProductAttributeValue')
-                                ->relate($productAttributeValue, 'channels', $channel);
-                        }
+                        $this->getEntityManager()->saveEntity($copy);
                     }
                 }
             }
