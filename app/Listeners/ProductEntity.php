@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Pim\Listeners;
 
 use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Treo\Core\EventManager\Event;
 use Pim\Entities\Channel;
@@ -58,9 +59,6 @@ class ProductEntity extends AbstractEntityListener
         if (!$entity->isNew() && $entity->isAttributeChanged('type')) {
             throw new BadRequest($this->exception('You can\'t change field of Type'));
         }
-        if ($entity->isAttributeChanged('productFamilyId') && !$entity->isNew()) {
-            throw new BadRequest($this->exception('You can\'t change Product Family in Product'));
-        }
     }
 
     /**
@@ -74,8 +72,7 @@ class ProductEntity extends AbstractEntityListener
         // get options
         $options = $event->getArgument('options');
 
-        $skipUpdate = empty($entity->skipUpdateProductAttributesByProductFamily)
-                        && empty($options['skipProductFamilyHook']);
+        $skipUpdate = empty($entity->skipUpdateProductAttributesByProductFamily) && empty($options['skipProductFamilyHook']);
 
         if ($skipUpdate && !empty($entity->get('productFamily')) && empty($entity->isDuplicate)) {
             $this->updateProductAttributesByProductFamily($entity, $options);
@@ -88,13 +85,15 @@ class ProductEntity extends AbstractEntityListener
     public function afterUnrelate(Event $event)
     {
         //set default value in isActive for channel after deleted link
-        if($event->getArgument('relationName') == 'channels' && $event->getArgument('foreign') instanceof Channel) {
+        if ($event->getArgument('relationName') == 'channels' && $event->getArgument('foreign') instanceof Channel) {
             $dataEntity = new \StdClass();
             $dataEntity->entityName = 'Product';
             $dataEntity->entityId = $event->getArgument('entity')->get('id');
-            $dataEntity->value = (int)!empty($event
+            $dataEntity->value = (int)!empty(
+            $event
                 ->getArgument('entity')
-                ->getRelations()['channels']['additionalColumns']['isActive']['default']);
+                ->getRelations()['channels']['additionalColumns']['isActive']['default']
+            );
 
             $this
                 ->getService('Channel')
@@ -198,7 +197,7 @@ class ProductEntity extends AbstractEntityListener
 
     /**
      * @param Entity $entity
-     * @param array $options
+     * @param array  $options
      *
      * @return bool
      *
@@ -212,42 +211,86 @@ class ProductEntity extends AbstractEntityListener
         // get product family attributes
         $productFamilyAttributes = $productFamily->get('productFamilyAttributes');
 
-        if ($entity->isNew()) {
-            if (count($productFamilyAttributes) > 0) {
-                foreach ($productFamilyAttributes as $productFamilyAttribute) {
-                    // create
-                    $productAttributeValue = $this->getEntityManager()->getEntity('ProductAttributeValue');
-                    $productAttributeValue->set(
-                        [
-                            'productId'                => $entity->get('id'),
-                            'attributeId'              => $productFamilyAttribute->get('attributeId'),
-                            'productFamilyAttributeId' => $productFamilyAttribute->get('id'),
-                            'isRequired'               => $productFamilyAttribute->get('isRequired'),
-                            'scope'                    => $productFamilyAttribute->get('scope')
-                        ]
-                    );
-                    // save
-                    $this->getEntityManager()->saveEntity($productAttributeValue);
+        if (!$entity->isNew() && $entity->isAttributeChanged('productFamilyId')) {
+            // unlink attributes from old product family
+            $this
+                ->getEntityManager()
+                ->nativeQuery(
+                    "UPDATE product_attribute_value SET product_family_attribute_id=NULL WHERE product_id=:productId AND product_family_attribute_id IS NOT NULL AND deleted=0",
+                    ['productId' => $entity->get('id')]
+                );
+        }
 
-                    // relate channels if it needs
-                    if ($productFamilyAttribute->get('scope') == 'Channel') {
-                        $channels = $productFamilyAttribute->get('channels');
-                        if (count($channels) > 0) {
-                            foreach ($channels as $channel) {
-                                $this
-                                    ->getEntityManager()
-                                    ->getRepository('ProductAttributeValue')
-                                    ->relate($productAttributeValue, 'channels', $channel);
-                            }
+        if (count($productFamilyAttributes) > 0) {
+            /** @var \Pim\Repositories\ProductAttributeValue $repository */
+            $repository = $this->getEntityManager()->getRepository('ProductAttributeValue');
+
+            // prepare locales
+            $locales = [];
+            if ($this->getConfig()->get('isMultilangActive', false)) {
+                $locales = $this->getConfig()->get('inputLanguageList', []);
+            }
+
+            foreach ($productFamilyAttributes as $productFamilyAttribute) {
+                // create
+                $productAttributeValue = $repository->get();
+                $productAttributeValue->set(
+                    [
+                        'productId'                => $entity->get('id'),
+                        'attributeId'              => $productFamilyAttribute->get('attributeId'),
+                        'productFamilyAttributeId' => $productFamilyAttribute->get('id'),
+                        'isRequired'               => $productFamilyAttribute->get('isRequired'),
+                        'scope'                    => $productFamilyAttribute->get('scope')
+                    ]
+                );
+
+                // save
+                try {
+                    $this->getEntityManager()->saveEntity($productAttributeValue);
+                } catch (BadRequest $e) {
+                    $message = sprintf('Such product attribute \'%s\' already exists', $productFamilyAttribute->get('attribute')->get('name'));
+                    if ($message == $e->getMessage()) {
+                        // get existing copy
+                        $copy = $repository->findCopy($productAttributeValue);
+
+                        // set copy value to new record
+                        $productAttributeValue->set('value', $copy->get('value'));
+                        foreach ($locales as $locale) {
+                            // prepare locale
+                            $locale = Util::toCamelCase(strtolower($locale), '_', true);
+
+                            // set locale value
+                            $entity->set("value$locale", $copy->get("value$locale"));
+                        }
+
+                        // delete copy
+                        $this
+                            ->getEntityManager()
+                            ->nativeQuery(
+                                "UPDATE product_attribute_value SET deleted=1 WHERE id=:id", ['id' => $copy->get('id')]
+                            );
+
+                        // save again
+                        $this->getEntityManager()->saveEntity($productAttributeValue);
+                    }
+                }
+
+                // relate channels if it needs
+                if ($productFamilyAttribute->get('scope') == 'Channel') {
+                    $channels = $productFamilyAttribute->get('channels');
+                    if (count($channels) > 0) {
+                        foreach ($channels as $channel) {
+                            $this
+                                ->getEntityManager()
+                                ->getRepository('ProductAttributeValue')
+                                ->relate($productAttributeValue, 'channels', $channel);
                         }
                     }
                 }
             }
-
-            return true;
         }
 
-        return false;
+        return true;
     }
 
     /**
