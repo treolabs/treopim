@@ -131,29 +131,6 @@
             }
           ]
         }
-      },
-      "productFamily": {
-        "readOnly": {
-          "conditionGroup": [
-            {
-              "type": "isNotEmpty",
-              "attribute": "id"
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "notEquals",
-              "attribute": "type",
-              "value": "productVariant"
-            },
-            {
-              "type": "isEmpty",
-              "attribute": "id"
-            }
-          ]
-        }
       }
     }
   }

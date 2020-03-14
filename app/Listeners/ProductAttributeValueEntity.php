@@ -62,7 +62,7 @@ class ProductAttributeValueEntity extends AbstractListener
             throw new BadRequest($this->exception('Product and Attribute cannot be empty'));
         }
 
-        if (!$entity->isNew() && !empty($entity->get('productFamilyAttribute'))) {
+        if (!$entity->isNew() && !empty($entity->get('productFamilyAttribute')) && empty($entity->skipPfValidation)) {
             if ($entity->isAttributeChanged('scope')
                 || $entity->isAttributeChanged('isRequired')
                 || $entity->isAttributeChanged('channelsIds')
@@ -74,7 +74,7 @@ class ProductAttributeValueEntity extends AbstractListener
         if (!$this->isUnique($entity)) {
             throw new BadRequest(
                 sprintf(
-                    $this->exception('Such product attribute \'%s\' already exists'),
+                    'Such product attribute \'%s\' already exists',
                     $entity->get('attribute')->get('name')
                 )
             );
@@ -147,43 +147,7 @@ class ProductAttributeValueEntity extends AbstractListener
      */
     protected function isUnique(Entity $entity): bool
     {
-        // prepare count
-        $count = 0;
-
-        if ($entity->get('scope') == 'Global') {
-            $count = $this
-                ->getEntityManager()
-                ->getRepository('ProductAttributeValue')
-                ->where(
-                    [
-                        'id!='        => $entity->get('id'),
-                        'productId'   => $entity->get('productId'),
-                        'attributeId' => $entity->get('attributeId'),
-                        'scope'       => 'Global',
-                    ]
-                )
-                ->count();
-        }
-
-        if ($entity->get('scope') == 'Channel') {
-            $count = $this
-                ->getEntityManager()
-                ->getRepository('ProductAttributeValue')
-                ->distinct()
-                ->join('channels')
-                ->where(
-                    [
-                        'id!='        => $entity->get('id'),
-                        'productId'   => $entity->get('productId'),
-                        'attributeId' => $entity->get('attributeId'),
-                        'scope'       => 'Channel',
-                        'channels.id' => $entity->get('channelsIds'),
-                    ]
-                )
-                ->count();
-        }
-
-        return empty($count);
+        return empty($this->getEntityManager()->getRepository('ProductAttributeValue')->findCopy($entity));
     }
 
     /**
@@ -262,6 +226,7 @@ class ProductAttributeValueEntity extends AbstractListener
 
     /**
      * @param ProductAttributeValue $attributeValue
+     *
      * @return void
      * @throws Error
      */
