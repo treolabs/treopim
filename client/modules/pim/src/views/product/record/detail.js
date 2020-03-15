@@ -42,6 +42,11 @@ Espo.define('pim:views/product/record/detail', 'pim:views/record/detail',
                 this.isCatalogTreePanel = true;
                 this.setupCatalogTreePanel();
             }
+
+            // refresh attributes panel after any saving
+            this.listenTo(this.model, 'after:save', () => {
+                $(".panel-productAttributeValues button[data-action='refresh']").click();
+            });
         },
 
         setupCatalogTreePanel() {

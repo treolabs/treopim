@@ -92,4 +92,46 @@ class ProductAttributeValue extends Base
             }
         }
     }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return Entity|null
+     */
+    public function findCopy(Entity $entity): ?Entity
+    {
+        // prepare copy
+        $copy = null;
+
+        if ($entity->get('scope') == 'Global') {
+            $copy = $this
+                ->where(
+                    [
+                        'id!='        => $entity->get('id'),
+                        'productId'   => $entity->get('productId'),
+                        'attributeId' => $entity->get('attributeId'),
+                        'scope'       => 'Global',
+                    ]
+                )
+                ->findOne();
+        }
+
+        if ($entity->get('scope') == 'Channel') {
+            $copy = $this
+                ->distinct()
+                ->join('channels')
+                ->where(
+                    [
+                        'id!='        => $entity->get('id'),
+                        'productId'   => $entity->get('productId'),
+                        'attributeId' => $entity->get('attributeId'),
+                        'scope'       => 'Channel',
+                        'channels.id' => $entity->get('channelsIds'),
+                    ]
+                )
+                ->findOne();
+        }
+
+        return $copy;
+    }
 }
