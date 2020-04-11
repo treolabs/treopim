@@ -33,6 +33,19 @@ use Espo\ORM\Entity;
 class Category extends Base
 {
     /**
+     * @param Entity $entity
+     * @param array  $options
+     */
+    public function beforeSave(Entity $entity, array $options = [])
+    {
+        if ($entity->isNew()) {
+            $entity->set('sortOrder', time());
+        }
+
+        parent::beforeSave($entity, $options);
+    }
+
+    /**
      * @inheritDoc
      */
     public function afterSave(Entity $entity, array $options = [])
