@@ -556,6 +556,9 @@ class Product extends AbstractSelectManager
                 ->getQuery()
                 ->createSelectQuery('ProductAttributeValue', $sp);
 
+            // for case sensitive
+            $sql = str_replace('product_attribute_value.value IN', 'CAST(product_attribute_value.value AS BINARY) IN', $sql);
+
             // prepare custom where
             $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
         }
