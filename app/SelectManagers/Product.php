@@ -559,6 +559,24 @@ class Product extends AbstractSelectManager
             // for case sensitive
             $sql = str_replace('product_attribute_value.value IN', 'CAST(product_attribute_value.value AS BINARY) IN', $sql);
 
+            // for umlauts
+            $sql = str_replace('Ä', '\\\\\\\\u00c4', $sql);
+            $sql = str_replace('ä', '\\\\\\\\u00e4', $sql);
+            $sql = str_replace('Ë', '\\\\\\\\u00cb', $sql);
+            $sql = str_replace('ë', '\\\\\\\\u00eb', $sql);
+            $sql = str_replace('Ï', '\\\\\\\\u00cf', $sql);
+            $sql = str_replace('ï', '\\\\\\\\u00ef', $sql);
+            $sql = str_replace('N̈', 'N\\\\\\\\u0308', $sql);
+            $sql = str_replace('n̈', 'n\\\\\\\\u0308', $sql);
+            $sql = str_replace('Ö', '\\\\\\\\u00d6', $sql);
+            $sql = str_replace('ö', '\\\\\\\\u00f6', $sql);
+            $sql = str_replace('T̈', 'T\\\\\\\\u0308', $sql);
+            $sql = str_replace('ẗ', '\\\\\\\\u1e97', $sql);
+            $sql = str_replace('Ü', '\\\\\\\\u00dc', $sql);
+            $sql = str_replace('ü', '\\\\\\\\u00fc', $sql);
+            $sql = str_replace('Ÿ', '\\\\\\\\u0178', $sql);
+            $sql = str_replace('ÿ', '\\\\\\\\u00ff', $sql);
+
             // prepare custom where
             $selectParams['customWhere'] .= ' AND product.id IN (' . $sql . ')';
         }
