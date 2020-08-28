@@ -1,5 +1,6 @@
 {
   "fields": {
+    "categories": "Kategorien",
     "product": "Hauptartikel",
     "brand": "Marke",
     "sku": "SKU",

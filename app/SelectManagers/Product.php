@@ -32,6 +32,11 @@ use Treo\Core\Utils\Util;
 class Product extends AbstractSelectManager
 {
     /**
+     * @var string
+     */
+    protected $customWhere = '';
+
+    /**
      * @inheritdoc
      */
     public function getSelectParams(array $params, $withAcl = false, $checkWherePermission = false)
@@ -43,6 +48,9 @@ class Product extends AbstractSelectManager
             'value'     => array_keys($this->getMetadata()->get('pim.productType', []))
         ];
 
+        // filtering by categories
+        $this->filteringByCategories($params);
+
         // get product attributes filter
         $productAttributes = $this->getProductAttributeFilter($params);
 
@@ -51,7 +59,7 @@ class Product extends AbstractSelectManager
 
         // prepare custom where
         if (!isset($selectParams['customWhere'])) {
-            $selectParams['customWhere'] = '';
+            $selectParams['customWhere'] = $this->customWhere;
         }
 
         // add product attributes filter
@@ -853,5 +861,46 @@ class Product extends AbstractSelectManager
         }
 
         return $where;
+    }
+
+    /**
+     * @param array $params
+     */
+    protected function filteringByCategories(array &$params): void
+    {
+        foreach ($params['where'] as $k => $row) {
+            if ($row['attribute'] == 'categories') {
+                if (!empty($row['value'])) {
+                    $categories = [];
+                    foreach ($row['value'] as $id) {
+                        $dbData = $this->fetchAll("SELECT id FROM category WHERE (id='$id' OR category_route LIKE '%|$id|%') AND deleted=0");
+                        $categories = array_merge($categories, array_column($dbData, 'id'));
+                    }
+                    $innerSql = "SELECT product_id FROM product_category WHERE deleted=0 AND category_id IN ('" . implode("','", $categories) . "')";
+                }
+
+                switch ($row['type']) {
+                    case 'linkedWith':
+                        if (!empty($innerSql)) {
+                            $this->customWhere .= " AND product.id IN ($innerSql) ";
+                        }
+                        break;
+                    case 'isNotLinked':
+                        $this->customWhere .= " AND product.id NOT IN (SELECT product_id FROM product_category WHERE deleted=0) ";
+                        break;
+                    case 'isLinked':
+                        $this->customWhere .= " AND product.id IN (SELECT product_id FROM product_category WHERE deleted=0) ";
+                        break;
+                    case 'notLinkedWith':
+                        if (!empty($innerSql)) {
+                            $this->customWhere .= " AND product.id NOT IN ($innerSql) ";
+                        }
+                        break;
+                }
+                unset($params['where'][$k]);
+            }
+        }
+
+        $params['where'] = array_values($params['where']);
     }
 }
