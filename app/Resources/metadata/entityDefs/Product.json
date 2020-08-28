@@ -67,6 +67,18 @@
       "min": 0,
       "default": 0
     },
+    "categories": {
+      "type": "linkMultiple",
+      "notStorable": true,
+      "layoutDetailDisabled": true,
+      "layoutDetailSmallDisabled": true,
+      "layoutListDisabled": true,
+      "layoutListSmallDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "exportDisabled": true,
+      "importDisabled": true,
+      "emHidden": true
+    },
     "associatedRelatedProduct": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
@@ -273,6 +285,11 @@
       "type": "belongsTo",
       "foreign": "products",
       "entity": "ProductFamily"
+    },
+    "categories": {
+      "type": "hasMany",
+      "entity": "Category",
+      "layoutRelationshipsDisabled": true
     },
     "catalog": {
       "type": "belongsTo",
