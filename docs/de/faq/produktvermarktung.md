@@ -67,7 +67,7 @@ Ja, nutzen Sie die kanalspezifischen Attribute dafür. Um ein Attribut als kanal
 
 In “TreoPIM Preis” ist ein Standard-Feld vom Typ Preis vorhanden. Es ist möglich, mehrere solcher Felder anzulegen und zu nutzen.
 
-Wenn Sie eine komplizierte Preisverwaltung mit Staffelpreisen, unterschiedlichen Währungen etc. planen, nutzen Sie bitte unser Modul “Advanced Prices”.
+Wenn Sie eine komplizierte Preisverwaltung mit Staffelpreisen, unterschiedlichen Währungen etc. planen, nutzen Sie bitte unser Modul “Pricing”.
 
 
 
