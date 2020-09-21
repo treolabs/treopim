@@ -123,13 +123,7 @@ Die Gesamtanzahl Ihrer Produkte wird auf der Listenansicht für Produkte direkt 
 
   
 
-## Kann man zusätzliche Dokumente oder sonstige Dateien pro Produkt abspeichern?
 
-Ja, nutzen Sie die Dokumentenverwaltung dafür. Falls es notwendig ist, mehrere Dokumente einem Produkt zuzuordnen, lassen Sie eine Relation zwischen den Entitäten “Dokumente” und “Produkte” von Ihrem Administrator einrichten.
-
-Falls Ihnen diese Möglichkeit nicht ausreicht, nutzen Sie bitte unser [Produkt Assets Modul](https://treopim.com/de/shop/assets).
-
-  
 
 ## Wozu gibt es Codes (Product Codes, Category Codes, Attribute Codes etc.)?
 
