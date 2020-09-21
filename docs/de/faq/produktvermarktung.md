@@ -40,13 +40,6 @@ Die nicht benutzten Assoziationen können problemlos entfernt werden.
 Man kann mehrere Produktkataloge in TreoPIM verwalten.
 
 
-
-## Kann man Subkataloge anlegen?
-
-Ja, es ist möglich, Subkataloge anzulegen. Weisen Sie dafür einen Ast eines Kategoriebaums solch einem Katalog zu, dann wird der Katalog zum Subkatalog des Katalogs, dem der gesamte Kategoriebaum zugeordnet ist.
-
-
-
 ## Wie viele Kanäle kann man verwalten?
 
 Sie können in TreoPIM beliebig viele Kanäle verwalten. Die Informationen für einen Kanal können auf unterschiedliche Weisen übertragen werden:
