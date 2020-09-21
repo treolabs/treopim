@@ -6,7 +6,7 @@
 
 A product family determines the type of product by assigning a product family to automatically determining which attributes should be used to describe a product, because the product family must be entered as a mandatory field when creating each individual product. A product can only be from one product family.
 
-Categories are important for a grouping of the products, because thanks to the categorization your products are also found by customers, e.g. in an online shop. Categories are important for the marketing of the products, so a product can be assigned to several categories in order to be found more easily.
+Categories are important for a classification of the products, because thanks to the categorization your products are also found by customers, e.g. in an online shop. Categories are important for the marketing of the products, so a product can be assigned to several categories in order to be found more easily.
 
   
 
@@ -40,39 +40,7 @@ Yes, all SEO requirements for your product information can be implemented in Tre
 
 ## How many and which attributes can a product have?
 
-For a product, the values should be given for the attributes associated with the product family of which the product itself is. A product can have any number of attributes, it is even possible to add additional attributes that are not assigned to the product family.
-
-There are over 20 attribute types in TreoPIM. Each attribute value is automatically validated according to its type when it is saved.
-
-  
-
-## How can you determine whether a product is a mandatory or a voluntary attribute?
-
-When configuring the product family, you can determine for each attribute whether the value for this attribute is mandatory or voluntary for each product.
-
-
-
-## Can I save rich texts (HTML texts) in TreoPIM? Is there a WYSIWYG editor?
-
-Yes, in TreoPIM there is a WYSIWYG as an entity field type and an attribute type.
-
-This means that rich texts (HTML texts) can be saved in both ways - as the value of a field (not only for products) and as the value of a product attribute.
-
-  
-
-## Can you change the order of the attribute values of a product?
-
-Yes, to change the order of the product attributes, please use the drag-and-drop function on the detail page of the respective product family. There you can arrange the product attributes. The product attributes are then arranged on a product page in the same way as on the page of the associated product family.
-
-  
-
-## Can you duplicate a product description?
-
-Every product description including all relations can be duplicated. Use the corresponding function on the product detail page.
-
-## How many and which attributes can a product have?
-
-For a product, the values should be given for the attributes associated with the product family of which the product itself is. A product can have any number of attributes, it is even possible to add additional attributes that are not assigned to the product family.
+For a product, the values ​​should be given for the attributes associated with the product family of which the product itself is. A product can have any number of attributes, it is even possible to add additional attributes that are not assigned to the product family.
 
 There are over 20 attribute types in TreoPIM. Each attribute value is automatically validated according to its type when it is saved.
 
@@ -120,8 +88,6 @@ Yes, use the filter function on the product page. You can implement any complex 
 
 To do this, click on the column name. Click the column name again to sort the entries in reverse order.
 
-
-
 ## Can you filter products by status or product tags?
 
 Yes, status or product tags are common fields, just like any other. Use the filter functions according to product attributes and choose either status or product tags as a filter criterion.
@@ -146,6 +112,8 @@ You can also save your own filters after they have been configured.
 ## Can I manage packaging units for products?
 
 Yes, let your administrator set up the new entity “Packaging units” and link it to the products.
+
+  
 
 ## How and where can I see the total number of my products?
 
