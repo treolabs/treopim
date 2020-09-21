@@ -4,17 +4,17 @@
 
 ## What is a portal and what is it used for?
 
-A portal is a full sub-instance of TreoPIM. Portals are used to grant portal users access only to certain entities so that collaboration with external parties can be organized more efficiently.
+A portal is a fully featured sub-instance of TreoPIM. Portals are used to grant portal users access only to certain entities so that collaboration with external parties can be organized more efficiently.
 
 You can configure for a portal:
 
 - Interface language and other local settings
-- Surname
+- Name
 - Access URL
 - Available roles
 - Theme
-- own dashboards
-- users
+- Own dashboards
+- Users
 
 Portal roles and portal users must be created in order to manage the authorizations within portals.
 
@@ -40,7 +40,7 @@ Yes, it is possible to set up a portal so that it can be accessed via a subdomai
 
 ## How many portals can be created?
 
-Several portals can be created in TreoPIM. Each portal can serve its own purpose - e.g. Supplier portal, dealer portals, portals for collaboration with external parties and others can be created.
+Several portals can be created in TreoPIM. Each portal can serve its own purpose - e.g. supplier portal, dealer portals, portals for collaboration with external parties and others can be created.
 
 
 
