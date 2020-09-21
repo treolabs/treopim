@@ -4,13 +4,13 @@
 
 ## Does the price depend on the number of users?
 
-With the sale of our premium modules as well as with their maintenance and support, the costs are not linked to the number of users. Your cost will more likely depend on your level of usage and customization needs.
+The costs are not linked to the number of users - with the sale of our premium modules as well as with their maintenance and support. Your cost will more likely depend on your level of usage and customization needs.
 
 
 
 ## What does the implementation of TreoPIM cost?
 
-There is no general answer to this question, because every user has their own particularities and tasks that can be solved with the help of TreoPIM. We, TreoLabs GmbH, accept projects with a project budget from EUR 10,000 net, including the acquisition of the necessary modules.
+There is no general answer to this question, because every user has their own particularities and tasks that can be solved with the help of TreoPIM. We, TreoLabs GmbH, take projects with a project budget starting from EUR 10,000 net, including the acquisition of the necessary modules.
 
 
 
@@ -24,7 +24,7 @@ Our services are billed at an hourly rate from EUR 50 net. The hourly rate depen
 
 For each project, we prepare a cost estimate based on the discussion of the customer's requirements and coordinate this with the customer. If the customer agrees with the costs, the project will be implemented.
 
-In rare cases it can happen that the actual costs deviate from the estimate (e.g. if they cannot be objectively estimated or a third system or another party is involved in the solution). In these cases we will notify the customer in good time and agree on what to do with the request.
+In rare cases it can happen that the actual costs deviate from the estimate (e.g. if they cannot be objectively estimated or a third system or another party is involved in the solution). In these cases we will notify the customer in advance and agree on what to do with the request.
 
 The [General Terms and Conditions] (https://treopim.com/de/agb) of TreoLabs GmbH apply without exception.
 
@@ -40,7 +40,7 @@ The [General Terms and Conditions] (https://treopim.com/de/agb) of TreoLabs GmbH
 
 ## Is there a deposit and what is it required for?
 
-Yes, depending on the size of the project, we will invoice the customer with a down payment of EUR 1,000 net or more, so that the customer can prove the seriousness of his project with this payment and we can allocate the resources for the implementation of the project.
+Yes, depending on the size of the project, we will invoice the customer with a down payment of EUR 3,000 net or more, so that the customer can prove the seriousness of his project with this payment and we can allocate the resources for the implementation of the project.
 
   
 
@@ -48,7 +48,7 @@ Yes, depending on the size of the project, we will invoice the customer with a d
 
 No, we always do our best and we use experienced specialists for every project.
 
-One of our competitive advantages lies in the use of nearshore programming. All of our developers work in our development offices in Zhitomir, Lviv and Kyiv (Ukraine).
+One of our competitive advantages lies in the use of nearshore programming.
 
   
 
@@ -62,7 +62,7 @@ We, TreoLabs GmbH, have three of our own development offices in the Ukraine - in
 
 You should be willing to compromise with yourself and with us. Do not try to implement all requirements immediately, start with the most important ones. Who knows, maybe your needs will change over time. There are certain functions or modules that you can do without at first. These should not necessarily be implemented immediately.
 
-Even after the introduction, it is possible and even recommended to implement the additional functions and requirements that were forgotten at the beginning or seemed not so important.
+Even after the implementation, it is possible and even recommended to implement the additional functions and requirements that were forgotten at the beginning or seemed not so important.
 
   
 
@@ -70,11 +70,11 @@ Even after the introduction, it is possible and even recommended to implement th
 
 No. Our solutions are based exclusively on open source technologies, including those developed by us - i.e. there are no license costs and no other fees. You only pay us for:
 
-- Consultation
+- consultation
 - implementation
 - programming
-- Premium modules
-- Maintenance and support, if you take out a maintenance contract for it.
+- premium modules
+- maintenance and support, if you take out a maintenance contract for it.
 
 
 
