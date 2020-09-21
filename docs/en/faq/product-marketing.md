@@ -41,12 +41,6 @@ You can manage several product catalogs in TreoPIM.
 
 
 
-## Can you create sub-catalogs?
-
-Yes, it is possible to create sub-catalogs. If you assign a branch of a category tree to such a catalog, the catalog becomes the sub-catalog of the catalog to which the entire category tree is assigned.
-
-
-
 ## How many channels can you manage?
 
 You can manage as many channels as you want in TreoPIM. The information for a channel can be transmitted in different ways:
@@ -54,8 +48,6 @@ You can manage as many channels as you want in TreoPIM. The information for a ch
 - via API from TreoPIM,
 - via API from a third-party system,
 - via Export Feeds (Export Feeds module required).
-
-
 
 
 ## Is it possible to transmit product information in more than one language via one channel?
@@ -74,7 +66,7 @@ Yes, use the channel-specific attributes for this. In order to create an attribu
 
 In “TreoPIM Price” there is a standard field of the Price type. It is possible to create and use several such fields.
 
-If you plan a complicated price management with graduated prices, different currencies etc., please use our module “Advanced Prices”.
+If you plan a complicated price management with graduated prices, different currencies etc., please use our module “Pricing”.
 
 
 
