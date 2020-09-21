@@ -12,7 +12,7 @@ Yes, it is possible to adjust the layout of list and detail pages directly from 
 
 Yes, you can create custom fields for each entity in the system (i.e. products, attributes, categories, associations, product families, etc.). Use the Entity Manager for this.
 
-TreoPIM offers the user many more options than just creating user-defined fields, because TreoPIM has a completely flexible data model. You can create new entities, edit existing entities, create and change the relationships between the entities and edit the metadata.
+TreoPIM offers the user much more options than just creating user-defined fields, because TreoPIM has a completely flexible data model. You can create new entities, edit existing entities, create and change the relationships between the entities and edit the metadata.
 
 
 
@@ -24,7 +24,7 @@ Yes, TreoPIM has a very flexible access and authorization concept. The roles det
 
 ## Can you edit the permissions at field level?
 
-Yes, for each role and each user it is possible to set up the authorizations at field level, so that e.g. a user can see entries from an entity, but without values ​​for a specific field, e.g. Price, internal notes etc.
+Yes, for each role and each user it is possible to set up the authorizations at field level, so that e.g. a user can see entries from an entity, but without values for a specific field, e.g. Price, internal notes etc.
 
 When setting up the authorizations at field level, it is possible to determine whether a user can see the field or not or whether he can edit the value.
 
@@ -34,7 +34,7 @@ When setting up the authorizations at field level, it is possible to determine w
 
 ACL Strict Mode determines the behavior of the system when access is granted.
 
-If ACL Strict Mode is deactivated, you automatically have access to all entities, including those that are not actually configured for the user. If ACL Strict Mode is activated, you automatically only have access to the approved entities.
+If ACL Strict Mode is deactivated, you automatically have access to all entities, including those that are not actually configured for the user. If ACL Strict Mode is activated, you automatically only have access to the allowed entities.
 
 We recommend activating the ACL Strict Mode from the start.
 
@@ -96,7 +96,7 @@ Yes, the administrator can configure the standard dashboards using drag and drop
 
 ## Is there an action log?
 
-Yes, if set, the administrator can trace all actions of all users in the system very precisely. It is documented who has changed which entity, which values ​​(fields) and which entries. The read accesses are also documented. The entries in the action log can be searched.
+Yes, if set, the administrator can trace all actions of all users in the system very precisely. It is documented who has changed which entity, which values (fields) and which entries. The read access is also documented. The entries in the action log can be searched.
 
   
 
