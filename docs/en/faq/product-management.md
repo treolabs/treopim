@@ -40,7 +40,7 @@ Yes, all SEO requirements for your product information can be implemented in Tre
 
 ## How many and which attributes can a product have?
 
-For a product, the values ​​should be given for the attributes associated with the product family of which the product itself is. A product can have any number of attributes, it is even possible to add additional attributes that are not assigned to the product family.
+For a product, the values should be given for the attributes associated with the product family of which the product itself is. A product can have any number of attributes, it is even possible to add additional attributes that are not assigned to the product family.
 
 There are over 20 attribute types in TreoPIM. Each attribute value is automatically validated according to its type when it is saved.
 
@@ -54,13 +54,13 @@ When configuring the product family, you can determine for each attribute whethe
 
 ## Can I save rich texts (HTML texts) in TreoPIM? Is there a WYSIWYG editor?
 
-Yes, in TreoPIM there is WYSIWYG as an entity field type and an attribute type.
+Yes, in TreoPIM there is a WYSIWYG editor as an entity field type and an attribute type.
 
 This means that rich texts (HTML texts) can be saved in both ways - as the value of a field (not only for products) and as the value of a product attribute.
 
   
 
-## Can you change the order of the attribute values ​​of a product?
+## Can you change the order of the attribute values of a product?
 
 Yes, to change the order of the product attributes, please use the drag-and-drop function on the detail page of the respective product family. There you can arrange the product attributes. The product attributes are then arranged on a product page in the same way as on the page of the associated product family.
 
@@ -120,15 +120,6 @@ Yes, let your administrator set up the new entity “Packaging units” and link
 The total number of your products is shown in the list view for products just above the product table on the right. Please make sure that no filters are set, otherwise you will only see the number of products that have been filtered out or found according to a search criterion.
 
   
-
-## Can I save additional documents or other files for each product?
-
-Yes, use the document management for this. If it is necessary to assign several documents to a product, have your administrator set up a relation between the “Documents” and “Products” entities.
-
-If this option is not sufficient for you, please use our [Product Assets Module] (https://treopim.com/de/shop/assets).
-
-  
-
 ## What are codes for (product codes, category codes, attribute codes etc.)?
 
 Codes are important as uniform names for your entries in TreoPIM, because you can e.g. Have multiple categories or attributes that have the same name but are of different nature.
