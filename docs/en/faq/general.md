@@ -227,11 +227,6 @@ TreoPIM Premium modules are sold, not rented. After purchasing a module, you can
 TreoСore is a platform for developing business applications. TreoCore creates a new and modern software ecosystem and forms the basis for further solutions from TreoLabs GmbH.
 
 TreoPIM is a solution based on the TreoCore platform and therefore has all the properties and functions that are provided by the platform. These are the general functions that would be conceivable for any business application.
-
-  
-
-! [TreoCore] (https://lh5.googleusercontent.com/N00DZdwpjD2ViDsYt7_YSfY7JygntPydQCWbxSmRNa4Zs7ZkmBeEj-G0D5CfB7fr2nf5mbyEy3V75ZjftAb2d-G0D5CfB7fr2nf5mbyEy3V75ZjdA6lBw5Qvujd6lBw5QvgObEd- QvgOBE- 2QvgObEqe- QvgOBE- 2Qvjd6lBWAQV75Zjd6lBw5AqVJB6LBWAQVUJD6LBW5B
-
   
 
 Technically speaking, all TreoPIM modules are developed for TreoCore and will therefore also be compatible with other TreoCore-based solutions.
