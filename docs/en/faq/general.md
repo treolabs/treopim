@@ -4,9 +4,9 @@
 
 ## Who is the target group?
 
-TreoPIM is a highly flexible PIM software that can be used equally well by a broad target group - brands and manufacturers as well as wholesalers, retailers and online retailers.
+TreoPIM is a highly flexible PIM software that can be used equally well by a broad target group - brands and manufacturers as well as wholesalers, gross retailers and online retailers.
 
-The system can easily be configured according to the type of user and the purpose. New entities and relations to existing entities can also be set up to map special requirements.
+The system can be easily configured according to the type of user and his purpose. New entities and relations to existing entities can also be set up to map special requirements.
 
 
 
@@ -14,7 +14,7 @@ The system can easily be configured according to the type of user and the purpos
 
 ### TreoPIM is open source and free
 
-We firmly believe in the open source approach and associated values ​​and have nothing to hide. Publishing our code makes our solutions better, more powerful and more flexible because we pay attention to the code quality of our solutions.
+We firmly believe in the open source approach and associated values and have nothing to hide. Publishing our code makes our solutions better, more powerful and more flexible because we pay attention to the code quality of our solutions.
 
 There are only two providers of PIM software worldwide that follow the open source approach - Akeneo and Pimcore.
 
@@ -36,7 +36,7 @@ TreoСore is a full-fledged ecosystem or platform for developing business applic
 
   
 
-### portals
+### Portals
 
 The functionality of the portals comes straight out of the box in TreoPIM in order to enable the user to work with his trading partners and other service providers. Several portals can be set up in a TreoPIM instance. There are no other free PIM solutions that have this functionality on board.
 
@@ -72,8 +72,6 @@ Prices for our connectors to other systems are usually lower than those of the c
 
 TreoLabs GmbH offers numerous inexpensive modules to supplement or change the functionality of the system. The use of existing modules is much cheaper than developing your own.
 
-Thanks to the use of German-Ukrainian teams, TreoLabs GmbH offers a relatively low hourly rate for a project to implement a PIM system and for subsequent support.
-
 TreoPIM is an excellent solution for those companies that have problems with their product information. So far, some of them have not been willing to invest in a solution because of the high cost.
 
   
@@ -96,7 +94,7 @@ If you also want to manage customer data, please use our CRM module together wit
 
 Yes, TreoPIM is open source. We have nothing to hide and every developer who is familiar with the technologies we use (PHP, Backbone.js etc.) can make changes directly in the code if necessary.
 
-All free and paid (premium) modules are also delivered open-source. Please note that the premium modules are not free software, the license conditions must be observed, but these are also open source. This is exactly why we can proudly say that TreoPIM is 100% Open Source PIM software.
+All free and paid (premium) modules are also delivered open-source. Please note that the premium modules are not free software, the license conditions must be considered, but these are also open source. This is exactly why we can proudly say that TreoPIM is 100% Open Source PIM software.
 
 Thanks to this approach, we hope to build a large community of users and developers who can contribute to the further development of our solutions.
 
@@ -130,15 +128,15 @@ TreoPIM has modern, user-friendly and intuitively understandable user interfaces
 
 ## What does “flexible” mean at TreoPIM?
 
-TreoPIM is flexible for all roles in the system - for users, for administrators and for programmers. The interfaces and functions can be expanded or modified as desired so that the system meets the requirements of the user 100%. The system remains intuitively understandable and user-friendly.
+TreoPIM is flexible for all roles in the system - for users, for administrators and for programmers. The interfaces and functions can be expanded or modified as desired so that the system meets the requirements of the user to 100%. The system remains intuitively understandable and user-friendly.
 
 You have the following possibilities to influence the behavior of the system:
 
 - Entity Manager - you can create new entities (e.g. contracts, product series, product groups etc.) or adapt existing ones by adding or removing new fields or defining the rule for the conditional field logic.
 - Layout Manager - you can conveniently configure the user interfaces of each individual entity using drag-and-drop directly from the admin area. Do you need a new field? It takes exactly three minutes to add this field and publish it on an interface.
-- In the admin area there are otherwise numerous configuration options to control the system - e.g. Navigation, general and separate for each individual role, currencies, languages, users, user roles, teams, emails, etc.
+- In the admin area there are otherwise numerous configuration options to control the system - e.g. navigation, general and separate for each individual role, currencies, languages, users, user roles, teams, emails, etc.
 - You can also set many things directly in the code that are no longer possible from the admin area.
-- If a feature can no longer be configured, it can still be programmed additionally.
+- If a feature can not be configured, it can still be programmed additionally.
 
 ## What does “configurable” mean in TreoPIM?
 
@@ -149,9 +147,9 @@ In TreoPIM you can configure:
 - Navigation, also separately for each user or portal
 - Users, teams, roles and permissions
 - Entities (products, attributes, contracts, documents, product series, product groups, etc.) including their fields
-- Relations between entities, e.g. You want to save several documents per trading partner and these should be visible on the trading partner's detail page.
+- Relations between entities, e.g. you want to save several documents per trading partner and these should be visible on the trading partner's detail page.
 - Layouts for all standard and custom entities
-- Field headings
+- Field labels
 - etc.
 
 Thanks to the high degree of configuration of TreoPIM, many costs can be saved in the context of an implementation project.
@@ -192,8 +190,7 @@ If necessary, it is possible to have new widgets programmed by TreoLabs GmbH or 
 
 ## What is the difference between the Community Edition and the Enterprise Edition?
 
-There is no Enterprise Edition. TreoPIM is only available in one edition, the freely available “Community Edition”. “Enterprise Edition” is the name for the TreoPIM “Community Edition” with all installed premium modules.
-
+There is no Enterprise Edition. TreoPIM is only available in one edition, the freely available “Community Edition”. 
 TreoPIM is also not sold as an “Enterprise Edition”. Each customer can only choose and buy the modules that he really needs, there is no compulsion.
 
 ## How are TreoPIM and TreoPIM modules licensed?
@@ -218,7 +215,7 @@ There are no modules that are distributed under both licenses at the same time.
 
 ## Are TreoPIM Premium modules sold or rented?
 
-TreoPIM Premium modules are sold, not rented. After purchasing a module, you can get free updates for one year. Installation is not included. You can continue to use the module even after this period has expired. If you wish, you can purchase a new version of the module at a discounted rate - 50% if you purchase the update within one month directly after the expiry of the one-year period. Otherwise at a full price.
+TreoPIM Premium modules are sold, not rented. After purchasing a module, you can get free updates for one year. Installation is not included. You can continue to use the module even after this period has expired. If you wish, you can purchase a new version of the module at a discounted rate - 50%. If you purchase the update within one month directly after the expiry of the one-year period, otherwise at a full price.
 
   
 
@@ -253,9 +250,8 @@ Only active products can be synchronized with other systems or made available vi
 
 ## Is TreoPIM multilingual?
 
-Yes, TreoPIM is multi-lingual and multi-locale capable. You can e.g. For Germany and Austria, save different product information, enriched with regional words, in German.
+Yes, TreoPIM is multi-lingual and multi-locale capable. You can save different product information e.g. for Germany and Austria, enriched with regional words, in German.
 
-  
 
 ## Does TreoPIM have responsive design?
 
