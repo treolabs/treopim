@@ -1,7 +1,5 @@
 # Infrastructure
 
-
-
 ## What are the technical requirements for TreoPIM?
 
 There are no special requirements for the server. TreoPIM is installed using Composer.
@@ -10,8 +8,7 @@ Nevertheless, we recommend the use of Linux servers (e.g. Debian or Ubuntu) with
 
 Please use PHP version 7.1 or higher and MySQL version 5.7 or higher.
 
-  
-
+ 
 ## Is it possible to use MariaDB instead of MySQL?
 
 Yes, without any restrictions.
