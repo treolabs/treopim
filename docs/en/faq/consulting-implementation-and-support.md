@@ -6,8 +6,8 @@
 
 We offer a wide range of services that are directly and indirectly related to the introduction of a PIM system, including:
 
-- Consultation
-- Introduction of TreoPIM
+- Consulting
+- Implementation of TreoPIM
 - Migration from other PIM systems
 - Integration of TreoPIM with third-party systems
 - Programming of additional functions and modules
@@ -17,11 +17,11 @@ You can purchase a “worry-free” package from us, we will never let you down!
 
 
 
-## I would like advice, what options are there, what does it cost?
+## What options are there, what does it cost?
 
 We can offer you a free first consultation, contact us and we will make an appointment.
 
-Alternatively, if you would like to discuss your tasks and problems as well as the possible alternative solutions with the help of TreoPIM in more detail, we can offer you a workshop on screen sharing, at our premises or at your location.
+Alternatively, if you would like to discuss your tasks and problems as well as the possible alternative solutions with the help of TreoPIM in more detail, we can offer you a workshop - via screen sharing, at our premises or at your location.
 
 
 
@@ -31,14 +31,13 @@ We attach great importance to the right communication and believe that this cont
 
 We actively use modern communication methods: telephone, email and screen sharing. Every customer has direct access to our project management and issue tracking system.
 
-Project languages ​​with us are - German, English, Russian or Ukrainian.
+Project languages with us are - German, English, Russian or Ukrainian.
 
 
 
 ## Shall we meet in person before the project starts?
 
-Not necessarily, thanks to modern communication technologies it is no longer necessary. We would be happy to meet you if you wish. Our headquarters are in Regensburg, Germany. You are also welcome to visit us in one of our Ukrainian offices.
-
+Not necessarily, thanks to modern communication technologies it is no longer necessary. We would be happy to meet you if you wish. Our headquarters are in Regensburg, Germany.
 
 
 ## Do I get a permanent contact person during the project?
@@ -49,15 +48,15 @@ Yes, the project manager assigned to your project will be happy to assist you vi
 
 ## How long does it take to implement TreoPIM?
 
-The implementation of TreoPIM takes from two weeks. The time depends very much on how many individual requirements and special features you have. However, this deadline depends not only on us, but much more on you, because you have to participate in the project.
+The implementation of TreoPIM takes from four weeks. The time depends very much on how many individual requirements and special features you have. However, this deadline depends not only on us, but much more on you, because you have to participate in the project.
 
 
 
 ## How is the project implementation organized at TreoLabs GmbH?
 
-We have been specializing in e-commerce since 2010 and have built up extensive know-how in this area that allowed us to develop TreoPIM. Thanks to an agile project approach, we ensure that the end result fully meets the requirements.
+We have been specializing in e-commerce for a long time and have built up extensive know-how in this area that allowed us to develop TreoPIM. Thanks to an agile project approach, we ensure that the end result fully meets the requirements.
 
-* We implement a project as follows:*
+*We implement a project as follows:*
 
 1. First we start with a kickoff meeting and discuss with you the goals and all the most important tasks to be implemented in the project.
 2. Then we discuss your data model and configure TreoPIM accordingly.
@@ -72,16 +71,14 @@ In this way, we remain flexible, agile and open to new insights throughout the p
 
 We, the TreoLabs GmbH, ensure that you do not remain perplexed with our solutions and ensure that every customer receives proper support. We offer three support packages:
 
-- ** Basic ** - for small users.
-- ** Premium ** - for small users with a few special requests.
-- ** Enterprise ** - for larger users with high demands.
+- **Basic** - for small users.
+- **Premium** - for small users with a few special requests.
+- **Enterprise** - for larger users with high demands.
 
 It is also possible to agree an SLA contract with us with special conditions. Please contact us for this.
 
-Of course, you can also get free support from [our community] (https://community.treolabs.com).
 
-  
 
-## In which languages ​​can I be supported?
+## In which languages can I be supported?
 
 German, English, Russian, Ukrainian.
