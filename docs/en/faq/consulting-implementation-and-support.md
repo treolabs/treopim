@@ -57,7 +57,7 @@ The implementation of TreoPIM takes from two weeks. The time depends very much o
 
 We have been specializing in e-commerce since 2010 and have built up extensive know-how in this area that allowed us to develop TreoPIM. Thanks to an agile project approach, we ensure that the end result fully meets the requirements.
 
-* We implement a project as follows: *
+* We implement a project as follows:*
 
 1. First we start with a kickoff meeting and discuss with you the goals and all the most important tasks to be implemented in the project.
 2. Then we discuss your data model and configure TreoPIM accordingly.
