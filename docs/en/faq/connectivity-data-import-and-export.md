@@ -4,7 +4,7 @@
 
 ## Which systems can TreoPIM be integrated with?
 
-TreoPIM can be integrated with any third-party system that enables integration, it can be online shops, ERP, CRM, WaWis, PLM, MDM, CMS and other systems. TreoPIM is a web-based software with a REST API that can be used for integration purposes. Connectors for TreoPIM can also be programmed, which can use the APIs of third-party systems.
+TreoPIM can be integrated with any third-party system that enables integration, it can be online shops, ERP, CRM, PLM, MDM, CMS and other systems. TreoPIM is a web-based software with a REST API that can be used for integration purposes. Connectors for TreoPIM can also be programmed, which can use the APIs of third-party systems.
 
 If integration via API from TreoPIM or a third-party system is technically not possible, data exchange can still be ensured by exchanging files.
 
@@ -44,7 +44,7 @@ To implement more complicated export scenarios, e.g. If the entire product catal
 
 ## Can I import data into TreoPIM?
 
-Thanks to the import configurator, the administrator can import a CSV file with data into any entity in the system. The locale settings and field mapping must be carried out; the standard values ​​for columns can also be specified.
+Thanks to the import configurator, the administrator can import a CSV file with data into any entity in the system. The locale settings and field mapping must be carried out; the standard values for columns can also be specified.
 
 The import can take place per entity - i.e. when you are with the products, the product entries are imported without data for dependent entities such as attributes, categories, associations etc.
 
