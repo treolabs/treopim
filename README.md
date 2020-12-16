@@ -53,6 +53,14 @@ TreoPIM comes with a lot of features directly out of the box, including:
 
 Want to know more about TreoPIM functions and its advantages for you? Please, visit [our website](http://treopim.com). Find out more about the TreoDAM module [here](https://treodam.com).
 
+***
+***
+
+## TREOPIM IS DISCONTINUED. PLEASE USE [ATROPIM](https://github.com/atrocore/atropim)!
+
+***
+***
+
 ## Technology
 
 TreoPIM is based on EspoCRM and uses PHP7, backbone.js, composer and some Zend Framework 3 libraries.
