@@ -1,5 +1,6 @@
-TREOPIM IS DISCONTINUED. PLEASE USE [AtroPIM](https://github.com/atrocore/atropim)!
------------------------------
+## TREOPIM IS DISCONTINUED. PLEASE USE [AtroPIM](https://github.com/atrocore/atropim)!
+
+
 
 ![treopim_h80](docs/_assets/treopim_h80.png)
 
@@ -139,3 +140,5 @@ TreoPIM is published under the GNU GPLv3 [license](LICENSE.txt).
 
 ---
 Please note, the content of this description is NOT licenced under GPLv3 and is property of TreoLabs GmbH.
+
+## TREOPIM IS DISCONTINUED. PLEASE USE [AtroPIM](https://github.com/atrocore/atropim)!
