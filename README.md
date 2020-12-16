@@ -1,4 +1,4 @@
-## TREOPIM IS DISCONTINUED. PLEASE USE [AtroPIM](https://github.com/atrocore/atropim)!
+## TREOPIM IS DISCONTINUED. PLEASE USE [ATROPIM](https://github.com/atrocore/atropim)!
 
 ***
 ***
@@ -143,4 +143,4 @@ Please note, the content of this description is NOT licenced under GPLv3 and is 
 
 ***
 ***
-## TREOPIM IS DISCONTINUED. PLEASE USE [AtroPIM](https://github.com/atrocore/atropim)!
+## TREOPIM IS DISCONTINUED. PLEASE USE [ATROPIM](https://github.com/atrocore/atropim)!
