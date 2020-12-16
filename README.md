@@ -139,7 +139,6 @@ TreoPIM is published under the GNU GPLv3 [license](LICENSE.txt).
 - Feel free to joing our [Community](https://community.treolabs.com/).
 - To contact us, please visit [TreoPIM Website](http://treopim.com).
 
----
 Please note, the content of this description is NOT licenced under GPLv3 and is property of TreoLabs GmbH.
 
 ***
