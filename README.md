@@ -1,3 +1,6 @@
+TREOPIM IS DISCONTINUED. PLEASE USE [AtroPIM](https://github.com/atrocore/atropim)!
+-----------------------------
+
 ![treopim_h80](docs/_assets/treopim_h80.png)
 
 ## What Is TreoPIM?
