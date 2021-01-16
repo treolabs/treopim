@@ -31,9 +31,26 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'treo-core:vie
         },
 
         setup() {
-            this.mandatorySelectAttributeList = ['type', 'typeValue'];
+            this.mandatorySelectAttributeList = [
+                'type',
+                'typeValue',
+                'attributeIsMultilang'
+            ];
 
+            this.updateMandatorySelectAttributeList();
             Dep.prototype.setup.call(this);
+        },
+
+        updateMandatorySelectAttributeList() {
+            let inputLanguageList = this.getConfig().get('inputLanguageList') || [];
+
+            if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
+                let typeValueFields = inputLanguageList.map(lang => {
+                    return lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'typeValue');
+                });
+
+                this.mandatorySelectAttributeList = this.mandatorySelectAttributeList.concat(typeValueFields);
+            }
         },
 
         select(model) {
@@ -43,10 +60,20 @@ Espo.define('pim:views/product-attribute-value/fields/attribute', 'treo-core:vie
         },
 
         setAttributeFieldsToModel(model) {
-            let attributes = {
+            const inputLanguageList = this.getConfig().get('inputLanguageList') || [];
+            const attributes = {
                 attributeType: model.get('type'),
-                typeValue: model.get('typeValue')
+                typeValue: model.get('typeValue'),
+                attributeIsMultilang: model.get('attributeIsMultilang')
             };
+
+            if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
+                const typeValueFields = inputLanguageList.map(lang => {
+                    return lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'typeValue');
+                });
+
+                typeValueFields.forEach(key => attributes[key] = model.get(key))
+            }
 
             this.model.set(attributes);
         },

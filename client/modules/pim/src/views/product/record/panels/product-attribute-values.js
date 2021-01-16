@@ -33,7 +33,9 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
             'isRequired',
             'productFamilyAttributeId',
             'scope',
-            'value'
+            'value',
+            'typeValue',
+            'attributeIsMultilang'
         ],
 
         groupKey: 'attributeGroupId',
@@ -237,12 +239,16 @@ Espo.define('pim:views/product/record/panels/product-attribute-values', ['views/
 
         updateBaseSelectFields() {
             let inputLanguageList = this.getConfig().get('inputLanguageList') || [];
+
             if (this.getConfig().get('isMultilangActive') && inputLanguageList.length) {
                 inputLanguageList.forEach(lang => {
-                    let field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), 'value');
-                    if (!this.baseSelectFields.includes(field)) {
-                        this.baseSelectFields.push(field);
-                    }
+                    ['value', 'typeValue'].forEach(key => {
+                        const field = lang.split('_').reduce((prev, curr) => prev + Espo.Utils.upperCaseFirst(curr.toLocaleLowerCase()), key);
+
+                        if (!this.baseSelectFields.includes(field)) {
+                            this.baseSelectFields.push(field);
+                        }
+                    })
                 });
             }
         },

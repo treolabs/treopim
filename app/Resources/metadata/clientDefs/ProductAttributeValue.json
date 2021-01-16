@@ -17,6 +17,11 @@
     "editSmall": "pim:views/product-attribute-value/record/edit-small",
     "list": "pim:views/product-attribute-value/record/list"
   },
+  "additionalFieldsParams": {
+    "enum": {
+      "view": "pim:views/product-attribute-value/fields/enum-with-adding"
+    }
+  },
   "dynamicLogic": {
     "fields": {
       "channels": {
