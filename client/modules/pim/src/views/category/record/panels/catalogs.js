@@ -26,6 +26,18 @@ Espo.define('pim:views/category/record/panels/catalogs', ['views/record/panels/r
             }
         },
 
+        selectionKeys: [
+            'categoriesIds',
+            'categoriesNames',
+            'code',
+            'name',
+            'isActive'
+        ],
+
+        getSelectionKeys() {
+            return Array.isArray(this.selectionKeys)? this.selectionKeys : [];
+        },
+
         setup() {
             let bottomPanel = new BottomPanel();
             bottomPanel.setup.call(this);
@@ -141,6 +153,9 @@ Espo.define('pim:views/category/record/panels/catalogs', ['views/record/panels/r
             this.wait(true);
             this.getCollectionFactory().create(this.scope, function (collection) {
                 collection.maxSize = this.getConfig().get('recordsPerPageSmall') || 5;
+                collection.data = _.extend(collection.data, {
+                    select: this.getSelectionKeys().join(',')
+                });
 
                 if (this.defs.filters) {
                     var searchManager = new SearchManager(collection, 'listRelationship', false, this.getDateTime());
